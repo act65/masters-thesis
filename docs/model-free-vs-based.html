@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>model</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../style.css">
+  <script src="../docs/mathjax.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script type="text/x-mathjax-config">
+    // MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "all"} } });
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": { fonts: ["TeX"] }
+    });
+  </script>
+</head>
+<body>
+<header>
+<h1 class="title">model</h1>
+</header>
+<p>#Model-based RL</p>
+<p>Why do we want to do this? Motivation! What problem does model-based RL solve?</p>
+<p>Want to find certain settings where model-free &gt; model-based and vice versa.</p>
+<p>Number of samples <span class="math inline">\(n\)</span>, a measure of the complexity of the environment <span class="math inline">\(k\)</span>, the complexity of the model <span class="math inline">\(N\)</span>, …??? (what else?)</p>
+<p><span class="math display">\[
+d(\nabla \pi, G_{\text{model-based}}) = poly(n, k, N) \\
+d(\nabla \pi, G_{\text{model-free}}) = exp(n, k, N) \\
+\]</span></p>
+<p>problem is that this ignores the actual optimisation (it could be that some types of inaccuracy in the gradient estimation actually aid learning…)</p>
+<p>Is there a case where a model of the dynamics naturally emerges?</p>
+<h2 id="definition">Definition</h2>
+<p>??? A reinforcement learner that does not have an explicit model of the transition function. Struggling with this definition. Best I can do is related to how the learning is supervised.</p>
+<p>Model-free only gets access to the reward. Model-based also uses the state-action trajectories. (I want to show that this extra learning signal can change performance from exp to poly)</p>
+<blockquote>
+<p>conventional wisdom holds that model-free methods are less efficient but achieve the best asymptotic performance, while model-based methods are more efficient but do not produce policies that are as optimal (<a href="https://bair.berkeley.edu/blog/2018/04/26/tdm/">TDM</a>)</p>
+</blockquote>
+<h2 id="a-fundamental-trade-off">A fundamental trade-off</h2>
+<p>We need to sample reality… If not we can end up planning a fantasy.</p>
+<p>(when failing is cheap it can be easier to try, make a bunch of errors, rather than plan. esp with innaccurate models…)</p>
+<p>In the case where the environment is more complex than can possibly be modelled, then …? Planning isnt going to work… But, what advantages can be gained from an partial model?</p>
+<p>In the case where the task is very simple. If light is red, push button. Dont need a complex model of the environment…</p>
+<p>what about models that capture high level/deep principles? While inaccurate (in their ability to predict a future state, they …???)</p>
+<p>It depends on how expensive it is to sample the real reward!? If queries are cheap/unrestricted, then let’s just do model-free RL!? How can we assign cost to queries to the oracle? Are there different types of cost?</p>
+<ul>
+<li>memory/size of policy</li>
+<li>calls to the oracle</li>
+<li>reward received</li>
+</ul>
+<hr />
+<p>This is really just a question of gradient estimation. What is the variance/bias of the estimator?</p>
+<p>Want to see proof that Q-learning and PG have zero bias. Want to bound their variance. (is that all we care about!? – Is the gradient pointing in the right direction? Does it have the right magnitude?)</p>
+<p>How could this be studied? Construct a differentiable model and check the accuracy of various estimators.</p>
+<p>Dont actually care if <span class="math inline">\(\tau (s_t, a_t) = \hat \tau (s_t, a_t)\)</span> we care if <span class="math inline">\(\nabla \tau (s_t, a_t) = \nabla \hat \tau (s_t, a_t)\)</span>. Is there a way to evaluate the gradient of the transition function?</p>
+<hr />
+<p>(In the unconstrained memory case) <strong>Cojecture:</strong> Model-based learning is the optimal solution to model-free learning</p>
+<p>I can imagine a model-free system learning to learn to use future inputs as targets to learn a model!!?! If we used a very large RNN to model <span class="math inline">\(Q(s_t, a_t)\)</span>, it could correlate the difference between past and future state and actions, thus …?</p>
+<p>Model-free methods must learn some estimate of future dynamics!? (how can this be shown? neurons that correlate with dynamics?) How much of the future dynamics does a model-free method learn? How much is necessary?</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://bair.berkeley.edu/blog/2018/04/26/tdm/">TDM</a></li>
+<li><a href="https://arxiv.org/abs/1606.05312">Successor features</a></li>
+<li><a href="https://openreview.net/forum?id">Model-free planning</a></li>
+</ul>
+</body>
+</html>
