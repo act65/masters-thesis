@@ -1,36 +1,50 @@
-%exploitable
-# Exploitable models
+%planning
+# Planning
 
-Why do we want to do this?
+CFRM, MCTS, ... cool.
+What about planning in with continuious actions?  -> LQR, MPC
 
-## Definition
 
-What could help the planner do its job better?
-Receiving information about he structure of the model? Beging able to use the model in 'other' ways.
-How can we design a system where the model adapts itself to me maximally useful to the planner?!
+__Q:__ How much harder is planning in a stochastic system than in a deterministic system?!?
 
-Thus the desiderata of the model;
+## Model predictive control
+
+(what about LQR, ...)
+
+Short coming of MPC. Finite horizon.
+- Will be short sighted/myopic? will fail at problems with small short term reward in wrong direction?
+- Cannot trade off width for depth.
+- What if the state returned by the model is a distribution? Then we need to explore possibilities!?!?
+
+Can derive Kalman filters from these?!!
 
 $$
-\begin{align*}
-\p(\cdot \mid s_t, a_t) &\approx f(s_t, a_t, \tau)\\
-\exists f^{-1} \\
-\end{align*}
+\begin{align}
+V(x) = min_u [l(x, u) + V(f(x, u))] \tag{the cts bellman eqn!?}\\
+\end{align}
 $$
 
-- invertible
-- take a time step as input
-- a point of attention
+> The Q-function is the discrete-time analogue of the Hamiltonian
 
-## A spectrum
+## Backwards
 
-Maybe the distinction between model-based and model free is less clear.
+What are the advantages of having access to a inverse dynamics model?
 
-Imagine we have partially accurate/cheap approximations of the true transition function.
+- Some problems are easier to solve? (U-problem?)
+- Smaller search space (1 vs 2 circles?)
+- ?
 
+## General problem
 
-## Reward hacking
+Need to integrate a dynamical system.
+But how to do this when it is;
+- stochastic?
+- biased?
 
-If the model is not accurate ...
+Want to learn to integrate!?
 
 ## Resources
+
+- [Differential Dynamic Programming](https://homes.cs.washington.edu/~todorov/papers/TassaICRA14.pdf)
+- [mpc.torch](https://locuslab.github.io/mpc.pytorch/)
+- ?

@@ -1,12 +1,31 @@
 % structure
 # Structured models
 
-Why do we want to do this?
+Why is this hard?
+
+- uncertainty
+- partial observations
+- structure
+- complex
+- ?
 
 ## Definition
 
 Want the model to approximate the true internal structure of the environment, not just an arbitrary structured function approimation.
 Want to recover the truth. Do science, extract relationships, reduce into minimal parts.
+
+## Partial observations
+
+How can we construct global models from local observations?
+
+__Conjecture:__ To build a global model is it necessary for the agent to estimate its poisition in its environment.
+
+But where does the ground truth signal come from!?
+
+## Modelling uncertainty
+
+Distributions over plausible states?
+MCMC estimation versus using flows?
 
 ## Graph neural networks
 
@@ -29,6 +48,9 @@ $$
 \end{align*}
 $$
 
+__NOTE__ Would make it easy(er) to design an exploitable model!?
+Controller simply inputs stepsize.
+
 ### Inverse gradient dynamics
 (relationship to IRL?)
 
@@ -42,11 +64,10 @@ L &= \mathop{\mathbb E}_{x_{t+1}, x_t\sim D} \big[ d(x_{t+1}, f(x_t)) \big] \tag
 \end{align*}
 $$
 
-- (how does this constrain the possible types of dynamics?)</li>
+- (how does this constrain the possible types of dynamics?)
 - if we use an ensemble of approximators, how will the dynamics be decomposed? will we naturally see environment disentangled from agents?
 
-If possible. Would make it easy(er) to design an exploitable model!?
-Controller simply inputs stepsize.
+
 
 ## Causal inference
 
@@ -57,3 +78,6 @@ Controller simply inputs stepsize.
 ???
 
 ## Resources
+
+- []()
+- []()
