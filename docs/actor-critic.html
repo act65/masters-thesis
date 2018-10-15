@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>critics</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../style.css">
+  <script src="../docs/mathjax.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script type="text/x-mathjax-config">
+    // MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "all"} } });
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": { fonts: ["TeX"] }
+    });
+  </script>
+</head>
+<body>
+<header>
+<h1 class="title">critics</h1>
+</header>
+<h1 id="value-function-and-critics">Value function and critics</h1>
+<p>How can we estimate the dreivative of a stochastic, unknown and possibly discrete function? An answer is to learn a critic, a differentiable approximation of the stochastic, unknown function.</p>
+<ul>
+<li>Which function approximators are suited to the types of function we are interested in approximating (changing distribution, sparse/unbalanced, …?)</li>
+<li>?</li>
+</ul>
+<h2 id="reinforce">REINFORCE</h2>
+<p><span class="math display">\[
+\begin{align*}
+L(\pi) &amp;= \mathbb E_{s\sim\pi}[R(s)] \\
+\pi^* &amp;= \mathop{\text{argmax}}_{\pi}  L(\pi) \\
+\nabla L(\pi) &amp;= \nabla \mathbb E_{s\sim\pi}[R(s)] \\
+&amp;= \nabla \int \pi(s) R(s) \\
+&amp;= -\nabla log(\pi(s)) R \\
+\end{align*}
+\]</span></p>
+<p>(why does less variance mean faster learning!? need to motivate) Advantage actor critic improves this by reducing the variance of the gradient estimation.</p>
+<p><span class="math display">\[
+\begin{align*}
+A &amp;= R(s) - V(s) \\
+&amp;\approx V(s_t) + r(s) - V(s) \\
+&amp;= -\nabla log(\pi(s)) A \\
+\end{align*}
+\]</span></p>
+<p>But what if <span class="math inline">\(V(s)\)</span> is not a reliable estimate of <span class="math inline">\(R(s)\)</span>? Are there cases where this could actually give worse behaviour? How about the average case in training?</p>
+<p>Hypothesis: because we are using a neural network to estimate <span class="math inline">\(V(s)\)</span>, when <span class="math inline">\(r(s)\)</span> is sufficiently sparse, then the neural net will collapse to a near constant function. Meaning it provides little variance reduction.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf">REINFORCE</a></li>
+<li><a href="https://arxiv.org/abs/1602.01783">A3C</a></li>
+<li><a href="https://arxiv.org/pdf/1506.02438.pdf">Generalised advantage estimation</a></li>
+<li><a href="https://arxiv.org/abs/1806.06923">Distributional RL</a></li>
+<li><a href="https://arxiv.org/abs/1711.00123">Backprop through the void</a></li>
+</ul>
+</body>
+</html>
