@@ -37,7 +37,7 @@
 <h1 id="transfer">Transfer</h1>
 <p>Why do we want to do this? Transfer learning is the key to general intelligence!</p>
 <h2 id="definition">Definition</h2>
-<p>What do we mean by transfer in “transfer learning”? If we have two tasks/environments/action spaces/…?, <span class="math inline">\(A, B\)</span>, then the performance of one task aids the other task.</p>
+<p>What do we mean by “transfer learning”? If we have two tasks/environments/action spaces/…?, <span class="math inline">\(A, B\)</span>, then the performance of one task aids the other task.</p>
 <p>A MDP is defined as <span class="math display">\[M = \Big(S, \mathcal A, p(\cdot \mid s,a), R(s, a, s&#39;) \Big)\]</span></p>
 <ul>
 <li><span class="math inline">\(S\)</span>: It is possible to change the state space, while preserving the dynamics. (??)</li>
@@ -48,34 +48,28 @@
 <p>But one could imagine symmetries of <span class="math inline">\(p(\cdot \mid s,a), R(s, a, s&#39;)\)</span>, such that some structure is preserved.</p>
 <p><span class="math display">\[
 \begin{align*}
-p(\cdot \mid s,a) &amp;= T^{-1}(p(\cdot \mid T(s,a))) \\
-&amp;= p(\cdot \mid T(s),a) \tag{equiv to transfer to a new state space}\\
-&amp;= p(\cdot \mid s,T(a)) \\
+p(\cdot \mid s,a) &amp;:= T^{-1}(p(\cdot \mid T(s,a))) \\
+&amp;:= p(\cdot \mid T(s),a) \tag{equiv to transfer to a new state space}\\
+&amp;:= p(\cdot \mid s,T(a)) \\
 R(s, a, s&#39;) &amp;= T(R(s, a, s&#39;)) \\
 \end{align*}
 \]</span></p>
 <p>For example, similarities between the reward in hockey and football. Get the round thing in the oppositions goal.</p>
-<p>
-Huh, never thought about it this way before. The states are an unordered set. The transition fn provides all the structure on that space (much like an inner prod in Hilbert spaces?!?) The neighbors of a state are the positions reachable from a single action. No not quite. More like probabilistic vector maps? No that is only when combined with a policy.
-</p>
+<blockquote>
+<p>Huh, never thought about it this way before. The states are an unordered set. The transition fn provides all the structure on that space (much like an inner prod in Hilbert spaces?!?) The neighbors of a state are the positions reachable from a single action. No not quite. More like probabilistic vector maps? No that is only when combined with a policy.</p>
+</blockquote>
 <p>Best current solutions!?</p>
 <ul>
 <li>successor representation/goal embeddings. <span class="math inline">\(\to\)</span> task transfer</li>
 <li>model-based RL (disentangle policy from model) allows transfer of control polices between environments and transfer of model between tasks in the same env.</li>
-<li>why was it transferred? (because the domains somehow shared similarities)</li>
 </ul>
-<p><span class="math display">\[
+<p>Let <span class="math inline">\(L\)</span> be the test loss after training, and <span class="math inline">\(T\)</span> be the training task. <span class="math display">\[
 \begin{align*}
 L(T(B)) \le L(T(A) \to T(B)) \tag{Forward transfer}\\
 L(T(A)) \le L(T(A) \to T(B)) \tag{Backward transfer} \\
 \end{align*}
 \]</span></p>
-<p>Relationship to meta-learning. Different <i>‘levels’</i> of knowledge can be transfered.</p>
-<ul>
-<li>in transfer learning we tend to deal with absolute knowledge about one domain (say a robot simulation)</li>
-<li>meta learning transfers <i>meta</i> knowledge about how to learn (thus it is also called learning to learn)</li>
-</ul>
-<p>How can we tease apart these definitions into a heirarchy?</p>
+<p>Relationship to meta-learning. Different <i>‘levels’</i> of knowledge can be transfered. In meta learning the low level details are not transferred, but the high level, “how to learn” lessons are transferred. So the key to this would be a decomposition of these different types of knowledge. <strong>Q:</strong> How can these types of knowledge be disentangled!?</p>
 <p><span class="math display">\[
 \begin{align*}
 \dot L(T(B)) \le \dot L(T(A) \to T(B)) \\
@@ -90,11 +84,9 @@ L(T(A)) \le L(T(A) \to T(B)) \tag{Backward transfer} \\
 <li>why was it transferred? (because the domains somehow shared similarities)</li>
 </ul>
 <p>Seems quite related to representation learning. The key will be how knowledge is represented, and how easily that knowledge can be translated (/transformed)!?</p>
-<p>Like a communication channel. I want to see what has been communicated! Attributing performance on a current task to a past experiences/tasks. (good at snowboarding bc i used to surf)</p>
-<p>If we had a theory of transfer learning we would be able to; - predict when X will transfer to Y. - write down a pattern to generate representations for transfer between X/Y. - ?</p>
+<p>If we had a theory of transfer learning we would be able to; - predict when X will transfer to Y. - write down a pattern to generate representations for transfer between X/Y. - <strong>???</strong></p>
 <h2 id="toy-problems">Toy problems</h2>
-<p>Two environments, only difference is visual appearance, … Two environments,</p>
-<p>Want to generate different MDPs that share various ‘orders’ of similarity. Navigation on graphs? Various orders of persistent homology?</p>
+<p>Want to generate different MDPs that share various ‘orders’ of similarity. If we mode each environment as a graph and the task is navigation, then it might be possible to easily generate graphs/rewards with structural similarities!? Various orders of persistent homology?</p>
 <h2 id="heirarhcal-rl">Heirarhcal RL</h2>
 <p><strong>Conjecture</strong>: meta/transfer/continual/… learning naturally emerge from heirarchical/multi-scale RL. We naturally see a decomposition of the tasks into what they share at different levels of abstraction (not just time!?).</p>
 <p><strong>TODO</strong>: Heirarchical filters and meta RL and options.</p>

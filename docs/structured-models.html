@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>structure</title>
+  <title>structured models</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -32,25 +32,25 @@
 </head>
 <body>
 <header>
-<h1 class="title">structure</h1>
+<h1 class="title">structured models</h1>
 </header>
 <h1 id="structured-models">Structured models</h1>
-<p>Why is this hard?</p>
+<p>Why is it hard to learn a good model?</p>
 <ul>
 <li>uncertainty</li>
 <li>partial observations</li>
-<li>structure</li>
-<li>complex</li>
-<li>?</li>
+<li>complexity</li>
+<li>low frequency events (how is this related to complexity?)</li>
 </ul>
-<h2 id="definition">Definition</h2>
-<p>Want the model to approximate the true internal structure of the environment, not just an arbitrary structured function approimation. Want to recover the truth. Do science, extract relationships, reduce into minimal parts.</p>
+<h2 id="compression">Compression</h2>
+<p>But we really want the model to approximate the true internal structure of the environment, not just an arbitrary structured function approimation. Want to recover the truth. Do science, extract relationships, reduce into minimal parts.</p>
+<p>Therefore we need a measure of complexity that we can minimise.</p>
 <h2 id="partial-observations">Partial observations</h2>
 <p>How can we construct global models from local observations?</p>
-<p><strong>Conjecture:</strong> To build a global model is it necessary for the agent to estimate its poisition in its environment.</p>
+<p><strong>Conjecture:</strong> To efficiently build a global model is it necessary for the agent to estimate its position in its environment.</p>
 <p>But where does the ground truth signal come from!?</p>
 <h2 id="modelling-uncertainty">Modelling uncertainty</h2>
-<p>Distributions over plausible states? MCMC estimation versus using flows?</p>
+<p>Distributions over plausible states? MCMC estimation versus using flows?!?</p>
 <h2 id="graph-neural-networks">Graph neural networks</h2>
 <p>!?!? How to contruct a structured representation from partial observations!?!!</p>
 <h2 id="approximate-gradient-dynamics">Approximate gradient dynamics</h2>
@@ -78,10 +78,15 @@ L &amp;= \mathop{\mathbb E}_{x_{t+1}, x_t\sim D} \big[ d(x_{t+1}, f(x_t)) \big] 
 <li>(how does this constrain the possible types of dynamics?)</li>
 <li>if we use an ensemble of approximators, how will the dynamics be decomposed? will we naturally see environment disentangled from agents?</li>
 </ul>
+<h3 id="differentiable-ode-solvers-for-simulation">Differentiable ODE solvers for simulation</h3>
+<p>…</p>
 <h2 id="causal-inference">Causal inference</h2>
-<p>???</p>
-<h2 id="compression">Compression</h2>
-<p>???</p>
+<ul>
+<li>How is RL like the interventional level of the causal heirarchy?</li>
+<li>How is model-based RL like the counter-factual level of the causal heirarchy?</li>
+<li>How can we automate reductionism?</li>
+<li>?</li>
+</ul>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href=""></a></li>
