@@ -66,6 +66,12 @@ There are a few approaches to this question;
 
 The belief that complexity can be decomposed, that it canbe built from smaller/few parts, is at the heart of all unsupervised learning. For example, it is comon to assume that there are a set of latent variables that combine (non)linearly to generate the observed complexity.
 
+Two ways to enforce a decomposition; structural constraints or a regulariser (?). (other ways?)
+
+We can build a decomposition into the strucutre of our model, for example, we can define a transition function that optimises next step prediction error, and a policy that is optimised via its correlation with reward. Another example could be ensembles, where to get a decomposition of the learners we can feed them different inputs, forcing them to do different things. (this requires domain knowledge!?)
+
+Or we can regularise a general function approximator to build disentangled representations. For this we needa a differentiable measure of disentanglement.
+
 ### Decompositions in RL
 
 Let's explore some decompositions in RL.
@@ -168,12 +174,13 @@ Overview of existing approaches to decomposing complexity
 
 ### Specific ideas to explore
 
-Questions (many of these may not be new research, but they are to me)
+Questions (these may be ill-posed, trivial, or solved, but hopefully I will find out soon...)
 
 Decompositions
 
 - Linear Markov decision problems
 - Does a temporal decomposition (moving averages at different scales) of rewards produce a generalisation of meta learning?
+- Model the transition function as a mixture of densities, $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$.
 - ?
 
 Fundamental RL
@@ -187,16 +194,16 @@ Unsupervised learning
 
 - How can we learn decomposed representations? ICA, Lateral inhibition, residuals?
 - Inverse energy learning. Similar to [inverse reinforcement learning]() what if we assume that the observations we make are the results of an energy being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$. Thus we could try to learn $E$.
-- MLD? symmetry strucutre?
+- MLD? symmetry strucutre?  What are the 'right' priors? How can we optimise them?
 
 Model-based learning (with partial information)
 
 - How to build memory with structure? (graph nets, ... or 2d and then generalise?)
 - Is the ability to localise oneself necessary to efficiently solve partial information decision problems?
 - In model-based learning the model must learn its our approximation of the policy being followed. This seems wasteful, how can we avoid this?
-- Exploration
+- Off-policy correction for curiosity. The exploration policy may influence the dynamics observed, that needs to be corrected.
 
-Planning with a learned model (and continuous actions)
+Planning with a learned model (with continuous actions)
 
 - If a model is being learned online how can we efficiently update value estimates computed using the old model?
 - How can you backpropagate gradients through the argmax functions required for planning?
