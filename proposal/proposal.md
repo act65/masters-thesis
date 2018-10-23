@@ -8,9 +8,9 @@ Transfer learning for reinforcement learning.
 
 An easy setting to understand RL is in the Markov decision process (MDP) setting.
 
-A MDP is defined as a tuple, $\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t, s_{t+1})\}$. Where $\mathcal S$ is the set of possible states (_for example arrangements of chess pieces_), $\mathcal A$ is the set of actions (_the different possible moves, left right, diagonal, ..._),  $P(s_{t+1} \mid s_t, a_t)$ is the transition function which describes how the environment acts inresponse to the past and to your actions (_in this case, your opponent, and the results of your actions_), and finally, $R(s_t, a_t, s_{t+1})$ is the reward function, (_whether you won (+1) or lost (-1) the game_), which you are trying to maximise.
+A MDP is defined as a tuple, $\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t, s_{t+1})\}$. Where $\mathcal S$ is the set of possible states (_for example arrangements of chess pieces_), $\mathcal A$ is the set of actions (_the different possible moves, left right, diagonal, weird L-shaped thing, ..._),  $P(s_{t+1} \mid s_t, a_t)$ is the transition function which describes how the environment acts inresponse to the past and to your actions (_in this case, your opponent's moves, and the results of your actions_), and finally, $R(s_t, a_t, s_{t+1})$ is the reward function, (_whether you won (+1) or lost (-1) the game_), which you are trying to maximise.
 
-This setting is easily generalised to other, more interesting, applications. For example, if we weaken the requirement on that the learners observation $x_t$ is fully describes the state $s_t$, then we could apply this framework to partially-observable decision processes, such as [StarCraft II]().
+This setting is easily generalised to other, more interesting, applications. For example, if we weaken the requirement on that the learners observation $x_t$ is fully describes the state $s_t$, then we could apply this framework to partially-observable decision processes, such as [StarCraft II]() or self-driving cars.
 
 (originally inspired by research in physcology? Thus 'good' actions can be reinforced by receiving positive rewards, while 'bad' actions can be punished.
 
@@ -189,6 +189,7 @@ Fundamental RL
 - Why does [distributional RL]() provide such a large advantage?
 - Efficient search. Relationship between tree search and gradient descent? Local and global optimisation.
 - Dynamic programming and its relationship to diffusion
+- Temporal credit assignment???
 
 Unsupervised learning
 
@@ -198,7 +199,7 @@ Unsupervised learning
 
 Model-based learning (with partial information)
 
-- How to build memory with structure? (graph nets, ... or 2d and then generalise?)
+- Build a [differentiable neural computer]() with locally structured memory. (2d and then generalise?)
 - Is the ability to localise oneself necessary to efficiently solve partial information decision problems?
 - In model-based learning the model must learn its our approximation of the policy being followed. This seems wasteful, how can we avoid this?
 - Off-policy correction for curiosity. The exploration policy may influence the dynamics observed, that needs to be corrected.
@@ -208,7 +209,7 @@ Planning with a learned model (with continuous actions)
 - If a model is being learned online how can we efficiently update value estimates computed using the old model?
 - How can you backpropagate gradients through the argmax functions required for planning?
 - Exploitable models
-- If I am using an imperfect learned model to generate plans, how can I ensure that I do not plan for 'fantastic' outcomes (aka they are fantisies).
+- If I am using an imperfect learned model to generate plans, how can I ensure that I do not plan for 'fantastic' outcomes (aka they are fantasies).
 
 Generalisation/transfer!?!?
 
