@@ -108,44 +108,52 @@ The field lacks a clear benchmark for transfer/decomposition. ??? Find and desig
 
 ## Proposed research
 
-Goal of research is ??? understanding! How to get understanding? A necessary part is building it and showing it work.  
+Goal of research is ??? understanding! How to get understanding? A necessary part is building it and showing it work.
 
-## Specific questions to explore
+Focus of this work. Expore learning decomposed models of an agents environment. (similar to unsupervised learning, but with a couple of complications. exploration, ?)
+
+### High level goals
+
+I would like to understand deeper problems (in relation to generalisation/transfer), such as;
+
+- Is decomposition necessary for transfer? Is it sufficient?
+- Distribution shift!?
+- Game between players [Differentiable Game Mechanics](https://arxiv.org/abs/1802.05642)
+- How hard is it to find abstract similairities between two domains?
+- When can I transfer ...?
+- What problems can a transfer learner solve that a ??? cannot?
+
+But I am unsure how to approach these questions. While mulling these over, I would like to explore decompositions and model-based learning in an applied setting (Atari ALE). Hoping to see patterns and find interesting problems for understanding transfer.
+
+### Specific questions to explore
 
 _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon...)_
 
 Decompositions
 
 - Explore the heirarchical composition of linearly solvable markov decision processes [Saxe et al. 2016](https://arxiv.org/abs/1612.02757)
-- Does a temporal decomposition (moving averages at different scales) of rewards produce a generalisation of [meta-RL learning](https://arxiv.org/abs/1611.05763)? __\*__
-- Model the transition function as a mixture of densities, $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$. __\*__
-- How can we learn decomposed representations? ICA, Lateral inhibition, residuals?
+- Does a temporal decomposition (moving averages at different scales) of rewards produce a generalisation of [meta-RL learning](https://arxiv.org/abs/1611.05763)?
+- Model the transition function as a mixture of densities, $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$.
+- Can we formalise what we mean by "decompose"? Can we differentiate it? What is its relationship to independence creterion? (ICA)
 
 Model-based learning (with partial information)
 
-- Build a [differentiable neural computer](https://deepmind.com/blog/differentiable-neural-computers/) with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Is the learned index to a locally structured memory equivalent to the position of the agent in its environment __\*__ 
+- Build a [differentiable neural computer](https://deepmind.com/blog/differentiable-neural-computers/) with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Is the learned index to a locally structured memory equivalent to the position of the agent in its environment.
 - The exploration policy may influence the dynamics observed, thus we need to correct for the off-policy actions. (The model must learn an approximation of the policy being followed.)
 - Inverse energy learning. Similar to [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf) what if we assume that the observations we make are the results of an energy being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$. Thus we could try to learn $\hat E$.
+- ? 1 more.
 
 Planning with a learned model (with continuous actions)
 
-_(probably not going to make it to this.)_
+_(probably not going to make it to this. but it is important to remember the ultimate goals of TRL)_
 
 - If a model is being learned online how can we efficiently update value estimates computed using the old model?
 - How can you backpropagate gradients through the argmax functions required for planning?
 - If I am using an imperfect learned model to generate plans, how can I ensure that I do not plan for 'fantastic' outcomes (aka they are fantasies). (closely related to reward hacking)
 
-Generalisation/transfer!?!?
+***
 
-- online adaptation to sensor and actuator failure.
-- Is decomposition necessary for transfer?
-- Distribution shift!?
-- Game between players [Differentiable Game Mechanics](https://arxiv.org/abs/1802.05642)
-- How hard is it to find abstract similairities between two domains?
-
-
-I will not attempt to explore all of these. Rather I will take a some what random walk through them, attempting to make progress where possible.
-The goal will always be to; show that the proposed problem is actually a problem, design the minimal viable experiment to test new ideas, test new ideas...
+The goal for each question/idea will be to; show that problem is actually a problem, design the minimal viable experiment to test new ideas, test new ideas...
 
 ### Proposed deliverables
 
