@@ -142,14 +142,16 @@ Planning with a learned model (with continuous actions)
 
 - If a model is being learned online how can we efficiently update value estimates computed using the old model?
 - How can you backpropagate gradients through the argmax functions required for planning?
-- Exploitable models. Reverse, accuracy, time step, ...
-- If I am using an imperfect learned model to generate plans, how can I ensure that I do not plan for 'fantastic' outcomes (aka they are fantasies).
+- Exploitable models. Reverse, local-global interactions, accuracy mask, time step, ...
+- If I am using an imperfect learned model to generate plans, how can I ensure that I do not plan for 'fantastic' outcomes (aka they are fantasies). (closely related to reward hacking)
 
 Generalisation/transfer!?!?
 
 - online adaptation to sensor and actuator failure.
 - Is decomposition necessary for transfer?
 - Distribution shift!?
+- Game between players [Differentiable Game Mechanics](https://arxiv.org/abs/1802.05642)
+- How hard is it to find abstract similairities between two domains?
 
 
 While TRL is the goal. Progress in TRL is dependent on  
