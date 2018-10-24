@@ -4,6 +4,8 @@
 
 Transfer learning for reinforcement learning.
 
+Words...
+
 ### What is reinforcement learning (RL)?
 
 An easy setting to understand RL is in the Markov decision process (MDP) setting.
@@ -29,7 +31,6 @@ An example of transfer is !!!
 But there is more to it than that? Forward vs backward transfer. Many applications, ...
 Needs to be safe!
 What about efficient transfer? Increasing the speed or learning (aka meta learning).
-
 
 Captures the idea of learning something more abstract about the similarities between two distinct tasks. Closely related to the notion of generalisation.
 
@@ -116,14 +117,13 @@ _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon
 Decompositions
 
 - Explore the heirarchical composition of linearly solvable markov decision processes [Saxe et al. 2016](https://arxiv.org/abs/1612.02757)
-- Does a temporal decomposition (moving averages at different scales) of rewards produce a generalisation of [meta-RL learning](https://arxiv.org/abs/1611.05763)?
-- Model the transition function as a mixture of densities, $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$.
+- Does a temporal decomposition (moving averages at different scales) of rewards produce a generalisation of [meta-RL learning](https://arxiv.org/abs/1611.05763)? __\*__
+- Model the transition function as a mixture of densities, $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$. __\*__
 - How can we learn decomposed representations? ICA, Lateral inhibition, residuals?
 
 Model-based learning (with partial information)
 
-- Build a [differentiable neural computer](https://deepmind.com/blog/differentiable-neural-computers/) with locally structured memory (start with 1d and then generalise to higher dimensions).
-- Is the ability to localise oneself necessary to efficiently solve partial information decision problems?
+- Build a [differentiable neural computer](https://deepmind.com/blog/differentiable-neural-computers/) with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Is the learned index to a locally structured memory equivalent to the position of the agent in its environment __\*__ 
 - The exploration policy may influence the dynamics observed, thus we need to correct for the off-policy actions. (The model must learn an approximation of the policy being followed.)
 - Inverse energy learning. Similar to [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf) what if we assume that the observations we make are the results of an energy being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$. Thus we could try to learn $\hat E$.
 
@@ -150,9 +150,9 @@ The goal will always be to; show that the proposed problem is actually a problem
 ### Proposed deliverables
 
 - Tutorial(s) on 'core' RL,
-- A model-based learner that is performant in the Atari ALE (or similar),
+- Learn a model that benefits from transfer between environments (Atari ALE or similar),
 - Essay on the future of model-based RL,
 - Definition and construction of a new benchmark for T(R)L,
-- Implementation/Reproduction of a TRL paper
+- Implement/reproduce a TRL paper
 
 Hopefully a few papers, but that is conditional on making discoveries.
