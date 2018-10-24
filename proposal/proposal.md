@@ -113,36 +113,26 @@ Goal of research is ??? understanding! How to get understanding? A necessary par
 
 _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon...)_
 
-Fundamental RL
-
-- What can you learn from an interactive environment (you can take actions and observe their results) that you cannot learn from a (possibly comprehensive) static dataset? Similarly, what can you learn when you have access to an $\epsilon$-accurate model, that you cannot learn from an interactive environment?
-- Why does [distributional RL](https://arxiv.org/abs/1707.06887) provide such a large advantage?
-- Efficient search. Relationship between tree search and gradient descent? Local and global optimisation.
-- Temporal credit assignment.
-
 Decompositions
 
 - Explore the heirarchical composition of linearly solvable markov decision processes [Saxe et al. 2016](https://arxiv.org/abs/1612.02757)
 - Does a temporal decomposition (moving averages at different scales) of rewards produce a generalisation of [meta-RL learning](https://arxiv.org/abs/1611.05763)?
 - Model the transition function as a mixture of densities, $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$.
-
-Unsupervised learning
-
 - How can we learn decomposed representations? ICA, Lateral inhibition, residuals?
-- Inverse energy learning. Similar to [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf) what if we assume that the observations we make are the results of an energy being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$. Thus we could try to learn $E$.
-- MLD? symmetry strucutre?  What are the 'right' priors? How can we optimise them?
 
 Model-based learning (with partial information)
 
 - Build a [differentiable neural computer](https://deepmind.com/blog/differentiable-neural-computers/) with locally structured memory (start with 1d and then generalise to higher dimensions).
 - Is the ability to localise oneself necessary to efficiently solve partial information decision problems?
 - The exploration policy may influence the dynamics observed, thus we need to correct for the off-policy actions. (The model must learn an approximation of the policy being followed.)
+- Inverse energy learning. Similar to [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf) what if we assume that the observations we make are the results of an energy being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$. Thus we could try to learn $\hat E$.
 
 Planning with a learned model (with continuous actions)
 
+_(probably not going to make it to this.)_
+
 - If a model is being learned online how can we efficiently update value estimates computed using the old model?
 - How can you backpropagate gradients through the argmax functions required for planning?
-- Exploitable models. Reverse, local-global interactions, accuracy mask, time step, ...
 - If I am using an imperfect learned model to generate plans, how can I ensure that I do not plan for 'fantastic' outcomes (aka they are fantasies). (closely related to reward hacking)
 
 Generalisation/transfer!?!?
@@ -154,15 +144,12 @@ Generalisation/transfer!?!?
 - How hard is it to find abstract similairities between two domains?
 
 
-While TRL is the goal. Progress in TRL is dependent on  
-
-I will not attempt to explore all of these. Rather I will take a some what random walk through them, attempting to make progress where possible. There are a few dependencies between them, for example, it is hard to plan without a model, thus planning is dependent on having models in the first place.
-
+I will not attempt to explore all of these. Rather I will take a some what random walk through them, attempting to make progress where possible.
 The goal will always be to; show that the proposed problem is actually a problem, design the minimal viable experiment to test new ideas, test new ideas...
 
 ### Proposed deliverables
 
-- Tutorial(s) on 'core' RL
+- Tutorial(s) on 'core' RL,
 - A model-based learner that is performant in the Atari ALE (or similar),
 - Essay on the future of model-based RL,
 - Definition and construction of a new benchmark for T(R)L,

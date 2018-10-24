@@ -35,6 +35,9 @@ But what if $V(s)$ is not a reliable estimate of $R(s)$? Are there cases where t
 Hypothesis: because we are using a neural network to estimate $V(s)$, when $r(s)$ is sufficiently sparse, then the neural net will collapse to a near constant function.
 Meaning it provides little variance reduction.
 
+__QUESTION__ Which fn approximators learn to estimate V/Q the best? Gather some data (simply trajectories of (s, a, r)) and see how easily/accurately we can fit models.
+__TODO__ Could add control variates to the implicit quantile RL. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.7441&rep=rep1&type=pdf
+
 ### Resources
 
 - [REINFORCE](https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf)
@@ -42,8 +45,6 @@ Meaning it provides little variance reduction.
 - [Generalised advantage estimation](https://arxiv.org/pdf/1506.02438.pdf)
 - [Distributional RL](https://arxiv.org/abs/1806.06923)
 - [Backprop through the void](https://arxiv.org/abs/1711.00123)
-
-
 
 ## Model-based RL
 
@@ -169,6 +170,9 @@ Want to learn to integrate!?
 
 ## Search
 
+__Q__ Efficient search. Relationship between tree search and gradient descent? Local and global optimisation.
+
+
 Why do we want to do this?
 Optimisation in the loop.
 
@@ -284,3 +288,18 @@ Ahh. But need to be heirarchically propagating forward differences __!!!__ ? Els
 - [Learning to learn](https://bair.berkeley.edu/blog/2017/07/18/learning-to-learn/)
 - [Elastic weights consolidation](https://arxiv.org/abs/1612.00796)
 - [Successor features](https://arxiv.org/abs/1606.05312)
+
+
+## Long term credit assignment
+
+!!!??!?!??!?
+
+
+## Compression
+
+- MLD? symmetry strucutre?  What are the 'right' priors? How can we optimise them?
+
+***
+
+- __Q__ What can you learn from an interactive environment (you can take actions and observe their results) that you cannot learn from a (possibly comprehensive) static dataset? Similarly, what can you learn when you have access to an $\epsilon$-accurate model, that you cannot learn from an interactive environment?
+- ?

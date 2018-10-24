@@ -21,10 +21,3 @@ https://bair.berkeley.edu/blog/2018/04/26/tdm/
 - Freeze weights and test on new MPDs.
 
 https://arxiv.org/abs/1611.05763
-
-
-## Learning model-based planning from scratch
-
-- Controller chooses whether to act in the real world of an imagined one (could be a problem if rewards are easier to get in the imagined world...)
-- Uses the true model.
--
