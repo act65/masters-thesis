@@ -307,3 +307,4 @@ Ahh. But need to be heirarchically propagating forward differences __!!!__ ? Els
 - symmetric transformations/factorisation of the game tree. learn f(s) such that the resulting game tree is the same!?
 - Distributed representations (various tensors) don't store knowledge in nice ways... What alternative representation are there?
 - Relationship to bases. Is there a way to reason about a basis with many different ways of combining the bases? More complicated structure? (designing algebras!?)
+- a representation of a reward function that can be easily mapped accross states. 
