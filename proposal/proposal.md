@@ -137,7 +137,7 @@ Model-based learning (with partial information)
 - Build a [differentiable neural computer](https://deepmind.com/blog/differentiable-neural-computers/) with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Under which condtions does the learned index to a locally structured memory approximate the position of the agent in its environment.
 - When attempting to learn a model, the agent uses an exploration policy. This policy may influence the dynamics observed, thus we need to use off-policy methods to correct for the effects of exploration actions. (The model must somehow disentangle the agents policy, and its effects, from the dynamics of the system)
 - Inverse energy learning. Inspired to [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf), what if we assume that the observations we make are the results of some optimal action, in the case of an energy being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$.
-- learning the long term effects of actions OR exploration!? OR unsupervised tasks/learning from context/automatic curriculum/? OR using temporal info to disentangle?
+- While learning a model $s_{t+1} = \tau(s_t, a_t)$ is useful. It is more useful to know how to get around using that model. For example, I want to get to $s^k$, how can I do that considering I am in another state, $s^i$? Want a function $f(s^i, s^k) \to \{a1, a_2, \dots, a_n\}$ that outputs a sequence of actions. You need to know how to get around... (HER?)
 
 Planning with a learned model (with continuous actions)
 
