@@ -2,7 +2,7 @@
 
 ## Introduction
 
-(WILL) Transfer learning for reinforcement learning. Words...
+(WILL) Transfer learning for reinforcement learning. Words... [@dumoulin2018feature-wise]
 
 ### What is reinforcement learning (RL)?
 
@@ -170,3 +170,5 @@ Future work will depend on the results of the sprints.
 - A thesis documenting my work
 
 Hopefully a few papers, but that is conditional on making discoveries.
+
+## References
