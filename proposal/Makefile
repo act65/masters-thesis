@@ -11,4 +11,5 @@
 
 # the latex files
 build_pdfs:
-	pandoc proposal.md -f markdown --pdf-engine=xelatex -o proposal.pdf
+	pandoc proposal.md -f markdown -o proposal.pdf
+	# pandoc proposal.md -f markdown --template=../template.tex -o proposal.pdf

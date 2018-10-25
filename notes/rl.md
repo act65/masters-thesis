@@ -302,4 +302,8 @@ Ahh. But need to be heirarchically propagating forward differences __!!!__ ? Els
 ***
 
 - __Q__ What can you learn from an interactive environment (you can take actions and observe their results) that you cannot learn from a (possibly comprehensive) static dataset? Similarly, what can you learn when you have access to an $\epsilon$-accurate model, that you cannot learn from an interactive environment?
-- ?
+- Explore the heirarchical composition of linearly solvable markov decision processes [Saxe et al. 2016](https://arxiv.org/abs/1612.02757).
+- (recomposable) modular systems. Want to be able to build up complexity from simple parts. Recursively!
+- symmetric transformations/factorisation of the game tree. learn f(s) such that the resulting game tree is the same!?
+- Distributed representations (various tensors) don't store knowledge in nice ways... What alternative representation are there?
+- Relationship to bases. Is there a way to reason about a basis with many different ways of combining the bases? More complicated structure? (designing algebras!?)
