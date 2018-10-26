@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Summaries</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../style.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script type="text/x-mathjax-config">
+    // MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "all"} } });
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": { fonts: ["TeX"] }
+    });
+  </script>
+</head>
+<body>
+<div>
+<h2 id="world-models">World models</h2>
+<ul>
+<li>Learn a large RNN that approximates the transition function.</li>
+<li>Add noise when simulating to avoid the controller overfitting to bias in the model.</li>
+<li>Can use the world-model to imagine training experience for training the controller.</li>
+</ul>
+<p><a href="https://worldmodels.github.io/" class="uri">https://worldmodels.github.io/</a></p>
+<h2 id="temporal-difference-models">Temporal difference models</h2>
+<ul>
+<li>Define a proxy reward as the distance between a goal state and the current state.</li>
+<li>Learn a Q value that estimates the reachability of different states within t steps.</li>
+<li>It turns out when t&gt;&gt;1 we recover model-free learning and yet we can still plan with t~=1.</li>
+</ul>
+<p><a href="https://bair.berkeley.edu/blog/2018/04/26/tdm/" class="uri">https://bair.berkeley.edu/blog/2018/04/26/tdm/</a></p>
+<h2 id="learning-to-reinforcement-learn">Learning to reinforcement learn</h2>
+<ul>
+<li>Use a RNN as an actor-critic but also provide the reward recieved as an input.</li>
+<li>Train weights over sampled MPDs to maximise cumlative reward over an episode.</li>
+<li>Freeze weights and test on new MPDs.</li>
+</ul>
+<p><a href="https://arxiv.org/abs/1611.05763" class="uri">https://arxiv.org/abs/1611.05763</a></p>
+</div>
+</body>
+</html>

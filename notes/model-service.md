@@ -1,3 +1,8 @@
+---
+pagetitle: Serving models as a service
+---
+
+<div>
 I am trying to imagine the future of model-based RL, model-based RL as a service.
 
 I have some problems I want to solve;
@@ -102,3 +107,6 @@ You put the explorer in your environment, and set back, well back. If quickly co
 - allowed to mix chemicals, (should produce the periodic table, ...)
 - interact with a computer (...)
 - ??? ->
+
+
+</div>

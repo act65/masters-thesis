@@ -35,9 +35,6 @@ But what if $V(s)$ is not a reliable estimate of $R(s)$? Are there cases where t
 Hypothesis: because we are using a neural network to estimate $V(s)$, when $r(s)$ is sufficiently sparse, then the neural net will collapse to a near constant function.
 Meaning it provides little variance reduction.
 
-__QUESTION__ Which fn approximators learn to estimate V/Q the best? Gather some data (simply trajectories of (s, a, r)) and see how easily/accurately we can fit models.
-__TODO__ Could add control variates to the implicit quantile RL. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.7441&rep=rep1&type=pdf
-
 ### Resources
 
 - [REINFORCE](https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf)
@@ -307,4 +304,4 @@ Ahh. But need to be heirarchically propagating forward differences __!!!__ ? Els
 - symmetric transformations/factorisation of the game tree. learn f(s) such that the resulting game tree is the same!?
 - Distributed representations (various tensors) don't store knowledge in nice ways... What alternative representation are there?
 - Relationship to bases. Is there a way to reason about a basis with many different ways of combining the bases? More complicated structure? (designing algebras!?)
-- a representation of a reward function that can be easily mapped accross states. 
+- learning the long term effects of actions OR exploration!? OR unsupervised tasks/learning from context/automatic curriculum/? OR using temporal info to disentangle?
