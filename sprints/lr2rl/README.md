@@ -1,0 +1,1 @@
+Meta-RL [@Wang2017LearningTR] trains a learner on the aggregated return over many episodes (a larger time scale). If we construct a temporal decomposition (moving averages at different time-scales) of rewards and aproximate them with a set of value functions, does this produce a heirarchy of meta learners?
