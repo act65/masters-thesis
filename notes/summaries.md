@@ -2,15 +2,18 @@
 pagetitle: Summaries
 ---
 <div>
+
 ## World models
 
 - Learn a large RNN that approximates the transition function.
-- Add noise when simulating to avoid the controller overfitting to bias in the model.
+- Add noise when imagining/simulating experience to avoid the controller overfitting to bias in the model.
 - Can use the world-model to imagine training experience for training the controller.
 
 [https://worldmodels.github.io/](https://worldmodels.github.io/)
 
 ## Temporal difference models
+
+> conventional wisdom holds that model-free methods are less efficient but achieve the best asymptotic performance, while model-based methods are more efficient but do not produce policies that are as optimal
 
 - Define a proxy reward as the distance between a goal state and the current state.
 - Learn a Q value that estimates the reachability of different states within t steps.

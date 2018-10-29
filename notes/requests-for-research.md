@@ -27,4 +27,10 @@ __Unbiased online recurrent opptimisation__ &#9734; &#9734; Can we extent [UORO]
 
 https://arxiv.org/pdf/1703.00956.pdf -->
 
+<!-- A spectrum between accurate/fast models and slow/accurate ones.
+How can we bootstrap one model from others?
+Reverse, local-global interactions, accuracy mask, time step, ... -->
+
+
+
 </div>

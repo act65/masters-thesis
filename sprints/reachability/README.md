@@ -4,3 +4,4 @@ Resources
 
 - [HER](https://arxiv.org/abs/1707.01495)
 - [Reachability](https://arxiv.org/abs/1810.02274)
+- [Topographic memory](https://arxiv.org/abs/1803.00653)
