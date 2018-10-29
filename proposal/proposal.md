@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Popular opinion within the deep reinforcment learning community is that transfer learning is synonomous with general artificial intelligence. Is this really true? Let's explore this idea.
+Popular opinion within the deep reinforcment learning community is that transfer learning is synonomous with general artificial intelligence. Is this really true? And if it is, how can we do it? Let's explore the claim and some approaches.
 
 ### What is reinforcement learning (RL)?
 
@@ -30,11 +30,11 @@ A familiar example to some is, learning to eat with chopsticks (after already kn
 
 > A hallmark of human cognition is learning from just a few examples. For instance, a person only needs to see one Segway to acquire the concept and be able to discriminate future Segways from other vehicles like scooters and unicycles. Similarly, children can acquire a new word from one encounter (Carey & Bartlett, 1978). How is one shot learning possible? [@Lake2011OneSL]
 
-Whether we imagine a production robot that must package an oddly shaped present, a self-driving car that must react to a clown suit running across the road, an alorithm managing an electrical grid when a storm hits, ... transfer allows these agents to generalise from past experience and reliably achieve our goals. The self-driving car 'guesses' (aka zero-shot learning) that the clown suit might have a person in it.
+Whether we imagine a production robot that must package an oddly shaped present, a self-driving car that must react to a clown suit running across the road, an alorithm managing an electrical grid when a storm hits, ... transfer allows these agents to generalise from past experience and reliably achieve our goals. The robot 'reuses' wrapping strategies from many differently shaped objects to construct a new policy. The self-driving car 'guesses' that the clown suit might have a person in it since it has 'similar' proportions.
 
-Without the transfer of knowledge between domains, the robots, algorithms and automaton we design would each have to start from nothing, no prior knowledge, or from human-programmed domain knowledge. Learning with no priors is expensive, it requires a lot of experience, and writing down priors that work is expensive, humans are not cheap, and often we are not capable of writing down the 'right' policy.
+Without the transfer of knowledge between domains, the robots, algorithms and automaton we design would each have to start from nothing, no prior knowledge, or from human-programmed domain knowledge. Learning with no priors is expensive (it requires a lot of experience and supervision) and writing down priors that work is expensive (humans are not cheap, and often we are not capable of writing down the 'right' policy).
 
-Thus, to _efficiently_ scale transfer reinforcement learning (TRL) to the real world and all of its complexity, it will be necessary for knowledge to be transferred between domains.
+Thus, to _efficiently_ scale aritificial intelligence to the real world and all of its complexity, it will be necessary for knowledge to be transferred between domains.
 
 ## Transfer as decomposition
 
