@@ -15,6 +15,51 @@ pagetitle: Summaries
 
 > conventional wisdom holds that model-free methods are less efficient but achieve the best asymptotic performance, while model-based methods are more efficient but do not produce policies that are as optimal
 
+> Goal-conditioned value functions learn to predict the value function for every possible goal state. That is, they answer the following question: what is the expected reward for reaching a particular state, given that the agent is attempting (as optimally as possible) to reach it? ... [R]ewards based on distances to a goal hint at a connection to model-based learning: if we can predict how easy it is to reach any state from any current state, we must have some kind of understanding of the underlying
+“physics.”
+
+$$
+r(s_t, a_t, s_{t+1}, s_g) = −D(s_{t+1}, s_g) \\
+$$
+
+
+So $r$ is now a measure of _reachability_!?
+
+> TDM ... tells us how close the agent will get to a given goal state $s_g$ after $τ$ time steps, when it is attempting to reach that state in $τ$ steps.
+
+$$
+Q(s_t, a_t, s_g, \tau) = E_{p(s_{t+1}\mid s_t, a_t)}(-D(s_{t+1}, s_g)) \cdot1[\tau =0] + \text{max}_a Q(s_{t+1}, a, s_g, \tau-1)\cdot1[\tau \neq0]
+$$
+
+_Wait, doesnt $\tau -1$ mean that we willhave negative $\tau$s? I think it ishould be $1[\tau>0]$?_
+
+So if $\tau=0$, and $s_{t+1} = s_g$ then then $Q$ value should be zero.
+
+> ... vector-valued Q-function can learn distances along each dimension separately, providing it with more supervision from each training point.
+
+_hmm. want to think about this!! but not sure who it works, how can you do the argmax now?!?_
+
+$$
+\begin{align}
+Q(s_t, a_t, s_g, \tau) &= \sum_i \psi_i(s_t, a_t, s_g, \tau) \\
+&=  \sum_i - \mid s_t - s_g \mid \\
+\mathcal L &= \frac{1}{2}\parallel y - \psi(s_t, a_t, s_g, \tau) \parallel_2^2 \\
+\end{align}
+$$
+
+$Q$ is used to take actions, but is constructed/trained via some representation of distances. Reminds me of successor features?!?
+
+$$
+\begin{align}
+Q(s_t, a_t) &= g(f(s_t, a_t)) \\
+\mathcal L &= \frac{1}{2}\parallel y - f(s_t, a_t) \parallel_2^2 \\
+\end{align}
+$$
+
+Ahh ok. I think I see. We are simply learning the model. And we already know how to extract $Q$ values from it. Therefore we dont need to train $g$.
+
+***
+
 - Define a proxy reward as the distance between a goal state and the current state.
 - Learn a Q value that estimates the reachability of different states within t steps.
 - It turns out when t>>1 we recover model-free learning and yet we can still plan with t~=1.
@@ -28,4 +73,5 @@ pagetitle: Summaries
 - Freeze weights and test on new MPDs.
 
 [https://arxiv.org/abs/1611.05763](https://arxiv.org/abs/1611.05763)
+
 </div>
