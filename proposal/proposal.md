@@ -1,6 +1,12 @@
-# Research proposal
-
-> Efficiently learning models (for planning) via decomposition and transfer
+---
+title: "Research proposal"
+subtitle: "Efficiently learning models (for planning) via decomposition and transfer"
+author: [Alexander Telfar]
+date: "2018-11-1"
+subject: "Transfer reinforcement learning"
+keywords: [proposal]
+titlepage: true
+---
 
 ## Introduction
 
@@ -117,7 +123,7 @@ _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon
 
 5. Build a differentiable neural computer [@Graves2016HybridCU] with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Under which conditions does the learned index to a locally structured memory approximate the position of the agent in its environment.
 6. When attempting to learn a model, the agent uses an exploration policy. This policy may influence the dynamics observed, thus we need to use off-policy methods to correct for the effects of exploration actions. (The model must somehow disentangle the agents policy, and its effects, from the dynamics of the system)
-7. Inverse energy learning. Inspired by [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf), what if we assume that the observations we make are the results of some optimal action, in this case, of an energy function being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$.
+7. Inverse energy learning. Inspired by inverse reinforcement learning [@Ng2000AlgorithmsFI], what if we assume that the observations we make are the results of some optimal action, in this case, of an energy function being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$.
 8. While learning a model $s_{t+1} = \tau(s_t, a_t)$ is useful. It is more useful to know how to get around using that model, the reachability of various states. For example, I want to get to $s^k$, how can I do that considering I am in another state, $s^i$?
 
 #### Planning with a learned model (with continuous actions)
