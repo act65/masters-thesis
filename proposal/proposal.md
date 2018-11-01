@@ -1,6 +1,12 @@
-# Research proposal
-
-> Efficiently learning models (for planning) via decomposition and transfer
+---
+title: "Research proposal"
+subtitle: "Efficiently learning models (for planning) via decomposition and transfer"
+author: [Alexander Telfar]
+date: "2018-11-1"
+subject: "Transfer reinforcement learning"
+keywords: [proposal]
+titlepage: true
+---
 
 ## Introduction
 
@@ -118,12 +124,12 @@ _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon
 
 5. Build a differentiable neural computer [@Graves2016HybridCU] with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Under which conditions does the learned index to a locally structured memory approximate the position of the agent in its environment.
 6. When attempting to learn a model, the agent uses an exploration policy. This policy may influence the dynamics observed, thus we need to use [off-policy](https://stats.stackexchange.com/questions/184657/what-is-the-difference-between-off-policy-and-on-policy-learning) methods to correct for the effects of exploration actions. (The model must somehow disentangle the agents policy, and its effects, from the dynamics of the system)
-7. Inverse energy learning. Inspired by [inverse reinforcement learning](https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf), what if we assume that the observations we make are the results of some optimal action, in this case, of an energy function being minimised, $\Delta x = -\eta\frac{\partial E}{\partial x}$.
+7. Inverse energy learning. Inspired by inverse reinforcement learning [@Ng2000AlgorithmsFI], what if we assume that the observations we make are the results of some optimal action, in this case, of an energy function being minimised.
 8. While learning a model $s_{t+1} = \tau(s_t, a_t)$ is useful. It is more useful to know how to get around using that model, the reachability of various states. For example, I want to get to $s^k$, how can I do that considering I am in another state, $s^i$?
 
 #### Planning with a learned model (with continuous actions)
 
-_(Unfortunately I am not going to make it to these problems in this Masters. But I think it is important to remember the ultimate goals of TRL. We don't just care about learning models, additionally, they need to useable for efficient planning.)_
+_(Unfortunately I am not going to make it to these problems in this Masters. But I think it is important to remember the ultimate goals of TRL. We do not just care about learning models, additionally, they need to useable for efficient planning.)_
 
 - If a model is being learned online how can we efficiently update value estimates computed using the old model?
 - How can you backpropagate gradients through the argmax functions required for planning?
@@ -134,11 +140,11 @@ _(Unfortunately I am not going to make it to these problems in this Masters. But
 
 I have allocated time for 8 'sprints' (the bullet points above; decompositions and model-based learning), each of 2 weeks. The goal of each sprint will be to;
 
-- motivate the idea as a solution to an existing problem,
-- demonstrate that the "existing" problem really exists,
-- generate alternative solutions and a suitable baseline,
-- design the minimal viable experiment to falsify the proposed solution,
-- implement the experiment if feasible.
+- Motivate the idea as a solution to an existing problem,
+- Demonstrate that the "existing" problem really exists,
+- Generate alternative solutions and a suitable baseline,
+- Design the minimal viable experiment to falsify the proposed solution,
+- Implement the experiment if feasible.
 
 Future work will depend on the results of the sprints.
 

@@ -1,13 +1,9 @@
-# Reinforcement learning
+Topic: Transfer reinforcement learning
 
-Research proposals
+run `make` to build the various deliverables (html and pdf).
 
-_(a bunch of potential topics for exploration)_
+Dependencies are; pandoc, pandoc-citeproc, various texlive extensions.
 
-- critics, gradient estimation, ... (efficiently and accurately estimating reward, return and their gradients)
-- [model-based RL](](https://act65.github.io/masters-thesis/model-based-rl), gradient estimation
-- exploitable models (models are not treated as black-boxes)
-- gradient dynamics (model an environment as a dynamical system)
-- search ()
-- structured representations (disentangling objection and actions, graph based NNs)
-- [transfer analysis](https://act65.github.io/masters-thesis/transfer-analysis) (how is knowledge transferred, what was transferred, and why did it transfer?)
+***
+
+Build pdfs using https://github.com/Wandmalfarbe/pandoc-latex-template. Also see https://pandoc.org/MANUAL.html#variables-for-latex
