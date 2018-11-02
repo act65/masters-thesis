@@ -46,7 +46,7 @@ One way to achieve transfer learning is to decompose complex observations into a
 
 _Note: There are other approaches to transfer learning, for example; learning a metric [@Vinyals2016MatchingNF], distillation [@Hinton2015DistillingTK], the freezing of parameters [@KirkpatrickPRVD16]. But maybe underneath their superficial differences they are all doing the same thing, decomposing the problem into distinct parts?_
 
-The belief that complexity can be decomposed, that observations are built from smaller/few parts, is at the heart of unsupervised learning, and of science. For example, it is common to assume that there are a set of latent variables that combine (non)linearly to generate observations. And within science, reductionism and mediation analysis are key tools for producing understanding. They allow us to break down (emergent) complexity into simple parts, which we can study and understand.
+The belief that complexity can be decomposed, that observations are built from smaller/few parts, is at the heart of unsupervised learning, and of science. For example, it is common to assume that there are a set of latent variables that combine (non)linearly to generate observations. And within science, reductionism and mediation analysis are key tools for producing understanding. They allow us to break down (emergent) complexity into simple parts, which we can study and understand [@AIPhysicist].
 
 _Although, it should be noted that, even if we can decompose a complex phenomena, there is a lot of meta information required to actually use this decomposition for planning. Which modules do what? How are they related? When should I apply a given module? How do they combine?_
 

@@ -20,18 +20,22 @@ How does transfer relate to;
 
 ***
 
-A, B are similar if there exists an easy to find, structure preserving, mapping $f$ between two tasks $f(T_i) = T_j$. While two things might be isomorphic, depending on what we know about them it could be very hard to find a mapping from one to the other.
+Two environments, $t_i, t_j$ are similar if there exists an easy to find, structure preserving, mapping $f$ between them $f(t_i) = t_j$. While two environments might be isomorphic, depending on what we know about them it could be very hard to find a mapping from one to the other (at least polynomial time).
+
+- we need an approximate notion of equality, a distance or metric
 
 $$
 \begin{align}
 f^* &= \mathop{\text{argmin}}_f d(f(t_i), t_j) \\
-C(t_i, t_j) &= ???  \tag{the cost of finding $f^* $}\\
+C(t_i, t_j) &= ??? \tag{the cost of finding $f^* $}\\
+C(t_i, t_j) &\approx d(f^* (t_i), t_j) \tag{fixed computational budget}\\
 \end{align}
 $$
 
-(Will need to threshold? How do we know if $f^{* }$ has been reached? As if the .. Need to combine computation and accuracy!)
+- What if $\text{min} \;d(f^* (t_i), t_j) >> 0$?
+- ?
 
-A representation $h_i = g(T_i)$ is a good one if, for all tasks, we can easily find similarities between any two tasks. $f(g(t_i)) = g(t_j)$.
+A representation $g: t \to h$ is a good one if, for many tasks, we can easily find similarities between any two tasks, $f_{ij}(g(t_i)) = g(t_j)$.
 
 So a better representation would be easily able to map between more tasks/domains.
 
@@ -40,6 +44,14 @@ $$
 L &= E_{t_i \sim \mathcal T} E_{t_j \sim \mathcal T} [C(t_i, t_j)]\\
 \end{align}
 $$
+
+Could apply this notion to the various $f_{ij}^{* }$ as well. How easily can they be transformed into each other?
+
+- how much compute should be spent on trying to find similarities? when it could just be spent on learning the new domain. it depends on memory constraints...
+
+***
+
+Or. A good representation is one that helps in different tasks. We culd assign credit via ???.
 
 ## Graph similarity
 

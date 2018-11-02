@@ -1,7 +1,8 @@
-Insert quote(s) from Marta White. About safey.
+Insert quote(s) from Marta White. About safety.
 Also want to flesh out my intuition about how we can learn about something we havent done...
 
 (it isnt really something we havent done!?)
+Also, could have come from someone else!? Off-policy learning could be used to learn from others experiences.
 
 ***
 

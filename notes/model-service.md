@@ -12,8 +12,7 @@ I have some problems I want to solve;
 - driving,
 - poverty.
 
-What service would help me solve them? Well, if I had an accurate, efficient model of
-the world, then I could simply simulate, search for 'valuable' policies and states. I could plan ahead.
+What service would help me solve them? Well, if I had an accurate, efficient model of the world, then I could simply simulate, search for 'valuable' states and policies to reach them. In short, I could plan ahead.
 
 ***
 

@@ -1,9 +1,3 @@
-http://incompleteideas.net/book/ebook/node72.html
-http://pierrelucbacon.com/
-http://web.eecs.umich.edu/~baveja/Papers/ICML98_LS.pdf
-https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2007-49.pdf
-https://amreis.github.io/ml/reinf-learn/2017/11/02/reinforcement-learning-eligibility-traces.html
-http://rl.cs.mcgill.ca/tracesgroup/
 
 $$
 \begin{align}
@@ -74,3 +68,15 @@ $$
 Integrated gradients = causal effect = eligibility trace?
 
 https://arxiv.org/abs/1703.01365
+
+
+***
+
+Resources
+
+- http://incompleteideas.net/book/ebook/node72.html
+- http://pierrelucbacon.com/
+- http://web.eecs.umich.edu/~baveja/Papers/ICML98_LS.pdf
+- https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2007-49.pdf
+- https://amreis.github.io/ml/reinf-learn/2017/11/02/reinforcement-learning-eligibility-traces.html
+- http://rl.cs.mcgill.ca/tracesgroup/
