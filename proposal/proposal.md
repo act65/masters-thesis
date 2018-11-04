@@ -28,7 +28,7 @@ TL is closely related to the notion of generalisation, when we have some existin
 
 A familiar example to some is learning to eat with chopsticks (after already knowing how to use cutlery). We do not need to relearn to use our arms, we remember where our mouths are, and how to chew (we transfer that knowledge). We also remember that the goal of eating is to put food, not too much, into our mouths (we transfer that knowledge). We also transfer the knowledge of 'how one might pick something up'. But in this case, we need to learn some new grips and fine motor skills that will allow us to pick up the tempting food in front of us.
 
-An easy setting to understand TL is in the multi-task setting (but there are others, few-shot learning [@Lake2011OneSL], continual learning [@Thrun1995LifelongRL] and even distribution shift could be viewed as transfer learning between the past and present). Imagine we have two classification tasks, $A, B$, each of which consist of pairs of observations and targets. $\text{Task} = \{(x_i,t_i) : i \in [1:N]\}$. Now, a learner, $f$, trained on task $A$ and achieves a loss, $\mathcal L$, when evaluated on task $A$. We denote this as: $\mathcal L^A(f_A)$ (subscript denotes training task, superscript denotes evaluation task).
+An easy setting to understand TL is in the multi-task setting (but there are others, few-shot learning [@Lake2011OneSL], continual learning [@Thrun1995LifelongRL] and even distribution shift could be viewed as transfer learning between the past and present). Imagine we have two classification tasks, $A, B$, each of which consist of pairs of observations and targets. $\text{Task} = \{(x_i,t_i) : i \in [1:N]\}$. Now, a learner, $f$, trained on task $A$ and achieves a loss, $L$, when evaluated on task $A$. We denote this as: $L^A(f_A)$ (subscript denotes training task, superscript denotes evaluation task).
 
 We say transfer has occurred when $L^A(f_A) > L^A(f_{B\to A})$ (the goal is to minimse loss). That is to say, that training on $B$, and then training on $A$ imporves performance on $A$ (aka pre-training [@Erhan2010WhyDU]). Similarly, we could transfer in the opposite direction, $L^A(f_A) > L^A(f_{A\to B})$. Training on $A$ and then training on $B$ improves performance on the original task, $A$ (note this is actually quite hard, for example see Elastic Wights Consolidation in [@KirkpatrickPRVD16]).
 
@@ -59,8 +59,6 @@ We could build a decomposition into the structure of our model, for example, by 
 Alternatively, we can regularise our model to decompose its inputs. For this we need a differentiable measure of disentanglement and a flexible representation. This approach is appealing as it should require less domain knowledge.
 
 ### Decompositions in RL
-
-_(Let's explore some popular decompositions in RL.)_
 
 As noted above, a fundamental decomposition used in RL is the model-based RL framework. Where a reinforcement learner is decomposed into a transition function (a model of the environment) and a policy (how to act in the environment). This facilitates transfer as, the learner can be given a new task, requiring a new policy, (while remaining in the same environment) and simply reuse its model. For example, asking a learned-chess-master to now lose a game of chess on purpose (notably model-free learners like DQN [@Mnih2015HumanlevelCT] cannot do this).
 
@@ -115,7 +113,7 @@ _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon
 
 1. Can we formalise what we mean by "decompose"? Can we differentiate it (so we can use it within the deep learning framework)? What is its relationship to independence criterion and independent component analysis?
 2. Meta-RL [@Wang2017LearningTR] trains a learner on the aggregated return over many episodes (a larger time scale than typical). If we construct a temporal decomposition (moving averages at different time-scales) of rewards and approximate them with a set of value functions, does this naturally produce a rich set of options (/hierarchical RL)?
-3. Imagine you are given two models $f, g$ that (say) predict pedestrian and traffic behaviour respectively. How can you safely and/or sensibly combine their predictions? Can an advantage be gained if the models are provided as densities (rather than step functions)? $s_{t+1} = \mathop{\text{argmax}}_{s_{t+1}} \prod_i p_i(s_{t+1} \mid s_t)$.
+3. Imagine you are given two models $f, g$ that (say) predict pedestrian and traffic behaviour respectively. How can you safely and/or sensibly combine their predictions? Can an advantage be gained if the models are provided as densities (rather than step functions)?
 4. When learning, we want to know if existing knowledge is useful for a new task. How can we assign credit to a given 'module' of knowledge? Is causal [@PearlSevenSparks] credit assignment necessary or sufficient?
 
 #### Model-based learning (with partial information)
