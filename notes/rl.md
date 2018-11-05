@@ -271,6 +271,17 @@ Rudder!
 
 - MLD? symmetry strucutre?  What are the 'right' priors? How can we optimise them?
 
+## Inverse optimal control
+
+
+I like this formulation! State cost + control cost.
+$$
+\begin{align}
+\mathop{\text{min}}_Q E_{\tau\sim Q} [c_{\theta}(\tau)] + \gamma D_{KL}(Q \parallel P)
+\end{align}
+$$
+
+
 ***
 
 - __Q__ What can you learn from an interactive environment (you can take actions and observe their results) that you cannot learn from a (possibly comprehensive) static dataset? Similarly, what can you learn when you have access to an $\epsilon$-accurate model, that you cannot learn from an interactive environment?
