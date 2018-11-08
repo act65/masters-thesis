@@ -1,7 +1,9 @@
 import gym
 import replaybuffers as rp
+import rl
 import tensorflow as tf
 import numpy as np
+import copy
 
 class InverseReinforcementLearner():
     """
@@ -12,6 +14,8 @@ class InverseReinforcementLearner():
         self.reward_fn = None
         self.buffer = rp.ReplayBuffer(max_size=2000)
         self.done = False
+        self.trajectory = []
+        self.batch_size = 50
 
     def build_graph(self):
         with tf.Graph().as_default():
@@ -55,12 +59,16 @@ class InverseReinforcementLearner():
 
             self.sess.run(tf.global_variabiles_initializer())
 
+    def train(self, batch):
+        print([x.shape for x in batch])
+        raise SystemExit
+
     def __call__(self, obs, a, done):
         if done:
-            self.buffer.add(copy.deepcopy(trajectory))
+            self.buffer.add(copy.deepcopy([np.stack(x, axis=0) for x in zip(*self.trajectory)]))
             self.trajectory = []
         else:
-            self.trajectory.append([obs, a])
+            self.trajectory.append([obs, np.array([a])])
 
         if self.buffer.size > self.batch_size:
             batch = self.buffer.get_batch(self.batch_size)
@@ -85,6 +93,7 @@ def main():
         R = 0
         reward = 0
         count = 0
+        old_obs = obs
 
         while not done:
             if count >= 100:
@@ -92,9 +101,11 @@ def main():
             count += 1
 
             action = actor(obs, reward)
-            reward_fn = observer(obs, action, done)
             obs, reward, done, info = env.step(action)
+            reward_fn = observer(old_obs, action, done)
+
             R += reward
+            old_obs = obs
 
         return R
 

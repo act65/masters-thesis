@@ -1,22 +1,6 @@
-### Gradients
+## IEL
 
-Ok, what do the gradients of IEL look like?
-
-$$
-\begin{align}
-f_{\theta}(x_t) &= x_t - \eta \frac{\partial E_{\theta}}{\partial x} \tag{by defn}\\
-\frac{\partial f_{\theta}}{\partial \theta} &= -\eta\frac{\partial^2 E_{\theta}}{\partial x \partial \theta} \tag{diff wrt params}\\
-\frac{\partial L}{\partial \theta} &= \frac{\partial L}{\partial f_{\theta}} \cdot \frac{\partial f_{\theta}}{\partial \theta} \tag{chain rule}\\
-&=  \frac{\partial L}{\partial f_{\theta}} \cdot -\eta\frac{\partial^2 E_{\theta}}{\partial x \partial \theta} \tag{substitution}\\
-\theta_{t+1} &= \theta_t - \alpha \frac{\partial L}{\partial \theta} \tag{GD}\\
-&= \theta_t + \alpha \eta\frac{\partial L}{\partial f_{\theta}} \cdot \frac{\partial^2 E_{\theta}}{\partial x \partial \theta} \tag{substitution} \\
-\end{align}
-$$
-
-How are the dynamics of training with this update different from GD?
-
-Linear layers behave differently?
-
+?
 
 ### Alternative formalisations
 
@@ -35,7 +19,7 @@ OR
 
 $$
 \begin{align}
-x_{t+1} &\sim \frac{e^{-E(x)}}{\sum_j e^{-E(x_i)}}
+x &\sim p(x) =\frac{e^{-E(x)}}{\sum_j e^{-E(x_i)}}
 \end{align}
 $$
 
@@ -50,3 +34,64 @@ x_{t+1} &= x_t \cdot \frac{e^{\nabla E(x_t)}}{Z} \\
 $$
 
 Is this equivalent!?
+
+### Related work
+
+What is the difference between learning a distribution and learning an energy?!?
+Obviously, the distribution needs to be normalised. But is that the only difference?
+
+$$
+\begin{align}
+\frac{ds}{dt} &= -\eta\frac{\partial p(s)}{\partial s} \\
+\frac{ds}{dt} &= -\eta\frac{\partial E(s)}{\partial s} \\
+\end{align}
+$$
+
+***
+
+Ok. How is this idea different from related work?
+
+Energy based learning seems to focus on matching inputs and outputs (for classification or ...), not the internal dynamics.
+
+### Densities
+
+Assume the data you observe $\{\{x^0_i, \dots, x^t_i\}: i\in [1:N] \}$ are the result of Langevin dynamics on a probability density.
+
+$$
+\begin{align}
+x(t+dt) &= x + \frac{\alpha}{2} \nabla_x p(x_t) + z \tag{$z\sim N(0, \alpha)$}\\
+p(x_{t+1}) &= p(x_t) -\eta \nabla_x D (p(x_t), \pi(x_t)) \tag{!?} \\
+\end{align}
+$$
+
+Relationship between optimisation and sampling!? [welling](https://www.ics.uci.edu/~welling/publications/papers/stoclangevin_v6.pdf)
+
+
+### Gradients
+
+Ok, what do the gradients of IEL look like?
+
+$$
+\begin{align}
+f_{\theta}(x_t) &= x_t - \eta \frac{\partial E_{\theta}}{\partial x} \tag{by defn}\\
+\frac{\partial f_{\theta}}{\partial \theta} &= -\eta\frac{\partial^2 E_{\theta}}{\partial x \partial \theta} \tag{diff wrt params}\\
+\frac{\partial L}{\partial \theta} &= \frac{\partial L}{\partial f_{\theta}} \cdot \frac{\partial f_{\theta}}{\partial \theta} \tag{chain rule}\\
+&=  \frac{\partial L}{\partial f_{\theta}} \cdot -\eta\frac{\partial^2 E_{\theta}}{\partial x \partial \theta} \tag{substitution}\\
+\frac{d \theta}{d t} &= -\alpha\frac{\partial L}{\partial \theta} \tag{GD}\\
+&=  \alpha\eta \frac{\partial L}{\partial f_{\theta}} \cdot \frac{\partial^2 E_{\theta}}{\partial x \partial \theta} \tag{substitution}\\
+\end{align}
+$$
+
+__BUG__ Third last and last line are wrong. The parameters are used multiple times over the inner GD iterations. Will need something like BPTT. True for a single step tho?
+
+How are the dynamics of training with this update different from GD?
+
+Linear layers behave differently?
+
+### Refs
+
+- [OpenAI EBM](https://arxiv.org/abs/1811.02486)
+- [EBMs review](https://arxiv.org/abs/1708.06008)
+- [GANs, IRL, EBMs](https://arxiv.org/abs/1611.03852)
+- [Tutorial](http://yann.lecun.com/exdb/publis/pdf/lecun-06.pdf)
+- [BM for time-series](https://arxiv.org/pdf/1708.06004.pdf)

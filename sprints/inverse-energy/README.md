@@ -57,6 +57,4 @@ Possible ways to train the learned energy?
 - Grid world experiment?
 - partial observations via a projection matrix!?
 
-Want a set of simple trajectories, agent moves in a straight line towards its goal. E should learn to measure the (squared) distance!?
-
-### 5) Implement the experiment if feasible
+Want a set of simple trajectories, agent moves in a straight line towards its goal. E should learn to measure the (squared) distance!?w
