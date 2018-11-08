@@ -49,6 +49,20 @@ $$
 
 ***
 
+Relationship to energy-based ML?
+
+Energy-based ML use a fixed measure of energy, for example, [equilibrium propagation](https://arxiv.org/abs/1602.05179):
+
+$$
+E(u) = \frac{1}{2}\sum_i u_i^2 - \frac{1}{2} \sum_{i\neq j} W_{ij}\rho(u_i)\rho(u_j) - \sum_i b_i\rho(u_i)\\
+$$
+
+And adapt the connectivity/topology of the network. Similarly; hopfield nets, RBMs, ...
+
+
+
+***
+
 Ok. How is this idea different from related work?
 
 Energy based learning seems to focus on matching inputs and outputs (for classification or ...), not the internal dynamics.

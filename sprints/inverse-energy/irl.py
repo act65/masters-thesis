@@ -7,12 +7,14 @@ import copy
 
 class InverseReinforcementLearner():
     """
-    Implementation of https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf
+    Implementation of https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf.
     Max entropy IRL.
+
+    No. Implementation of matching feature expectation.
     """
     def __init__(self):
         self.reward_fn = None
-        self.buffer = rp.ReplayBuffer(max_size=2000)
+        self.buffer = rp.ReplayBuffer(max_size=2000,max_len=100)
         self.done = False
         self.trajectory = []
         self.batch_size = 50
@@ -27,41 +29,40 @@ class InverseReinforcementLearner():
             self.obs = tf.placeholder(name='obs', shape=[None, None, 4], dtype=tf.float32)
             self.a = tf.placeholder(name='a', shape=[None, None], dtype=tf.int32)
 
-            ### use policy to pick action
-            self.reward_fn = tf.keras.Sequential([
+            obs = tf.reshape(self.obs, [-1, 4])
+            a = tf.reshape(self.a)
+
+            self.encoder = tf.keras.Sequential([
                 tf.keras.layers.Dense(64, activation=tf.nn.selu),
                 tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                tf.keras.layers.Dense(1)
+                tf.keras.layers.Dense(8)
             ])
 
-            x = tf.concat([self.obs, tf.cast(self.a, tf.float32)], axis=-1)
-            cost = tf.reduce_sum(tf.map_fn(self.reward_fn, x), axis=1)  # sum over times
+            self.linear = tf.keras.layers.Dense(1)
 
-            x_ = x + tf.random_normal(tf.shape(x), stddev=0.5)
-            cost_ = tf.reduce_sum(tf.map_fn(self.reward_fn, x_), axis=1)  # sum over times
+            features = tf.map_fn(self.encoder, self.obs)
 
-            # is it possible to view only per step? or do we need entire trajectories?
-            # do I need a global view!?
-            diff = tf.clip_by_value(cost_ - cost, -2.0, 2.0)
-            loss = tf.reduce_mean(tf.reduce_sum(tf.square(diff), axis=-1))
-            loss += 0.0001*tf.reduce_mean(tf.abs(cost))  # regularise for sparsity
-            train_op = self.opt.minimize(loss, global_step=self.global_step)
+            # funny business with the discounting
+            discounted_features = features #???
 
-            # not sure the above training makes sense. both x and x_ might achieve the true goal!?
-            # a reward has been gven because a specific state has been reached. this required many actions to be taken in the past.
+            values = 
 
-            # NOTE but this isnt going to recover the reward fn. probably something closer to the value fn!???
-            # which priors should be included?
-            # - sparsity
-            # - reward provided at end of episode?
-
+            # values = None
+            #
+            # prob = tf.nn.softmax()
+            #
+            # action_dist = tfd.RelaxedOneHotCategorical(1.0, prob=prob)
+            # action_dist.log_prob(a)
+            #
+            #
+            # train_op = self.opt.minimize(loss, global_step=self.global_step)
 
 
             self.sess.run(tf.global_variabiles_initializer())
 
     def train(self, batch):
-        print([x.shape for x in batch])
-        raise SystemExit
+        # self.sess.run([self.train_op], feed=dict(zip([self.obs, self.a], batch)))
+        pass
 
     def __call__(self, obs, a, done):
         if done:

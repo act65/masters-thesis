@@ -1,6 +1,6 @@
 In IRL you observe the optimal policy and must learn the reward function. This is the inverse of the usual RL set up where, you are given the reward function and must learn the optimal policy.
 
-### IRL
+## IRL
 
 > Given an observed policy, we can generate a point estimate of the reward function from the posterior distribution over reward functions. To construct this point estimate, we must know the likelihood of observing each policy for each given reward function
 
@@ -8,8 +8,9 @@ Two sources of uncertainty? -- no that's the same source...?
 A single reward function can generate many optimal policies (when?).
 An optimal policy can be optimal in many ways.
 
-***
+> The entire field of reinforcement learning is founded on the presupposition that the reward function, rather than the policy, is the most succinct, robust, and transferable definition of the task. [ref](https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf)
 
+__Q:__ ^^^ Is this really true!? In what cases?
 
 ```python
 ### RL: generalised policy iteration
@@ -17,15 +18,9 @@ An optimal policy can be optimal in many ways.
 reward x policy -> value
 # update the current policy
 value -> policy
-
-# IRL: generalsied inverse policy iteration
-# the optimal policy can be
-policy -> value
-# invert the policy under the current value fn
-policy x value -> reward
 ```
 
-### Policy values
+### Policy values (rationalise actions)
 
 > Goal: estimate $V$ from $\pi^{* }$.
 
@@ -45,15 +40,8 @@ $$
 
 The product can be turned into a sum of log probabilities. Thus we can train per step rather than per trajectory. $p(\tau)$ can be decomposed as we have access to the true state $s_t$. We can use the markov property to ensure that ...
 
+- __End-to-end.__ Could use GPI and make sure the whole thing is end-to-end differentiable.
 
-***
-
-Simplest algol. Use discounted counts. Matching feature expectation.
-
-$$
-V^{\pi}(s) = w^T\sum \gamma^i\phi(s_i)
-$$
-https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf !!!
 
 ### Inversion
 
@@ -74,10 +62,17 @@ V(s_0) &= \sum^{\infty}_{t=0} \gamma^t R(s_t) \\
 $$
 (where $\Delta s$ is a specific change in $s$ along the direction of the best action)
 
-***
+### Generalised reward iteration.
 
-- __Generalised reward iteration.__ What about `policy x reward' -> value`, `policy x value -> reward`. Where `reward'` is a simple guess (eg initially a constant?). Would need to show that the value converges, and so does the reward.
-- __End-to-end.__ Could use GPI and make sure the whole thing is end-to-end differentiable.
+What about `policy x reward' -> value`, `policy x value -> reward`. Where `reward'` is a simple guess (eg initially a constant?). Would need to show that the value converges, and so does the reward.
+
+```python
+# IRL: generalsied inverse policy iteration
+# the optimal policy can be
+policy -> value
+# invert the policy under the current value fn
+policy x value -> reward
+```
 
 
 ### A metric
@@ -100,11 +95,33 @@ Ok, so we should compare the value fns?
 Sure. Makes sense. Except that we dont have the true value function...
 
 
-***
 
-> The entire field of reinforcement learning is founded on the presupposition that the reward function, rather than the policy, is the mostsuccinct, robust, and transferable definition of the task. [ref](https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf)
+### Matching feature expectation
 
-Is this really true!? In what cases?
+Simplest algol. Use discounted counts.
+
+$$
+\begin{align}
+R(s) &= w^T \phi(s)\\
+V^{\pi}(s) &= w^T\mathbb E [\sum \gamma^i\phi(s_i)] \\
+&= w^T \mathbb E [\Big(\phi(s_i) + \gamma \phi(\tau(s_i,a_i))\Big)] \\
+Q^{\pi}(s, a) &= w^T \mathbb E [\sum \gamma^i\phi(s_i, a_i)] \\
+&= w^T \mathbb E [\Big(\phi(s_i, a_i) + \gamma \phi(s_{i+1},a_{i+1})\Big)] \\
+\end{align}
+$$
+https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf !!!
+
+This is quite nice! Now we need to learn $w$ and $\phi$. Only need to learn $V$ and we get R for free.
+
+Is this realted to successors?
+
+Either:
+- Need access to the transition function!
+- The future state-action pair.
+
+### Max Entropy IRL
+
+?!?
 
 ***
 

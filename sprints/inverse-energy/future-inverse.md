@@ -21,15 +21,47 @@ Big questions
 - In which cases does it work (better)?
 - Global view versus local view
 
+### Wikipedia
 
-### Related work
+Let's imagine what Wikipedia might be able to do with their data. Wikipedia has millions of articles and a collective history of billions of edits. What were all of those edits attempting to achieve? They were all an attempt to 'improve' Wikipedia, but what do we mean by improve?
 
-Relationship to energy-based ML?
+Let's formalise the dataset as a set of pairs $\{(s_i, e_i) : \in [1:N]\}$, where $s_i$ was current state of a document, and $e_i$ was the edit applied.
 
-Energy-based ML use a fixed measure of energy, for example, [equilibrium propagation](https://arxiv.org/abs/1602.05179):
+Hmm. The reward function I would write for editing Wikipedia would be something like;
 
-$$
-E(u) = \frac{1}{2}\sum_i u_i^2 - \frac{1}{2} \sum_{i\neq j} W_{ij}\rho(u_i)\rho(u_j) - \sum_i b_i\rho(u_i)\\
-$$
+- ability of the article to be easily understood (_compression_),
+- completing Wikipedia with info from external sources (_completeness_),
 
-And adapt the connectivity/topology of the network. Similarly; hopfield nets, RBMs, ...
+Aka, ability to efficiently code for any/all 'important' information accessible via book, word of mouth, internet, videos, ...
+
+
+Typical IRL approaches would fail at this problem.
+- Part of the problem is context, and the ability to search for new information that might not be a part of Wikipedia.
+- Also, the ability to be understood still only makes sense w.r.t people?
+
+But I imagine IRL would learn a good model of grammar.
+
+### Robotics
+
+Expert demonstrations of CPR. Collecting rubbish.
+
+I am actually pretty skeptical of IRL's utility here.
+
+The ability to learn from Youtube. What a nightmare.
+
+
+### Career advice/marketing/selling product
+
+IRL that predicts your reward function and uses that to match you with a career/service/product.
+What data would there be to infer a persons reward function. Well if you are facebook, then pretty much all of it.
+
+But, how accurate can the inferred reward really be? It would require 'coverage' (like off-policy). The person must have done sufficient exploration, tried new things etc.
+
+Ok, the problem here is that we are not observing the optimal policy. Lol! We are observing a poor approximation/slowly converging solution.
+
+### Communication
+
+When talking to friends, we tend to say things like, ???.
+
+
+Is there a notion is psych or ling of goalbased communication?
