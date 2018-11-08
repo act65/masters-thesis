@@ -121,7 +121,7 @@ _(these may be ill-posed, trivial, or solved, but hopefully I will find out soon
 5. Build a differentiable neural computer [@Graves2016HybridCU] with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Under which conditions does the learned index to a locally structured memory approximate the position of the agent in its environment.
 6. When attempting to learn a model, the agent uses an exploration policy. This policy may influence the dynamics observed, thus we need to use [off-policy](https://stats.stackexchange.com/questions/184657/what-is-the-difference-between-off-policy-and-on-policy-learning) methods to correct for the effects of exploration actions. (The model must somehow disentangle the agents policy, and its effects, from the dynamics of the system)
 7. Inverse energy learning. Inspired by inverse reinforcement learning [@Ng2000AlgorithmsFI], what if we assume that the observations we make are the results of some optimal action, in this case, of an energy function being minimised.
-8. While learning a model $s_{t+1} = \tau(s_t, a_t)$ is useful. It is more useful to know how to get around using that model, the reachability of various states. For example, I want to get to $s^k$, how can I do that considering I am in another state, $s^i$?
+8. While learning a model is useful. It is more useful to know how to get around using that model, the reachability of various states. For example, I want to get to $s^k$, how can I do that considering I am in another state, $s^i$?
 
 #### Planning with a learned model (with continuous actions)
 
@@ -139,10 +139,11 @@ I have allocated time for 8 'sprints' (the bullet points above; decompositions a
 - Motivate the idea as a solution to an existing problem,
 - Demonstrate that the "existing" problem really exists,
 - Generate alternative solutions and a suitable baseline,
-- Design the minimal viable experiment to falsify the proposed solution,
-- Implement the experiment if feasible.
+- Design the minimal viable experiment to falsify the proposed solution.
 
 Future work will depend on the results of the sprints.
+
+![The proposed timeline. The topics to explore in each sprint are enumerated above 1-8.](timeline.png)
 
 ### Proposed deliverables
 
