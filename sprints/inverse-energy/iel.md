@@ -80,6 +80,16 @@ $$
 
 Relationship between optimisation and sampling!? [welling](https://www.ics.uci.edu/~welling/publications/papers/stoclangevin_v6.pdf)
 
+### Setting
+
+Given many different observations. We are able to _explain_ them using a simple energy function (or principle).
+
+We receive a set of observations $\{x_0, \dots, x_n \in X\}$. Our goal is to learn an energy fuction $E(x)$ and a set of initial conditions $\{z_0, \dots, z_n\}$ such that $x_0 \mathop{\text{min}}_x E(x) \text{ s.t. init } x=z_0$.
+
+### MDL
+
+- https://arxiv.org/abs/1805.09714
+- https://arxiv.org/abs/1810.10525
 
 ### Gradients
 

@@ -45,6 +45,8 @@ The product can be turned into a sum of log probabilities. Thus we can train per
 
 ### Inversion
 
+> If we ahve the value fn and the optimal policy then how can we estimate the reward?
+
 What is the opposite of diffusion? Is it possible to run dynamic programming backwards in time?
 
 $$
@@ -77,7 +79,7 @@ policy x value -> reward
 
 ### A metric
 
-- Optimal policy is invariant to affine transformation (and scalings?)
+- Optimal policy is invariant to affine transformation (and scalings?) of the reward (and value)
 - Two reward fns can be the same except for a single state, and produce vastly different optimal policies.
 
 So rather than measuring the difference between the learned reward (which assumes we have access to it...). We could evaluate by comparing the optimal policies under the two rewards.
@@ -98,26 +100,31 @@ Sure. Makes sense. Except that we dont have the true value function...
 
 ### Matching feature expectation
 
-Simplest algol. Use discounted counts.
+Ref - [Apprenticeship Learning via IRL](https://ai.stanford.edu/~ang/papers/icml04-apprentice.pdf)
 
 $$
 \begin{align}
 R(s) &= w^T \phi(s)\\
 V^{\pi}(s) &= w^T\mathbb E [\sum \gamma^i\phi(s_i)] \\
-&= w^T \mathbb E [\Big(\phi(s_i) + \gamma \phi(\tau(s_i,a_i))\Big)] \\
+&= w^T \mathbb E [\Big(\phi(s_i) + \gamma \mu^{\pi}(\tau(s_i,a_i))\Big)] \\
+R(s,a) &= w^T \phi(s, a)\\
 Q^{\pi}(s, a) &= w^T \mathbb E [\sum \gamma^i\phi(s_i, a_i)] \\
-&= w^T \mathbb E [\Big(\phi(s_i, a_i) + \gamma \phi(s_{i+1},a_{i+1})\Big)] \\
+&= w^T \mathbb E [\Big(\phi(s_i, a_i) + \gamma \mu^{\pi}(s_{i+1},a_{i+1})\Big)] \\
 \end{align}
 $$
-https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf !!!
-
-This is quite nice! Now we need to learn $w$ and $\phi$. Only need to learn $V$ and we get R for free.
-
-Is this realted to successors?
 
 Either:
-- Need access to the transition function!
+- Need access to the transition function.
 - The future state-action pair.
+
+This is quite nice! Now we need to learn $w$ and $\phi$ and $\mu$ (note we could learn $\phi$ in an unsupervised fashion). Only need to learn $V$ and we get R for free.
+
+.
+
+***
+
+- Is this realted to; eligibility traces, successors?
+
 
 ### Max Entropy IRL
 
@@ -125,8 +132,8 @@ Either:
 
 ***
 
-Not possible to recover the true reward fn!? Want to see a proof!
-
+- Not possible to recover the true reward fn!? Want to see a proof!
+- __Q:__ Oh. Is it not possible for IRL to just observe!? Does it need to act as well? Test out rewards and see what policies are generated, and then compare them to the optimal observations?
 
 ## Refs
 
@@ -138,3 +145,4 @@ Not possible to recover the true reward fn!? Want to see a proof!
 - [Review](https://arxiv.org/abs/1806.06877)
 - [IOC with LMDPs](https://homes.cs.washington.edu/~todorov/papers/DvijothamICML10.pdf)
 - [GIRL](https://pdfs.semanticscholar.org/6021/4094bb268d137f021fdff10c298fc92cde33.pdf)
+- https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf !!!

@@ -65,3 +65,10 @@ When talking to friends, we tend to say things like, ???.
 
 
 Is there a notion is psych or ling of goalbased communication?
+
+
+### Principles of design
+
+In the book [Principles of neural design]() they show that a simple principle, the minimisation of energy, explains much of the brains structure, minimisation of wiring, computation with chemistry, ...
+
+The principle of minimising wiring can be easily described, yet it has extrodinary power to generate predictions. Given the right initial conditions, this principle can explain wiring in the cortex, cerebellum, and even microchips!
