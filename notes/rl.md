@@ -282,6 +282,28 @@ $$
 $$
 
 
+## Invariance under a contraction operator
+
+ Both Bellman and GD, and !?.
+
+$$
+\begin{align}
+x(t+1) &= T_{GD} x(t) \\
+&= x(t) - \eta \frac{\partial E}{\partial x} \\
+x_i(t+1) &= T_{BM} x_i(t) \\
+&= R + \gamma \mathop{\text{max}}_a \int p(x_i(t), a) \cdot x_{i+1}(t) dx  \\
+\end{align}
+$$
+
+This just means the steps/iterations will converge to a fixed value.
+
+Hmph.
+- But GD isnt always a contraction? GD is only a contraction operator when the loss surface is convex?
+- My formulation of the bellman operator doesnt seem right. Is the bellman operator a contraction over $t$ or $i$, or both?
+
+Is it possible to do an eigen analysis of these linear operators?
+
+
 ***
 
 - __Q__ What can you learn from an interactive environment (you can take actions and observe their results) that you cannot learn from a (possibly comprehensive) static dataset? Similarly, what can you learn when you have access to an $\epsilon$-accurate model, that you cannot learn from an interactive environment?

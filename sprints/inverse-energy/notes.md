@@ -41,34 +41,11 @@ How do you learn that the x and y dimensions???
 
 Clustering the nodes in the graph by similarity (within subset of their embeddings) could find these dimensions!? (at least the boids/colloids?)
 
-***
 
 - https://arxiv.org/pdf/1801.02124.pdf
 - https://arxiv.org/pdf/1403.6508.pdf
 
 But how to find structure!? Which dims to share the loss over?
-
-***
-
-
-Invariance under a contraction operator. Both Bellman and GD, and !?.
-
-$$
-\begin{align}
-x(t+1) &= T_{GD} x(t) \\
-&= x(t) - \eta \frac{\partial E}{\partial x} \\
-x_i(t+1) &= T_{BM} x_i(t) \\
-&= R + \gamma \mathop{\text{max}}_a \int p(x_i(t), a) \cdot x_{i+1}(t) dx  \\
-\end{align}
-$$
-
-This just means the steps/iterations will converge to a fixed value.
-
-Hmph.
-- But GD isnt always a contraction? GD is only a contraction operator when the loss surface is convex?
-- My formulation of the bellman operator doesnt seem right. Is the bellman operator a contraction over $t$ or $i$, or both?
-
-Is it possible to do an eigen analysis of these linear operators?
 
 ##### Time series.
 

@@ -12,13 +12,15 @@ class InverseReinforcementLearner():
 
     No. Implementation of matching feature expectation.
     """
-    def __init__(self):
-        self.reward_fn = None
+    def __init__(self, writer=None):
+        self.writer = tf.summary.FileWriter('/tmp/irl/0') if writer is None else writer
+
         self.buffer = rp.ReplayBufferv2(max_size=2000)
+
         self.batch_size = 50
         self.gamma = 0.9
 
-        self.build_graph(2, 16)
+        self.build_graph(2, 64)
 
         self.old_obs = None
         self.old_a = None
@@ -36,14 +38,15 @@ class InverseReinforcementLearner():
             self.a_t = tf.placeholder(name='a_t', shape=[None, 1], dtype=tf.int32)
 
             # trained as an AE
+            # or maybe not trained. just rnd projection!?
             self.encoder = tf.keras.Sequential([
                 tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                tf.keras.layers.Dense(n_hidden*2)
+                # tf.keras.layers.Dense(64, activation=tf.nn.selu),
+                tf.keras.layers.Dense(n_hidden)
             ])
             self.decoder = tf.keras.Sequential([
                 tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                tf.keras.layers.Dense(64, activation=tf.nn.selu),
+                # tf.keras.layers.Dense(64, activation=tf.nn.selu),
                 tf.keras.layers.Dense(4+1)
             ])
 
@@ -51,7 +54,7 @@ class InverseReinforcementLearner():
             self.discounted_features = tf.keras.Sequential([
                 tf.keras.layers.Dense(64, activation=tf.nn.selu),
                 tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                tf.keras.layers.Dense(n_hidden*2)
+                tf.keras.layers.Dense(n_hidden)
             ])
 
             # trained with cross entropy on the optimal policy
@@ -69,25 +72,30 @@ class InverseReinforcementLearner():
                         mu, tf.stop_gradient(features)
                         + self.gamma*tf.stop_gradient(mu_t))
 
-
             xs = [tf.concat([self.obs, i*tf.ones_like(self.a, dtype=tf.float32)], axis=-1) for i in range(n_actions)]
             mus = tf.map_fn(self.discounted_features, xs, dtype=tf.float32)
             logits = tf.squeeze(tf.concat(tf.map_fn(self.linear, mus), axis=-1))
             loss_w = tf.losses.sparse_softmax_cross_entropy(labels=self.a, logits=logits)
 
             gnvs = (
-                self.opt.compute_gradients(loss_mu, self.discounted_features.variables) +
-                self.opt.compute_gradients(loss_w, self.linear.variables) +
-                self.opt.compute_gradients(loss_enc, self.encoder.variables+self.decoder.variables)
+                self.opt.compute_gradients(loss_mu, self.discounted_features.variables)
+                + self.opt.compute_gradients(loss_w, self.linear.variables)
+                # + self.opt.compute_gradients(loss_enc, self.encoder.variables+self.decoder.variables)
             )
 
-            self.train_op = self.opt.apply_gradients(gnvs, global_step=self.global_step)
+            self.loss = loss_w + loss_mu + loss_enc
+            tf.summary.scalar('loss_w', loss_w)
+            tf.summary.scalar('loss_mu', loss_mu)
+            tf.summary.scalar('loss_enc', loss_enc)
+            self.summaries = tf.summary.merge_all()
 
+            self.train_op = self.opt.apply_gradients(gnvs, global_step=self.global_step)
             self.sess.run(tf.global_variables_initializer())
 
     def train(self, batch):
         feed = dict(zip([self.obs, self.a, self.obs_t, self.a_t], batch))
-        loss = self.sess.run([self.train_op], feed_dict=feed)
+        _, loss, step, summ  = self.sess.run([self.train_op, self.loss, self.global_step, self.summaries], feed_dict=feed)
+        self.writer.add_summary(summ, step)
         return loss
 
     def __call__(self, obs, a):
@@ -105,14 +113,16 @@ class InverseReinforcementLearner():
 
     def evaluate(self):
         # evaluate the accuracy of the estimated reward
-        # could just draw pictures?
+        # could just draw pictures? rotate around 360 degrees and plot rewards
         pass
 
 def main():
-    actor = rl.PG()
-    observer = InverseReinforcementLearner()
+    writer = tf.summary.FileWriter('/tmp/irl/0')
 
-    env = gym.make('CartPole-v1')
+    actor = rl.PG(writer=writer, batch_size=512, n_inputs=3)
+    # observer = InverseReinforcementLearner(writer)
+
+    env = gym.make('Blackjack-v0')
 
     def run_episode():
         obs = env.reset()
@@ -121,21 +131,21 @@ def main():
         reward = 0
 
         while not done:
-            action = actor(obs, reward)
-            reward_fn = observer(obs, action)
+            action = actor(np.array(obs).astype(np.float32)/20, reward)
+            # reward_fn = observer(obs, action)
             obs, reward, done, info = env.step(action)
 
             R += reward
 
         return R
 
-    for i in range(1000):
-        R = run_episode()
+    for i in range(10000):
+        R = np.mean([run_episode() for _ in range(100)])
 
         summary = tf.Summary()
         summary.value.add(tag='return', simple_value=R)
-        actor.writer.add_summary(summary, i)
-        actor.writer.flush()
+        writer.add_summary(summary, i)
+        writer.flush()
 
         print('\r{}'.format(R), end='', flush=True)
 
