@@ -1,3 +1,17 @@
+## What is transfer
+
+Can be constructed from two parts. Communication and generalisation.
+
+
+The right information neesds to be preserved while being comminicated. But it also needs to generalise to the new domain.
+
+Knowledge/representations have two requirements!?
+
+- interpretable by the receiver.
+- applicable to the receivers current problems.
+
+### Definition
+
 What is necessary for transfer?
 
 - memory of the past
@@ -17,6 +31,13 @@ How does transfer relate to;
 - minimisation of energy/resources (necessarily leads to transfer!? if there is structure...)
 - Generalisation = zero shot learning? (a good guess)
 - Transfer = one shot learning (given information about your target task, find similarities to past tasks)
+
+
+### Useful examples
+
+!?!??!
+
+### Related ideas
 
 ***
 
@@ -64,3 +85,14 @@ Could imagine an over-complete basis, shared between task A and B?
 
 Generate a basis, $\mathcal B$, maybe just a set of vectors.
 Subsample and use to generate tasks. $\mathcal T_i \subset \mathcal B$.
+
+
+
+## Composition
+
+Have two goals. Want to compose them. Is it better to have policies or value fns or reward fns?
+
+- How can you even compose policies? $\pi(s_t) = \pi_1(s_t) \cdot\pi_2(s_t)$.
+- $V_1 \circ V_2 \neg \equiv R_1 \circ R_2$. It is possible for value fns to give weird results if compose incorrectly (when they depend on different policies!).
+
+https://arxiv.org/pdf/1807.04439.pdf

@@ -20,6 +20,7 @@ reward x policy -> value
 value -> policy
 ```
 
+
 ### Policy values (rationalise actions)
 
 > Goal: estimate $V$ from $\pi^{* }$.

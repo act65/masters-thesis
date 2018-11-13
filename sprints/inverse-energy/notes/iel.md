@@ -66,7 +66,7 @@ Given many different observations. We are able to _explain_$^{* }$ them using a 
 
 We receive a set of observations $\{x_0, \dots, x_n \in X\}$ that are the result of some known dynamical system $\frac{dx}{dt} = f(x_t) + y$. Our goal is to learn an energy fuction $E(x, y)$ and a set of initial conditions $\{z_0, \dots, z_n\}$ such that $x_0 \mathop{\text{min}}_x E(x, y) \text{ s.t. init } x=z_0$ (the steps taken dont need to be GD steps of down E).
 
-Culd rewrite as $E(x^S)$. We are not allowed to control the entire state. Only part of it. We are
+Could rewrite as $E(x^S)$. We are not allowed to control the entire state. Only part of it. We are
 
 So the energy function needs to learn to pick out some structure in the current state that is being minimised by $f$.
 
@@ -110,6 +110,7 @@ $$
 Langevin relationship between optimisation and sampling!? [welling](https://www.ics.uci.edu/~welling/publications/papers/stoclangevin_v6.pdf)
 
 Which is more general? Energy or density?
+
 
 ### Refs
 

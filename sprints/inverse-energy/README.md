@@ -11,28 +11,43 @@ x_{t+1} &= x_t - \eta \nabla E(x_t) \\
 \end{align}
 $$
 
-### 1) Motivate the idea as a solution to an existing problem (see future-inverse.md)
+The learner's goal is to recover $E$ from the observed optimal trajectories.
 
-__Claim 1.__ Is it better to have the energy function or the step function?
+### 1) Motivate the idea as a solution to an existing problem
 
-- It is easy to calculate steps from the energy fn. It only rquires differentiation (which is O(?))
-- It is not easy to calculate the energy with only the step function. You would need to integrate.
+__Claim.__ A energy function will give a more efficient, succinct, robust and transferrable representation that a step function.
+
+__Efficiency.__
+
+- `energy -> step` It is easy to calculate steps from the energy fn. $s_{t+1} = f(s_t) = s_t - \eta \nabla E(s_t)$
+- `step -> energy` It is not easy to calculate the energy with the step function. You would need to integrate. _(well, this might not matter. the computational cost of an expernsive operation that is never used is zero... Ok. this is interesting!! what do we need the energy function for? <- facilitates efficient planning. you are playing with another powerful agent. you know what they want. when planning you only bother searching for solutions that also satisfy what the other agent wants)_
 
 <font color='red'>TODO</font> want to make this argument more formal! Comptational complexity.
 
-__Claim 2.__ Generalise better.
+
+__Generalisation.__
+
+If the system being modelled is truly minimising an energy function, then using the right parameterisation will give a good inductive bias for learning, making it more efficient _(but is the gain in efficiency actually significant?)_.
 
 <font color='red'>TODO</font> want to make this argument more formal! Sample complexity.
 
-__Claim 3.__ A communication problem between teacher and student.
+__Transfer.__ A communication problem between teacher and student.
 
 Info required to communicate E is much more that dE!?
 
 <font color='red'>TODO</font> want to make this argument more formal! Communication complexity.
 
+__Composable.__
+
+Using $f(s_t) = g_1(s_t) + g_2(s_t)$ will not make sense. But following the gradient of $E(s_t) = E_1(s_t) + E_2(s_t)$ will make sense.
+
+_(hmm. i doubt this is true!? What assumptions does this actually require? How does it restrict the actual step fn?_)
+
 ### 2) Demonstrate that the "existing" problem really exists
 
 Why is learning an energy function hard? Is it even hard?
+
+Ok. How can this be done? Show that step fns do not acheive a very close to what is possible.
 
 Under-constrained problem. Many possible energy functions could fit the observations. (but many more step functions?)
 
@@ -45,10 +60,6 @@ Compare:
 - IEL,
 - ?.
 
-Possible ways to train the learned energy?
-
-- Max likelihood - $\mathop{\text{argmax}}_{\theta} \prod_{i=1}^T p(x_i \mid x_{i-1}: x_0)$
-- Squared error - $\mathop{\text{argmin}}_{\theta} \parallel f(x_t) - x_{t+1} \parallel$
 
 ### 4) Design the minimal viable experiment to falsify the proposed solution
 
@@ -57,4 +68,10 @@ Possible ways to train the learned energy?
 - Grid world experiment?
 - partial observations via a projection matrix!?
 
-Want a set of simple trajectories, agent moves in a straight line towards its goal. E should learn to measure the (squared) distance!?w
+Want a set of simple trajectories, agent moves in a straight line towards its goal. E should learn to measure the (squared) distance!?
+
+
+### Thoughts
+
+- IEL is interesting if approached in the multi agent setting.
+- ?

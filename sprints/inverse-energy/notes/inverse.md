@@ -1,4 +1,4 @@
-What is the future of inverse learning?
+# What is the future of inverse learning?
 
 Inverse learning can be summarised as learning a functional that is being optimised.
 
@@ -67,8 +67,28 @@ When talking to friends, we tend to say things like, ???.
 Is there a notion is psych or ling of goalbased communication?
 
 
-### Principles of design
+### Principles of;
+
+Neural design.
 
 In the book [Principles of neural design](https://mitpress.mit.edu/books/principles-neural-design) they show explore how a principle, the minimisation of energy, explains much of the brains structure, via the minimisation of wiring, computation with chemistry, ...
 
 The principle of minimising wiring can be easily described, yet it has extrodinary power to generate predictions. Given the right initial conditions, this principle can explain wiring in the cortex, cerebellum, and even microchips!
+
+Entropy
+
+We know that entropy always increases. Ie the relationship of the energy function between two states $E(s_{t}) \le E(s_{t+1})$. But knowing how exactally the current state transitions to the next state contains far more info/complexity.
+
+
+### Inverse market design
+
+The allocation of scarce resources.
+
+If we looked at the allocation of wealth and power to individuals, what can we infer about the allocation (/market) machanism doing the allocation?
+
+
+## Learning inversions
+
+Hmph. What about getting access to non-optimal trajectories. It seems that this could increase the speed of learning (if the non-optimal trajectories were chosen correctly). We receive pairs indicating the dicision boundaries, good-bad.
+
+We dont get access to any negative samples. How does this restrict out ability to learn and generalise!?

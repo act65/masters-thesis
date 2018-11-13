@@ -40,13 +40,13 @@ class InverseReinforcementLearner():
             # trained as an AE
             # or maybe not trained. just rnd projection!?
             self.encoder = tf.keras.Sequential([
-                tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                # tf.keras.layers.Dense(64, activation=tf.nn.selu),
+                tf.keras.layers.Dense(256, activation=tf.nn.selu),
+                tf.keras.layers.Dense(256, activation=tf.nn.selu),
                 tf.keras.layers.Dense(n_hidden)
             ])
             self.decoder = tf.keras.Sequential([
-                tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                # tf.keras.layers.Dense(64, activation=tf.nn.selu),
+                tf.keras.layers.Dense(256, activation=tf.nn.selu),
+                tf.keras.layers.Dense(256, activation=tf.nn.selu),
                 tf.keras.layers.Dense(4+1)
             ])
 
@@ -115,39 +115,3 @@ class InverseReinforcementLearner():
         # evaluate the accuracy of the estimated reward
         # could just draw pictures? rotate around 360 degrees and plot rewards
         pass
-
-def main():
-    writer = tf.summary.FileWriter('/tmp/irl/0')
-
-    actor = rl.PG(writer=writer, batch_size=512, n_inputs=3)
-    # observer = InverseReinforcementLearner(writer)
-
-    env = gym.make('Blackjack-v0')
-
-    def run_episode():
-        obs = env.reset()
-        done = False
-        R = 0
-        reward = 0
-
-        while not done:
-            action = actor(np.array(obs).astype(np.float32)/20, reward)
-            # reward_fn = observer(obs, action)
-            obs, reward, done, info = env.step(action)
-
-            R += reward
-
-        return R
-
-    for i in range(10000):
-        R = np.mean([run_episode() for _ in range(100)])
-
-        summary = tf.Summary()
-        summary.value.add(tag='return', simple_value=R)
-        writer.add_summary(summary, i)
-        writer.flush()
-
-        print('\r{}'.format(R), end='', flush=True)
-
-if __name__ == '__main__':
-    main()
