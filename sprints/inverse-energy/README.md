@@ -74,4 +74,4 @@ Want a set of simple trajectories, agent moves in a straight line towards its go
 ### Thoughts
 
 - IEL is interesting if approached in the multi agent setting.
-- ?
+- There is a bunch of theoritical work missing that would motivate the exploration of IEL. In which cases are energies better!?

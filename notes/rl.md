@@ -69,38 +69,6 @@ Why is it hard to learn a good model?
 - complexity
 - low frequency events (how is this related to complexity?)
 
-### Approximate gradient dynamics
-
-How can we efficiently approimate a dynamical system?
-
-We have observations $\{x(t_0),x(t_1), \dots , x(t), x(t_{+1}) \}$ and know that they are produced via a dynamical system.
-
-$$
-\begin{align*}
-\frac{dx}{dt} &= f(x) \\
-\end{align*}
-$$
-
-__NOTE__ Would make it easy(er) to design an exploitable model!?
-Controller simply inputs stepsize.
-
-### Inverse gradient dynamics
-(relationship to IRL?)
-
-Assume that the dynamcs of a system are the result of an energy being minimised.
-
-$$
-\begin{align*}
-x_{t+1} &= x_t - \eta\nabla E(x_t) \tag{the true dynamics}\\
-f(x_t) &= x_t - \nabla \hat E_{\theta}(x_t) \tag{approximate the energy fn}\\
-L &= \mathop{\mathbb E}_{x_{t+1}, x_t\sim D} \big[ d(x_{t+1}, f(x_t)) \big] \tag{loss fn for approximation}\\
-\end{align*}
-$$
-
-- (how does this constrain the possible types of dynamics?)
-- if we use an ensemble of approximators, how will the dynamics be decomposed? will we naturally see environment disentangled from agents?
-
-
 ### Causal inference
 
 - How is RL like the interventional level of the causal heirarchy?
@@ -137,16 +105,6 @@ $$
 
 > The Q-function is the discrete-time analogue of the Hamiltonian (!?!?)
 
-### Inversion/Backwards/Abduction
-
-What are the advantages of having access to a inverse dynamics model?
-
-- Some problems are easier to solve? (U-problem?)
-- Smaller search space (1 vs 2 circles?)
-- ?
-
-***
-
 Planning/Reasoning with limited compute. Only get to evaluate N trajectories. Looking for a single trajectory that is sufficient. Versus the best possible trajectory1?
 
 ### General problem
@@ -182,105 +140,21 @@ Searching through state space(the env).
 Making the most of self-play.
 
 
-## Transfer
+### Idea - searching through param vs action
 
-Why do we want to do this? Transfer learning is the key to general intelligence!
+At the end of the day we are searching for a policy, what action to take when. We are searching through distributions over state-action pairs.
+But instead, we decide to frame this as searching through parameters of a NN that pairs the state-actions.
 
-### Definition
+The problem is that often changes in NN params my have little/no effect on the state-action pairs. Therefore serching there is a waste of time.
 
-What do we mean by "transfer learning"? If we have two tasks/environments/action spaces/...?, $A, B$, then the performance of one task aids the other task.
+So we should scale the gradients by the sensitivity of the actions to the parameters!?
 
-A MDP is defined as
-$$M = \Big(S, \mathcal A, p(\cdot \mid s,a), R(s, a, s') \Big)$$
+Moving through distribution space versus moving through parameter space. How are they structured? What are the differences?
 
-- $S$: It is possible to change the state space, while preserving the dynamics. (??)
-- $\mathcal A$: Change the action space, for example, instead of $\leftarrow, \rightarrow, \uparrow, \downarrow$ we use $\uparrow, \text{rot90}$
-- $p(\cdot \mid s,a)$: from subtle things like not being able to reach a state on another one, to chan
-- $R(s, a, s')$: A different reward funciton, aka a different task.
-
-But one could imagine symmetries of $p(\cdot \mid s,a), R(s, a, s')$, such that some structure is preserved.
 
 $$
-\begin{align*}
-p(\cdot \mid s,a) &:= T^{-1}(p(\cdot \mid T(s,a))) \\
-&:= p(\cdot \mid T(s),a) \tag{equiv to transfer to a new state space}\\
-&:= p(\cdot \mid s,T(a)) \\
-R(s, a, s') &= T(R(s, a, s')) \\
-\end{align*}
+\frac{\partial a}{\partial \theta}^{-1}\cdot\frac{\partial L}{\partial \theta}
 $$
-
-For example, similarities between the reward in hockey and football. Get the round thing in the oppositions goal.
-
-> Huh, never thought about it this way before. The states are an unordered set.
-The transition fn provides all the structure on that space (much like an inner prod in Hilbert spaces?!?)
-The neighbors of a state are the positions reachable from a single action.
-No not quite. More like probabilistic vector maps? No that is only when combined with a policy.
-
-Best current solutions!?
-
-- successor representation/goal embeddings. $\to$ task transfer
-- model-based RL (disentangle policy from model) allows transfer of control polices between environments and transfer of model between tasks in the same env.
-
-Let $L$ be the test loss after training, and $T$ be the training task.
-$$
-\begin{align*}
-L(T(B)) \le L(T(A) \to T(B)) \tag{Forward transfer}\\
-L(T(A)) \le L(T(A) \to T(B)) \tag{Backward transfer} \\
-\end{align*}
-$$
-
-Relationship to meta-learning. Different <i>'levels'</i> of knowledge can be transfered. In meta learning the low level details are not transferred, but the high level, "how to learn" lessons are transferred. So the key to this would be a decomposition of these different types of knowledge. __Q:__ How can these types of knowledge be disentangled!?
-
-$$
-\begin{align*}
-\dot L(T(B)) \le \dot L(T(A) \to T(B)) \\
-\dot L(T(A)) \le \dot L(T(A) \to T(B)) \\
-\end{align*}
-$$
-
-### Analysis
-
-What I would really like is a set of tools for analysing transfer learning.
-I would like to be able to answer the questions;
-
-- what knowledge was transferred (high level, low level, ...?)
-- how was it transferred? (if we are dealing with NNs then how does some knowledge get shared while other knowledge doesnt?
-because the existing knowledge allows faster learning?!)
-- why was it transferred? (because the domains somehow shared similarities)
-
-Seems quite related to representation learning. The key will be how knowledge is represented, and how easily that knowledge can be translated (/transformed)!?
-
-
-If we had a theory of transfer learning we would be able to;
-- predict when X will transfer to Y.
-- write down a pattern to generate representations for transfer between X/Y.
-- __???__
-
-### Toy problems
-
-Want to generate different MDPs that share various 'orders' of similarity.
-If we mode each environment as a graph and the task is navigation, then it might be possible to easily generate graphs/rewards with structural similarities!? Various orders of persistent homology?
-
-## Long term credit assignment
-
-!!!??!?!??!?
-Rudder!
-
-
-## Compression
-
-- MLD? symmetry strucutre?  What are the 'right' priors? How can we optimise them?
-
-## Inverse optimal control
-
-
-I like this formulation! State cost + control cost.
-$$
-\begin{align}
-\mathop{\text{min}}_Q E_{\tau\sim Q} [c_{\theta}(\tau)] + \gamma D_{KL}(Q \parallel P)
-\end{align}
-$$
-
 
 ## Invariance under a contraction operator
 

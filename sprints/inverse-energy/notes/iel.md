@@ -12,7 +12,8 @@ $$
 \end{align}
 $$
 
-#### Relationship to energy-based ML?
+
+### Energy-based ML
 
 Energy-based ML use a fixed measure of energy, for example, RBMs:
 
@@ -22,9 +23,8 @@ $$
 
 And adapt the connectivity/topology of the network.
 
-#### How is this idea different from related work?
 
-Energy based learning seems to focus on matching inputs and outputs (for classification or ...), not the internal dynamics.
+[Concept Learning with Energy-Based Models](https://arxiv.org/abs/1811.02486) is closely related. While they frame the problem as ... I think their models could solve the IEL problem posed above. Anyway, nice paper, and nice idea.
 
 
 ### Alternative formalisations

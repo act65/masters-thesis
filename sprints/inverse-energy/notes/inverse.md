@@ -1,4 +1,6 @@
-# What is the future of inverse learning?
+# Why do we care?
+
+> What is the future of inverse learning?
 
 Inverse learning can be summarised as learning a functional that is being optimised.
 
