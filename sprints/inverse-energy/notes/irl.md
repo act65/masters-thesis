@@ -136,6 +136,15 @@ This is quite nice! Now we need to learn $w$ and $\phi$ and $\mu$ (note we could
 - Not possible to recover the true reward fn!? Want to see a proof!
 - __Q:__ Oh. Is it not possible for IRL to just observe!? Does it need to act as well? Test out rewards and see what policies are generated, and then compare them to the optimal observations?
 
+
+
+### Learning inversions
+
+Hmph. What about getting access to non-optimal trajectories. It seems that this could increase the speed of learning (if the non-optimal trajectories were chosen correctly). We receive pairs indicating the dicision boundaries, good-bad.
+
+We dont get access to any negative samples. How does this restrict out ability to learn and generalise!?
+
+
 ## Refs
 
 - [IRL](https://ai.stanford.edu/~ang/papers/icml00-irl.pdf)

@@ -9,7 +9,7 @@ import argparse
 def argumentparser():
     parser = argparse.ArgumentParser(description='IRL')
     parser.add_argument('--env_name', type=str, default='LunarLander-v2',
-                        choices=['LunarLander-v2', 'BipedalWalkerHardcore-v2'],
+                        choices=['LunarLander-v2', 'BipedalWalkerHardcore-v2', 'LunarLanderContinuous-v2'],
                         help='Which Gym env')
     parser.add_argument('--logdir', type=str, default='/tmp/irl/0',
                         help='location to save logs')
@@ -21,13 +21,22 @@ def main(args):
     env = gym.make(args.env_name)
     obs = env.reset()
 
+    if 'float' in str(env.action_space.dtype):
+        cts_actions = True
+        n_actions = env.action_space.shape[0]
+    else:
+        cts_actions = False
+        n_actions = env.action_space.n
+
     actor = rl.DIFF(
         writer=writer,
         batch_size=512,
         n_inputs=obs.shape[0],
         n_hidden=128,
-        n_actions=env.action_space.n,
-        cts_actions='float' in str(env.action_space.dtype)
+        width=128,
+        n_layers=6,
+        n_actions=n_actions,
+        cts_actions=cts_actions
     )
     # observer = InverseReinforcementLearner(writer)
 

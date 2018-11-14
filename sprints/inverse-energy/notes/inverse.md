@@ -1,27 +1,10 @@
 # Why do we care?
 
-> What is the future of inverse learning?
+In my mind the inspiration for IEL comes from physics (and IRL by forget that for now). There are two valid ways to view (say) classical mechanics. As a set of causes and effects (in my mind this corresponds to a step function $x_{t+1} = f(x_t)$) or as the optimal solution of an energy functional (in this case see the [principle of least action](https://en.wikipedia.org/wiki/Principle_of_least_action)).
 
-Inverse learning can be summarised as learning a functional that is being optimised.
+This idea excites me as I hope to infer what the universe is optimising given observations of the optimal steps it takes towards its goal.
 
-Classical mechanics can be modelled as minimising the 'action'.
-People and learned agents can be modelled as maximising their rewards.
-X can be modelled as ???.  
-
-The future of marketing: facebook (/similar) will observe you and infer the experiences you find rewarding.
-
-In nature, we commonly observe the optimal policy under the [principle of least action](https://en.wikipedia.org/wiki/Principle_of_least_action). The lagrangian defines an energy function, say of ... which is minimised.
-
-In economies (or social environments) there are many agents with their own agendas. We tend to take actions that maximise our own rewards.
-
-
-
-
-Big questions
-
-- Is it a universal approximator? (what can we not do with it?)
-- In which cases does it work (better)?
-- Global view versus local view
+Ok, enough blue skies. Lets try and imagine a few (more) concrete examples.
 
 ### Wikipedia
 
@@ -36,61 +19,51 @@ Hmm. The reward function I would write for editing Wikipedia would be something 
 
 Aka, ability to efficiently code for any/all 'important' information accessible via book, word of mouth, internet, videos, ...
 
-
 Typical IRL approaches would fail at this problem.
 - Part of the problem is context, and the ability to search for new information that might not be a part of Wikipedia.
 - Also, the ability to be understood still only makes sense w.r.t people?
 
-But I imagine IRL would learn a good model of grammar.
+But, I imagine IRL would learn a good model of grammar...
 
 ### Robotics
 
-Expert demonstrations of CPR. Collecting rubbish.
+One of the dreams of IRL is that we could simply expose robots to youtube videos, and they would infer the rewards people are optimising when they; collect rubbish, give CPR, ... and with these inferred rewards, they could plan and achieve the same goals.
 
-I am actually pretty skeptical of IRL's utility here.
-
-The ability to learn from Youtube. What a nightmare.
-
+Tbh, I am pretty skeptical of this.
 
 ### Career advice/marketing/selling product
 
-IRL that predicts your reward function and uses that to match you with a career/service/product.
+I can imagine a tool that predicts your reward function and uses that to match you with a career/service/product that you have been looking for (or other things you might be convinced to spend money on...).
 What data would there be to infer a persons reward function. Well if you are facebook, then pretty much all of it.
 
-But, how accurate can the inferred reward really be? It would require 'coverage' (like off-policy). The person must have done sufficient exploration, tried new things etc.
+But, how accurate can the inferred reward really be? It would require 'coverage' (like off-policy). The person must have done sufficient exploration, tried new things etc for IRL to accurately infer R.
 
 Ok, the problem here is that we are not observing the optimal policy. Lol! We are observing a poor approximation/slowly converging solution.
-
-### Communication
-
-When talking to friends, we tend to say things like, ???.
-
-
-Is there a notion is psych or ling of goalbased communication?
 
 
 ### Principles of;
 
-Neural design.
+__Neural design.__
 
-In the book [Principles of neural design](https://mitpress.mit.edu/books/principles-neural-design) they show explore how a principle, the minimisation of energy, explains much of the brains structure, via the minimisation of wiring, computation with chemistry, ...
+In the book [Principles of neural design](https://mitpress.mit.edu/books/principles-neural-design) they explore how a principle, the minimisation of energy, explains much of the brains structure, via the minimisation of wiring, computation with chemistry, ...
 
 The principle of minimising wiring can be easily described, yet it has extrodinary power to generate predictions. Given the right initial conditions, this principle can explain wiring in the cortex, cerebellum, and even microchips!
 
-Entropy
+__Entropy.__
 
-We know that entropy always increases. Ie the relationship of the energy function between two states $E(s_{t}) \le E(s_{t+1})$. But knowing how exactally the current state transitions to the next state contains far more info/complexity.
+We know that entropy always increases. Ie the relationship of the energy function between two states $E(s_{t}) \le E(s_{t+1})$. But knowing how, exactally, the current state transitions to the next state contains far more info/complexity.
 
+__Colloids.__
+
+!?
 
 ### Inverse market design
 
-The allocation of scarce resources.
-
-If we looked at the allocation of wealth and power to individuals, what can we infer about the allocation (/market) machanism doing the allocation?
+If we looked at the allocation of wealth and power to individuals, what can we infer about the allocation mechanism doing the allocation? We could assume that the current allocation is optimal under some measure of utility, and attempt to infer that utility function.
 
 
-## Learning inversions
+***
 
-Hmph. What about getting access to non-optimal trajectories. It seems that this could increase the speed of learning (if the non-optimal trajectories were chosen correctly). We receive pairs indicating the dicision boundaries, good-bad.
+Others
 
-We dont get access to any negative samples. How does this restrict out ability to learn and generalise!?
+- Communication. When talking to friends, we tend to say things like, ???. Is there a notion is psych or ling of goal based communication?
