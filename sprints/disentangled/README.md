@@ -1,0 +1,1 @@
+> 1. Can we formalise what we mean by “decompose”? Can we differentiate it (so we can use it within the deep learning framework)? What is its relationship to independence criterion and independent component analysis?

@@ -1,16 +1,14 @@
-In IRL you observe the optimal policy and must learn the reward function. This is the inverse of the usual RL set up where, you are given the reward function and must learn the optimal policy.
-
 ## IRL
 
-> Given an observed policy, we can generate a point estimate of the reward function from the posterior distribution over reward functions. To construct this point estimate, we must know the likelihood of observing each policy for each given reward function
-
-Two sources of uncertainty? -- no that's the same source...?
-A single reward function can generate many optimal policies (when?).
-An optimal policy can be optimal in many ways.
+In IRL you observe the optimal policy and must learn the reward function. This is the inverse of the usual RL set up where, you are given the reward function and must learn the optimal policy.
 
 > The entire field of reinforcement learning is founded on the presupposition that the reward function, rather than the policy, is the most succinct, robust, and transferable definition of the task. [ref](https://github.com/sjchoi86/irl_rocks/blob/master/IRL_survey.pdf)
 
 __Q:__ ^^^ Is this really true!? In what cases?
+
+## Generalised policy iteration
+
+Almost all RL proceeds using GPI. Summarised below.
 
 ```python
 ### RL: generalised policy iteration
@@ -27,8 +25,8 @@ value -> policy
 
 What do we know about $V$ that might help?
 
-- The actions not taken should have lower $V$ than the actions taken.
-- If $\pi$ is optimal, then $V$ should be monotonoically increasing over time.
+1. The actions not taken should have lower $V$ than the actions taken.
+2. If $\pi$ is optimal, then $V$ should be monotonoically increasing over time.
 
 
 $$
@@ -39,14 +37,12 @@ L(\theta) &= \sum_i -\log(p(\tau_i))
 \end{align}
 $$
 
-The product can be turned into a sum of log probabilities. Thus we can train per step rather than per trajectory. $p(\tau)$ can be decomposed as we have access to the true state $s_t$. We can use the markov property to ensure that ...
-
-- __End-to-end.__ Could use GPI and make sure the whole thing is end-to-end differentiable.
+The product can be turned into a sum of log probabilities. Thus we can train per step rather than per trajectory. $p(\tau)$ can be decomposed as we have access to the true state $s_t$.
 
 
 ### Inversion
 
-> If we ahve the value fn and the optimal policy then how can we estimate the reward?
+> If we have the value fn and the optimal policy then how can we estimate the reward?
 
 What is the opposite of diffusion? Is it possible to run dynamic programming backwards in time?
 
@@ -56,27 +52,27 @@ V(s) &= R(s) + \gamma E_{s'\sim p(s, \pi^* (s))} [ V(s') ] \tag{policy evaluatio
 R(s) &= V(s) - \gamma E_{s'\sim p(s, \pi^* (s))} [ V(s') ] \tag{inverse policy evaluation}\\
 &= V(s) - \gamma V(s') \tag{deterministic policy/transition} \\
 &= V(s) - V(s + \Delta s) \tag{$\gamma \approx 1$, rewrite $s$}\\
-&= \frac{d V}{d s} \tag{!?!?} \\
+&= \frac{d V}{d s}\Delta s \tag{!?!?} \\
 \\
 V(s_0) &= \sum^{\infty}_{t=0} \gamma^t R(s_t) \\
 &= \int_0^{\infty} \gamma^t R(s(t)) dt \\
-\frac{ds(t)}{dt} &= f(s(t), a^* ) - s(t) \\
+&= \int_S \gamma^t R(s) ds \\
+\frac{dV(s)}{ds} &=  \gamma^t R(s) \tag{!!?!}\\
 \end{align}
 $$
 (where $\Delta s$ is a specific change in $s$ along the direction of the best action)
 
-### Generalised reward iteration.
+### Generalised value iteration.
 
-What about `policy x reward' -> value`, `policy x value -> reward`. Where `reward'` is a simple guess (eg initially a constant?). Would need to show that the value converges, and so does the reward.
+We could start with a simple guess (eg initially a constant?). Would need to show that the value converges, and so does the reward.
 
 ```python
 # IRL: generalsied inverse policy iteration
-# the optimal policy can be
-policy -> value
 # invert the policy under the current value fn
 policy x value -> reward
+# evaluate
+policy x reward -> value
 ```
-
 
 ### A metric
 
@@ -120,30 +116,11 @@ Either:
 
 This is quite nice! Now we need to learn $w$ and $\phi$ and $\mu$ (note we could learn $\phi$ in an unsupervised fashion). Only need to learn $V$ and we get R for free.
 
-.
-
-***
-
-- Is this realted to; eligibility traces, successors?
-
-
-### Max Entropy IRL
-
-?!?
-
-***
+## Thoughts
 
 - Not possible to recover the true reward fn!? Want to see a proof!
 - __Q:__ Oh. Is it not possible for IRL to just observe!? Does it need to act as well? Test out rewards and see what policies are generated, and then compare them to the optimal observations?
-
-
-
-### Learning inversions
-
-Hmph. What about getting access to non-optimal trajectories. It seems that this could increase the speed of learning (if the non-optimal trajectories were chosen correctly). We receive pairs indicating the dicision boundaries, good-bad.
-
-We dont get access to any negative samples. How does this restrict out ability to learn and generalise!?
-
+- Hmph. What about getting access to non-optimal trajectories. It seems that this could increase the speed of learning (if the non-optimal trajectories were chosen correctly). We receive pairs indicating the dicision boundaries, good-bad. We dont get access to any negative samples. How does this restrict out ability to learn and generalise!?
 
 ## Refs
 

@@ -7,10 +7,11 @@ import copy
 
 class InverseReinforcementLearner():
     """
-    Implementation of https://www.aaai.org/Papers/AAAI/2008/AAAI08-227.pdf.
-    Max entropy IRL.
+    Implementation of matching feature expectation.
+    https://ai.stanford.edu/~ang/papers/icml04-apprentice.pdf
 
-    No. Implementation of matching feature expectation.
+    and IOC
+    https://homes.cs.washington.edu/~todorov/papers/DvijothamICML10.pdf
     """
     def __init__(self, writer=None):
         self.writer = tf.summary.FileWriter('/tmp/irl/0') if writer is None else writer
@@ -52,8 +53,8 @@ class InverseReinforcementLearner():
 
             # trained with td error
             self.discounted_features = tf.keras.Sequential([
-                tf.keras.layers.Dense(64, activation=tf.nn.selu),
-                tf.keras.layers.Dense(64, activation=tf.nn.selu),
+                tf.keras.layers.Dense(256, activation=tf.nn.selu),
+                tf.keras.layers.Dense(256, activation=tf.nn.selu),
                 tf.keras.layers.Dense(n_hidden)
             ])
 
@@ -80,7 +81,7 @@ class InverseReinforcementLearner():
             gnvs = (
                 self.opt.compute_gradients(loss_mu, self.discounted_features.variables)
                 + self.opt.compute_gradients(loss_w, self.linear.variables)
-                # + self.opt.compute_gradients(loss_enc, self.encoder.variables+self.decoder.variables)
+                + self.opt.compute_gradients(loss_enc, self.encoder.variables+self.decoder.variables)
             )
 
             self.loss = loss_w + loss_mu + loss_enc

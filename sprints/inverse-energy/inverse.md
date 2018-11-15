@@ -55,7 +55,7 @@ We know that entropy always increases. Ie the relationship of the energy functio
 
 __Colloids.__
 
-!?
+If we remove all the physics from a simulation of colloids, but maximise each colloids position based on its (local) entropy (so that each colloid has the most freedom/space). The crystalline structures emergy from the interaction of a system of colloids. So the shape of the colloids and the principle of entropy maximisation is enough to explain many different crystalline strucutres.
 
 ### Inverse market design
 
