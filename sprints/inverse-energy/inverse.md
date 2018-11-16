@@ -1,6 +1,6 @@
 # Why do we care?
 
-In my mind the inspiration for IEL comes from physics (and IRL by forget that for now). There are two valid ways to view (say) classical mechanics. As a set of causes and effects (in my mind this corresponds to a step function $x_{t+1} = f(x_t)$) or as the optimal solution of an energy functional (in this case see the [principle of least action](https://en.wikipedia.org/wiki/Principle_of_least_action)).
+In my mind the inspiration for IEL comes from physics (and IRL but forget that for now). There are two valid ways to view (say) classical mechanics. As a set of causes and effects (in my mind this corresponds to a step function $x_{t+1} = f(x_t)$) or as the optimal solution of an energy functional (in this case see the [principle of least action](https://en.wikipedia.org/wiki/Principle_of_least_action)).
 
 This idea excites me as I hope to infer what the universe is optimising given observations of the optimal steps it takes towards its goal.
 
@@ -29,12 +29,12 @@ But, I imagine IRL would learn a good model of grammar...
 
 One of the dreams of IRL is that we could simply expose robots to youtube videos, and they would infer the rewards people are optimising when they; collect rubbish, give CPR, ... and with these inferred rewards, they could plan and achieve the same goals.
 
-Tbh, I am pretty skeptical of this.
+Tbh, I am pretty skeptical of this ever working well. Maybe as a form for pretraining.
 
 ### Career advice/marketing/selling product
 
 I can imagine a tool that predicts your reward function and uses that to match you with a career/service/product that you have been looking for (or other things you might be convinced to spend money on...).
-What data would there be to infer a persons reward function. Well if you are facebook, then pretty much all of it.
+What data would there be to infer a persons reward function?
 
 But, how accurate can the inferred reward really be? It would require 'coverage' (like off-policy). The person must have done sufficient exploration, tried new things etc for IRL to accurately infer R.
 
@@ -60,10 +60,3 @@ If we remove all the physics from a simulation of colloids, but maximise each co
 ### Inverse market design
 
 If we looked at the allocation of wealth and power to individuals, what can we infer about the allocation mechanism doing the allocation? We could assume that the current allocation is optimal under some measure of utility, and attempt to infer that utility function.
-
-
-***
-
-Others
-
-- Communication. When talking to friends, we tend to say things like, ???. Is there a notion is psych or ling of goal based communication?
