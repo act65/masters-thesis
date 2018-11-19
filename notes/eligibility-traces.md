@@ -1,7 +1,7 @@
 
 $$
 \begin{align}
-Q_{t+1}(a_t, s_t) &= Q_t(s_t, a_t) + \alpha \delta_t e_t(s_t, a_t) \tag{for all $s, a$} \\
+Q_{t+1}(s_t, a_t) &= Q_t(s_t, a_t) + \alpha \delta_t e_t(s_t, a_t) \tag{for all $s, a$} \\
 \Delta Q &= \alpha \delta_t e_t(s_t, a_t) \\
 \end{align}
 $$
@@ -17,6 +17,7 @@ e_t &= \begin{cases}
 \gamma \lambda e_{t-1}, & s\neq s_t, a \neq a_t\\
 \end{cases} \tag{if binary features, ie tabular} \\
 e_t &= \gamma \lambda e_{t-1} + \nabla_{\theta_t} Q_t(s_t, a_t) \tag{generalised to cts}\\
+e_t &= \gamma \lambda e_{t-1} + \nabla_{\theta_t} V_t(s_t)
 \end{align}
 $$
 
@@ -27,6 +28,8 @@ But how does this work? Do we need a window around a cts value?
 PROBLEM. To work the various input states and actions would need to be normalised???
 
 Why are these attractive? Keeps the trace of a trajectory lingering. Could simply use the trajectory, but it needs to be feed in, thus we need to store the obs and action. Rather the trace and be stored internally, (hopefully more cheaply!?).
+
+https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2007-49.pdf
 
 ***
 
