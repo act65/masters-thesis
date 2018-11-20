@@ -15,9 +15,19 @@ There exists $C$ such that $x = AC^{−1}Cs$. Where $C$ could be a rotation, sca
 
 $$
 p(x_1,x_2) = p_1(x_1)p_2(x_2) \\
-E[f_1(x_1)f_2(x_2)] = E[f_1(x_1)] E[f_2(x_2)]  \\
+E_{x_1, x_2\sim p}[f_1(x_1)f_2(x_2)] = E_{x_1\sim p_1}[f_1(x_1)] E_{x_2\sim p_2}[f_2(x_2)]  \\
 $$
 
+This seems like a very unusual property!? It is weaker than orthgonoality. As if $f_1, f_2$ were orthogonal then $E[f_1(x_1)f_2(x_2)] = 0$ (actually that is not be true!?!).
+
+$$
+\begin{align}
+\langle f_1, f_2 \rangle &= \int f_1(x)f_2(x)dx \\
+&= 0 \tag{orthogonal}
+\end{align}
+$$
+
+proof
 $$
 \begin{align}
 E[f_1(x_1)f_2(x_2)] &= \int\int f_1(x_1)f_2(x_2)p(x_1, x_2) dx_1 dx_2 \\
@@ -34,6 +44,30 @@ $$
 
 Uncorrelated if covariance is zero.
 Independence implies zero correlation. Not the converse.
+
+***
+
+Two random variables X and Y are independent if and only if the characteristic function of the random vector (X, Y) satisfies
+
+$$
+\begin{align}
+\varphi_{(X, Y)}(t, s) &= \varphi_{X}(t) \cdot \varphi_{Y}(s) \\
+\varphi_{X}(t) &= E[e^{itX}] \\
+\end{align}
+$$
+
+hmm.
+
+***
+
+Invariance!?
+
+$$
+P(A) = P(A \mid B) \\
+$$
+
+Nope. Not what we want!?
+__Q__ How does explaining away come into this!?
 
 ## Guassian
 

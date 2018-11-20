@@ -16,13 +16,13 @@ Questions
 
 - Sparse gating, modules, ...
 
-If we are using modular parts then we need to estimate gradients!
+If we are using modular parts then we need a way to learn the modules and to assign credit to each one!
 
 #### Implicit decomposition
 
 - EWC, L-1, MI
 
-If we are doing this implicitly, then ...? What geometry do we want!?
+If we are doing this implicitly, then ...? What geometry do we want!? How can we recover a decomposition/??.
 
 ***
 
