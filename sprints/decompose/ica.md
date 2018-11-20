@@ -22,7 +22,7 @@ $$
 \begin{align}
 E[f_1(x_1)f_2(x_2)] &= \int\int f_1(x_1)f_2(x_2)p(x_1, x_2) dx_1 dx_2 \\
 &= \int p_1(x_1)f_1(x_1) dx_1 \int p_2(x_2) f_2(x_2) dx_2 \\
-&=E[f_1(x_1)] E[f_2(x_2)]  \\
+&= E[f_1(x_1)] E[f_2(x_2)] \\
 \end{align}
 $$
 
@@ -30,6 +30,7 @@ A weaker form of independence is uncorrelatedness.
 
 $$
 E[x_1x_2] - E[x_1] E[x_2] = 0 \\
+E[(x_1- E[x_1])(x_2-E[x_2])] = 0 \\
 $$
 
 Uncorrelated if covariance is zero.
@@ -57,8 +58,40 @@ $$
 y &= Bx \tag{$s =A^{-1}x$} \\
 I &= \sum H(y_i) - H(y) \\
 I &= \sum H(y_i) - H(x) - log \mid \det B \mid \\
+\\
+H(x) &= \int p(x) I(x) dx \\
+I(X, Y) &= D_{KL} (p(x, y)\parallel p(x)p(y)) \\
+I(X, X) &= H(x) \\
 \end{align}
 $$
+
+## Whitening
+
+The whitening transformation is always possible. -> components are uncorrelated and variances equal 1.
+
+$$
+E[xx^T] = USV^T \\
+\hat x = US^{\frac{1}{2}}V^Tx \\
+E[\hat x \hat x^T] = I
+$$
+???
+
+> Here we see that whitening reduces the number of parameters to be estimated. Instead of having to estimate the $n^2$ parameters that are the elements of the original matrix A, we only need to estimate the new, orthogonal mixing matrix $\hat A$. An orthogonal matrix contains $\frac{n(n − 1)}{2}$ degrees of freedom.
+
+## ICA -> Perceptron -> PCA -> linear AE
+
+$$
+y = f_{\theta}(x) \\
+\mathop{\text{min}}_{\theta} \log \frac{p(y)}{\prod_i p(y_i)} \\
+\frac{\partial L}{\partial \theta} = ??? \\
+$$
+
+- What are the dynamics of minimising this loss? What is the geometry?
+- Do we really need to decorrelate W at every time step?
+
+## Questions/thoughts
+
+- __Q__ Relationship to orthogonal regularisation? If we used discrete variables, then $p(x)$ is a count/frequency. So we ensure that
 
 ## Resources
 
