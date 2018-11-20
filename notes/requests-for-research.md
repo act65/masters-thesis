@@ -23,6 +23,9 @@ __Learner discrimination__ &#9734; &#9734; &#9734; Just by observing a player le
 
 __Unbiased online recurrent opptimisation__ &#9734; &#9734; Can we extent [UORO](https://arxiv.org/abs/1702.05043) to the RL setting and the continuous learning setting by combining it with an online version of [EWC](https://arxiv.org/abs/1612.00796)?
 
+__Meta learning emerges from temporal decompositions__ &#9734; &#9734; [Meta-RL](https://arxiv.org/abs/1611.05763) trains a learner on the aggregated return over many episodes (a larger time scale). If we construct a temporal decomposition (moving averages at different time-scales) of rewards and aproximate them with a set of value functions, does this produce a heirarchy of meta learners? (will need a way to aggregate actions chosen in different time scales, for example $\pi(s_t) = g(\sum_k f_k(z_t))$)
+
+
 <!-- ## Continuious options
 
 https://arxiv.org/pdf/1703.00956.pdf -->

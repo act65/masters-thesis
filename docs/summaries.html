@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Summaries</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
+  <style type="text/css">code{white-space: pre;}</style>
   <link rel="stylesheet" href="../style.css">
+  <script src="../docs/mathjax.js" type="text/javascript"></script>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -34,11 +30,49 @@
 <h2 id="world-models">World models</h2>
 <ul>
 <li>Learn a large RNN that approximates the transition function.</li>
-<li>Add noise when simulating to avoid the controller overfitting to bias in the model.</li>
+<li>Add noise when imagining/simulating experience to avoid the controller overfitting to bias in the model.</li>
 <li>Can use the world-model to imagine training experience for training the controller.</li>
 </ul>
 <p><a href="https://worldmodels.github.io/" class="uri">https://worldmodels.github.io/</a></p>
 <h2 id="temporal-difference-models">Temporal difference models</h2>
+<blockquote>
+<p>conventional wisdom holds that model-free methods are less efficient but achieve the best asymptotic performance, while model-based methods are more efficient but do not produce policies that are as optimal</p>
+</blockquote>
+<blockquote>
+<p>Goal-conditioned value functions learn to predict the value function for every possible goal state. That is, they answer the following question: what is the expected reward for reaching a particular state, given that the agent is attempting (as optimally as possible) to reach it? ... [R]ewards based on distances to a goal hint at a connection to model-based learning: if we can predict how easy it is to reach any state from any current state, we must have some kind of understanding of the underlying “physics.”</p>
+</blockquote>
+<p><span class="math display">\[
+r(s_t, a_t, s_{t+1}, s_g) = −D(s_{t+1}, s_g) \\
+\]</span></p>
+<p>So <span class="math inline">\(r\)</span> is now a measure of <em>reachability</em>!?</p>
+<blockquote>
+<p>TDM ... tells us how close the agent will get to a given goal state <span class="math inline">\(s_g\)</span> after <span class="math inline">\(τ\)</span> time steps, when it is attempting to reach that state in <span class="math inline">\(τ\)</span> steps.</p>
+</blockquote>
+<p><span class="math display">\[
+Q(s_t, a_t, s_g, \tau) = E_{p(s_{t+1}\mid s_t, a_t)}(-D(s_{t+1}, s_g)) \cdot1[\tau =0] + \text{max}_a Q(s_{t+1}, a, s_g, \tau-1)\cdot1[\tau \neq0]
+\]</span></p>
+<p><em>Wait, doesnt <span class="math inline">\(\tau -1\)</span> mean that we willhave negative <span class="math inline">\(\tau\)</span>s? I think it ishould be <span class="math inline">\(1[\tau&gt;0]\)</span>?</em></p>
+<p>So if <span class="math inline">\(\tau=0\)</span>, and <span class="math inline">\(s_{t+1} = s_g\)</span> then then <span class="math inline">\(Q\)</span> value should be zero.</p>
+<blockquote>
+<p>... vector-valued Q-function can learn distances along each dimension separately, providing it with more supervision from each training point.</p>
+</blockquote>
+<p><em>hmm. want to think about this!! but not sure who it works, how can you do the argmax now?!?</em></p>
+<p><span class="math display">\[
+\begin{align}
+Q(s_t, a_t, s_g, \tau) &amp;= \sum_i \psi_i(s_t, a_t, s_g, \tau) \\
+&amp;=  \sum_i - \mid s_t - s_g \mid \\
+\mathcal L &amp;= \frac{1}{2}\parallel y - \psi(s_t, a_t, s_g, \tau) \parallel_2^2 \\
+\end{align}
+\]</span></p>
+<p><span class="math inline">\(Q\)</span> is used to take actions, but is constructed/trained via some representation of distances. Reminds me of successor features?!?</p>
+<p><span class="math display">\[
+\begin{align}
+Q(s_t, a_t) &amp;= g(f(s_t, a_t)) \\
+\mathcal L &amp;= \frac{1}{2}\parallel y - f(s_t, a_t) \parallel_2^2 \\
+\end{align}
+\]</span></p>
+<p>Ahh ok. I think I see. We are simply learning the model. And we already know how to extract <span class="math inline">\(Q\)</span> values from it. Therefore we dont need to train <span class="math inline">\(g\)</span>.</p>
+<hr />
 <ul>
 <li>Define a proxy reward as the distance between a goal state and the current state.</li>
 <li>Learn a Q value that estimates the reachability of different states within t steps.</li>

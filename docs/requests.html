@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Requests for research</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
+  <style type="text/css">code{white-space: pre;}</style>
   <link rel="stylesheet" href="../style.css">
   <script src="../docs/mathjax.js" type="text/javascript"></script>
   <!--[if lt IE 9]>
@@ -33,18 +28,22 @@
 <body>
 <div>
 <p>
-To stay sane I need to write down some of the <em>actionable</em> ideas that occur to me. Otherwise I have the tendency to hoard them. So, these are the questions I am not going to answer (argh it hurts!). They appear to be perfectly good research directions, but “you need to focus” (says pretty much everyone I meet).
+To stay sane I need to write down some of the <em>actionable</em> ideas that occur to me. Otherwise I have the tendency to hoard them. So, these are the questions I am not going to answer (argh it hurts!). They appear to be perfectly good research directions, but &quot;you need to focus&quot; (says pretty much everyone I meet).
 </p>
 <h1 id="requests-for-research">Requests for research</h1>
 <p><em>(the number of stars reflects how open the problem is:, 1 star means little room for interpretation, 3 stars mean that there are some complex choices to be made)</em></p>
 <p><strong>Controlled implicit qualtiles</strong> ☆ Extend <a href="https://arxiv.org/abs/1806.06923">Implicit quantile RL</a> (which works suprisingly well) to use <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.7441&amp;rep=rep1&amp;type=pdf">control</a> <a href="https://arxiv.org/abs/0802.2426">variates</a>.</p>
-<p><strong>Atari-onomy</strong> ☆ Make a <a href="http://taskonomy.stanford.edu/">taskonomy</a> of the <a href="https://gym.openai.com/envs/#atari">Atari</a> games, showing how ‘similar’ each game is to others.</p>
-<p><strong>Who is the best critic?</strong> ☆ ☆ Which value fn approximation has the best inductive bias suited to learning value functions? A value function is the expected future return of a given state. <span class="math inline">\(V(s_t) =\mathbb E\big[ \sum_{i=t}^T \gamma^{T-t+i} R(s_t) \big]\)</span>. We can approximate the value function with a parameterise function, but which one? <a href="https://arxiv.org/abs/1706.01427">Relational neural networks</a>, <a href="https://en.wikipedia.org/wiki/Decision_tree">decision trees</a>, <a href="https://arxiv.org/abs/1807.01622">neural processes</a>, … . Learning value functions have a couple of issues, large class imbalance/rare events, online training, distribution shift, … .</p>
-<p><strong>Learner discrimination</strong> ☆ ☆ ☆ Just by observing a player learn, can we identify the learning algorithm is it using to learn? For example, can we distinguish the learners in <a href="https://github.com/openai/baselines/">OpenAI’s baselines</a>, PPO, AC2, AKTR, …?</p>
+<p><strong>Atari-onomy</strong> ☆ Make a <a href="http://taskonomy.stanford.edu/">taskonomy</a> of the <a href="https://gym.openai.com/envs/#atari">Atari</a> games, showing how 'similar' each game is to others.</p>
+<p><strong>Who is the best critic?</strong> ☆ ☆ Which value fn approximation has the best inductive bias suited to learning value functions? A value function is the expected future return of a given state. <span class="math inline">\(V(s_t) =\mathbb E\big[ \sum_{i=t}^T \gamma^{T-t+i} R(s_t) \big]\)</span>. We can approximate the value function with a parameterise function, but which one? <a href="https://arxiv.org/abs/1706.01427">Relational neural networks</a>, <a href="https://en.wikipedia.org/wiki/Decision_tree">decision trees</a>, <a href="https://arxiv.org/abs/1807.01622">neural processes</a>, ... . Learning value functions have a couple of issues, large class imbalance/rare events, online training, distribution shift, ... .</p>
+<p><strong>Learner discrimination</strong> ☆ ☆ ☆ Just by observing a player learn, can we identify the learning algorithm is it using to learn? For example, can we distinguish the learners in <a href="https://github.com/openai/baselines/">OpenAI's baselines</a>, PPO, AC2, AKTR, ...?</p>
 <p><strong>Unbiased online recurrent opptimisation</strong> ☆ ☆ Can we extent <a href="https://arxiv.org/abs/1702.05043">UORO</a> to the RL setting and the continuous learning setting by combining it with an online version of <a href="https://arxiv.org/abs/1612.00796">EWC</a>?</p>
+<p><strong>Meta learning emerges from temporal decompositions</strong> ☆ ☆ <a href="https://arxiv.org/abs/1611.05763">Meta-RL</a> trains a learner on the aggregated return over many episodes (a larger time scale). If we construct a temporal decomposition (moving averages at different time-scales) of rewards and aproximate them with a set of value functions, does this produce a heirarchy of meta learners? (will need a way to aggregate actions chosen in different time scales, for example <span class="math inline">\(\pi(s_t) = g(\sum_k f_k(z_t))\)</span>)</p>
 <!-- ## Continuious options
 
 https://arxiv.org/pdf/1703.00956.pdf -->
+<!-- A spectrum between accurate/fast models and slow/accurate ones.
+How can we bootstrap one model from others?
+Reverse, local-global interactions, accuracy mask, time step, ... -->
 </div>
 </body>
 </html>
