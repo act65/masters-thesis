@@ -75,6 +75,8 @@ Problem. The requirement for each pair to have the same frequency seems unwanted
 
 Problem. The above intuition doesnt capture the separability of the different variables. Does it?
 
+Wait a minute. What I just said is that we want the join distribution, $p(x, y)$ to have maximum entropy
+
 
 ***
 

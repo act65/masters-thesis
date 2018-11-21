@@ -2,7 +2,7 @@ Topic: Transfer reinforcement learning
 
 run `make` to build the various deliverables (html and pdf).
 
-Dependencies are; pandoc, pandoc-citeproc, various texlive extensions.
+Dependencies are; pandoc, pandoc-citeproc, texlive.
 
 ***
 

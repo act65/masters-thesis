@@ -57,3 +57,17 @@ What we want is to find a basis which we can efficiently use to construct observ
 
 Imagine;
 - a set of images. We can search through combinations of the basis set to find a mixture that approximates $x_i$.
+
+
+## Guassians -> max entropy
+
+$$
+\begin{align}
+v &= E_{p(x)}[(x-\mu)^2] \\
+&= \int p(x)(x-\mu)^2 dx \\
+H(x) &= E[I(x)] \\
+&= \int p(x) I(x) dx \\
+&= \int -p(x)\ln(p(x)) dx \\
+\frac{dH(x)}{dx} &=
+\end{align}
+$$
