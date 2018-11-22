@@ -160,6 +160,15 @@ I(X, X) &= H(x) \\
 \end{align}
 $$
 
+### Total correlation
+
+$$
+\begin{align}
+TC(z) &= \sum_i H(z_i) - H(z) \\
+&= KL\big( p(z) \parallel \prod_i p(z_i) \big) \\
+\end{align}
+$$
+
 ## MMD
 
 http://www.jmlr.org/papers/volume13/gretton12a/gretton12a.pdf
