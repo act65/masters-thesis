@@ -22,9 +22,29 @@ http://www.cs.toronto.edu/~nitish/unsupervised_video/
 https://github.com/rszeto/moving-symbols
 https://gist.github.com/tencia/afb129122a64bde3bd0c
 
+Sprites!
+https://github.com/deepmind/dsprites-dataset
+
 ## Representation
 
 What if I have an independent variable that is a ring, or has some other topology other than a line?
+
+What about a dataset with varying numbers of sprites/digits in the image.
+
+## After disentanglement
+
+Ok, so I now have a set of independent latent variables, $z$. What should I do now?
+
+Imagine: I want to learn a classifier using the disentangled representation, $g(z)$. The classifier learns to only use a subset of the latent dimensions, $S \subset Z$. So this means that the classification is invariant to changes in the ignored dimensions.
+
+How can this knowledge of invariance be used!?
+What about equivariance? $f(T(x)) = T(f(x))$?
+
+Learn $T_i$ such that
+
+***
+
+problem. TC only works wth balanced training data!?
 
 ## Resources
 

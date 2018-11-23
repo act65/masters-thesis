@@ -2,8 +2,9 @@
 
 TODOs
 
-- Implememt latent independence
-- Disentangle moving mnist
+- Implement latent independence
+- Disentangle sprites/moving mnist
 - Derive gradients, dynamics and fixed points of $min TC(Wx)$
 - Unify structural and soft priors for independence
 - I would expect decomposition/disentanglement to be much easier in the RL setting as we get to take actions, to test independence!?
+- Something with VQ-VAE?
