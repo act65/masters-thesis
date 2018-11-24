@@ -123,24 +123,24 @@ def model_fn(features, labels, mode, params, config):
 
 
 def pack_images(images, rows, cols):
-  """Helper utility to make a field of images."""
-  shape = tf.shape(images)
-  width = shape[-3]
-  height = shape[-2]
-  depth = shape[-1]
-  images = tf.reshape(images, (-1, width, height, depth))
-  batch = tf.shape(images)[0]
-  rows = tf.minimum(rows, batch)
-  cols = tf.minimum(batch // rows, cols)
-  images = images[:rows * cols]
-  images = tf.reshape(images, (rows, cols, width, height, depth))
-  images = tf.transpose(images, [0, 2, 1, 3, 4])
-  images = tf.reshape(images, [1, rows * width, cols * height, depth])
-  return images
+    """Helper utility to make a field of images."""
+    shape = tf.shape(images)
+    width = shape[-3]
+    height = shape[-2]
+    depth = shape[-1]
+    images = tf.reshape(images, (-1, width, height, depth))
+    batch = tf.shape(images)[0]
+    rows = tf.minimum(rows, batch)
+    cols = tf.minimum(batch // rows, cols)
+    images = images[:rows * cols]
+    images = tf.reshape(images, (rows, cols, width, height, depth))
+    images = tf.transpose(images, [0, 2, 1, 3, 4])
+    images = tf.reshape(images, [1, rows * width, cols * height, depth])
+    return images
 
 
 def image_tile_summary(name, tensor, rows=8, cols=8):
-  tf.summary.image(name, pack_images(tensor, rows, cols), max_outputs=1)
+    tf.summary.image(name, pack_images(tensor, rows, cols), max_outputs=1)
 
 
 def main(_):
@@ -152,25 +152,13 @@ def main(_):
         tf.gfile.DeleteRecursively(FLAGS.model_dir)
     tf.gfile.MakeDirs(FLAGS.model_dir)
 
-    mnist = tf.contrib.learn.datasets.load_dataset("mnist")
-    train_data = mnist.train.images  # Returns np.array
-    train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
-    eval_data = mnist.test.images  # Returns np.array
-    eval_labels = np.asarray(mnist.test.labels, dtype=np.int32)
+    data = np.load("/home/telfaralex/repos/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.npz")
 
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
           x={"x": train_data},
-          y=train_labels,
           batch_size=FLAGS.batch_size,
           num_epochs=1,
           shuffle=True)
-
-    eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": eval_data},
-        y=eval_labels,
-        batch_size=FLAGS.batch_size,
-        num_epochs=1,
-        shuffle=False)
 
     estimator = tf.estimator.Estimator(
       model_fn,
@@ -183,7 +171,7 @@ def main(_):
 
     for _ in range(FLAGS.epochs):
         estimator.train(train_input_fn, steps=FLAGS.viz_steps)
-        eval_results = estimator.evaluate(eval_input_fn)
+        # eval_results = estimator.evaluate(eval_input_fn)
         print("Evaluation_results:\n\t%s\n" % eval_results)
 
 if __name__ == "__main__":

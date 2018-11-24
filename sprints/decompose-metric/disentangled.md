@@ -39,6 +39,7 @@ Imagine: I want to learn a classifier using the disentangled representation, $g(
 
 How can this knowledge of invariance be used!?
 What about equivariance? $f(T(x)) = T(f(x))$?
+A correlation between the target and an independent dimension implies equivariance!?
 
 Learn $T_i$ such that
 
@@ -46,9 +47,19 @@ Learn $T_i$ such that
 
 problem. TC only works wth balanced training data!?
 
+***
+
+Want a way to optimise disentanglement that isnt not derived from Bayes/Variational. $\parallel z_p - e(x)\parallel_1$. >>> Noise as targets!?
+
+A possible alternative route?
+- [NAT](https://arxiv.org/abs/1704.05310)
+- [Clustering via NAT](https://openreview.net/pdf?id=BJvVbCJCb)
+- [Sinkhorn AEs](https://arxiv.org/pdf/1810.01118.pdf)
+
 ## Resources
 
 - [Beta VAE](https://arxiv.org/abs/1804.03599)
 - [Structured disentangled representations](https://arxiv.org/abs/1804.02086)
 - [ICM](https://arxiv.org/abs/1712.00961)
 - [Information dropout](https://arxiv.org/abs/1611.01353)
+- [Emergence of invariance and disentanglement](https://arxiv.org/abs/1706.01350)

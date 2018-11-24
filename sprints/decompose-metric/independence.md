@@ -169,6 +169,8 @@ TC(z) &= \sum_i H(z_i) - H(z) \\
 \end{align}
 $$
 
+[AE TC](https://arxiv.org/abs/1802.05822)
+
 ## MMD
 
 http://www.jmlr.org/papers/volume13/gretton12a/gretton12a.pdf
@@ -200,4 +202,5 @@ We don't know which transforms to use, $f, g$, but instead we could search for t
 
 ## Questions/thoughts
 
-- __Q__ Relationship to orthogonal regularisation? If we used discrete variables, then $p(x)$ is a count/frequency. So we ensure that
+- Can information content be calculated by the jacobian?
+- Clustering in an independent space, doesnt make sense? Should be uniformly distributed. No clusters!?
