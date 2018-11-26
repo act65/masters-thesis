@@ -160,6 +160,8 @@ I(X, X) &= H(x) \\
 \end{align}
 $$
 
+!!! [Estimating Mutual Information](https://arxiv.org/pdf/cond-mat/0305641.pdf)
+
 ### Total correlation
 
 $$
@@ -204,3 +206,4 @@ We don't know which transforms to use, $f, g$, but instead we could search for t
 
 - Can information content be calculated by the jacobian?
 - Clustering in an independent space, doesnt make sense? Should be uniformly distributed. No clusters!?
+- What if the system being modelled doesnt have independent factors of variation!? (does that even make sense?)

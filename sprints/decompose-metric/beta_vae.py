@@ -115,7 +115,7 @@ from __future__ import print_function
 
 # Adapted from https://github.com/tensorflow/probability/blob/master/tensorflow_probability/examples/vae.py
 # TODO: use Daniel's rate limited VAE?
-# TODO: verify how color is encoded in the sprites dataset.
+# TODO: verify how color is encoded in the sprites dataset. (I think there might be a bug in my code.)
 # TODO: explore how the number of dims effects what is disentangled
 # TODO: plot latent space, what do disentangled variables look like. does clustering make sense?
 
@@ -197,40 +197,39 @@ def _softplus_inverse(x):
 
 
 def make_encoder(activation, latent_size, base_depth):
-  """Creates the encoder function.
+    """Creates the encoder function.
 
-  Args:
+    Args:
     activation: Activation function in hidden layers.
     latent_size: The dimensionality of the encoding.
     base_depth: The lowest depth for a layer.
 
-  Returns:
+    Returns:
     encoder: A `callable` mapping a `Tensor` of images to a
       `tfd.Distribution` instance over encodings.
-  """
-  conv = functools.partial(
+    """
+    conv = functools.partial(
       tf.keras.layers.Conv2D, padding="SAME", activation=activation)
 
-  encoder_net = tf.keras.Sequential([
+    encoder_net = tf.keras.Sequential([
       conv(base_depth, 5, 2),
       conv(base_depth, 5, 2),
       conv(2 * base_depth, 5, 2),
       conv(2 * base_depth, 5, 2),
       conv(4 * latent_size, 7, 2),
       tf.keras.layers.Flatten(),
-      tf.keras.layers.Dense(2 * latent_size, activation=None),
-  ])
+    tf.keras.layers.Dense(latent_size, activation=None),
+    ])
 
-  def encoder(images):
-    images = 2 * tf.cast(images, dtype=tf.float32) - 1
-    net = encoder_net(images)
-    return tfd.MultivariateNormalDiag(
-        loc=net[..., :latent_size],
-        scale_diag=tf.nn.softplus(net[..., latent_size:] +
-                                  _softplus_inverse(1.0)),
-        name="code")
+    def encoder(images):
+        images = 2 * tf.cast(images, dtype=tf.float32) - 1
+        net = encoder_net(images)
+        return tfd.MultivariateNormalDiag(
+          loc=net,
+          scale_diag=tf.ones_like(net),
+          name="code")
 
-  return encoder
+    return encoder
 
 
 def make_decoder(activation, latent_size, output_shape, base_depth):
@@ -267,8 +266,6 @@ def make_decoder(activation, latent_size, output_shape, base_depth):
     # use with a convolutional decoder network.
     codes = tf.reshape(codes, (-1, 1, 1, latent_size))
     logits = decoder_net(codes)
-    # print(logits, tf.concat([original_shape[:-1], output_shape], axis=0))
-    # raise SystemExit
     logits = tf.reshape(
         logits, shape=tf.concat([original_shape[:-1], output_shape], axis=0))
     return tfd.Independent(tfd.Bernoulli(logits=logits),
@@ -452,7 +449,7 @@ def model_fn(features, labels, mode, params, config):
 
 def build_input_fns(batch_size):
     dataset_zip = np.load("/home/telfaralex/repos/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.npz")
-    imgs = np.reshape(dataset_zip['imgs'], [737280, 64, 64, 1])
+    imgs = np.reshape(dataset_zip['imgs'], [737280, 64, 64, 1])[0:50000]
 
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
           x=imgs,

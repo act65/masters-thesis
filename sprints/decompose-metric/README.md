@@ -22,6 +22,9 @@ Ok, so what if I just started out learning n different modules? Would they disen
 
 __Q__ Cannot apply experts in parallel. Makes no sense. What property is making this the case???
 
+Whitney + Fergus apply the transforms in parallell!? Can apply in parallell if we are applying different transforms to independent objects. But cannot apply independent transforms on a single object in parallel.
+Heirarhical indepencence? Two sets of distributed representations and are intra/inter independent.
+
 
 $$
 \begin{align}
@@ -35,3 +38,5 @@ How does commutativity imply independence? How can we train for commutativity?
 how would the shuffle arise in the brain? noise from info arriving at different times? cannot rely on ...!?!?
 
 ^^^ How does TC embody commutativity?!?
+
+***
