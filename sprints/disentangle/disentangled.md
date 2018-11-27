@@ -77,7 +77,9 @@ $$
 \end{align}
 $$
 
-Could construct with independent modules applied to the $i$th dimension. But want the ability to learn to prune the unneeded weights. 
+Could construct with independent modules applied to the $i$th dimension. But want the ability to learn to prune the unneeded weights.
+
+Does $\mathop{\text{min}}I(z_t^i, z_{t}^j) \implies \mathop{\text{min}}I(z_t^i, z_{t+1}^j)$?
 
 ***
 

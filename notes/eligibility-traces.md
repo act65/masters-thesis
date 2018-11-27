@@ -72,6 +72,11 @@ Integrated gradients = causal effect = eligibility trace?
 
 https://arxiv.org/abs/1703.01365
 
+***
+
+Is there are relationship between eligibility traces and REINFOCE?
+$\nabla_{\theta} \log \pi(s_t) \cdot R$. Correlation between sensitivity/contribution and reward.
+
 
 ***
 

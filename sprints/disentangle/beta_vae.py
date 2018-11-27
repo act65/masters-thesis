@@ -118,6 +118,7 @@ from __future__ import print_function
 # TODO: verify how color is encoded in the sprites dataset. (I think there might be a bug in my code.)
 # TODO: explore how the number of dims effects what is disentangled
 # TODO: plot latent space, what do disentangled variables look like. does clustering make sense?
+# python beta_vae.py --mixture_components=1 --analytic_kl=True --n_samples=1 --model_dir=/tmp/vae/0
 
 import functools
 import os
@@ -125,6 +126,7 @@ import os
 # Dependency imports
 from absl import flags
 import numpy as np
+import h5py
 from six.moves import urllib
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -448,20 +450,34 @@ def model_fn(features, labels, mode, params, config):
 
 
 def build_input_fns(batch_size):
-    dataset_zip = np.load("/home/telfaralex/repos/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.npz")
-    imgs = np.reshape(dataset_zip['imgs'], [737280, 64, 64, 1])[0:50000]
-
-    train_input_fn = tf.estimator.inputs.numpy_input_fn(
-          x=imgs,
-          batch_size=batch_size,
-          num_epochs=1,
-          shuffle=True)
+    # dataset_zip = np.load("/local/scratch/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.npz")
+    # imgs = np.reshape(dataset_zip['imgs'], [737280, 64, 64, 1])[0:100000]
+    #
+    # train_input_fn = tf.estimator.inputs.numpy_input_fn(
+    #       x=imgs,
+    #       batch_size=batch_size,
+    #       num_epochs=1,
+    #       shuffle=True)
     # eval_input_fn = tf.estimator.inputs.numpy_input_fn(
     #       x=imgs,
     #       y=dataset_zip['latents_classes'],
     #       batch_size=batch_size,
     #       num_epochs=1,
     #       shuffle=True)
+
+    class Generator:
+        def __init__(self, file):
+            self.file = file
+
+        def __call__(self):
+            with h5py.File(self.file, 'r') as hf:
+                for im in hf["imgs"]:
+                    yield im
+
+    def train_input_fn():
+        gen = Generator("/local/scratch/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.hdf5")
+        return tf.data.Dataset.from_generator(gen, tf.int32, tf.TensorShape([64, 64])).map(lambda x:tf.expand_dims(x,-1)).shuffle(10000).batch(batch_size)
+
 
     return train_input_fn, train_input_fn
 

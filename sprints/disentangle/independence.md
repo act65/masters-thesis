@@ -201,6 +201,26 @@ $$
 
 We don't know which transforms to use, $f, g$, but instead we could search for them online - via gradient descent, parameterised as NNs. Which gives the above!?
 
+## High order independence
+
+Want to unify independence of objects and independence of representation.
+
+$$
+\begin{align}
+TC(z) &= \sum_i H(z_i) - H(z) \\
+&= KL\big( p(z) \parallel \prod_i p(z_i) \big) \\
+\\
+HI(z) &= \sum_i H(z_i) + \sum_{i,j} H(z_i, z_j) +\dots \sum_{i\dots n} H(z_i, \dots, z_n)- H(z) \\
+&= KL\big( p(z) \parallel \prod_i p(z_i) \big) \\
+\end{align}
+$$
+
+$HI$ captures __all__ the possible correlations and attempts to make them independent.
+Alternatively we could do this heirarchically. Splitting the latent representation in halves and attempting to make the two halves independent.
+
+If $z_1, z_2 \in z$ are independent, does that imply any conditions on relationship between $z_1^a, z_1^b \in z_1$? I dont think so!?
+
+How would this naturally arise? Is there a type of noise that would encourage this? Or does energy minimisation lead to this? Independence is more energy efficient? __!!!__ that would be a nice thing to show!
 
 ## Questions/thoughts
 
