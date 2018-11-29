@@ -177,6 +177,35 @@ Hmph.
 
 Is it possible to do an eigen analysis of these linear operators?
 
+## Representation
+
+What if I have an independent variable that is a ring, or has some other topology other than a line?
+
+The latent variable to match the generating variable types. (the ability to construct sets equipped with a metric/product/transform!? mnist -> a dimension with 10 categorical variables, a ring of reals describing azimuth, bounded dims describing translation, ...)
+
+What about a dataset with varying numbers of sprites/digits in the image.
+
+## Transition fn
+
+Want a linear decomposition of the transition function so we can use feature expectations.
+
+$$
+\begin{align}
+s_{t+1}^i = f(s_t^i) \tag{wwhitney} \\
+s_{t+1}^i = s_t^i +  \\
+\end{align}
+$$
+
+$$
+\begin{align}
+R(s) &= w^T \phi(s)\\
+V^{\pi}(s) &= w^T\mathbb E [\sum \gamma^i\phi(s_i)] \\
+&= w^T \mathbb E [\Big(\phi(s_i) + \gamma \mu^{\pi}(\tau(s_i,a_i))\Big)] \\
+R(s,a) &= w^T \phi(s, a)\\
+Q^{\pi}(s, a) &= w^T \mathbb E [\sum \gamma^i\phi(s_i, a_i)] \\
+&= w^T \mathbb E [\Big(\phi(s_i, a_i) + \gamma \mu^{\pi}(s_{i+1},a_{i+1})\Big)] \\
+\end{align}
+$$
 
 ***
 

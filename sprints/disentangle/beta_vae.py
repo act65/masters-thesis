@@ -138,7 +138,7 @@ IMAGE_SHAPE = [64, 64, 1]
 flags.DEFINE_float(
     "learning_rate", default=0.001, help="Initial learning rate.")
 flags.DEFINE_integer(
-    "max_steps", default=5001, help="Number of training steps to run.")
+    "max_steps", default=50001, help="Number of training steps to run.")
 flags.DEFINE_integer(
     "latent_size",
     default=16,
@@ -179,7 +179,7 @@ flags.DEFINE_string(
     default=os.path.join(os.getenv("TEST_TMPDIR", "/tmp"), "beta-vae/0"),
     help="Directory to put the model's fit.")
 flags.DEFINE_integer(
-    "viz_steps", default=500, help="Frequency at which to save visualizations.")
+    "viz_steps", default=100, help="Frequency at which to save visualizations.")
 flags.DEFINE_bool(
     "delete_existing",
     default=False,
@@ -310,11 +310,10 @@ def make_mixture_prior(latent_size, mixture_components):
 
 def build_interpolated_latents(N, latent_size):
     """Interpolate, independently, across the different latent dimensions"""
-    vals = tf.linspace(-3.0, 3.0, N)
-    interp_z =tf.Variable(tf.zeros([N*latent_size, latent_size]), trainable=False)
-    for i in range(N):
-        z = tf.scatter_nd_add(interp_z, tf.stack([tf.range(i*N, (i+1)*N), i*tf.ones(N, dtype=tf.int32)] ,axis=-1), vals)
-    return interp_z
+    vals = tf.concat([tf.linspace(-6.0, 6.0, N)  for _ in range(latent_size)], axis=0)
+    indices = tf.constant([i for j in range(latent_size) for i in N*[j]])
+    ones = tf.one_hot(indices, latent_size, on_value=1.0, off_value=0.0)
+    return tf.expand_dims(vals, -1)*ones
 
 
 def pack_images(images, rows, cols):
@@ -357,9 +356,10 @@ def model_fn(features, labels, mode, params, config):
     beta = tf.train.polynomial_decay(
         params["beta_init"],
         global_step,
-        params["max_steps"],
+        params["max_steps"]//10,
         end_learning_rate=1.0,
-        power=1.0)
+        power=0.9)
+    tf.summary.scalar('beta', beta)
 
     if params["analytic_kl"] and params["mixture_components"] != 1:
         raise NotImplementedError(
@@ -423,11 +423,12 @@ def model_fn(features, labels, mode, params, config):
     image_tile_summary("random/mean", random_image.mean(), rows=4, cols=4)
 
     # Generate interpolated values from the prior
-    interp_z = build_interpolated_latents(10, params['latent_size'])
-    interp_image = decoder(interp_z)
+    N = 16
+    interp_z = build_interpolated_latents(N, params['latent_size'])
+    interp_image = decoder(tf.expand_dims(interp_z, 0))
     image_tile_summary(
-        "interp/sample", tf.to_float(interp_image.sample()), rows=params['latent_size'], cols=10)
-    image_tile_summary("interp/mean", interp_image.mean(), rows=params['latent_size'], cols=10)
+        "interp/sample", tf.to_float(interp_image.sample()), rows=params['latent_size'], cols=N)
+    image_tile_summary("interp/mean", interp_image.mean(), rows=params['latent_size'], cols=N)
 
     # Perform variational inference by minimizing the -ELBO.
     learning_rate = tf.train.cosine_decay(params["learning_rate"], global_step,
@@ -449,35 +450,38 @@ def model_fn(features, labels, mode, params, config):
     )
 
 
+class Generator():
+    def __init__(self, fname, batch_size):
+        self.batch_size = batch_size
+        with h5py.File(fname, 'r') as hf:
+            # not super nice. need to load the entire file into memory...
+            # can load more efficiently with h5py but then shuffling becomes expensive
+            self.imgs = np.array(hf['imgs'])
+
+        self.latents_sizes = np.array([ 1,  3,  6, 40, 32, 32])
+        self.latents_bases = np.concatenate((self.latents_sizes[::-1].cumprod()[::-1][1:],
+                                        np.array([1,])))
+
+    def latent_to_index(self, latents):
+        return np.dot(latents, self.latents_bases).astype(int)
+
+    def sample_latent(self, size=1):
+        samples = np.zeros((size, self.latents_sizes.size))
+        for lat_i, lat_size in enumerate(self.latents_sizes):
+            samples[:, lat_i] = np.random.randint(lat_size, size=size)
+        return samples
+
+    def __call__(self):
+            for _ in range(737280//self.batch_size):
+                latents_sampled = self.sample_latent(size=self.batch_size)
+                indices_sampled = self.latent_to_index(latents_sampled)
+                yield self.imgs[indices_sampled]
+
 def build_input_fns(batch_size):
-    # dataset_zip = np.load("/local/scratch/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.npz")
-    # imgs = np.reshape(dataset_zip['imgs'], [737280, 64, 64, 1])[0:100000]
-    #
-    # train_input_fn = tf.estimator.inputs.numpy_input_fn(
-    #       x=imgs,
-    #       batch_size=batch_size,
-    #       num_epochs=1,
-    #       shuffle=True)
-    # eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-    #       x=imgs,
-    #       y=dataset_zip['latents_classes'],
-    #       batch_size=batch_size,
-    #       num_epochs=1,
-    #       shuffle=True)
-
-    class Generator:
-        def __init__(self, file):
-            self.file = file
-
-        def __call__(self):
-            with h5py.File(self.file, 'r') as hf:
-                for im in hf["imgs"]:
-                    yield im
 
     def train_input_fn():
-        gen = Generator("/local/scratch/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.hdf5")
-        return tf.data.Dataset.from_generator(gen, tf.int32, tf.TensorShape([64, 64])).map(lambda x:tf.expand_dims(x,-1)).shuffle(10000).batch(batch_size)
-
+        gen = Generator("/local/scratch/dsprites-dataset/dsprites_ndarray_co1sh3sc6or40x32y32_64x64.hdf5", batch_size)
+        return tf.data.Dataset.from_generator(gen, tf.int32, tf.TensorShape([batch_size, 64, 64])).map(lambda x:tf.expand_dims(x,-1))
 
     return train_input_fn, train_input_fn
 
@@ -504,8 +508,8 @@ def main(argv):
 
     for _ in range(FLAGS.max_steps // FLAGS.viz_steps):
         estimator.train(train_input_fn, steps=FLAGS.viz_steps)
-        eval_results = estimator.evaluate(eval_input_fn)
-        print("Evaluation_results:\n\t%s\n" % eval_results)
+        # eval_results = estimator.evaluate(eval_input_fn)
+        # print("Evaluation_results:\n\t%s\n" % eval_results)
 
 
 if __name__ == "__main__":
