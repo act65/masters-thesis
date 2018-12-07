@@ -78,3 +78,5 @@ TODO. Want to look into;
 - https://statweb.stanford.edu/~owen/mc/. Esp the advanced variance reduction methods.
 - https://arxiv.org/pdf/1702.03006.pdf
 - https://arxiv.org/pdf/1509.06461.pdf
+- https://arxiv.org/pdf/1811.09013.pdf
+- https://arxiv.org/pdf/1811.02597.pdf

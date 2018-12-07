@@ -9,9 +9,9 @@ I have allocated time for 8 'sprints', each of 2 weeks. The goal of each sprint 
 
 - Differentiable decompositions: metrics for disentanglement.
 - Differentiable decompositions: modular credit assignment.
-- Causal RL.
-- Locally structured memory
-- Effects of exploration policy.
+- Causal RL. OR Temporal credit assignment.
+- Memory (locally structured)
+- Exploration (effects).
 - Reachability.
 - Inverse energy learning.
 - Heirarchical RL.
