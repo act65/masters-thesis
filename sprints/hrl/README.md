@@ -31,6 +31,30 @@ Thus adding noise to the higher freq states would result in more local explorati
 
 (huh, feels weird this has nothing to do with a heirarchical representation of the rewards)
 
+### Scaling HRL
+
+For tabular FuN we have;
+- `manager_qs=[n_states x n_states] (current_states x goal_states)` and
+- `worker_qs=[n_states x n_states x n_actions] (current_states x goal_states x actions)`.
+
+But what if we wanted to increase the depth of the heirarchy?
+- `Exectuive_manager_qs=[n_states x n_states] (current_states x exec_goal_states)` and
+- `manager_qs=[n_states x n_states x n_states] (current_states x exec_goal_states x goal_states)` and
+- `worker_qs=[n_states x n_states x n_actions] (current_states x goal_states x actions)`.
+
+For every added bit of depth, the increase is upperbounded by $d \times n_{subgoals}^3$ (where $n_{subgoals} = n_{states}$) (?!?!)
+
+__^^^__ reminds me ofsome sort of tensor factorisation!? __!!!__
+
+But for tabular OpC. The increase is upperbounded by $n_{options}^d$. (?!?)
+
+For tabular FuN we have;
+- `qs=[n_states x n_options x actions] (current_states x options x actions)`
+
+But what if we wanted to increase the depth of the heirarchy?
+- `qs=[n_states x n_options x n_options x actions] (current_states x 1st_lvl_options x 2nd_lvl_options x actions)`
+
+
 #### Making interventions at various timescales.
 
 There exist N different scales that we can apply interventions at. We want to know;
