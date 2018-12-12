@@ -9,7 +9,7 @@ I have allocated time for 8 'sprints', each of 2 weeks. The goal of each sprint 
 
 - Differentiable decompositions: metrics for disentanglement.
 - Differentiable decompositions: modular credit assignment.
-- Causal RL. OR Temporal credit assignment.
+- Causal RL. OR Temporal credit assignment. OR MBRL...
 - Memory (locally structured)
 - Exploration (effects).
 - Reachability.
