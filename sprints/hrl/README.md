@@ -16,12 +16,38 @@ But also, a multiscale way to pick actions and assign credit.
 And, a decompoition of ...?
 Understanding how actions combine (this is necessary knowledge for HRL?)
 
-Keys to HRL?
+#### Ensemble of critics. Value decomposition (in temporal scale)
 
-- Goal conditioned policies?
-- Options
-- ?
+Each receiving different inputs?
+Or could use fourier TD to estimate. Then we can reover an FFT!?
+But what else can it represent? What can vanilla TD not represent? (oscillations!?)
 
+Relationship to something like Rudder!?
+
+#### Multiscale state representation
+
+If we had a multiscale state representation then we could build the policy as a fn of this representation.
+Thus adding noise to the higher freq states would result in more local exploration (closer to random?!) and adding noise to the lower freq states would result in 'gobal' exploration over longer time periods!?
+
+(huh, feels weird this has nothing to do with a heirarchical representation of the rewards)
+
+#### Making interventions at various timescales.
+
+There exist N different scales that we can apply interventions at. We want to know;
+- what these interventions do
+- which interventions lead to the highest reward
+
+What does it mean to be at a different time scale? We get access to subsampled info, or it is averaged or ...!?
+Or low/high pass filters? Or !?.
+
+#### Keys to HRL?
+
+- Temporally abstracted actions -- (via options and Goal conditioned policies?)
+- Long term credit assignment
+- Heirarchical state representations
+- !?
+
+#### Equivalence
 
 Can we prove an equivalence between options (policy conditioned value fns) and goal conditioned value fns?
 
@@ -47,9 +73,16 @@ What are the pros/cons?
 
 ## Possible projects
 
-- unsupervised options
-- equivalence of goal/option conditioned value fns
+- Unsupervised options
+- Equivalence of goal/option conditioned value fns
+- Build a three (or even better, N) layer heirarchy
+- Explore how different approaches scale (computational complexity) in the number of heirarchies
 - ?
+
+## Questions and thoughts
+
+- Does it make sense to ask if actions can also be abstracted over dimensions other than time!?
+- Relationship between learning to learn and HRL?
 
 ## Refs
 
