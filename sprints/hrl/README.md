@@ -31,7 +31,7 @@ Thus adding noise to the higher freq states would result in more local explorati
 
 (huh, feels weird this has nothing to do with a heirarchical representation of the rewards)
 
-### Scaling HRL
+#### Scaling HRL
 
 For tabular FuN we have;
 - `manager_qs=[n_states x n_states] (current_states x goal_states)` and
@@ -44,7 +44,7 @@ But what if we wanted to increase the depth of the heirarchy?
 
 For every added bit of depth, the increase is upperbounded by $d \times n_{subgoals}^3$ (where $n_{subgoals} = n_{states}$) (?!?!)
 
-__^^^__ reminds me ofsome sort of tensor factorisation!? __!!!__
+__^^^__ reminds me of some sort of tensor factorisation!? __!!!__
 
 But for tabular OpC. The increase is upperbounded by $n_{options}^d$. (?!?)
 
@@ -53,6 +53,11 @@ For tabular FuN we have;
 
 But what if we wanted to increase the depth of the heirarchy?
 - `qs=[n_states x n_options x n_options x actions] (current_states x 1st_lvl_options x 2nd_lvl_options x actions)`
+
+
+Why would we want more depth? (greater length of time deps?? which is related to state size!?)
+BUT. Scaling with state size. OpC is better.
+
 
 
 #### Making interventions at various timescales.
@@ -107,6 +112,7 @@ What are the pros/cons?
 
 - Does it make sense to ask if actions can also be abstracted over dimensions other than time!?
 - Relationship between learning to learn and HRL?
+- To learn action abstractions they must capture info about the model. How much harder is it to learn action abstractions in model-free vs model-based settings?
 
 ## Refs
 
