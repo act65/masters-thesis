@@ -7,11 +7,11 @@ I have allocated time for 8 'sprints', each of 2 weeks. The goal of each sprint 
 
 ### The sprints
 
-- Differentiable decompositions: metrics for disentanglement.
-- Differentiable decompositions: modular credit assignment.
-- Causal RL. OR Temporal credit assignment. OR MBRL...
-- Memory (locally structured)
-- Exploration (effects).
-- Reachability.
-- Inverse energy learning.
-- Heirarchical RL.
+- [x] Differentiable decompositions: metrics for disentanglement.
+- [ ] Differentiable decompositions: modular credit assignment.
+- [ ] Causal RL. OR Temporal credit assignment. OR MBRL...
+- [ ] Memory (locally structured)
+- [ ] Exploration (effects).
+- [ ] Reachability.
+- [x] Inverse energy learning.
+- [x] Heirarchical RL.
