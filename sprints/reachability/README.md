@@ -36,3 +36,19 @@ What about $f(s_i, s_g) \in [0, 1]$ so that if $s_g$ is reachable from $s_i$ the
 
 
 Relationship to knowledge base completion. Or link prediction!?
+
+
+Key to exploration is memory.
+
+
+
+## Controllability
+
+https://en.wikipedia.org/wiki/Controllability
+
+
+
+
+!!! the k steps reachability allows us to construct a metric! thus we can compare states in a meaningful way!?
+problem with sub goal approaches was that they relied on having a metric to track progress toward the goal.
+so the policy needs to learn to pick actions that will reduce the metric.
