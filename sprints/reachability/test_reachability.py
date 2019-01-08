@@ -28,6 +28,16 @@ class TestExplorerMethods(unittest.TestCase):
         for a, b in actions:
             self.assertTrue(a.numpy() in action_set)
 
+    def test_bonus(self):
+        """check the norvelty bonus"""
+        exp = Explorer(5)
+
+        for _ in range(200):
+            x = tf.random_normal([32, 32, 4])
+            a, b = exp(x)
+
+            print(b)
+
 class TestReachPairs(unittest.TestCase):
     x = tf.random_normal([200, 50, 3])
     reachable, not_reachable = reachable_training_pairs(x, 4, 3)

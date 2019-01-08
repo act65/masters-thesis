@@ -40,7 +40,7 @@ class ReplayBuffer(object):
         batch = [self.buffer[idx] for idx in idxs]  # a list of [[obs_s, a_s, r_s], ...]
         return [np.stack(x, axis=1) for x in zip(*batch)]
 
-def preprocess(x, old_x, stride=3):
+def preprocess(x, old_x, stride=5):
     shape = x.shape
 
     # down sample
@@ -73,7 +73,7 @@ class Worker():
         a, b = self.learner(tf.constant(x, dtype=tf.float32))
 
         if self.old_a is not None:
-            self.episode.append([self.old_x, self.old_a, r+b])
+            self.episode.append([self.old_x, self.old_a, r, b])
 
         self.old_x = x
         self.old_a = a
@@ -94,3 +94,53 @@ class Worker():
         self.old_a = None
         self.old_x = None
         # self.learner.reset()
+
+
+class SetEmbedding():
+    def __init__(self, n_hidden, n_outputs):
+        self.encoding_fn = tf.keras.Sequential([
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            tf.keras.layers.Dense(n_hidden)
+        ])
+
+        self.decoding_fn = tf.keras.Sequential([
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            tf.keras.layers.Dense(n_hidden)
+        ])
+
+        # can memoize simply based on size of inputs.
+        # if the size the the memory doesnt change, the memory hasnt changed
+        self.memoize_state_size = 0
+        self.memoized_result = None
+        # QUESTION ^^^ but is this still differentiable!?!?
+
+    def __call__(self, xs):
+        n = len(xs)
+        if n == self.memoize_state_size:
+            return self.memoized_result
+        else:
+            result = self.decoding_fn(tf.add_n([self.encoding_fn(x) for x in xs])/len(xs))
+            self.memoized_result = result
+            return result
+
+class Residual(tf.keras.layers.Layer):
+    def __init__(self, n_hidden, n_outputs, **kwargs):
+        self.n_hidden = n_hidden
+        self.output_dim = n_outputs
+        super(Residual, self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        self.fn = tf.keras.Sequential([
+            tf.keras.layers.Dense(self.n_hidden, activation=tf.nn.selu),
+            tf.keras.layers.Dense(self.output_dim),
+        ])
+        super(Residual, self).build(input_shape)
+
+    def call(self, inputs):
+        # n_outputs = n_inputs
+        return inputs + self.fn(inputs)
+
+    def compute_output_shape(self, input_shape):
+        shape = tf.TensorShape(input_shape).as_list()
+        shape[-1] = self.output_dim
+        return tf.TensorShape(shape)
