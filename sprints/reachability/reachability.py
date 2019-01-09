@@ -1,6 +1,5 @@
 import numpy as np
 import tensorflow as tf
-import trfl
 import random
 import math
 import os
@@ -9,6 +8,8 @@ import utils as utl
 def cosine_dist(u, v):
     return tf.reduce_sum(tf.matmul(u, v, transpose_b=True))/(tf.norm(u)*tf.norm(v))
 
+def accuracy(targets, predictions):
+    return tf.reduce_mean(tf.cast(tf.equal(targets, predictions), dtype=tf.float32))
 
 def reachable_training_pairs(x, k, n):
     """
@@ -133,6 +134,12 @@ class EpisodicMemory():
                 return tf.reduce_mean(tf.contrib.framework.sort(cs)[:i])
 
     def get_loss(self, x):
+        """
+        Args:
+            x: tensor of shape [T, B, ...]
+        """
+        # x = tf.stop_gradient(x)  # HACK not sure i want this?!
+
         # how necessary is it to train this!?
         # could do with a random similarity measure?!
         reachable, not_reachable = reachable_training_pairs(x, 5, 3)
@@ -140,69 +147,16 @@ class EpisodicMemory():
         sim_reach = self.sim(reachable)  # should be = 1
         sim_not_reach = self.sim(not_reachable)  # should be = 0
 
-        return tf.reduce_mean(-tf.log(sim_reach+1e-6)) + tf.reduce_mean(-tf.log(1-sim_not_reach+1e-6))
+        acc_reach = accuracy(tf.round(sim_reach), tf.ones_like(sim_reach))
+        acc_not_reach = accuracy(tf.round(sim_not_reach), tf.zeros_like(sim_not_reach))
+        loss = tf.reduce_mean(-tf.log(sim_reach+1e-6)) + tf.reduce_mean(-tf.log(1-sim_not_reach+1e-6))
 
-class Policy():
-    # Currently A2C TODO change to PPO or something smarter!
-    def __init__(self, n_actions, n_hidden):
-        self.policy_fn = tf.keras.Sequential([
-            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-            utl.Residual(n_hidden//4, n_hidden),
-            utl.Residual(n_hidden//4, n_hidden),
-            utl.Residual(n_hidden//4, n_hidden),
-            tf.keras.layers.Dense(n_actions)
-        ])
+        tf.contrib.summary.scalar('loss/reach', loss)
+        tf.contrib.summary.scalar('acc/reach', acc_reach)
+        tf.contrib.summary.scalar('acc/not_reach', acc_not_reach)
 
-        self.value_fn = tf.keras.Sequential([
-            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-            utl.Residual(n_hidden//4, n_hidden),
-            utl.Residual(n_hidden//4, n_hidden),
-            utl.Residual(n_hidden//4, n_hidden),
-            tf.keras.layers.Dense(1)
-        ])
+        return loss
 
-    @property
-    def variables(self):
-        return self.value_fn.variables + self.policy_fn.variables
-
-    def __call__(self, x, return_logits=False):
-        # TODO the policy needs a fn of the memory as well!!
-        # else how does it know where it should explore?
-
-        # but how!? the memory changes in size. k-means? <- but order might change!?
-        # could use a graph NN?! or f(sum(g(m)))
-
-        # this breaks everything... now we need to add the memory contents to the buffer!?
-        # m = self.memory_sketch(self.memory)
-        # logits = self.policy_fn(tf.concat([x, m], axis=-1))
-
-        logits = self.policy_fn(x)
-
-        if return_logits:
-            return logits
-
-        else:
-            # gumbel-softmax trick
-            g = -tf.log(-tf.log(tf.random_uniform(shape=tf.shape(logits), minval=0, maxval=1, dtype=tf.float32)))
-            return tf.argmax(logits + g, axis=-1)
-
-    def get_loss(self, x, at, r):
-        # TODO change to PPO?
-        T, B = tf.shape(r)
-
-        policy_logits = tf.map_fn(lambda x: self.__call__(x, return_logits=True), x)
-        v = tf.squeeze(tf.map_fn(self.value_fn, tf.concat([x, policy_logits], axis=-1)))  # action-value estimates
-
-        pg_loss, extra = trfl.sequence_advantage_actor_critic_loss(
-            policy_logits=policy_logits,
-            baseline_values=v,
-            actions=at,
-            rewards=r,
-            pcontinues=tf.ones_like(r),
-            bootstrap_value=tf.ones(tf.shape(r)[1])
-        )
-
-        return tf.reduce_mean(pg_loss)
 
 class Explorer():
     """
@@ -212,22 +166,15 @@ class Explorer():
     Puts everything together.
     Manages gradient computation, summaries, resets, ...
     """
-    def __init__(self, n_actions, n_hidden=64, logdir="/tmp/exp/0"):
+    def __init__(self, policy_spec, n_actions, n_hidden=64, memory_max_size=200, encoder_beta=1e-3, lr=1e-3, logdir="/tmp/exp/0"):
         self.writer = tf.contrib.summary.create_file_writer(logdir)
         self.writer.set_as_default()
 
-        self.embed = tf.keras.Sequential([
-            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-            tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(n_hidden),
-        ])
+        self.embed = utl.Encoder(n_hidden, encoder_beta)
+        self.memory = EpisodicMemory(memory_max_size, n_hidden)
+        self.policy = policy_spec(n_actions, n_hidden)
 
-        self.memory = EpisodicMemory(200, n_hidden)
-        self.policy = Policy(n_actions, n_hidden)
-
-        self.opt = tf.train.AdamOptimizer(1e-4)
+        self.opt = tf.train.AdamOptimizer(lr)
         self.global_step = tf.train.get_or_create_global_step()
 
         # checkpoint_dir = '/tmp/exp-ckpts/0'
@@ -254,10 +201,19 @@ class Explorer():
             b: the reward bonus
         """
         x = tf.expand_dims(x, 0)
+
+        # get a representation of the current state
         e = self.embed(x)
+        # look up in memory
         b = self.memory(e)
+
         # TODO want the policy to be a fn of the memory!?!?
+        # choose action
         a = self.policy(e)
+
+        # NOTE it would be possible to use self.memory to find easily reachable
+        # states and pick from them according to estimated value!?
+        # but doesnt that require knowledge of how actions move the embedding!?
 
         return a, b
 
@@ -275,17 +231,17 @@ class Explorer():
         e = tf.map_fn(self.embed, x)
 
         with tf.GradientTape() as tape:
-            pg_loss = self.policy.get_loss(e, at, r+b)
-            reach_loss = self.memory.get_loss(e)
-            loss = pg_loss + reach_loss  # HACK should be ok to do this!?
+            with tf.contrib.summary.record_summaries_every_n_global_steps(10):
 
-        with tf.contrib.summary.record_summaries_every_n_global_steps(10):
-            tf.contrib.summary.scalar('loss/pg', pg_loss)
-            tf.contrib.summary.scalar('loss/reach', reach_loss)
-            tf.contrib.summary.scalar('rewards/R', tf.reduce_mean(r))
-            tf.contrib.summary.scalar('rewards/B', tf.reduce_mean(b))
+                policy_loss = self.policy.get_loss(e, at, r+b)
+                reach_loss = self.memory.get_loss(e)
+                embed_loss = self.embed.get_loss(e)
+                loss = policy_loss + reach_loss + embed_loss  # HACK should be ok to do this!?
 
-        variables = self.policy.variables + self.embed.variables + self.memory.variables
+                tf.contrib.summary.scalar('rewards/R', tf.reduce_mean(r))
+                tf.contrib.summary.scalar('rewards/B', tf.reduce_mean(b))
+
+        variables = self.policy.variables + self.memory.variables + self.embed.variables
         grads = tape.gradient(loss, variables)
         self.opt.apply_gradients(zip(grads, variables), global_step=self.global_step)
         return loss

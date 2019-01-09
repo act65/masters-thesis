@@ -1,10 +1,12 @@
 import random
 import numpy as np
 import tensorflow as tf
+import trfl
 
 class ReplayBuffer(object):
-    def __init__(self, max_size):
+    def __init__(self, max_size, buffer_buffer=100):
         self.max_size = max_size
+        self.buffer_buffer = buffer_buffer  # buffer the deletions. they are expensive
         self.cur_size = 0
         self.buffer = {}
 
@@ -19,15 +21,15 @@ class ReplayBuffer(object):
         self.cur_size += 1
 
         # batch removals together for speed!?
-        if len(self.buffer) > self.max_size+100:
-            self.remove_n(100)
+        if len(self.buffer) > self.max_size+self.buffer_buffer:
+            self.remove_n(self.buffer_buffer)
 
     def remove_n(self, n):
         """Get n items for removal."""
         # random removal
-        # idxs = random.sample(range(self.cur_size), self.cur_size-n)
-        idxs = list(range(n))  # removes the oldest
-        new_buffer = np.array(list(self.buffer.values()))[idxs]
+        idxs = random.sample(range(self.cur_size), self.cur_size-n)
+        # idxs = list(range(n))  # removes the oldest
+        new_buffer = [val for i, val in enumerate(list(self.buffer.values())) if i in idxs]
         # overwrites the old dict. (possibly expensive, but not sure of a better way...)
         n = len(new_buffer)
         self.buffer = dict(zip(range(n), new_buffer))
@@ -144,3 +146,98 @@ class Residual(tf.keras.layers.Layer):
         shape = tf.TensorShape(input_shape).as_list()
         shape[-1] = self.output_dim
         return tf.TensorShape(shape)
+
+
+class Policy():
+    # Currently A2C TODO change to PPO or something smarter!
+    def __init__(self, n_actions, n_hidden):
+        self.policy_fn = tf.keras.Sequential([
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            Residual(n_hidden//4, n_hidden),
+            Residual(n_hidden//4, n_hidden),
+            Residual(n_hidden//4, n_hidden),
+            tf.keras.layers.Dense(n_actions)
+        ])
+
+        self.value_fn = tf.keras.Sequential([
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            Residual(n_hidden//4, n_hidden),
+            Residual(n_hidden//4, n_hidden),
+            Residual(n_hidden//4, n_hidden),
+            tf.keras.layers.Dense(1)
+        ])
+
+    @property
+    def variables(self):
+        return self.value_fn.variables + self.policy_fn.variables
+
+    def __call__(self, x, return_logits=False):
+        # TODO the policy needs a fn of the memory as well!!
+        # else how does it know where it should explore?
+
+        # but how!? the memory changes in size. k-means? <- but order might change!?
+        # could use a graph NN?! or f(sum(g(m)))
+
+        # this breaks everything... now we need to add the memory contents to the buffer!?
+        # m = self.memory_sketch(self.memory)
+        # logits = self.policy_fn(tf.concat([x, m], axis=-1))
+
+        logits = self.policy_fn(x)
+
+        if return_logits:
+            return logits
+
+        else:
+            # gumbel-softmax trick
+            g = -tf.log(-tf.log(tf.random_uniform(shape=tf.shape(logits), minval=0, maxval=1, dtype=tf.float32)))
+            return tf.argmax(logits + g, axis=-1)
+
+    def get_loss(self, x, at, r):
+        # TODO change to PPO?
+        T, B = tf.shape(r)
+
+        policy_logits = tf.map_fn(lambda x: self.__call__(x, return_logits=True), x)
+        v = tf.squeeze(tf.map_fn(self.value_fn, tf.concat([x, policy_logits], axis=-1)))  # action-value estimates
+
+        pg_loss, extra = trfl.sequence_advantage_actor_critic_loss(
+            policy_logits=policy_logits,
+            baseline_values=v,
+            actions=at,
+            rewards=r,
+            pcontinues=tf.ones_like(r),
+            bootstrap_value=tf.ones(tf.shape(r)[1])
+        )
+
+        loss = tf.reduce_mean(pg_loss)
+        tf.contrib.summary.scalar('loss/policy', loss)
+        return loss
+
+
+def ortho_loss(x):
+    B, D = tf.shape(x)
+    return tf.norm(tf.matmul(x, x, transpose_b=True) - tf.eye(B), ord='fro', axis=[0, 1])
+
+class Encoder():
+    def __init__(self, n_hidden, beta=1.0):
+        self.fn = tf.keras.Sequential([
+            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(n_hidden),
+        ])
+        self.beta = beta
+
+    @property
+    def variables(self):
+        return self.fn.variables
+
+    def __call__(self, x):
+        return self.fn(x)
+
+    def get_loss(self, x):
+        T, B, D = tf.shape(x)
+        x = tf.reshape(x, [T*B, D])
+        loss = self.beta*ortho_loss(x)
+        tf.contrib.summary.scalar('loss/embed', loss)
+        return loss

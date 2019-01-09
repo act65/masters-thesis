@@ -15,6 +15,10 @@ def argumentparser():
                         help='location to save logs')
     parser.add_argument('--seq_len', type=int, default=10,
                         help='length of sequences to train on')
+    parser.add_argument('--memory_max_size', type=int, default=200,
+                        help='size of memory')
+    parser.add_argument('--encoder_beta', type=float, default=1e-3,
+                        help='strength of training loss for encoder')
     return parser.parse_args()
 
 
@@ -60,5 +64,10 @@ if __name__ == "__main__":
     tf.enable_eager_execution()
     args = argumentparser()
     env = gym.make('MontezumaRevenge-v0')
-    player = utl.Worker(rch.Explorer(env.action_space.n, logdir=args.logdir), batch_size=args.batch_size)
+    player = utl.Worker(rch.Explorer(utl.RndPolicy,
+                                     env.action_space.n,
+                                     memory_max_size=args.memory_max_size,
+                                     encoder_beta=args.encoder_beta,
+                                     logdir=args.logdir),
+                        batch_size=args.batch_size)
     run(env, player, args.seq_len)

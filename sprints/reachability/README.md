@@ -52,3 +52,13 @@ https://en.wikipedia.org/wiki/Controllability
 !!! the k steps reachability allows us to construct a metric! thus we can compare states in a meaningful way!?
 problem with sub goal approaches was that they relied on having a metric to track progress toward the goal.
 so the policy needs to learn to pick actions that will reduce the metric.
+
+
+## Stochastic exploration vs deterministic exploration
+
+Want a deterministic exploration policy for bandits!?
+Can imagine testing each arm k times, as a fn of its variance.
+Iterate through each arm until satisfied.
+
+But this isnt like online learning.
+Here there would be two phases? Explore, then exploit.
