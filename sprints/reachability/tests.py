@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import gym
 import shutil
+import os
 
 from train import *
 from reachability import *
@@ -114,22 +115,84 @@ class TestEpisodicMemory(unittest.TestCase):
         # does it make sense to do this with a rnd policy?
         # reachabilty should be inv prop to diffusion.
 
-        shutil.rmtree('/tmp/exp-tests/mem-acc')
+        logdir = '/tmp/exp-tests/mem-acc'
+        if os.path.exists(logdir):
+            shutil.rmtree(logdir)
         env = gym.make('MontezumaRevenge-v0')
         player = Worker(Explorer(RndPolicy,
+                                 EpisodicMemory,
                                  env.action_space.n,
                                  memory_max_size=2,
                                  encoder_beta=0.0,
-                                 logdir='/tmp/exp-tests/mem-acc'),
+                                 logdir=logdir),
                         batch_size=50)
         run(env, player, 10)
 
         # TODO read logs and fetch acc. ensure > 80%!?
 
+    def test_reachable_training_regression(self):
+        T, B, D = 200, 50, 3
+        x = tf.random_normal([T, B, D])
+        a_s, b_s, k_s = reachable_training_regression(x, 10)
+
+        self.assertTrue(a_s.shape == (10, 3))
+        self.assertTrue(b_s.shape == (10, 3))
+        self.assertTrue(k_s.shape == (10, 1))
+
+    def test_regression_accuracy(self):
+        """check that the similarty metric can learn to accurately predict reachability"""
+        # use rnd policy, no memory, no extra training losses,
+        # does it make sense to do this with a rnd policy?
+        # reachabilty should be inv prop to diffusion.
+
+        logdir = '/tmp/exp-tests/mem-acc-regression'
+        if os.path.exists(logdir):
+            shutil.rmtree(logdir)
+        env = gym.make('MontezumaRevenge-v0')
+        player = Worker(Explorer(RndPolicy,
+                                 EpisodicMemoryRegression,
+                                 env.action_space.n,
+                                 memory_max_size=2,
+                                 encoder_beta=0.0,
+                                 logdir=logdir),
+                        batch_size=50)
+        run(env, player, 20)
+
+        # TODO read logs and fetch acc. ensure > 80%!?
+
+
     def test_bonus_range(self):
         """check that the bonus is the right scale"""
         pass
 
+
+
+
+class TestIntegration():
+    def test_performance(self):
+        """the test we really care about.
+        how does this extension improve the performance?
+        can it be used as a simple drop in addition?
+        """
+        env = gym.make('MontezumaRevenge-v0')
+
+        player = Worker(Explorer(Policy,
+                                 env.action_space.n,
+                                 memory_max_size=2,
+                                 encoder_beta=0.0,
+                                 logdir='/tmp/exp-tests/policy_mem'),
+                        batch_size=50)
+        run(env, player, 10)
+        rewards = fetch()
+
+        player = Worker(SimpleLearner(Policy,
+                               env.action_space.n,
+                               memory_max_size=2,
+                               encoder_beta=0.0,
+                               logdir='/tmp/exp-tests/policy'),
+                        batch_size=50)
+        run(env, player, 10)
+        rewards = fetch()
 
 if __name__ == '__main__':
     unittest.main()

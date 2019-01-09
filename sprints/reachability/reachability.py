@@ -21,7 +21,7 @@ def reachable_training_pairs(x, k, n):
         n: the number of elements to sample
 
     Returns:
-        tuple ([n*B x D], [n*B x D]):
+        tuple ([n*B x D*2], [n*B x D*2]):
             reachable:
             not_reachable:
     """
@@ -157,6 +157,144 @@ class EpisodicMemory():
 
         return loss
 
+def reachable_training_regression(x, n):
+    """
+    Two states are considered 'reachable' if they occur within k timesteps.
+
+    Args:
+        x ([T, B, D]): A sequence of elements
+        k: the number of steps that makes two states mutually reachable
+        n: the number of elements to sample
+
+    Returns:
+        tuple ([n*B x D], [n*B x D], [n*B x 1]):
+            a:
+            b:
+            n_steps:
+    """
+    T, B, D = tf.shape(x)
+
+    triples = [(i, j, j-i) for i in range(T) for j in range(T) if j>i]
+    triples = random.sample(triples, n)  # subsample them
+    # also subsamples the batches
+    triples = [(x[i, random.randint(0, B.numpy()-1), ...], x[j, random.randint(0, B.numpy()-1), ...], k) for i, j, k in triples]
+    a_s, b_s, k_s = zip(*triples)
+
+    a_s = tf.stack(a_s, axis=0)
+    b_s = tf.stack(b_s, axis=0)
+    k_s = tf.expand_dims(tf.cast(tf.stack(k_s, axis=0), dtype=tf.float32), 1)
+
+    return a_s, b_s, k_s
+
+
+class EpisodicMemoryRegression():
+    """
+    """
+    # QUESTION Why is this called episodic memory!?
+    # QUESTION how is this the same as the transition function!?
+    def __init__(self, max_size, n_hidden):
+        self.max_size = max_size
+        self.memory = set()
+
+        self.alpha = 1
+        self.beta = 0.5
+        self.gamma = 0.1  # the threshold for adding a new elem to memory
+
+        # 1 if inputs are similar, else 0
+        self.sim = tf.keras.Sequential([
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            utl.Residual(n_hidden//4, n_hidden),
+            utl.Residual(n_hidden//4, n_hidden),
+            utl.Residual(n_hidden//4, n_hidden),
+            tf.keras.layers.Dense(1, activation=tf.nn.sigmoid)
+        ])
+        # what does this learn!? what makes two states similar
+        # reachability is dependent on the current policy!!
+
+        # self.memory_sketch = SetEmbedding(n_hidden, n_hidden)
+        # could do something like. take top K reachable memories. use them to predict likely observation!?
+        # how does that help? allows use to learn a meaningful summary of the memory
+
+    @property
+    def variables(self):
+        return self.sim.variables
+
+    def __call__(self, x):
+        s = self.compare(x)
+        s = tf.nn.sigmoid(s)
+
+        if s < self.gamma:
+            self.add(x)
+
+        # reward bonus (for discovering something dissimilar to items in memory)
+        # tuning this could be a pain
+        # TODO want to use online calc of moments here!?
+        return self.alpha * (self.beta - s)
+
+    def add(self, x):
+        if len(self.memory) > self.max_size:
+            # NOTE would prefer a least recently used mechanism!?
+            self.memory.remove(*random.sample(self.memory, 1))
+        else:
+            self.memory.add(x)
+
+    def reset(self):
+        # NOTE problem(?). because we reset the episodic memory. there will always be
+        # exploration rewards at the start. good or bad!?
+        # OHH! this is actually quite important. it means we still have a
+        # chance to revisit some places, and get reward, again.
+        # (despite its lack of novelty, we just forgot it...)
+        # if this is not tuned right, it can get endless entertainment from little exploration
+        # not quite. reachability will punish nearby states!?
+        # this avoids the problem of detachment - see https://eng.uber.com/go-explore/
+        self.memory = set()
+
+    def compare(self, e):
+        """
+        Compare the current state with memory and estimate their similarity.
+        0 means dissimilar/novel
+        1 means similar/not new
+
+        Args:
+            list: a list of tensors [1 x n_hidden]
+            tensor: a tensor [1 x n_hidden]
+
+        Returns
+            float: the similarity between memory and e
+        """
+        # BUG as we learn the similarity metric, the elements in our memory become weird...
+        # can we assume that the metric doesnt really change wrt memory!?
+        # only if seq_len ~= episode_len...
+        # distributed offline training kinda solves this!?
+
+        n = self.memory
+        if len(n) == 0:
+            # not similar to anything in memory
+            return 0.0
+        else:
+            # this is O(n). as memory gets larger this costs more.
+            # TODO is this parallelised?
+            cs = tf.squeeze(tf.stack([self.sim(tf.concat([e, m],axis=-1)) for m in self.memory], axis=0))
+
+            i = math.ceil(len(n)/10)  # avg a tenth of the top elems
+
+            if len(n) == 1:
+                return cs
+            else:
+                return tf.reduce_mean(tf.contrib.framework.sort(cs, direction='DESCENDING')[:i])
+
+    def get_loss(self, x):
+        """
+        Args:
+            x: tensor of shape [T, B, ...]
+        """
+        T, B, D = tf.shape(x)
+        a_s, b_s, k_s = reachable_training_regression(x, B.numpy())
+        pred = self.sim(tf.concat([a_s, b_s], axis=-1))
+        loss = tf.reduce_mean(tf.reduce_sum(tf.square(k_s - pred)))
+        tf.contrib.summary.scalar('loss/reach', loss)
+        return loss
+
 
 class Explorer():
     """
@@ -166,12 +304,12 @@ class Explorer():
     Puts everything together.
     Manages gradient computation, summaries, resets, ...
     """
-    def __init__(self, policy_spec, n_actions, n_hidden=64, memory_max_size=200, encoder_beta=1e-3, lr=1e-3, logdir="/tmp/exp/0"):
+    def __init__(self, policy_spec, memory_spec, n_actions, n_hidden=64, memory_max_size=200, encoder_beta=1e-3, lr=1e-3, logdir="/tmp/exp/0"):
         self.writer = tf.contrib.summary.create_file_writer(logdir)
         self.writer.set_as_default()
 
         self.embed = utl.Encoder(n_hidden, encoder_beta)
-        self.memory = EpisodicMemory(memory_max_size, n_hidden)
+        self.memory = memory_spec(memory_max_size, n_hidden)
         self.policy = policy_spec(n_actions, n_hidden)
 
         self.opt = tf.train.AdamOptimizer(lr)
