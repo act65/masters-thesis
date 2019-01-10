@@ -79,6 +79,10 @@ class EpisodicMemory():
     def reset(self):
         self.memory = set()
 
+    @property
+    def size(self):
+        return len(self.memory)
+
     def compare(self, e):
         """
         Compare the current state with memory and estimate their similarity.
@@ -97,17 +101,22 @@ class EpisodicMemory():
         # only if seq_len ~= episode_len...
         # distributed offline training kinda solves this!?
 
-        n = self.memory
-        if len(n) == 0:
+        n = len(self.memory)
+        if n == 0:
             return 0  # not similar to anything in memory
         else:
             # this is O(n). as memory gets larger this costs more.
             # TODO is this parallelised well?
-            cs = tf.squeeze(tf.stack([self.sim(tf.concat([e, m],axis=-1)) for m in self.memory], axis=0))
+            # cs = tf.squeeze(tf.stack([self.sim(tf.concat([e, m],axis=-1)) for m in self.memory], axis=0))
 
-            i = math.ceil(len(n)/10)
+            m = tf.concat(list(self.memory), axis=0)
+            e = tf.tile(e, [n, 1])
+            cs = tf.squeeze(self.sim(tf.concat([m, e], axis=-1)))
 
-            if len(n) == 1:
+
+            i = math.ceil(n/10)
+
+            if n == 1:
                 return cs
             else:
                 return tf.reduce_mean(tf.contrib.framework.sort(cs)[:i])
@@ -132,6 +141,7 @@ class EpisodicMemory():
         tf.contrib.summary.scalar('loss/reach', loss)
         tf.contrib.summary.scalar('acc/reach', acc_reach)
         tf.contrib.summary.scalar('acc/not_reach', acc_not_reach)
+        tf.contrib.summary.histogram('sim', tf.concat([sim_reach, sim_not_reach], axis=0))
 
         return loss
 
@@ -144,13 +154,13 @@ class Explorer():
     Puts everything together.
     Manages gradient computation, summaries, resets, ...
     """
-    def __init__(self, policy_spec, n_actions, n_hidden=64, memory_max_size=200, encoder_beta=1e-3, lr=1e-3, logdir="/tmp/exp/0"):
+    def __init__(self, policy_spec, embed_spec, n_actions, n_hidden=64, memory_max_size=200, lr=1e-3, logdir="/tmp/exp/0"):
         self.writer = tf.contrib.summary.create_file_writer(logdir)
         self.writer.set_as_default()
 
         self.memory = EpisodicMemory(memory_max_size, n_hidden)
         self.policy = policy_spec(n_actions, n_hidden)
-        self.embed = utl.get_conv_net(n_hidden)
+        self.embed = embed_spec(n_hidden)
 
         self.opt = tf.train.AdamOptimizer(lr)
         self.global_step = tf.train.get_or_create_global_step()
@@ -207,8 +217,10 @@ class Explorer():
                 reach_loss = self.memory.get_loss(e)
                 loss = policy_loss + reach_loss  # HACK should be ok to do this!?
 
-                tf.contrib.summary.scalar('rewards/R', tf.reduce_mean(r))
-                tf.contrib.summary.scalar('rewards/B', tf.reduce_mean(b))
+                tf.contrib.summary.scalar('rewards/R', tf.reduce_mean(tf.reduce_sum(r, axis=0)))
+                tf.contrib.summary.scalar('rewards/b', tf.reduce_mean(b))
+                tf.contrib.summary.scalar('memory', self.memory.size)
+
 
         variables = self.policy.variables + self.memory.variables + self.embed.variables
         grads = tape.gradient(loss, variables)

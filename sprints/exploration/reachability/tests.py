@@ -107,8 +107,9 @@ class TestEpisodicMemory(unittest.TestCase):
         logdir = '/tmp/exp-tests/mem-acc'
         if os.path.exists(logdir):
             shutil.rmtree(logdir)
-        env = gym.make('MontezumaRevenge-v0')
+        env = gym.make('Acrobot-v1')
         player = Worker(Explorer(RndPolicy,
+                                 FC_net,
                                  env.action_space.n,
                                  memory_max_size=2,
                                  encoder_beta=0.0,
@@ -123,31 +124,48 @@ class TestEpisodicMemory(unittest.TestCase):
         pass
 
 
-class TestIntegration():
-    def test_performance(self):
-        """the test we really care about.
-        how does this extension improve the performance?
-        can it be used as a simple drop in addition?
-        """
-        env = gym.make('MontezumaRevenge-v0')
+class TestIntegration(unittest.TestCase):
+    # def test_performance(self):
+    #     """the test we really care about.
+    #     how does this extension improve the performance?
+    #     can it be used as a simple drop in addition?
+    #     """
+    #     env = gym.make('MontezumaRevenge-v0')
+    #
+    #     player = Worker(Explorer(Policy,
+    #                              env.action_space.n,
+    #                              memory_max_size=2,
+    #                              logdir='/tmp/exp-tests/policy_mem'),
+    #                     batch_size=50)
+    #     train(env, player, 10)
+    #     rewards = fetch()
+    #
+    #     player = Worker(SimpleLearner(Policy,
+    #                            env.action_space.n,
+    #                            memory_max_size=2,
+    #                            logdir='/tmp/exp-tests/policy'),
+    #                     batch_size=50)
+    #     train(env, player, 10)
+    #     rewards = fetch()
 
-        player = Worker(Explorer(Policy,
-                                 env.action_space.n,
-                                 memory_max_size=2,
-                                 encoder_beta=0.0,
-                                 logdir='/tmp/exp-tests/policy_mem'),
-                        batch_size=50)
-        train(env, player, 10)
-        rewards = fetch()
+    def test_simple_example(self):
+        """check performance on simple classical control problems"""
+        # use rnd policy, no memory, no extra training losses,
+        # does it make sense to do this with a rnd policy?
+        # reachabilty should be inv prop to diffusion.
 
-        player = Worker(SimpleLearner(Policy,
-                               env.action_space.n,
-                               memory_max_size=2,
-                               encoder_beta=0.0,
-                               logdir='/tmp/exp-tests/policy'),
-                        batch_size=50)
-        train(env, player, 10)
-        rewards = fetch()
+        for env_name in ['MountainCar-v0', 'Acrobot-v1']:
+            logdir = '/tmp/exp-tests/{}'.format(env_name)
+            if os.path.exists(logdir):
+                shutil.rmtree(logdir)
+            env = gym.make(env_name)
+            player = Worker(Explorer(Policy,
+                                     FC_net,
+                                     env.action_space.n,
+                                     memory_max_size=200,
+                                     logdir=logdir),
+                            batch_size=50)
+            train(env, player, 10, 20000, render=True)
 
 if __name__ == '__main__':
     unittest.main()

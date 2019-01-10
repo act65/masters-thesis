@@ -44,22 +44,6 @@ class ReplayBuffer(object):
         batch = [self.buffer[idx] for idx in idxs]  # a list of [[obs_s, a_s, r_s], ...]
         return [np.stack(x, axis=1) for x in zip(*batch)]
 
-def preprocess(x, old_x, stride=5):
-    """
-    Preprocesing for Atari LE, via gym.
-    """
-    shape = x.shape
-
-    # down sample
-    x = x[::stride, ::stride, ...]
-    old_x = np.zeros_like(x) if old_x is None else old_x[::stride, ::stride, ...]
-
-    # preprocessing. add differences for velocity
-    diff = np.sum(x, axis=-1, keepdims=True)-np.sum(old_x, axis=-1, keepdims=True)
-
-    x = np.concatenate([x, diff], axis=-1)
-    return x
-
 class Worker():
     """
     A worker to handle offline learning.
@@ -76,7 +60,7 @@ class Worker():
         self.batch_size = batch_size
 
     def __call__(self, obs, r, done):
-        x = preprocess(obs, self.old_obs)
+        x = self.learner.embed.preprocess(obs, self.old_obs)
         a, b = self.learner(tf.constant(x, dtype=tf.float32))
 
         if self.old_a is not None:
@@ -94,7 +78,7 @@ class Worker():
             if self.buffer.size > self.batch_size:
                 L = self.learner.train_step(*self.buffer.get_batch(self.batch_size))
 
-        return a
+        return a.numpy()[0]
 
     def reset(self):
         self.episode = []
@@ -128,25 +112,20 @@ class Residual(tf.keras.layers.Layer):
 class Policy():
     # Currently A2C TODO change to PPO or something smarter!
     def __init__(self, n_actions, n_hidden):
-        self.policy_fn = tf.keras.Sequential([
-            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-            Residual(n_hidden//4, n_hidden),
-            Residual(n_hidden//4, n_hidden),
-            Residual(n_hidden//4, n_hidden),
-            tf.keras.layers.Dense(n_actions)
-        ])
+        self.n_actions = n_actions
 
-        self.value_fn = tf.keras.Sequential([
+        # NOTE shared heads vs different nets!?
+        self.net = tf.keras.Sequential([
             tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
             Residual(n_hidden//4, n_hidden),
             Residual(n_hidden//4, n_hidden),
             Residual(n_hidden//4, n_hidden),
-            tf.keras.layers.Dense(1)
+            tf.keras.layers.Dense(n_actions+1)
         ])
 
     @property
     def variables(self):
-        return self.value_fn.variables + self.policy_fn.variables
+        return self.net.variables
 
     def __call__(self, x, return_logits=False):
         """
@@ -157,7 +136,8 @@ class Policy():
         Returns:
             log probability of actions or int specifing the action chosen
         """
-        logits = self.policy_fn(x)
+        h = self.net(x)
+        logits = h[:, :self.n_actions]
 
         if return_logits:
             return logits
@@ -171,8 +151,9 @@ class Policy():
         # TODO change to PPO?
         T, B = tf.shape(r)
 
-        policy_logits = tf.map_fn(lambda x: self.__call__(x, return_logits=True), x)
-        v = tf.squeeze(tf.map_fn(self.value_fn, tf.concat([x, policy_logits], axis=-1)))  # action-value estimates
+        h = tf.map_fn(self.net, x)
+        policy_logits = h[:, :, :self.n_actions]
+        v = h[:, :, self.n_actions]
 
         pg_loss, extra = trfl.sequence_advantage_actor_critic_loss(
             policy_logits=policy_logits,
@@ -187,7 +168,7 @@ class Policy():
         tf.contrib.summary.scalar('loss/policy', loss)
         return loss
 
-def train(env, player, seq_len, max_iters=100000):
+def train(env, player, seq_len, max_iters=100000, render=False):
     """
     Train a player in a gym environement.
 
@@ -212,7 +193,12 @@ def train(env, player, seq_len, max_iters=100000):
 
         a = player(obs, r, seq_break)
         obs, r, done, info = env.step(a)
+        if done:
+            r+=1
         R += r
+
+        if render:
+            env.render()
 
         if done:
             player.learner.reset()  # reset the explorers memory
@@ -237,19 +223,60 @@ def train(env, player, seq_len, max_iters=100000):
     return R, M
 
 
-def get_conv_net(n_hidden):
-    return tf.keras.Sequential([
-        tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-        tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-        tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(n_hidden),
-    ])
+class Conv_net():
+    def __init__(self, n_hidden):
+        self.fn = tf.keras.Sequential([
+            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(n_hidden),
+        ])
 
-def get_fc_net(n_hidden):
-    return tf.keras.Sequential([
-        tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-        tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-        tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-        tf.keras.layers.Dense(n_hidden),
-    ])
+    def __call__(self, x):
+        return self.fn(x)
+
+    def preprocess(self, x, old_x, stride=5):
+        """Preprocesing for Atari LE, via gym."""
+        shape = x.shape
+
+        # down sample
+        x = x[::stride, ::stride, ...]
+        old_x = np.zeros_like(x) if old_x is None else old_x[::stride, ::stride, ...]
+
+        # preprocessing. add differences for velocity
+        diff = np.sum(x, axis=-1, keepdims=True)-np.sum(old_x, axis=-1, keepdims=True)
+
+        x = np.concatenate([x, diff], axis=-1)
+        return x
+
+    @property
+    def variables(self):
+        return self.fn.variables
+
+class FC_net():
+    def __init__(self, n_hidden):
+        self.fn = tf.keras.Sequential([
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+            tf.keras.layers.Dense(n_hidden),
+        ])
+
+
+    def __call__(self, x):
+        return self.fn(x)
+
+    def preprocess(self, x, old_x, stride=5):
+        """Preprocesing for Atari LE, via gym."""
+        old_x = np.zeros_like(x) if old_x is None else old_x
+
+        # preprocessing. add differences for velocity
+        diff = np.sum(x, axis=-1, keepdims=True)-np.sum(old_x, axis=-1, keepdims=True)
+
+        x = np.concatenate([x, diff], axis=-1)
+        return x
+
+    @property
+    def variables(self):
+        return self.fn.variables
