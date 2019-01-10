@@ -1,25 +1,14 @@
-import tensorflow as tf
-import numpy as np
+import os
 import gym
 import shutil
-import os
-
-from train import *
-from reachability import *
-from utils import *
-
-tf.enable_eager_execution()
-
 import unittest
 
-class TestReplayBuffer(unittest.TestCase):
-    def test_deletion(self):
-        memory_buffer = ReplayBuffer(100, buffer_buffer=10)
+import numpy as np
+import tensorflow as tf
+tf.enable_eager_execution()
 
-        for _ in range(300):
-            memory_buffer.add([np.random.random([10]), np.random.random([10])])
-
-        self.assertTrue(memory_buffer.size < 100+10)
+from utils import *
+from reachability import *
 
 class TestExplorerMethods(unittest.TestCase):
     def test_reach_memory_size(self):
@@ -70,7 +59,7 @@ class TestTraining(unittest.TestCase):
         env = gym.make('MontezumaRevenge-v0')
 
         player = utl.Worker(RndExplorer(), batch_size=5)
-        run(env, player, 10)
+        train(env, player, 10)
 
 
 class RndPolicy():  # used for TestEpisodicMemory.test_accuracy
@@ -120,52 +109,18 @@ class TestEpisodicMemory(unittest.TestCase):
             shutil.rmtree(logdir)
         env = gym.make('MontezumaRevenge-v0')
         player = Worker(Explorer(RndPolicy,
-                                 EpisodicMemory,
                                  env.action_space.n,
                                  memory_max_size=2,
                                  encoder_beta=0.0,
                                  logdir=logdir),
                         batch_size=50)
-        run(env, player, 10)
+        train(env, player, 10, 20000)
 
         # TODO read logs and fetch acc. ensure > 80%!?
-
-    def test_reachable_training_regression(self):
-        T, B, D = 200, 50, 3
-        x = tf.random_normal([T, B, D])
-        a_s, b_s, k_s = reachable_training_regression(x, 10)
-
-        self.assertTrue(a_s.shape == (10, 3))
-        self.assertTrue(b_s.shape == (10, 3))
-        self.assertTrue(k_s.shape == (10, 1))
-
-    def test_regression_accuracy(self):
-        """check that the similarty metric can learn to accurately predict reachability"""
-        # use rnd policy, no memory, no extra training losses,
-        # does it make sense to do this with a rnd policy?
-        # reachabilty should be inv prop to diffusion.
-
-        logdir = '/tmp/exp-tests/mem-acc-regression'
-        if os.path.exists(logdir):
-            shutil.rmtree(logdir)
-        env = gym.make('MontezumaRevenge-v0')
-        player = Worker(Explorer(RndPolicy,
-                                 EpisodicMemoryRegression,
-                                 env.action_space.n,
-                                 memory_max_size=2,
-                                 encoder_beta=0.0,
-                                 logdir=logdir),
-                        batch_size=50)
-        run(env, player, 20)
-
-        # TODO read logs and fetch acc. ensure > 80%!?
-
 
     def test_bonus_range(self):
         """check that the bonus is the right scale"""
         pass
-
-
 
 
 class TestIntegration():
@@ -182,7 +137,7 @@ class TestIntegration():
                                  encoder_beta=0.0,
                                  logdir='/tmp/exp-tests/policy_mem'),
                         batch_size=50)
-        run(env, player, 10)
+        train(env, player, 10)
         rewards = fetch()
 
         player = Worker(SimpleLearner(Policy,
@@ -191,7 +146,7 @@ class TestIntegration():
                                encoder_beta=0.0,
                                logdir='/tmp/exp-tests/policy'),
                         batch_size=50)
-        run(env, player, 10)
+        train(env, player, 10)
         rewards = fetch()
 
 if __name__ == '__main__':

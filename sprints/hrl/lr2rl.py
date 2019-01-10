@@ -114,7 +114,7 @@ class Memory():
         # this seems expensive?!
         latest = [self.mem[i] for i in range(n, self.counter)]
         self.mem = {i: x for i, x in zip(range(self.max_size), latest)}
-        self.counter = self.max_size
+        self.counter = len(self.mem)
 
     def get_batch(self, batch_size):
         idxs = np.random.randint(0,self.size, batch_size)
@@ -305,7 +305,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n_arms", type=int, default=2, help="the number of arms")
     parser.add_argument("--trial_num", type=int, default=0, help="the id of the trial")
-    parser.add_argument("--logdir", type=str, default="/tmp/lr2rl", help="the location tosave logs")
+    parser.add_argument("--logdir", type=str, default="/tmp/lr2rl", help="the location to save logs")
     parser.add_argument("--lr", type=float, default=1e-3, help="learning rate")
     parser.add_argument("--n_train_steps", type=int, default=20000, help="n of train steps")
     parser.add_argument("--name", type=str, default='', help="name of trial")

@@ -3,12 +3,15 @@ import numpy as np
 import tensorflow as tf
 import trfl
 
+def accuracy(targets, predictions):
+    return tf.reduce_mean(tf.cast(tf.equal(targets, predictions), dtype=tf.float32))
+
 class ReplayBuffer(object):
     def __init__(self, max_size, buffer_buffer=100):
         self.max_size = max_size
         self.buffer_buffer = buffer_buffer  # buffer the deletions. they are expensive
         self.cur_size = 0
-        self.buffer = {}
+        self.buffer = {}  # dict for efficient rnd indexing (?)
 
     @property
     def size(self):
@@ -16,11 +19,10 @@ class ReplayBuffer(object):
 
     def add(self, episode):
         """Add episodes to buffer."""
-
         self.buffer[self.cur_size] = episode
         self.cur_size += 1
 
-        # batch removals together for speed!?
+        # batch removals together for efficiency
         if len(self.buffer) > self.max_size+self.buffer_buffer:
             self.remove_n(self.buffer_buffer)
 
@@ -31,9 +33,9 @@ class ReplayBuffer(object):
         # idxs = list(range(n))  # removes the oldest
         new_buffer = [val for i, val in enumerate(list(self.buffer.values())) if i in idxs]
         # overwrites the old dict. (possibly expensive, but not sure of a better way...)
-        n = len(new_buffer)
-        self.buffer = dict(zip(range(n), new_buffer))
-        self.cur_size = n
+        m = len(new_buffer)
+        self.buffer = dict(zip(range(m), new_buffer))
+        self.cur_size = m
 
     def get_batch(self, n):
         """Get batch of episodes to train on."""
@@ -43,6 +45,9 @@ class ReplayBuffer(object):
         return [np.stack(x, axis=1) for x in zip(*batch)]
 
 def preprocess(x, old_x, stride=5):
+    """
+    Preprocesing for Atari LE, via gym.
+    """
     shape = x.shape
 
     # down sample
@@ -95,35 +100,7 @@ class Worker():
         self.episode = []
         self.old_a = None
         self.old_x = None
-        # self.learner.reset()
 
-
-class SetEmbedding():
-    def __init__(self, n_hidden, n_outputs):
-        self.encoding_fn = tf.keras.Sequential([
-            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-            tf.keras.layers.Dense(n_hidden)
-        ])
-
-        self.decoding_fn = tf.keras.Sequential([
-            tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
-            tf.keras.layers.Dense(n_hidden)
-        ])
-
-        # can memoize simply based on size of inputs.
-        # if the size the the memory doesnt change, the memory hasnt changed
-        self.memoize_state_size = 0
-        self.memoized_result = None
-        # QUESTION ^^^ but is this still differentiable!?!?
-
-    def __call__(self, xs):
-        n = len(xs)
-        if n == self.memoize_state_size:
-            return self.memoized_result
-        else:
-            result = self.decoding_fn(tf.add_n([self.encoding_fn(x) for x in xs])/len(xs))
-            self.memoized_result = result
-            return result
 
 class Residual(tf.keras.layers.Layer):
     def __init__(self, n_hidden, n_outputs, **kwargs):
@@ -172,16 +149,14 @@ class Policy():
         return self.value_fn.variables + self.policy_fn.variables
 
     def __call__(self, x, return_logits=False):
-        # TODO the policy needs a fn of the memory as well!!
-        # else how does it know where it should explore?
+        """
+        Args:
+            x: the current state
+            return_logits: whether to return onehot or logits
 
-        # but how!? the memory changes in size. k-means? <- but order might change!?
-        # could use a graph NN?! or f(sum(g(m)))
-
-        # this breaks everything... now we need to add the memory contents to the buffer!?
-        # m = self.memory_sketch(self.memory)
-        # logits = self.policy_fn(tf.concat([x, m], axis=-1))
-
+        Returns:
+            log probability of actions or int specifing the action chosen
+        """
         logits = self.policy_fn(x)
 
         if return_logits:
@@ -212,32 +187,69 @@ class Policy():
         tf.contrib.summary.scalar('loss/policy', loss)
         return loss
 
+def train(env, player, seq_len, max_iters=100000):
+    """
+    Train a player in a gym environement.
 
-def ortho_loss(x):
-    B, D = tf.shape(x)
-    return tf.norm(tf.matmul(x, x, transpose_b=True) - tf.eye(B), ord='fro', axis=[0, 1])
+    Args:
+        env (gym.Environement): the gym environment
+        player: the player that is to learn. must return actions when called
+        seq_len (int): the length of sequences to train on
+        max_iters (int): the max amount of samples from the env
+    """
+    obs = env.reset()
 
-class Encoder():
-    def __init__(self, n_hidden, beta=1.0):
-        self.fn = tf.keras.Sequential([
-            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-            tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
-            tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(n_hidden),
-        ])
-        self.beta = beta
+    R = 0
+    r = 0.0
+    count = 1
+    episodes_played = 0
 
-    @property
-    def variables(self):
-        return self.fn.variables
+    while True:
+        # HACK soln to padding sequences. wrap them and continue
+        # rather than using the done flag
 
-    def __call__(self, x):
-        return self.fn(x)
+        seq_break = True if (count % (seq_len+1) == 0) and (count != 1) else False
 
-    def get_loss(self, x):
-        T, B, D = tf.shape(x)
-        x = tf.reshape(x, [T*B, D])
-        loss = self.beta*ortho_loss(x)
-        tf.contrib.summary.scalar('loss/embed', loss)
-        return loss
+        a = player(obs, r, seq_break)
+        obs, r, done, info = env.step(a)
+        R += r
+
+        if done:
+            player.learner.reset()  # reset the explorers memory
+            obs = env.reset()
+            R = 0
+            episodes_played += 1
+
+        count += 1
+
+        if count % 20 == 0:
+            M = len(player.learner.memory.memory)
+            B = len(player.buffer.buffer)
+
+            print('\ri: {} R: {} M: {}, B: {}'.format(episodes_played, R, M, B), end='', flush=True)
+
+        # if count % 10000 == 0:
+        #     player.learner.save()
+
+        if count % max_iters == 0:
+            break
+
+    return R, M
+
+
+def get_conv_net(n_hidden):
+    return tf.keras.Sequential([
+        tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+        tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+        tf.keras.layers.Conv2D(n_hidden, 4, 2, 'same', activation=tf.nn.selu),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(n_hidden),
+    ])
+
+def get_fc_net(n_hidden):
+    return tf.keras.Sequential([
+        tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+        tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+        tf.keras.layers.Dense(n_hidden, activation=tf.nn.selu),
+        tf.keras.layers.Dense(n_hidden),
+    ])
