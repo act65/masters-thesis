@@ -60,8 +60,14 @@ class Worker():
         self.batch_size = batch_size
 
     def __call__(self, obs, r, done):
-        x = self.learner.embed.preprocess(obs, self.old_obs)
-        a, b = self.learner(tf.constant(x, dtype=tf.float32))
+        x = preprocess(obs, self.old_obs)
+        out = self.learner(tf.constant(x, dtype=tf.float32))
+
+        if isinstance(out, tuple):
+            a, b = out
+        else:
+            a = out
+            b = 0.0
 
         if self.old_a is not None:
             self.episode.append([self.old_x, self.old_a, r, b])
@@ -78,7 +84,7 @@ class Worker():
             if self.buffer.size > self.batch_size:
                 L = self.learner.train_step(*self.buffer.get_batch(self.batch_size))
 
-        return a.numpy()[0]
+        return a if isinstance(a, int) else a.numpy()[0]
 
     def reset(self):
         self.episode = []
@@ -111,8 +117,14 @@ class Residual(tf.keras.layers.Layer):
 
 class Policy():
     # Currently A2C TODO change to PPO or something smarter!
-    def __init__(self, n_actions, n_hidden):
+    def __init__(self, n_actions, n_hidden, logdir='/tmp/test-policy', lr=1e-3):
         self.n_actions = n_actions
+
+        self.writer = tf.contrib.summary.create_file_writer(logdir)
+        self.writer.set_as_default()
+
+        self.opt = tf.train.AdamOptimizer(lr)
+        self.global_step = tf.train.get_or_create_global_step()
 
         # NOTE shared heads vs different nets!?
         self.net = tf.keras.Sequential([
@@ -127,7 +139,7 @@ class Policy():
     def variables(self):
         return self.net.variables
 
-    def __call__(self, x, return_logits=False):
+    def __call__(self, x):
         """
         Args:
             x: the current state
@@ -136,16 +148,12 @@ class Policy():
         Returns:
             log probability of actions or int specifing the action chosen
         """
+        x = tf.expand_dims(x, 0)
         h = self.net(x)
         logits = h[:, :self.n_actions]
-
-        if return_logits:
-            return logits
-
-        else:
-            # gumbel-softmax trick
-            g = -tf.log(-tf.log(tf.random_uniform(shape=tf.shape(logits), minval=0, maxval=1, dtype=tf.float32)))
-            return tf.argmax(logits + g, axis=-1)
+        # gumbel-softmax trick
+        g = -tf.log(-tf.log(tf.random_uniform(shape=tf.shape(logits), minval=0, maxval=1, dtype=tf.float32)))
+        return tf.argmax(logits + g, axis=-1)
 
     def get_loss(self, x, at, r):
         # TODO change to PPO?
@@ -168,6 +176,29 @@ class Policy():
         tf.contrib.summary.scalar('loss/policy', loss)
         return loss
 
+    def train_step(self, x, at, r, *args):
+        """
+        Args:
+            batched inputs:
+                (x, a, r) with shapes [Timesteps, Batch, ...]
+        """
+        x = tf.constant(x, dtype=tf.float32)
+        at = tf.squeeze(tf.constant(at, dtype=tf.int32))
+        r = tf.constant(r, dtype=tf.float32)
+
+        with tf.GradientTape() as tape:
+            with tf.contrib.summary.record_summaries_every_n_global_steps(10):
+                policy_loss = self.get_loss(x, at, r)
+                loss = tf.reduce_mean(policy_loss)
+                tf.contrib.summary.scalar('rewards/R', tf.reduce_mean(tf.reduce_sum(r, axis=0)))
+
+        grads = tape.gradient(loss, self.variables)
+        self.opt.apply_gradients(zip(grads, self.variables), global_step=self.global_step)
+        return loss
+
+    def reset(self):
+        pass
+
 def train(env, player, seq_len, max_iters=100000, render=False):
     """
     Train a player in a gym environement.
@@ -184,32 +215,41 @@ def train(env, player, seq_len, max_iters=100000, render=False):
     r = 0.0
     count = 1
     episodes_played = 0
+    done = False
 
     while True:
-        # HACK soln to padding sequences. wrap them and continue
-        # rather than using the done flag
+        # HACK episodic RL is painful. below I have implemented.
+        # if the env is done. continue playing/receiving fake inputs
+        # until a fixed length has been achieved
 
-        seq_break = True if (count % (seq_len+1) == 0) and (count != 1) else False
+        finished = True if (count % (seq_len+1) == 0) and (count != 1) else False
 
-        a = player(obs, r, seq_break)
-        obs, r, done, info = env.step(a)
-        if done:
-            r+=1
-        R += r
-
-        if render:
-            env.render()
-
-        if done:
+        if not done and not finished:
+            a = player(obs, r, finished)
+            obs, r, done, info = env.step(a)
+            R += r
+        elif done and not finished:
+            # fill with zeros
+            a = player(np.zeros_like(obs), 0.0, finished)
+            R += r
+        if finished:
+            a = player(np.zeros_like(obs), 0.0, finished)  # run once more with finished=True
+            done = False
             player.learner.reset()  # reset the explorers memory
             obs = env.reset()
             R = 0
             episodes_played += 1
 
+        if render:
+            env.render()
+
         count += 1
 
         if count % 20 == 0:
-            M = len(player.learner.memory.memory)
+            try:
+                M = len(player.learner.memory.memory)
+            except AttributeError:
+                M = 0
             B = len(player.buffer.buffer)
 
             print('\ri: {} R: {} M: {}, B: {}'.format(episodes_played, R, M, B), end='', flush=True)
@@ -267,7 +307,7 @@ class FC_net():
     def __call__(self, x):
         return self.fn(x)
 
-    def preprocess(self, x, old_x, stride=5):
+    def preprocess(self, x, old_x):
         """Preprocesing for Atari LE, via gym."""
         old_x = np.zeros_like(x) if old_x is None else old_x
 
@@ -280,3 +320,14 @@ class FC_net():
     @property
     def variables(self):
         return self.fn.variables
+
+
+def preprocess(x, old_x):
+    """Preprocesing for Classical control, via gym."""
+    old_x = np.zeros_like(x) if old_x is None else old_x
+
+    # preprocessing. add differences for velocity
+    diff = np.sum(x, axis=-1, keepdims=True)-np.sum(old_x, axis=-1, keepdims=True)
+
+    x = np.concatenate([x, diff], axis=-1)
+    return x

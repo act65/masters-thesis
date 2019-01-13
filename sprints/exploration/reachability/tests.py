@@ -44,9 +44,41 @@ class TestExplorerMethods(unittest.TestCase):
             print(b)
 
 
+class TestPolicy(unittest.TestCase):
+    def test_classic(self):
+        """check performance of Policy on simple classical control problems"""
+        # use no memory
+        for env_name in ['MountainCar-v0', 'Acrobot-v1']:
+            logdir = '/tmp/exp-tests/policy/{}'.format(env_name)
+            if os.path.exists(logdir):
+                shutil.rmtree(logdir)
+            env = gym.make(env_name)
+            player = Worker(
+                        Policy(env.action_space.n, 64, logdir=logdir),
+                        batch_size=50
+                        )
+            train(env, player, 250, 500000, render=True)
+
+    def test_box2d(self):
+        """check performance of Policy on Box2d envs"""
+        for env_name in ['LunarLander-v2', 'BipedalWalker-v2']:
+            logdir = '/tmp/exp-tests/policy/{}'.format(env_name)
+            if os.path.exists(logdir):
+                shutil.rmtree(logdir)
+            env = gym.make(env_name)
+            player = Worker(
+                        Policy(env.action_space.n, 64, logdir=logdir),
+                        batch_size=50
+                        )
+            train(env, player, 250, 500000, render=True)
+
+
 class RndExplorer():  # used for TestTraining.test_run
+    def __init__(self, env):
+        self.env = env
+
     def __call__(self, *args, **kwargs):
-        return env.action_space.sample(), 0
+        return self.env.action_space.sample(), 0
 
     def reset(self, *args, **kwargs):
         pass
@@ -56,10 +88,10 @@ class RndExplorer():  # used for TestTraining.test_run
 
 class TestTraining(unittest.TestCase):
     def test_run(self):
-        env = gym.make('MontezumaRevenge-v0')
+        env = gym.make('MountainCar-v0')
 
-        player = utl.Worker(RndExplorer(), batch_size=5)
-        train(env, player, 10)
+        player = utl.Worker(RndExplorer(env), batch_size=5)
+        train(env, player, 500, 10000)
 
 
 class RndPolicy():  # used for TestEpisodicMemory.test_accuracy
@@ -125,35 +157,13 @@ class TestEpisodicMemory(unittest.TestCase):
 
 
 class TestIntegration(unittest.TestCase):
-    # def test_performance(self):
-    #     """the test we really care about.
-    #     how does this extension improve the performance?
-    #     can it be used as a simple drop in addition?
-    #     """
-    #     env = gym.make('MontezumaRevenge-v0')
-    #
-    #     player = Worker(Explorer(Policy,
-    #                              env.action_space.n,
-    #                              memory_max_size=2,
-    #                              logdir='/tmp/exp-tests/policy_mem'),
-    #                     batch_size=50)
-    #     train(env, player, 10)
-    #     rewards = fetch()
-    #
-    #     player = Worker(SimpleLearner(Policy,
-    #                            env.action_space.n,
-    #                            memory_max_size=2,
-    #                            logdir='/tmp/exp-tests/policy'),
-    #                     batch_size=50)
-    #     train(env, player, 10)
-    #     rewards = fetch()
+        """the test we really care about.
+        how does this extension improve the performance?
+        can it be used as a simple drop in addition?
 
+        Policy vs Memory + Policy
+        """
     def test_simple_example(self):
-        """check performance on simple classical control problems"""
-        # use rnd policy, no memory, no extra training losses,
-        # does it make sense to do this with a rnd policy?
-        # reachabilty should be inv prop to diffusion.
-
         for env_name in ['MountainCar-v0', 'Acrobot-v1']:
             logdir = '/tmp/exp-tests/{}'.format(env_name)
             if os.path.exists(logdir):
@@ -165,7 +175,7 @@ class TestIntegration(unittest.TestCase):
                                      memory_max_size=200,
                                      logdir=logdir),
                             batch_size=50)
-            train(env, player, 10, 20000, render=True)
+            train(env, player, 250, 500000, render=True)
 
 if __name__ == '__main__':
     unittest.main()

@@ -58,7 +58,7 @@ class EpisodicMemory():
     def variables(self):
         return self.sim.variables
 
-    def __call__(self, x):
+    def __call__(self, x):        
         s = self.compare(x)
 
         if s < self.gamma:
