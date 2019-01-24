@@ -69,7 +69,7 @@ Is there a notion of maximal instability? Chaos?
 
 ### Maximum entropy
 
-Want to construct a dataset where each possible state/transition/reward has uniform probability (aka max entropy)
+Want to construct a dataset where each possible state/transition/reward has uniform probability (aka max entropy).
 
 
 ## Dimensionality reduction (reduce search space)
@@ -101,6 +101,7 @@ If our actions (cts) cause a change in state, but there is noise of var=0.1, the
 
 
 [Actionable representations](https://arxiv.org/abs/1811.07819)
+[Contingency aware exploration](https://arxiv.org/abs/1811.01483)
 
 ### Symmetries
 

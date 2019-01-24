@@ -2,7 +2,7 @@ The equivalence of options and subgoals. Both specify likely future events and a
 
 In one case we condition the policy on a subgoal, and in the other case we condition with an option.
 
-Based on [Feudal nets](https://arxiv.org/abs/1703.01161) and [The option-critic architecture](https://arxiv.org/abs/1609.05140)
+Based on [Feudal nets](https://arxiv.org/abs/1703.01161) (Fun) and [The option-critic architecture](https://arxiv.org/abs/1609.05140) (OpC).
 
 ## Options
 
@@ -18,30 +18,31 @@ $$
 
 ## Subgoals
 
-- $Q_{\Omega}(s, g)$ is the expected discounted reward of choosing using $\pi_{\omega}$ to reach the subgoal, $g$ and then following $\pi_{\Omega}$ afterwards.
-- $Q_{\omega}(s, g, a)$ is the expected discounted reward of choosing an action given that we are attempting to achieve some goal.
+- $Q_{\Omega}(s, g)$ is the expected discounted reward of using $\pi_{\omega}$ to reach subgoal $g$ and then following $\pi_{\Omega}$ afterwards.
+- $Q_{\omega}(s, g, a)$ is the expected discounted reward of choosing an action given that we are attempting to achieve some goal, and the future ability to achieve subgoals.
 
-= Value of subgoal + value of following subgoal policy in the future.
 $$
 \begin{align}
 Q_{\Omega}(s, g) &= r(s_t) + \gamma  \mathop{E}_{s' \sim \tau(s, \pi_{\omega}(s, g))}[U(s')] \tag{manager}\\
 U(s, g) &=  (1-\beta(s, g))Q_{\Omega}(s, g) + \beta(s, g) V^{\pi_{\Omega}}_{\Omega}(s)\\
-r_{\omega}(s_t, g) &= \gamma\mathop{E}_{s' \sim \tau(s, \pi_{\omega}(s, g))} [Q_{\Omega}(s', g)] - Q_{\Omega}(s_t, g) \tag{manager rewards the worker}\\
+r_{\omega}(s_t, g) &= Q_{\Omega}(s_{t-1}, g) - \gamma Q_{\Omega}(s_{t}, g) \tag{manager rewards the worker}\\
 Q_{\omega}(s_t, g_t, a_t) &= r_{\omega}(s_t, g) + \gamma E_{a \sim \pi(s')}[Q_{\omega}(s_t, g_t, a_t)] \tag{worker}\\
 \end{align}
 $$
 
-(1) This is a non-standard definition. $r_{\omega}(s_t, g) = \mathop{E}_{s' \sim \tau(s, \pi_{\omega}(s, g))} [Q_{\Omega}(s', g)] - Q_{\Omega}(s_t, g)$ But can we justify it? (_intuitively it makes sense that we would reward the worker if it increases the expected rewards!?_) To be able to caluclate this we will approximate it with $r_{\omega}(s_t, g) = Q_{\Omega}(s_{t+1}, g) - Q_{\Omega}(s_t, g)$. As long as $s_{t+1}$ is sampled IID from $\tau(s_t, \pi(s_t, g_t))$ then this estimator should have zero bias (but we have introduce more variance).
+(1) This is a non-standard definition. $r_{\omega}(s_t, g) = \mathop{E}_{s' \sim \tau(s, \pi_{\omega}(s, g))} [Q_{\Omega}(s', g)] - Q_{\Omega}(s_t, g)$ But can we justify it? (_intuitively it makes sense that we would reward the worker if it increases the expected rewards!? NO! Other way around. Any decrease in expected value means the reward must have been received at the current time step._) To be able to caluclate this we will approximate it with $r_{\omega}(s_t, g) = Q_{\Omega}(s_{t+1}, g) - Q_{\Omega}(s_t, g)$.
 
-(1.1) Also, this because it is more general? Other approaches to subgoals 'cheat'(??) in the sense that they use the euclidean distance between the current state and goal state (see TDMs).
+(1.1) As long as $s_{t+1}$ is sampled IID from $\tau(s_t, \pi(s_t, g_t))$ then this estimator should have zero bias (but we have introduced more variance).
 
-(1.2) This trick is what connects the two Q fns. As now the both have the same reward fn. (see section ...)
+(1.2) Other approaches to subgoals 'cheat' in the sense that they use the euclidean distance between the current state and goal state (see TDMs).
+
+(1.3) This assumes the estimated values are perfectly fit to the current policy.
+
+can come up with a counter example!?
+- in state A, and pick B/C with 50/50 chance. B is rewarded with 1 and C -1. $V(A)=0, V(B) = 1,V(A) - \gamma V(B)=-1\gamma$
+- in state A, policy always picks B from B/C. A is rewarded with 0.5 and B 0.5 and C -1. $V(A)=0.5+0.5\gamma, V(B) = 0.5,V(A) - \gamma V(B)=0.5+0.5\gamma-0.5\gamma=0.5$
 
 (2) The introduction of the $\beta$ is also non-standard for the Feudal net framework. But can we justify it? Feudal networks are implemented by running the manager at a lower temporal resolution than the worker. Thus the worker may recieve the same goal for $k$ steps. We can use $\beta$ to index the correct discounted reward. Maybe the worker policy is simply following the current subgoal, and thus the expected discounted reward is the value of the workers policy for the next k steps, in which case $\beta$ should be zero for these k steps. Else, for $\beta$ equals one, the manager picks a new subgoal, in which case we can recursively define it value as the value of the rolledout workers actions.
-
-***
-
-$V_{\omega}(s) = \sum_t \gamma^t r_w(s) = \sum_t \gamma^t r(s)$ is the ideal case!? The problem is that it is hard to estimave the correct value of an action, especially with long term deps and sparse rewards. Thus we choose $r_w(s)$ to ...?
 
 ## Equivalence
 
@@ -69,11 +70,11 @@ So what is this reward, $r_w$? A way to think about it could be as the ...!?
 
 
 (3) $a_{t}$ is via greedy policy
-(4) at convergence og Q to the true value of the current policy
+(4) at convergence of Q to the true value of the current policy
 
 $$
 \begin{align}
-r_{\omega}(s_t, g) &= \gamma Q_{\Omega}(s_{t+1}, g) - Q_{\Omega}(s_t, g) \tag{by defn} \\
+r_{\omega}(s_t, g) &= Q_{\Omega}(s_{t-1}, g) - \gamma Q_{\Omega}(s_{t}, g) \tag{by defn} \\
 &= r(s_t) \tag{assuming (3), (4)}\\
  Q_{\Omega}(s_{t+1}, g) - Q_{\Omega}(s_t, g) &\approx \frac{\partial Q_{\Omega}}{\partial t} \\
 Q_{\omega}(s, g, a) &= E_{}[\gamma^t r(s_t)]\\
@@ -86,8 +87,6 @@ $$
 
 Ok. I am starting to have second thoughts. Not sure if this is insightful or trivial... I mean I just defined the manager $\Omega$ and the worker $\omega$ to recieve the same reward. And showed that integrating the rewards gives a value fn and differentiating the value fn gives the reward... Doesnt seem particularly interesting...
 
-Oh... I think I am wrong.
-
 ## Comparison
 
 pros/cons
@@ -95,41 +94,6 @@ pros/cons
 - (con - options) calculating an integral for every choice...
 - (con - subgoals) manager must be accurate, else can introduce bias/variance
 - ?
-
-***
-
-#### Scaling HRL
-
-For __tabular FuN__ we have;
-- `manager_qs=[n_states x n_states] (current_states x goal_states)` and
-- `worker_qs=[n_states x n_states x n_actions] (current_states x goal_states x actions)`.
-
-But what if we wanted to increase the depth of the heirarchy?
-- `Exectuive_manager_qs=[n_states x n_states] (current_states x exec_goal_states)` and
-- `manager_qs=[n_states x n_states x n_states] (current_states x exec_goal_states x goal_states)` and
-- `worker_qs=[n_states x n_states x n_actions] (current_states x goal_states x actions)`.
-
-For every added layer of depth, the increase complexity is upperbounded by (d = depth) $d \times n_{subgoals}^3$ (where $n_{subgoals} = n_{states}$) (?!?!)
-
-(__^^^__ reminds me of some sort of tensor factorisation!? __!!!__)
-
-But for __tabular OpC__. For tabular FuN we have;
-- `qs=[n_states x n_options x actions] (current_states x options x actions)`
-
-But what if we wanted to increase the depth of the heirarchy?
-- `qs=[n_states x n_options x n_options x actions] (current_states x 1st_lvl_options x 2nd_lvl_options x actions)`
-- and we would need to compute integrals of each layer of depth (so memory and time complexity are bad)
-
-The increase is upperbounded by $n_{options}^{d}$. (?!?)
-
-__BUT.__ What about scaling with state size?
-
-- OpC - $O(n)$
-- FuN - $O(n^3)$
-
-***
-
-Why would we want more depth? (greater length of time deps?? which is related to state size!?)
 
 
 ## TODOs

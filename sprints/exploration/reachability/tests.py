@@ -34,7 +34,7 @@ class TestExplorerMethods(unittest.TestCase):
             self.assertTrue(a.numpy() in action_set)
 
     def test_bonus(self):
-        """check the norvelty bonus"""
+        """check the novelty bonus"""
         exp = Explorer(5)
 
         for _ in range(200):
@@ -157,12 +157,12 @@ class TestEpisodicMemory(unittest.TestCase):
 
 
 class TestIntegration(unittest.TestCase):
-        """the test we really care about.
-        how does this extension improve the performance?
-        can it be used as a simple drop in addition?
+    """the test we really care about.
+    how does this extension improve the performance?
+    can it be used as a simple drop in addition?
 
-        Policy vs Memory + Policy
-        """
+    Policy vs Memory + Policy
+    """
     def test_simple_example(self):
         for env_name in ['MountainCar-v0', 'Acrobot-v1']:
             logdir = '/tmp/exp-tests/{}'.format(env_name)

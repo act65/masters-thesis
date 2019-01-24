@@ -168,8 +168,10 @@ class Policy():
             baseline_values=v,
             actions=at,
             rewards=r,
-            pcontinues=tf.ones_like(r),
-            bootstrap_value=tf.ones(tf.shape(r)[1])
+            pcontinues=0.99*tf.ones_like(r),
+            bootstrap_value=tf.ones(tf.shape(r)[1]),
+            entropy_cost=1e-1,
+            normalise_entropy=True
         )
 
         loss = tf.reduce_mean(pg_loss)

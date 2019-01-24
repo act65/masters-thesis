@@ -56,7 +56,7 @@ Or low/high pass filters? Or !?.
 - Temporally abstracted actions -- (via options and Goal conditioned policies?)
 - Long term credit assignment
 - Heirarchical state representations
-- !?
+- Are subgoals necessary for HRL?
 
 ## Possible projects
 
