@@ -21,3 +21,6 @@ Or could use fourier TD to estimate. Then we can reover an FFT!?
 But what else can it represent? What can vanilla TD not represent? (oscillations!?)
 
 Relationship to something like Rudder!?
+
+
+- Look into https://deepmind.com/blog/prefrontal-cortex-meta-reinforcement-learning-system/

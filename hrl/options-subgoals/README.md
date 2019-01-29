@@ -31,4 +31,6 @@ Options
 - ?
 
 
-Want: system that starts with subgoals. But if the same things is computed/optimised many times, turn it into an option.
+Want:
+- system that starts with subgoals. But if the same things is computed/optimised many times, turn it into an option.
+- variable sized options!?
