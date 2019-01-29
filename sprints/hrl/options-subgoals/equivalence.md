@@ -1,34 +1,38 @@
+---
+title: "FuN and OpC"
+author: [Alexander Telfar]
+date: "2019-01-28"
+subject: "Transfer reinforcement learning"
+---
+
 The equivalence of options and subgoals. Both specify likely future events and allow us to construct temporally abstract actions. Can we show an equvalence between these approaches?
 
 In one case we condition the policy on a subgoal, and in the other case we condition with an option.
 
 Based on [Feudal nets](https://arxiv.org/abs/1703.01161) (Fun) and [The option-critic architecture](https://arxiv.org/abs/1609.05140) (OpC).
 
-## Options
+## OpC
 
-$$
 \begin{align}
-Q_{{\Omega}}(s, w) &= E_{a\sim \pi_{\omega}(s)}[Q_{\omega}(s, w, a)] \tag{over multiple time steps!??!}\\
+Q_{{\Omega}}(s, w) &= E_{a\sim \pi_{\omega}(s)}[Q_{\omega}(s, w, a)]\\
 Q_{\omega}(s, w, a) &= r(s_t) + \gamma  E_{s' \sim \tau(s, \pi(s))}[U(s', w)] \\
 U(s, w) &= (1-\beta(s, w))Q_{\Omega}(s, w) + \beta(s,w) V_{\Omega}(s)
 \end{align}
-$$
 
 (these equations are copied from the OpC paper.)
 
-## Subgoals
+## FuN (with additions)
 
 - $Q_{\Omega}(s, g)$ is the expected discounted reward of using $\pi_{\omega}$ to reach subgoal $g$ and then following $\pi_{\Omega}$ afterwards.
 - $Q_{\omega}(s, g, a)$ is the expected discounted reward of choosing an action given that we are attempting to achieve some goal, and the future ability to achieve subgoals.
 
-$$
+
 \begin{align}
-Q_{\Omega}(s, g) &= r(s_t) + \gamma  \mathop{E}_{s' \sim \tau(s, \pi_{\omega}(s, g))}[U(s')] \tag{manager}\\
-U(s, g) &=  (1-\beta(s, g))Q_{\Omega}(s, g) + \beta(s, g) V^{\pi_{\Omega}}_{\Omega}(s)\\
-r_{\omega}(s_t, g) &= Q_{\Omega}(s_{t-1}, g) - \gamma Q_{\Omega}(s_{t}, g) \tag{manager rewards the worker}\\
-Q_{\omega}(s_t, g_t, a_t) &= r_{\omega}(s_t, g) + \gamma E_{a \sim \pi(s')}[Q_{\omega}(s_t, g_t, a_t)] \tag{worker}\\
+Q_{\Omega}(s_t, g_t) &= r(s_t) + \gamma  \mathop{E}_{s_{t+1} \sim \tau(s_t, \pi_{\omega}(s_t, g))}[Q(s_{t+1}, \pi_{\Omega}(s_{t+1}))] \tag{manager}\\
+r_{\omega}(s_t, g_t) &= Q_{\Omega}(s_{t-1}, g_t) - \gamma Q_{\Omega}(s_{t}, g_t) \tag{manager rewards the worker}\\
+Q_{\omega}(s_t, g_t, a_t) &= r_{\omega}(s_t, g_t) + \gamma E_{a \sim \pi(s')}[Q_{\omega}(s_t, g_t, a_t)] \tag{worker}\\
 \end{align}
-$$
+
 
 (1) This is a non-standard definition. $r_{\omega}(s_t, g) = \mathop{E}_{s' \sim \tau(s, \pi_{\omega}(s, g))} [Q_{\Omega}(s', g)] - Q_{\Omega}(s_t, g)$ But can we justify it? (_intuitively it makes sense that we would reward the worker if it increases the expected rewards!? NO! Other way around. Any decrease in expected value means the reward must have been received at the current time step._) To be able to caluclate this we will approximate it with $r_{\omega}(s_t, g) = Q_{\Omega}(s_{t+1}, g) - Q_{\Omega}(s_t, g)$.
 
@@ -46,25 +50,24 @@ can come up with a counter example!?
 
 ## Equivalence
 
-$$
+
 \begin{align}
-Q_{\omega}(s, w, a) &= \sum_t \gamma^tr(s_t) \\
+\text{Let} \;\;s' &= \tau(s, w) = g \\
+Q_{\omega}(s, w, a) &= \sum_{t=0}^{T-1} \gamma^tr(s_t) + \gamma^TV(s') \tag{OpC}\\
 &= Q_{\omega}(s, g, a) \\
 \end{align}
-$$
+
 
 #### Generalisation/calc interpretation
 
-> Roughly. Option-critics take the integral of $Q_{\omega}$ to construct $Q_{\Omega}$ while feudal networks take the derivative of $Q_{\Omega}$ to construct $Q_{\omega}$ _(assuming the introduction of 1, 2)_.
+> Intutition: Option-critics take the integral of $Q_{\omega}$ to construct $Q_{\Omega}$ while feudal networks take the derivative of $Q_{\Omega}$ to construct $Q_{\omega}$ _(assuming the introduction of (1), (2))_.
 
 
-
-$$
 \begin{align}
 &\text{definition of option manager}\\
 Q_{{\Omega}}(s, w) &= \int p(a|s, \pi_{\omega})Q_{\omega}(s, w, a) da
 \end{align}
-$$
+
 
 So what is this reward, $r_w$? A way to think about it could be as the ...!?
 
@@ -72,7 +75,7 @@ So what is this reward, $r_w$? A way to think about it could be as the ...!?
 (3) $a_{t}$ is via greedy policy
 (4) at convergence of Q to the true value of the current policy
 
-$$
+
 \begin{align}
 r_{\omega}(s_t, g) &= Q_{\Omega}(s_{t-1}, g) - \gamma Q_{\Omega}(s_{t}, g) \tag{by defn} \\
 &= r(s_t) \tag{assuming (3), (4)}\\
@@ -81,11 +84,7 @@ Q_{\omega}(s, g, a) &= E_{}[\gamma^t r(s_t)]\\
 &= \int \gamma^t r(s_t) dt \\
 \int Q_{\omega}(s, g, a) da &=
 \end{align}
-$$
 
-***
-
-Ok. I am starting to have second thoughts. Not sure if this is insightful or trivial... I mean I just defined the manager $\Omega$ and the worker $\omega$ to recieve the same reward. And showed that integrating the rewards gives a value fn and differentiating the value fn gives the reward... Doesnt seem particularly interesting...
 
 ## Comparison
 

@@ -20,17 +20,18 @@ Understanding how actions combine (this is necessary knowledge for HRL?)
 
 ## Possible projects
 
-- [ ] Unsupervised options
+- [ ] Unsupervised options (how good can random ones be!?)
 - [ ] Equivalence of goal/option conditioned value fns
 - [ ] Build a three (or even better, N) layer heirarchy
 - [ ] Explore how different approaches scale (computational complexity) in the number of heirarchies
 - [ ] Using a reachability metric to measure proximity to subgoal (and thus use to give rewards)
-- [ ] ?
+- [ ] A heirarchical subgoal net that uses MPC rather than learned policies
 
 ## Questions and thoughts
 
 - Does it make sense to ask if actions can also be abstracted over dimensions other than time!?
 - To learn action abstractions they must capture info about the model. How much harder is it to learn action abstractions in model-free vs model-based settings?
+- Reward as a function of a subspace of the state space. (this is important for learning abstract representations and actions!?)
 
 ## Refs
 
