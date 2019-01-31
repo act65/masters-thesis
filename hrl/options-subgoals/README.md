@@ -15,6 +15,25 @@ $\mathcal R = \{s': \exists \omega_{0:t}, s' =\tau(s, \omega_{0:t})\}: \;\;f(\ma
 
 
 
+## Options
+
+
+
+## Subgoals
+
+
+Define subgoal.
+
+Need a metric/reward function so we can measure our progress towards the goal. For each subgoal, we need a function such that $f: \mathcal S \to \mathbb R^+$.
+Alternatively we could write this as;
+- $f: \mathcal S \times \mathcal G \to \mathbb R^+$.
+- a representation and a distance metric!? $\langle f(s), g\rangle$
+- ???
+
+Should this function be;
+- symmetric, injective, surjective, ...?
+- differentiable? convex? ...?
+
 ### Pros/cons?
 
 Subgoals
@@ -32,5 +51,19 @@ Options
 
 
 Want:
-- system that starts with subgoals. But if the same things is computed/optimised many times, turn it into an option.
+- system that starts with subgoals. But if the same things is computed/optimised many times, turn it into an option. (rate based encodings!?)
 - variable sized options!?
+
+
+### Refs
+
+
+##### Subgoals
+
+- [Identifying Useful Subgoals in Reinforcement Learning by Local Graph Partitioning](http://www-anw.cs.umass.edu/pubs/2005/simsek_wb_ICML05.pdf)
+- [Hierarchical Deep Reinforcement Learning: Integrating Temporal Abstraction and Intrinsic Motivation](https://arxiv.org/pdf/1604.06057.pdf)
+- [Feudal](https://arxiv.org/abs/1703.01161)
+- [HIRO](https://arxiv.org/abs/1805.08296)
+- [Visual Reinforcement Learning with Imagined Goals](https://drive.google.com/file/d/1_LJa86wE3bO_j2w7lsN9gvmLJYFKDyIE/view)
+- [Exploring Hierarchy-Aware Inverse Reinforcement Learning](https://drive.google.com/file/d/1pw2JOX14iaRzWTz6wAhwoplrvVhmPX7b/view)
+- [Automatic Goal Generation for Reinforcement Learning Agents](http://proceedings.mlr.press/v80/florensa18a/florensa18a.pdf)
