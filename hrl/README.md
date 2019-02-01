@@ -44,6 +44,7 @@ Reasons to do HRL??? (want to verify these claims - and have refs for them)
 - [ ] More complex action spaces!!
 - [ ] A way to generate toy HRL puzzles/envs. Want a set of priors! What properties do they have?!
 - [ ] What if we could learn a disentangled set of actions!? And then compose them into more abstract actions!? How do disentangled transitions correspond to disentangled actions!? (in what sense would the actions be disentangled. in the change in state?)
+- [ ] When is negative transfer guaranteed not to occur!?
 
 > Approximation perspective: we have a set of options and we want to use them to approximate the optimal policy. A good set of options can efficiently achieve an accurate approximation.
 
@@ -56,6 +57,12 @@ Reasons to do HRL??? (want to verify these claims - and have refs for them)
 
 ***
 
+
+Can have temporal and action abstractions.
+
+There exist a set of disentangled higher level actions that explain the change in state / transition fn.
+
+***
 
 > there is still no consensus on what constitute good options. [A Matrix Splitting Perspective on Planning with Options](https://arxiv.org/pdf/1612.00916.pdf)
 > if the option set for the task is not ideal, and cannot express the primitive optimal policy well, shorter options offer more flexibility and can yield a better solution. [Learning with Options that Terminate Off-Policy](https://arxiv.org/pdf/1711.03817.pdf)
