@@ -20,7 +20,7 @@ What about multiple symmetries?
 
 - In time: Where we migh have $\tau_k(s, a_1, a_2, \dots a_k) = f(s,  a_1, a_2, \dots a_k)$ and $f_k(s, \omega) = f(s, h(\omega_1, \omega_2, \dots \omega_k))$. (__Q:__ but if this more abstract symmetry exists, then why do we care about the lower level one!?)
 - what if they symmetries only exist in time AND dimension? Ie there are no symmetries just in time, or just in dimension!? Is that possible!?
-- $f(x, y) \neq f(T(x), y) \neq f(x, T(y)) = f(T(x, y))$
+- $f(x, y) \neq f(T(x), y) \neq f(x, T(y)) = f(T(x, y))$. $\tau(s=0, a=0) = \tau(s=1, a=1)$. Walking backwards from facing ths start is equivalent to walk forwards from facing the finish.
 
 
 __TODO:__ What about approximate symmetries!? How can these be generated!?

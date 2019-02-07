@@ -12,6 +12,10 @@ In the case that the abstraction is isomorphic to ??? then no problem.
 Want to measure the optimal policies return w and w/o abstraction. The quality of the abstraction is then then difference in computational/sample complexity divided by the change in optimal return.
 (ahh, no. bc the optimal policy might now be a lot harder to find!?!)
 
+## Questions
+
+- (when) Is finding the optimal policy harder in the abstraction than in the original space, even if value is preserved!??
+-
 
 ## Computational complexity
 
@@ -23,8 +27,17 @@ It solves every possible state-subgoal pair and knows how to generate paths betw
 
 No, not sure this works.
 
-####
+But what does the heirarchy provide here?!?
+This canbe done with a single layer...
 
+#### ???
+
+
+## Possible settings/approaches
+
+ - Original problem -> abstraction -> abstract optimal policy -> difference between abstract and original optimal policies
+ - Explore the loss surface of a linear RL problem and explore how it gets transformed under an abstraction
+ - Frame as finding a set of spanning edge types for a graph. (?)
 
 ## References
 

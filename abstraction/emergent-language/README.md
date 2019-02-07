@@ -16,3 +16,10 @@ B) Also we could include the influence of the reward function and tune the explo
 Does it make sense to talk about the "grammar" of different RL envs?
 Nautrally they would have some? In a maze with options. It wouldnt make sense to search-the-room if you are in a hallway...!?
 And some options are not possible in different states. (but we could still try!?)
+
+***
+
+https://arxiv.org/abs/1902.01119
+https://arxiv.org/pdf/1901.10723.pdf
+https://ecs.victoria.ac.nz/Groups/Elvis/ThomasKuehne
+https://www.victoria.ac.nz/lals/about/staff/victoria-chen
