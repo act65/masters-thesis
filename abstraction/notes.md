@@ -95,3 +95,9 @@ Actions at pixel level seem wasteful... If I colour this pixel do I get rewarded
 $\tau (s, a) = a, \;\; r(s) = s \cdot w$
 
 Could then go to two actions and see how that changes things!?
+
+
+
+***
+
+So if two objects have the same value in a dimension of a disentangled space, we could use that to generalise? They are similar in this restricted / abstract way. Therefore ...

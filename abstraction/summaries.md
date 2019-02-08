@@ -21,4 +21,25 @@
 ## On the necessity of abstraction
 (https://www.sciencedirect.com/science/article/pii/S2352154618302080)
 
-> The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportu- nity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.
+> The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.
+
+## Near optimal representation learnning for HRL
+(https://openreview.net/forum?id=H1emus0qF7)
+
+
+
+$$
+\begin{align}
+D_{KL}(P_{\pi^{* }(s, g)}(s'\mid s) \parallel K_{\theta}(s' \mid s, g)) \\
+K_{\theta}(s' \mid s, g) = \rho(s') \frac{e^{-E(s', s, g)}}{Z} \\
+E(s', s, g) = D(f(s'), \varphi(s, \psi(s, g))) \tag{distance is measured in abstract space}\\
+\end{align}
+$$
+Kinda like an autoencoder?
+$$
+\begin{align}
+D_{KL}(P(x) \parallel K(x' \mid x)) \\
+K(x \mid x) = \rho(x) \frac{e^{-E(x)}}{Z} \\
+E(x) = D(x, d(e(x))) \\
+\end{align}
+$$

@@ -19,6 +19,11 @@ And some options are not possible in different states. (but we could still try!?
 
 ***
 
+__Q:__ Asymmetries in sequences are equivalent to a grammar?
+__Q:__ How do the symmetries of a sequence relate to its parse tree?
+
+***
+
 https://arxiv.org/abs/1902.01119
 https://arxiv.org/pdf/1901.10723.pdf
 https://ecs.victoria.ac.nz/Groups/Elvis/ThomasKuehne

@@ -9,8 +9,7 @@ Ideate and pick 4 more sprints.
 
 > 4)
 
-
-
+***
 
 - [ ] Unsupervised options (how good can random ones be!?)
 - [ ] Equivalence of goal/option conditioned value fns
@@ -23,3 +22,13 @@ Ideate and pick 4 more sprints.
 - [ ] How to achieve stable training of a hierarchy?
 - [ ] Filtering / gating state space to the lower levels
 - [ ] Connection to evolution of language.
+- [ ] The benefit of a heirarchy of abstractions? (versus use a single layer of abstraction). Transfer!?
+- [ ] Design a new programming language. Learner gets access to assembly and must ??? (build a calculator? allow a learner to build websites easy? ...?). What would be the task / reward fn? (should be easy to learn to use, require few commands to do X, ...?)
+- [ ] A single dict with the ability to merge, versus a heirarchy!?
+- [ ]
+
+***
+
+What is the relationship between abstraction and generalisation!?
+
+Definition of abstraction: ignoring irrelevant details.
