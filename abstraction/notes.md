@@ -100,4 +100,13 @@ Could then go to two actions and see how that changes things!?
 
 ***
 
-So if two objects have the same value in a dimension of a disentangled space, we could use that to generalise? They are similar in this restricted / abstract way. Therefore ...
+So if two objects have the same value in a dimension of a disentangled space, we could use that to generalise? They are similar in this restricted / abstract way. Therefore ... ???
+
+
+
+***
+
+
+- Abstraction for evluation versus (greedy) improvement?
+- Relationship between tree search and HRL? (divide and conquer for MPC) Recursive subgoal decomposition.  https://arxiv.org/pdf/1706.05825.pdf
+- Absolute versus relative perspectives (relationship to subgoals and options)
