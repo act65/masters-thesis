@@ -39,6 +39,20 @@ This canbe done with a single layer...
  - Explore the loss surface of a linear RL problem and explore how it gets transformed under an abstraction
  - Frame as finding a set of spanning edge types for a graph. (?)
 
+### Computational complexity
+(problem is that for computational complexity, the details of the algol become important.
+  when analysing approximation bounds we dont have to consider how to find the approximations...)
+
+MPD + GPI.
+
+- Need to show how quickly the evaluations converge (possibly under a non-stationary policy).
+- Need to show that updating $\pi$ with an $\epsilon$ accurate V yeilds some expected step size.
+- Need to show these converge.
+
+MDP + PG.
+
+-
+
 ## References
 
 - [Towards a Unified Theory of State Abstraction for MDPs](http://anytime.cs.umass.edu/aimath06/proceedings/P21.pdf)
