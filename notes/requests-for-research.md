@@ -25,6 +25,8 @@ __Unbiased online recurrent opptimisation__ &#9734; &#9734; Can we extent [UORO]
 
 __Meta learning emerges from temporal decompositions__ &#9734; &#9734; [Meta-RL](https://arxiv.org/abs/1611.05763) trains a learner on the aggregated return over many episodes (a larger time scale). If we construct a temporal decomposition (moving averages at different time-scales) of rewards and aproximate them with a set of value functions, does this produce a heirarchy of meta learners? (will need a way to aggregate actions chosen in different time scales, for example $\pi(s_t) = g(\sum_k f_k(z_t))$)
 
+<!-- __Visualise and understand the loss surface of simple RL problems__ &#9734; &#9734; -->
+
 
 <!-- ## Continuious options
 
