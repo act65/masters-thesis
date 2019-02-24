@@ -1,6 +1,6 @@
 Imagine you are a centipede.
 
-You have a hundred legs... And you are hungry.
+You have a hundred little legs... And you are hungry.
 To reach the food your can faintly smell, you need to navigate a maze.
 
 But getting there is complicated...! You can move leg 27 up a little, leg 78 forwards, legs 45-52 downward, ... Etc.
