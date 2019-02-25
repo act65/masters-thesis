@@ -30,3 +30,8 @@ Ideate and pick 4 more sprints.
 What is the relationship between abstraction and generalisation!?
 
 Definition of abstraction: ignoring irrelevant details.
+
+
+https://arxiv.org/pdf/1712.00948.pdf
+https://david-abel.github.io/papers/rlit_aaai_2019.pdf
+https://arxiv.org/pdf/1705.06366.pdf

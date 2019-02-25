@@ -6,7 +6,7 @@ https://github.com/google-research/planet
 
 Min one of:
 - memoize
-- multi-scale transitions
+- multi-scale transitions ([HYPERBOLIC DISCOUNTING AND LEARNING OVER MULTIPLE HORIZONS](https://arxiv.org/pdf/1902.06865.pdf), separating value fns across time)
 - disentangled
 (maybe more depending on how easy code/experiments are)
 
