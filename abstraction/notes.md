@@ -110,3 +110,9 @@ So if two objects have the same value in a dimension of a disentangled space, we
 - Abstraction for evluation versus (greedy) improvement?
 - Relationship between tree search and HRL? (divide and conquer for MPC) Recursive subgoal decomposition.  https://arxiv.org/pdf/1706.05825.pdf
 - Absolute versus relative perspectives (relationship to subgoals and options)
+
+
+### Generating temorally abstract action spaces
+
+Pieter Abbeel mentioned an env they designed.
+> Grid world where agent must discover the passcodes for the actions (left right up down). For example left might be 0,0,1.
