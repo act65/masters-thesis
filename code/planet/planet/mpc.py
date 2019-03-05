@@ -36,12 +36,25 @@ def discounted_return(rewards, discount):
     # faster way to do this? some sort of conv?
     return np.sum([discount**i * r for i, r in enumerate(rewards)])
 
-def evaluate_policy(transition_fn, reward_fn, gamma, s_init, policy):
+def evaluate_policy_w_value(transition_fn, value_fn, gamma, s_init, policy):
     """
     Args:
         ...
     """
-    states = multi_step_transitions(s_init, policy)
+    states = multi_step_transitions(transition_fn, s_init, policy)
+
+    # learned value fn
+    # if we are only using the last then we dont need to store the others!
+    return value_fn(states[-1])
+
+def evaluate_policy_w_reward(transition_fn, reward_fn, gamma, s_init, policy):
+    """
+    Args:
+        ...
+    """
+    states = multi_step_transitions(transition_fn, s_init, policy)
+    ### setimate the value of an action seq as;
+    # sum of rewards
     rewards = [reward_fn(s) for s in states] # TODO + value of final state
     return discounted_return(rewards, 0.9)
 
@@ -58,13 +71,23 @@ def rnd_policy_generator(n_actions, T, N):
 
     logging.info('{} steps total'.format(T*N))
     for i in range(N):
-        yield rnd.randint(minval=0, maxval=n_actions, shape=(T,))
+        yield rnd.randint(0, n_actions, (T,))
 
 def simulate_policies(generator, evaluator):
+    """
+    Args:
+        generator (generator): yields policies
+        evaluator (callable): takes a policy and returns its value
+
+    Returns:
+        (tuple):
+            (np.array) policies
+            (np.array) their values
+    """
     # TODO parallelise these calls. could use vmap!?
     # NOTE this is turning into something close to MCTS!?
 
-    return tuple(zip(*[(pi, evaluator(pi)) for pi in generator]))
+    return tuple([np.array(v) for v in zip(*[(pi, evaluator(pi)) for pi in generator])])
 
 def sample(logits):  # BUG not working with rnd
     g = - np.log(-np.log(rnd.random(logits.shape)))
@@ -74,10 +97,17 @@ def sample_action(pis, evals):
     idx = sample(evals)  # bigger is more likely. TODO what about adding memory / momentum here?
     return pis[idx][0]  # only take the first action.
 
-def mpc(s_init, transition_fn, value_fn, gamma):
+def mpc(s_init, transition_fn, n_actions, T, N, value_fn=None, reward_fn=None, gamma=0.9):
     """
     A wrapper to handle planning.
     """
-    evaluator = lambda pi: evaluate_policy(transition_fn, reward_fn, gamma, s_init, pi)
-    pis, evals = simulate_policies(rnd_policy_generator, evaluator)
+    if value_fn is not None:
+        evaluator = lambda pi: evaluate_policy_w_value(transition_fn, value_fn, gamma, s_init, pi)
+    elif reward_fn is not None:
+        evaluator = lambda pi: evaluate_policy_w_reward(transition_fn, reward_fn, gamma, s_init, pi)
+    else:
+        raise ValueError('must provide a fn to evaluate. reward or value')
+
+    generator = rnd_policy_generator(n_actions, T, N)
+    pis, evals = simulate_policies(generator, evaluator)
     return sample_action(pis, evals)
