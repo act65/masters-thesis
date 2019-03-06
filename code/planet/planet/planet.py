@@ -11,13 +11,19 @@ def onehot(idx, N):
     return np.eye(N)[idx]
 
 class Planet():
-    def __init__(self, n_inputs, n_actions, planning_window=5, n_plans=20):
+    def __init__(self, n_inputs, n_actions, planning_window=5, n_plans=20, width=64):
         self.n_actions = n_actions
         self.planning_window = planning_window
         self.n_plans = n_plans
 
-        self.transition = nets.make_transition_net(n_inputs, n_actions, width=32, n_outputs=n_inputs)
-        self.value = nets.make_value_net(n_inputs, width=32)
+        # TODO state abstraction!?
+        # s = self.encoder(obs)
+        # TODO action abstraction
+        # a = self.decoder(self.choose_action(a))
+        # how to train this? what loss? an AE?
+        # if mpc was differentiable we could train this end to end!?
+        self.transition = nets.make_transition_net(n_inputs, n_actions, width=width, n_outputs=n_inputs)
+        self.value = nets.make_value_net(n_inputs, width=width)
 
         self.step_counter = 0
 
@@ -29,7 +35,7 @@ class Planet():
         a = mpc.mpc(s, transition, n_actions=self.n_actions,
                     T=self.planning_window, N=self.n_plans, value_fn=value)
 
-        return np.argmax(a)
+        return np.argmax(a)  # convert from onehot to int
 
     def update(self, s_t, s_tp1, a_t, r_t):
         a_t = onehot(a_t, self.n_actions)

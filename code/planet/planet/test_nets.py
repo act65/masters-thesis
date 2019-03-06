@@ -111,7 +111,3 @@ class TestNet(unittest.TestCase):
     #     plt.plot(x, toy_fn(x))
     #
     #     plt.show()
-
-
-    def test_grads(self):
-        pass
