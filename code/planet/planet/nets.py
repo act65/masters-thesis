@@ -1,6 +1,7 @@
 import jax.numpy as np
 from jax import grad, jit, vmap
-from jax.experimental.stax import serial, Dense, Relu
+from jax.experimental.stax import serial, Dense, Relu, Softplus
+from jax.experimental import optimizers
 
 import collections
 
@@ -13,12 +14,29 @@ TODO
 
 network = collections.namedtuple(
     'network',
-    ['params', 'fn', 'outshape', 'loss_fn', 'grad_fn'])
+    ['params', 'fn', 'outshape', 'loss_fn', 'grad_fn', 'step', 'opt_state'])
 
 def mse(x, y):
     return np.mean(np.sum((x-y)**2, axis=-1))
 
-def make_transition_net(in_shape, width, n_output):
+def opt_update(i, net, batch):
+    """
+    Args:
+        i (int): the step num
+        net (network): a named tuple containing the parts of a neural network
+        batch (tuple): the arguments to the loss fn - something like (inputs, targets)
+
+    Returns:
+        (network): a new network with updated parameters and optimiser state
+    """
+    new_opt_state = net.step(i, net.opt_state, batch)
+    new_params = optimizers.get_params(new_opt_state)
+    # TODO want sparse updating!? how slow is this?
+    # maybe I shouldnt be using a named tuple for this?
+    return network(new_params, net.fn, net.outshape, net.loss_fn,
+                   net.grad_fn, net.step, new_opt_state)
+
+def make_transition_net(n_inputs, n_actions, width, n_outputs):
     """
     Args:
         in_shape (tuple): (n_batch, n_inputs)
@@ -26,13 +44,13 @@ def make_transition_net(in_shape, width, n_output):
         n_output (int): the number of dims in the output
     """
     init, fn = serial(
-        Dense(width), Relu,
-        Dense(width), Relu,
-        Dense(width), Relu,
-        Dense(n_output)
+        Dense(width), Softplus,
+        Dense(width), Softplus,
+        Dense(width), Softplus,
+        Dense(n_outputs)
     )
 
-    out_shape, params = init(in_shape)
+    out_shape, params = init((-1, n_inputs+n_actions))
 
     def apply_fn(params, x, a):
         x = np.concatenate([x,a],axis=-1)
@@ -45,9 +63,17 @@ def make_transition_net(in_shape, width, n_output):
     # TODO jit
     dlossdparam = grad(loss_fn)
 
-    return network(params, apply_fn , out_shape, loss_fn, dlossdparam)
+    opt_init, opt_update = optimizers.adam(step_size=0.001)
+    opt_state = opt_init(params)
 
-def make_value_net(in_shape, width):
+    def step(i, opt_state, batch):
+        params = optimizers.get_params(opt_state)
+        g = dlossdparam(params, *batch)
+        return opt_update(i, g, opt_state)
+
+    return network(params, apply_fn , out_shape, loss_fn, dlossdparam, step, opt_state)
+
+def make_value_net(n_inputs, width):
     init, fn = serial(
         Dense(width), Relu,
         Dense(width), Relu,
@@ -55,7 +81,7 @@ def make_value_net(in_shape, width):
         Dense(1)
     )
 
-    out_shape, params = init(in_shape)
+    out_shape, params = init((-1, n_inputs))
 
     def loss_fn(params, x_t, r_t, v_tp1, gamma):
         # mean squared bellman error
@@ -66,4 +92,12 @@ def make_value_net(in_shape, width):
     # TODO jit
     dlossdparam = grad(loss_fn)
 
-    return network(params, fn , out_shape, loss_fn, dlossdparam)
+    opt_init, opt_update = optimizers.momentum(step_size=0.001, mass=0.9)
+    opt_state = opt_init(params)
+
+    def step(i, opt_state, batch):
+          params = optimizers.get_params(opt_state)
+          g = dlossdparam(params, *batch)
+          return opt_update(i, g, opt_state)
+
+    return network(params, fn , out_shape, loss_fn, dlossdparam, step, opt_state)

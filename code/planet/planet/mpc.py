@@ -2,7 +2,7 @@ import numpy as np
 import numpy.random as rnd
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 """
 TODO
@@ -10,6 +10,7 @@ TODO
 - want to use some sort of byte pair / freq based encoding and add them to avaliable actions
 - want to extend to cts actions (will not be trivial...!)
 - want to reuse the previously calculated plans!?
+- use the mpc searches to backup and aid value estimates!? (but this assumes they are reliable...)
 """
 
 def onehot(idx, N):
@@ -25,15 +26,14 @@ def multi_step_transitions(transition_fn, s, pi):
     Returns:
         (list): a list of the intermediate states reached via pi
     """
-
     if len(pi) == 1:
-        return [transition_fn(s, pi[0])]
+        return [transition_fn(s, pi[0].reshape((1, -1)))]
     else:
-        new_s = transition_fn(s, pi[0]).reshape((1, -1))
+        new_s = transition_fn(s, pi[0].reshape((1, -1))).reshape((1, -1))
         return [new_s] + multi_step_transitions(transition_fn, new_s, pi[1:])
 
 def discounted_return(rewards, discount):
-    # faster way to do this? some sort of conv?
+    # TODO faster way to do this? some sort of conv?
     return np.sum([discount**i * r for i, r in enumerate(rewards)])
 
 def evaluate_policy_w_value(transition_fn, value_fn, gamma, s_init, policy):
@@ -45,6 +45,7 @@ def evaluate_policy_w_value(transition_fn, value_fn, gamma, s_init, policy):
 
     # learned value fn
     # if we are only using the last then we dont need to store the others!
+    # this reminds me more of AlphaGO?? but mcts would avg and backup?!
     return value_fn(states[-1])
 
 def evaluate_policy_w_reward(transition_fn, reward_fn, gamma, s_init, policy):
@@ -71,7 +72,7 @@ def rnd_policy_generator(n_actions, T, N):
 
     logging.info('{} steps total'.format(T*N))
     for i in range(N):
-        yield rnd.randint(0, n_actions, (T,))
+        yield onehot(rnd.randint(0, n_actions, (T,)), n_actions)
 
 def simulate_policies(generator, evaluator):
     """
