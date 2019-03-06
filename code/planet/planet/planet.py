@@ -32,14 +32,18 @@ class Planet():
         transition = lambda s, a: self.transition.fn(self.transition.params, s, a)
         value = lambda s: self.value.fn(self.value.params, s)
 
+        assert len(s.shape) == 2
         a = mpc.mpc(s, transition, n_actions=self.n_actions,
                     T=self.planning_window, N=self.n_plans, value_fn=value)
 
         return np.argmax(a)  # convert from onehot to int
 
-    def update(self, s_t, s_tp1, a_t, r_t):
-        a_t = onehot(a_t, self.n_actions)
+    def update(self, s_t, a_t, r_t, s_tp1):
+        a_t = onehot(a_t.reshape(-1), self.n_actions)
         v_tp1 = self.value.fn(self.value.params, s_tp1)
         self.transition = nets.opt_update(self.step_counter, self.transition, (s_t, a_t, s_tp1))
         self.value = nets.opt_update(self.step_counter, self.value, (s_t, r_t, a_t, v_tp1))
         self.step_counter += 1
+
+        loss = 0
+        return loss

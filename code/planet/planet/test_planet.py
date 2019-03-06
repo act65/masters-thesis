@@ -42,7 +42,7 @@ class TestPlanet(unittest.TestCase):
         while not done:
             a = learner.choose_action(obs.reshape((-1, 4)))
             obs, r, done, info = env.step(a)
-            learner.update(obs, obs, a, np.array([[r]]))
+            learner.update(obs, a, np.array([[r]]), obs)
             self.assertTrue(a in range(env.action_space.n))
             R += r
             print('\r Reward: {}'.format(R), end='', flush=True)

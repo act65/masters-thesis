@@ -11,6 +11,7 @@ TODO
 - want to extend to cts actions (will not be trivial...!)
 - want to reuse the previously calculated plans!?
 - use the mpc searches to backup and aid value estimates!? (but this assumes they are reliable...)
+- use jit compilation to make things faster!?
 """
 
 def onehot(idx, N):
@@ -111,4 +112,5 @@ def mpc(s_init, transition_fn, n_actions, T, N, value_fn=None, reward_fn=None, g
 
     generator = rnd_policy_generator(n_actions, T, N)
     pis, evals = simulate_policies(generator, evaluator)
+
     return sample_action(pis, evals)

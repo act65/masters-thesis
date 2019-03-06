@@ -1,14 +1,18 @@
 import gym
 
+import copy
 import numpy as np
 import random
 
+def onehot(idx, N):
+    return np.eye(N)[idx]
 
 class ReplayBuffer(object):
-    def __init__(self, max_size):
+    def __init__(self, max_size, overflow_cache_size=100):
         self.max_size = max_size
         self.cur_size = 0
         self.buffer = {}
+        self.overflow_cache_size = overflow_cache_size
 
     @property
     def size(self):
@@ -21,14 +25,14 @@ class ReplayBuffer(object):
         self.cur_size += 1
 
         # batch removals together for speed!?
-        if len(self.buffer) > self.max_size+100:
-            self.remove_n(100)
+        if len(self.buffer) > self.max_size+self.overflow_cache_size:
+            self.remove_n(self.overflow_cache_size)
 
     def remove_n(self, n):
         """Get n items for removal."""
         # random removal
-        # idxs = random.sample(range(self.cur_size), self.cur_size-n)
-        idxs = list(range(n))  # removes the oldest
+        idxs = list(random.sample(range(self.cur_size), self.cur_size-n))
+        # idxs = list(range(n))  # removes the oldest
         new_buffer = np.array(list(self.buffer.values()))[idxs]
         # overwrites the old dict. (possibly expensive, but not sure of a better way...)
         n = len(new_buffer)
@@ -50,41 +54,26 @@ class Worker():
     - adding experience to the buffer
     - (could also be used to compute gradients)
     """
-    def __init__(self, env_name, player, is_remote, maxsteps=100):
-        self.buffer = rp.ReplayBuffer(max_size=2000)
+    def __init__(self, env_name, player, maxsteps=100):
+        self.buffer = ReplayBuffer(max_size=10000)
 
         self.env = gym.make(env_name)
         obs = self.env.reset()
 
-        self.player = player(input_shape=obs.shape, n_actions=self.env.action_space.n)
+        self.player = player(n_inputs=obs.shape[0], n_actions=self.env.action_space.n)
 
         self.maxsteps = maxsteps
 
-    def play_episode(self, weights=None, render=False):
+    def play_episode(self, render=False):
         obs = self.env.reset()
-
         done = False
         R = 0
-        count = 0
-
         old_obs = copy.deepcopy(obs)
-        old_a = 0
-        old_r = 0
-        old_q = [0]*self.n_actions
-        older_r = 0
-        older_a = 0
-
-        trajectory = []
-
         while not done:
-            if count >= self.maxsteps:
-                break
-            count += 1
-
             # TODO use old_a in step so we are not blocking on prediction
 
             ### choose action and simulate
-            a = self.player.choose_action(obs, weights=weights)
+            a = self.player.choose_action(obs.reshape((1, -1)))
             obs, r, done, info = self.env.step(a)
             R += r
 
@@ -92,22 +81,18 @@ class Worker():
                 self.env.render()
 
             ### add experience to buffer
-            trajectory.append([old_obs, np.array([old_a]), np.array([old_r]), obs])
+            # HACK although this is an episodic task
+            # because it is almost full info we can break it up into pairs of examples
+            self.buffer.add([old_obs, np.array([a]), np.array([r]), obs])
 
             old_obs = copy.deepcopy(old_obs)
-            old_a = copy.deepcopy(a)
-            old_r = copy.deepcopy(r)
-
-        # HACK although this is an episodic task
-        # because it is almost full info we can break it up into pairs of examples
-        self.buffer.add([np.stack(x, axis=0) for x in zip(*trajectory)])
 
         return R
 
     def work(self, n):
         returns = []
         for _ in range(n):
-            returns.append(self.run_episode())
+            returns.append(self.play_episode())
         return returns
 
     def get_batch(self, n):
