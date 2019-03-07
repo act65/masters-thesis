@@ -5,12 +5,13 @@ from nets import *
 import numpy as np
 import numpy.random as rnd
 
+import time
 import matplotlib.pyplot as plt
 
 def onehot(idx, N):
     return np.eye(N)[idx]
 
-class TestNet(unittest.TestCase):
+class TestNets(unittest.TestCase):
     def test_transition(self):
 
         net = make_transition_net(n_inputs=4, n_actions=2, width=32, n_outputs=4)
@@ -42,36 +43,47 @@ class TestNet(unittest.TestCase):
         """
         check these nets can learn something simple
         """
-        net = make_transition_net(n_inputs=1, n_actions=2, width=32, n_outputs=1)
+        # BUG QUESTION ok. this doesnt really work as wellas I would have expected
+        # Relu and Tanh both seem to fit the lhs but not the rhs (negaives)
+        net = make_transition_net(n_inputs=1, n_actions=2, width=256, n_outputs=1)
+
+        batch_size = 20
 
         def toy_fn(x, a):
-            return np.sin(3*x)
+            return np.sin(3*x) #+ np.sin(20*x+2)
 
         def data_generator(N):
             for _ in range(N):
-                x = rnd.random((20, 1))
-                a = np.zeros((20, 2))
-                t = toy_fn(x, a)
+                x = rnd.random((batch_size, 1))*2 - 1
+                a = np.zeros((batch_size, 2))
+                t = toy_fn(x, a) + rnd.random((batch_size, 1)) * 0.1
                 yield x, a, t
 
         losses = []
-        for i, batch in enumerate(data_generator(100)):
+        for i, batch in enumerate(data_generator(2000)):
             net = opt_update(i, net, batch)
             L = net.loss_fn(net.params, *batch)
             losses.append(L)
             print("\r{}.".format(L), end='', flush=True)
 
-        plt.figure()
-        plt.plot(losses)
-
-        x = np.linspace(-1, 1, 100)
-        y = net.fn(net.params, x.reshape((100, 1)), np.zeros((100, 2)))
 
         plt.figure()
-        plt.plot(x, y)
-        plt.plot(x, toy_fn(x, None))
+        plt.subplot(2,1,1)
+        plt.title('Loss')
+        plt.plot(np.log(losses))
+
+        N = 1000
+        x = np.linspace(-1, 1, N)
+        y = net.fn(net.params, x.reshape((N, 1)), np.zeros((N, 2)))
+
+        plt.subplot(2,1,2)
+        plt.title('Predictions and truth')
+        plt.plot(x, y, label='prediction')
+        plt.plot(x, toy_fn(x, None), label='truth')
+        plt.legend()
 
         plt.show()
+
 
         # BUG well the loss goes down... but the fit...
         # are NNs really this bad, or have I done something wrong?

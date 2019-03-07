@@ -35,7 +35,7 @@ def main(args):
     for i in range(args.trials):
         ### Evaluate the current policy
         # use workers to collect data
-        Rs = worker.work(2)
+        Rs = worker.work(1)
         # Rs = worker.play_episode(render=True)
         returns.append(np.mean(Rs))
 
@@ -45,8 +45,14 @@ def main(args):
             losses.append(worker.player.update(*batch))
             print('\rStep: {} Loss: {}, Return: {}'.format(i, losses[-1], returns[-1]), end='', flush=True)
 
-    plt.plot(losses)
+    transition_losses, value_losses = tuple(zip(*losses))
+    plt.subplot(3,1,1)
+    plt.plot(np.log(transition_losses))
+    plt.subplot(3,1,2)
+    plt.plot(np.log(value_losses))
+    plt.subplot(3,1,3)
     plt.plot(returns)
+
     plt.show()
 
 if __name__ == '__main__':

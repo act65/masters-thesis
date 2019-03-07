@@ -1,6 +1,6 @@
 import jax.numpy as np
 from jax import grad, jit, vmap
-from jax.experimental.stax import serial, Dense, Relu, Softplus
+from jax.experimental.stax import serial, Dense, Relu, Softplus, Tanh
 from jax.experimental import optimizers
 
 import collections
@@ -10,6 +10,9 @@ TODO
 - make a transition network with action abstraction
 - a transition network with disentangled actions
 - a multistep transition fn
+- prune the networks and augment the topolgy
+- allow extra actions to be added
+- ?
 """
 
 network = collections.namedtuple(
@@ -36,7 +39,7 @@ def opt_update(i, net, batch):
     return network(new_params, net.fn, net.outshape, net.loss_fn,
                    net.grad_fn, net.step, new_opt_state)
 
-def make_transition_net(n_inputs, n_actions, width, n_outputs):
+def make_transition_net(n_inputs, n_actions, width, n_outputs, activation=Relu):
     """
     Args:
         in_shape (tuple): (n_batch, n_inputs)
@@ -44,9 +47,10 @@ def make_transition_net(n_inputs, n_actions, width, n_outputs):
         n_output (int): the number of dims in the output
     """
     init, fn = serial(
-        Dense(width), Softplus,
-        Dense(width), Softplus,
-        Dense(width), Softplus,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
         Dense(n_outputs)
     )
 
@@ -73,16 +77,19 @@ def make_transition_net(n_inputs, n_actions, width, n_outputs):
 
     return network(params, jit(apply_fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
 
-def make_value_net(n_inputs, width):
+def make_value_net(n_inputs, width, activation=Relu):
     init, fn = serial(
-        Dense(width), Softplus,
-        Dense(width), Softplus,
-        Dense(width), Softplus,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
         Dense(1)
     )
 
     out_shape, params = init((-1, n_inputs))
 
+    # BUG  want to learn the value of the optimal policy! not fit to the current policy
+    # TODO need off policy corrections!
     def loss_fn(params, x_t, r_t, v_tp1, gamma):
         # mean squared bellman error
         v_t_approx = fn(params, x_t)

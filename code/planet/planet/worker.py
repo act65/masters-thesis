@@ -47,6 +47,26 @@ class ReplayBuffer(object):
         batch = [np.stack(x, axis=0) for x in zip(*batch)]
         return batch
 
+class IncrementalMoments():
+    def __init__(self):
+        self.mu_n = None
+        self.S_n = None
+        self.counter = 0
+
+    def __call__(self, x):
+        if self.mu_n is None:
+            self.mu_n = x
+        if self.S_n is None and self.mu_n is not None:
+            self.S_n = (self.mu_n - x)**2
+
+        self.counter += 1
+
+        mu_n_tp1 = self.mu_n + (x - self.mu_n)/(self.counter)
+        self.S_n = self.S_n + (x - mu_n_tp1) * (x - self.mu_n)
+        self.mu_n = mu_n_tp1
+
+        return  (x - self.mu_n)/(np.sqrt(self.S_n/(self.counter)) + 1e-6)
+
 class Worker():
     """
     Worker is in charge of;
@@ -63,6 +83,7 @@ class Worker():
         self.player = player(n_inputs=2*obs.shape[0], n_actions=self.env.action_space.n)
 
         self.maxsteps = maxsteps
+        self.value_moments = IncrementalMoments()
 
     def play_episode(self, render=False):
         obs = self.env.reset()
@@ -77,6 +98,8 @@ class Worker():
             x = np.stack([obs, obs-old_obs]).reshape(-1)
             a = self.player.choose_action(x.reshape((1, -1)))
             obs, r, done, info = self.env.step(a)
+            r = self.value_moments(r)
+            # TODO BUG normalise the rewards!
             R += r
 
             if render:

@@ -77,4 +77,4 @@ class TestWorker(unittest.TestCase):
         worker = Worker('CartPole-v1', RndPlayer)
         returns = worker.work(100)
         batch = worker.get_batch(5)
-        self.assertEqual(batch[0].shape, (5, 4))
+        self.assertEqual(batch[0].shape, (5, 2*4))

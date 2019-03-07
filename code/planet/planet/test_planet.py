@@ -35,7 +35,7 @@ class TestPlanet(unittest.TestCase):
         env = gym.make('CartPole-v1')
         obs = env.reset()
 
-        learner = Planet(obs.size, env.action_space.n)
+        learner = Planet(obs.size//2, env.action_space.n)
 
         done = False
         R = 0
