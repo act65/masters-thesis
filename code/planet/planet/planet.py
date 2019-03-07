@@ -29,30 +29,33 @@ class Planet():
 
         self.planner = mpc.make_planner(self.transition, self.value)
 
-    def choose_action(self, s, random=False):
+    def choose_action(self, s):
         if len(s.shape) != 2:
             raise ValueError('expected s as shape (Batch, Dim)')
 
-        if random:
-            a = np.random.randint(0, self.n_actions)
-        else:
-            # freeze the current nets and use them to plan
-            a = self.planner(s, self.transition.params, self.value.params,
-                             n_actions=self.n_actions, T=self.planning_window, N=self.n_plans)
-            a = np.argmax(a)  # convert from onehot to int
+        # return np.random.randint(0, self.n_actions)
 
-        return a
+        # freeze the current nets and use them to plan
+        logits = self.planner(s, self.transition.params, self.value.params,
+                         n_actions=self.n_actions, T=self.planning_window, N=self.n_plans)
+        # TODO maybe we want to turn the temp down over time?
+        return logits
 
-    def update(self, s_t, a_t, r_t, s_tp1):
+    def update(self, s_t, a_t, a_logits, r_t, s_tp1):
         a_t = onehot(a_t.reshape(-1), self.n_actions)
-        v_tp1 = self.value.fn(self.value.params, s_tp1)
+
+        # learn the optimal value!
+        s_tp1_opt = self.transition.fn(self.transition.params, s_t, onehot(np.argmax(a_logits, axis=-1), a_logits.shape[-1]))
+        v_tp1_opt = self.value.fn(self.value.params, s_tp1_opt)
+        # TODO still need to apply importance sampling correction??
+
         self.transition = nets.opt_update(self.step_counter, self.transition, (s_t, a_t, s_tp1))
-        self.value = nets.opt_update(self.step_counter, self.value, (s_t, r_t, a_t, v_tp1))
+        self.value = nets.opt_update(self.step_counter, self.value, (s_t, r_t, a_t, v_tp1_opt, a_t, a_logits))
         self.step_counter += 1
 
-        return self.loss(s_t, a_t, r_t, s_tp1, v_tp1)
+        return self.loss(s_t, a_t, a_logits, r_t, s_tp1, v_tp1_opt)
 
-    def loss(self, s_t, a_t, r_t, s_tp1, v_tp1):
+    def loss(self, s_t, a_t, a_logits, r_t, s_tp1, v_tp1):
         transition_loss = self.transition.loss_fn(self.transition.params, s_t, a_t, s_tp1)
-        value_loss = self.value.loss_fn(self.value.params, s_t, r_t, v_tp1, 1.0)
+        value_loss = self.value.loss_fn(self.value.params, s_t, r_t, v_tp1, 1.0, a_t, a_logits)
         return transition_loss, value_loss

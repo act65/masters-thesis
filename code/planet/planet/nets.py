@@ -1,6 +1,6 @@
 import jax.numpy as np
 from jax import grad, jit, vmap
-from jax.experimental.stax import serial, Dense, Relu, Softplus, Tanh
+from jax.experimental.stax import serial, Dense, Relu, Softplus, Tanh, Softmax
 from jax.experimental import optimizers
 
 import collections
@@ -77,6 +77,9 @@ def make_transition_net(n_inputs, n_actions, width, n_outputs, activation=Relu):
 
     return network(params, jit(apply_fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
 
+def softmax(x):
+    return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
+
 def make_value_net(n_inputs, width, activation=Relu):
     init, fn = serial(
         Dense(width), activation,
@@ -90,16 +93,19 @@ def make_value_net(n_inputs, width, activation=Relu):
 
     # BUG  want to learn the value of the optimal policy! not fit to the current policy
     # TODO need off policy corrections!
-    def loss_fn(params, x_t, r_t, v_tp1, gamma):
-        # mean squared bellman error
+    def loss_fn(params, x_t, r_t, v_tp1, gamma, a_t, a_logits):
+        # mean squared bellman error - with importance sampled correction
+        # delta = v(x_t) - rho gamma max_a [ r_t + v(t(s, a)) ]
+        p = softmax(a_logits)
+        rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
         v_t_approx = fn(params, x_t)
-        v_t_target = r_t+gamma*v_tp1
+        v_t_target = rho*(r_t+gamma*v_tp1)
         return mse(v_t_approx, v_t_target)
 
     # TODO jit
     dlossdparam = grad(loss_fn)
 
-    opt_init, opt_update = optimizers.adam(step_size=1e-4)
+    opt_init, opt_update = optimizers.adam(step_size=1e-3)
     opt_state = opt_init(params)
 
     def step(i, opt_state, batch):
@@ -108,3 +114,50 @@ def make_value_net(n_inputs, width, activation=Relu):
           return opt_update(i, g, opt_state)
 
     return network(params, jit(fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
+
+def a2c(logits, advantage):
+    return np.mean(logits * advantage)
+
+def make_actor_critic(n_inputs, width, n_actions, activation=Relu):
+    init, fn = serial(
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(n_actions+1)
+    )
+
+    out_shape, params = init((-1, n_inputs))
+
+    def apply_fn(params, x):
+        y = fn(params, x)
+        return y[:, :-1], y[:,-1]
+
+    def loss_fn(params, x_t, r_t, v_tp1, gamma, a_t, a_logits):
+        # target value is the greedy choice corrected by probability of taking it
+        p = softmax(a_logits)
+        rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
+        v_t_target = rho*(r_t+gamma*v_tp1)
+
+        # mean squared bellman error
+        v_t_approx, _ = apply_fn(params, x_t)
+        value_loss = mse(v_t_approx, v_t_target)
+
+        # advantage actor critic
+        _, a_logits_pred = fn(params, x_t)
+        policy_loss = a2c(a_logits_pred[np.argmax(a_t, axis=-1)], v_t_target)
+
+        return value_loss + policy_loss
+
+    # TODO jit
+    dlossdparam = grad(loss_fn)
+
+    opt_init, opt_update = optimizers.adam(step_size=1e-3)
+    opt_state = opt_init(params)
+
+    def step(i, opt_state, batch):
+          params = optimizers.get_params(opt_state)
+          g = dlossdparam(params, *batch)
+          return opt_update(i, g, opt_state)
+
+    return network(params, jit(apply_fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)

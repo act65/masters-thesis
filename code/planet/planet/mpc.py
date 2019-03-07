@@ -1,6 +1,8 @@
 import jax.numpy as np
 import numpy.random as rnd
 
+import numpy
+
 from jax import jit
 
 import logging
@@ -46,36 +48,23 @@ def rnd_policy_generator(n_actions, N, T):
 
 def mpc(s_init, transition_fn, n_actions, T, N, value_fn=None, reward_fn=None, gamma=0.9):
     pis = np.stack(list(rnd_policy_generator(n_actions, N, T)), axis=1)
-    # run pis in parallel
-    # TODO wrap in jit
+
+    # TODO this is super wasteful.
+    # if we have 100 policies, then a bunch of them probably share the same
+    # first actions, and second and maybe even third...
     states = simulate(transition_fn, s_init, pis)
 
     # learned value fn
     # if we are only using the last then we dont need to store the others!
     # this reminds me more of AlphaGO?? but mcts would avg and backup?!
-    vs = whiten(value_fn(states[-1]))
-    return sample_policy(pis, vs[0])[0]   # [0] only take the first action.
+    # vs = whiten(value_fn(states[-1]))
+    vs = value_fn(states[-1])
+    logits = np.mean(pis[0, :, :] * vs, axis=0)
+    return logits
 
 def discounted_return(rewards, discount):
     # TODO faster way to do this? some sort of conv?
     return np.sum([discount**i * r for i, r in enumerate(rewards)])
-
-def sample(logits):
-    g = - np.log(-np.log(rnd.random(logits.shape)))
-    return np.argmax(logits + g)
-
-def sample_policy(pis, evals):
-    """
-    Samples policies according to their value
-    Args:
-        pis(np.array): [time x batch x dims]
-        evals (np.array): [batch]
-
-    Returns:
-        [time x dims]
-    """
-    idx = sample(evals)  # bigger is more likely. TODO what about adding memory / momentum here?
-    return pis[:, idx, :]
 
 def exploration_value(s, s_t):
     """
@@ -105,6 +94,8 @@ def make_planner(transition_net, value_net):
         value_fn = lambda s: value_net.fn(value_params, s)
         vs = whiten(value_fn(states[-1]))
 
-        return sample_policy(pis, vs[0])[0]   # [0] only take the first action.
+        # [0] only take the first, t=0, actions.
+        logits = np.mean(pis[0, :, :] * vs, axis=0)
+        return logits
 
     return mpc

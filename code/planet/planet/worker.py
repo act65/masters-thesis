@@ -3,6 +3,15 @@ import gym
 import copy
 import numpy as np
 import random
+import numpy.random as rnd
+
+def sample(logits, return_onehot=False):
+    g = -np.log(-np.log(rnd.random(logits.shape)))
+    idx = np.argmax(logits + g, axis=-1)
+    if return_onehot:
+        return onehot(idx, logits.shape[-1])
+    else:
+        return idx
 
 def onehot(idx, N):
     return np.eye(N)[idx]
@@ -95,10 +104,11 @@ class Worker():
         while not done:
             ### choose action and simulate
 
-            a = self.player.choose_action(x.reshape((1, -1)))
+            a_logits = self.player.choose_action(x.reshape((1, -1)))
+            a = int(sample(a_logits))
             obs, r, done, info = self.env.step(a)
             R += r
-            r = self.value_moments(r)
+            r = self.value_moments(r)  # HACK does this really make sense??
 
             if render:
                 self.env.render()
@@ -107,7 +117,7 @@ class Worker():
             # HACK this is an episodic task, despite that
             # we can break it up into pairs of examples because it is almost full info
             # but we still need velocity with can be estimated from obs-old_obs
-            self.buffer.add([old_x, np.array([a]), np.array([r]), x])
+            self.buffer.add([old_x, np.array([a]), a_logits, np.array([r]), x])
 
             old_x = copy.deepcopy(x)
             x = np.stack([obs, obs-old_obs]).reshape(-1)
