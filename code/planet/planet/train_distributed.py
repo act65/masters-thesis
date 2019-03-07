@@ -3,17 +3,6 @@ import numpy as np
 
 import argparse
 
-"""
-An offline learner using off policy methods. Aka a DQN with many workers.
-- Offline learning. Store data in a buffer.
-- Off policy. Learn the optimal policy while following another policy.
-
-Problems with this learner;
-- long episodes do not fit in memory...
-- at the start many episodes can be played without ever receiving a +1
-- ?
-"""
-
 def argumentparser():
     parser = argparse.ArgumentParser(description='Offline offpolicy learner')
     parser.add_argument('--trials', type=int, default=50,

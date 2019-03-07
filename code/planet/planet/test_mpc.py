@@ -112,3 +112,8 @@ class TestMPC(unittest.TestCase):
         # self.assertEqual(np.argmax(pis[max_idx]), np.argmax(counts))
         # the most commonly chosen action should match the best eval.
         # actually, that might not be true...
+
+    def test_mpc2(self):
+        transition_fn, reward_fn = create_discrete_toy(32, 4)
+        a = mpcv2(0, transition_fn, n_actions=4, T=5, N=10, value_fn=reward_fn)
+        print(a)

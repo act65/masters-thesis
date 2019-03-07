@@ -71,13 +71,13 @@ def make_transition_net(n_inputs, n_actions, width, n_outputs):
         g = dlossdparam(params, *batch)
         return opt_update(i, g, opt_state)
 
-    return network(params, apply_fn , out_shape, loss_fn, dlossdparam, step, opt_state)
+    return network(params, jit(apply_fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
 
 def make_value_net(n_inputs, width):
     init, fn = serial(
-        Dense(width), Relu,
-        Dense(width), Relu,
-        Dense(width), Relu,
+        Dense(width), Softplus,
+        Dense(width), Softplus,
+        Dense(width), Softplus,
         Dense(1)
     )
 
@@ -100,4 +100,4 @@ def make_value_net(n_inputs, width):
           g = dlossdparam(params, *batch)
           return opt_update(i, g, opt_state)
 
-    return network(params, fn , out_shape, loss_fn, dlossdparam, step, opt_state)
+    return network(params, jit(fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)

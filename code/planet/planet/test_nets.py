@@ -38,7 +38,7 @@ class TestNet(unittest.TestCase):
         loss = net.loss_fn(net.params, x, r, v_tp1, gamma=0.9)
         self.assertEqual(v_t.shape, (1, 1))
 
-    def test_transition_train(self):
+    def test_transition_toy_train(self):
         """
         check these nets can learn something simple
         """

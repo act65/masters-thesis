@@ -11,7 +11,7 @@ def onehot(idx, N):
     return np.eye(N)[idx]
 
 class Planet():
-    def __init__(self, n_inputs, n_actions, planning_window=5, n_plans=20, width=64):
+    def __init__(self, n_inputs, n_actions, planning_window=3, n_plans=10, width=64):
         self.n_actions = n_actions
         self.planning_window = planning_window
         self.n_plans = n_plans
@@ -29,10 +29,12 @@ class Planet():
 
     def choose_action(self, s):
         # freeze the current nets and use them to plan
-        transition = lambda s, a: self.transition.fn(self.transition.params, s, a)
+        transition = lambda s, a: self.transition.fn(self.transition.params, s, a) # TODO would be better to pass the multi step transitino fn
         value = lambda s: self.value.fn(self.value.params, s)
 
-        assert len(s.shape) == 2
+        if len(s.shape) != 2:
+            raise ValueError('expected s as shape (Batch, Dim)')
+
         a = mpc.mpc(s, transition, n_actions=self.n_actions,
                     T=self.planning_window, N=self.n_plans, value_fn=value)
 
@@ -45,5 +47,9 @@ class Planet():
         self.value = nets.opt_update(self.step_counter, self.value, (s_t, r_t, a_t, v_tp1))
         self.step_counter += 1
 
-        loss = 0
-        return loss
+        return self.loss(s_t, a_t, r_t, s_tp1, v_tp1)
+
+    def loss(self, s_t, a_t, r_t, s_tp1, v_tp1):
+        transition_loss = self.transition.loss_fn(self.transition.params, s_t, a_t, s_tp1)
+        value_loss = self.value.loss_fn(self.value.params, s_t, r_t, v_tp1, 1.0)
+        return transition_loss + value_loss

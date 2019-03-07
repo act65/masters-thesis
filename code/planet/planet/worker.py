@@ -60,7 +60,7 @@ class Worker():
         self.env = gym.make(env_name)
         obs = self.env.reset()
 
-        self.player = player(n_inputs=obs.shape[0], n_actions=self.env.action_space.n)
+        self.player = player(n_inputs=2*obs.shape[0], n_actions=self.env.action_space.n)
 
         self.maxsteps = maxsteps
 
@@ -69,11 +69,13 @@ class Worker():
         done = False
         R = 0
         old_obs = copy.deepcopy(obs)
+        old_x = np.stack([obs, obs-old_obs]).reshape(-1)
         while not done:
             # TODO use old_a in step so we are not blocking on prediction
 
             ### choose action and simulate
-            a = self.player.choose_action(obs.reshape((1, -1)))
+            x = np.stack([obs, obs-old_obs]).reshape(-1)
+            a = self.player.choose_action(x.reshape((1, -1)))
             obs, r, done, info = self.env.step(a)
             R += r
 
@@ -83,9 +85,10 @@ class Worker():
             ### add experience to buffer
             # HACK although this is an episodic task
             # because it is almost full info we can break it up into pairs of examples
-            self.buffer.add([old_obs, np.array([a]), np.array([r]), obs])
+            self.buffer.add([old_x, np.array([a]), np.array([r]), x])
 
-            old_obs = copy.deepcopy(old_obs)
+            old_obs = copy.deepcopy(obs)
+            old_x = copy.deepcopy(x)
 
         return R
 
