@@ -67,7 +67,7 @@ def make_transition_net(n_inputs, n_actions, width, n_outputs, activation=Relu):
     # TODO jit
     dlossdparam = grad(loss_fn)
 
-    opt_init, opt_update = optimizers.adam(step_size=0.001)
+    opt_init, opt_update = optimizers.adam(step_size=1e-3)
     opt_state = opt_init(params)
 
     def step(i, opt_state, batch):
@@ -99,7 +99,7 @@ def make_value_net(n_inputs, width, activation=Relu):
     # TODO jit
     dlossdparam = grad(loss_fn)
 
-    opt_init, opt_update = optimizers.momentum(step_size=0.001, mass=0.9)
+    opt_init, opt_update = optimizers.adam(step_size=1e-4)
     opt_state = opt_init(params)
 
     def step(i, opt_state, batch):

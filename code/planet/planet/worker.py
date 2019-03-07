@@ -90,28 +90,28 @@ class Worker():
         done = False
         R = 0
         old_obs = copy.deepcopy(obs)
-        old_x = np.stack([obs, obs-old_obs]).reshape(-1)
+        x = np.stack([obs, obs-old_obs]).reshape(-1)
+        old_x = x
         while not done:
-            # TODO use old_a in step so we are not blocking on prediction
-
             ### choose action and simulate
-            x = np.stack([obs, obs-old_obs]).reshape(-1)
+
             a = self.player.choose_action(x.reshape((1, -1)))
             obs, r, done, info = self.env.step(a)
-            r = self.value_moments(r)
-            # TODO BUG normalise the rewards!
             R += r
+            r = self.value_moments(r)
 
             if render:
                 self.env.render()
 
             ### add experience to buffer
-            # HACK although this is an episodic task
-            # because it is almost full info we can break it up into pairs of examples
+            # HACK this is an episodic task, despite that
+            # we can break it up into pairs of examples because it is almost full info
+            # but we still need velocity with can be estimated from obs-old_obs
             self.buffer.add([old_x, np.array([a]), np.array([r]), x])
 
-            old_obs = copy.deepcopy(obs)
             old_x = copy.deepcopy(x)
+            x = np.stack([obs, obs-old_obs]).reshape(-1)
+            old_obs = copy.deepcopy(obs)
 
         return R
 
