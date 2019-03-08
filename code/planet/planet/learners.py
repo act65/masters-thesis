@@ -11,7 +11,7 @@ def onehot(idx, N):
     return np.eye(N)[idx]
 
 class Planet():
-    def __init__(self, n_inputs, n_actions, planning_window=5, n_plans=200, width=128):
+    def __init__(self, n_inputs, n_actions, planning_window=5, n_plans=20, width=128):
         self.n_actions = n_actions
         self.planning_window = planning_window
         self.n_plans = n_plans
@@ -59,3 +59,31 @@ class Planet():
         transition_loss = self.transition.loss_fn(self.transition.params, s_t, a_t, s_tp1)
         value_loss = self.value.loss_fn(self.value.params, s_t, r_t, v_tp1, 1.0, a_t, a_logits)
         return transition_loss, value_loss
+
+class ActorCritic():
+    def __init__(self, n_inputs, n_actions, width=128):
+        self.n_actions = n_actions
+        self.actor_critic = nets.make_actor_critic(n_inputs, width, n_actions)
+        self.step_counter = 0
+
+    def choose_action(self, s):
+        if len(s.shape) != 2:
+            raise ValueError('expected s as shape (Batch, Dim)')
+
+        # return np.random.randint(0, self.n_actions)
+
+        logits, _ = self.actor_critic.fn(self.actor_critic.params, s)
+        return logits[0]
+
+    def update(self, s_t, a_t, a_logits, r_t, s_tp1):
+        a_t = onehot(a_t.reshape(-1), self.n_actions)
+
+        _, v_tp1 = self.actor_critic.fn(self.actor_critic.params, s_tp1)
+
+        self.actor_critic = nets.opt_update(self.step_counter, self.actor_critic, (s_t, r_t, v_tp1, 1.0, a_t, a_logits))
+        self.step_counter += 1
+
+        return self.loss(s_t, r_t, v_tp1, a_t, a_logits)
+
+    def loss(self, s_t, r_t, v_tp1, a_t, a_logits):
+        return self.actor_critic.loss_fn(self.actor_critic.params, s_t, r_t, v_tp1, 1.0, a_t, a_logits)

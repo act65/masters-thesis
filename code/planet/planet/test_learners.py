@@ -4,17 +4,25 @@ import gym
 import numpy as np
 import numpy.random as rnd
 
-from planet import *
+from learners import *
 from nets import *
 
-class TestPlanet(unittest.TestCase):
+class TestLearners(unittest.TestCase):
     def test_planet(self):
         n_actions = 2
         learner = Planet(4, n_actions)
 
         x = rnd.standard_normal((1, 4))
         a = learner.choose_action(x)
-        self.assertTrue(np.argmax(a) in range(n_actions))
+        self.assertEqual(a.shape, (n_actions,))
+
+    def test_actor_critic(self):
+        n_actions = 2
+        learner = ActorCritic(4, n_actions)
+
+        x = rnd.standard_normal((1, 4))
+        a = learner.choose_action(x)
+        self.assertEqual(a.shape, (n_actions,))
 
     def test_cartpole_runs(self):
         env = gym.make('CartPole-v1')

@@ -115,8 +115,15 @@ def make_value_net(n_inputs, width, activation=Relu):
 
     return network(params, jit(fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
 
+def whiten(x):
+    return (x - np.mean(x, axis=-1, keepdims=True))/np.sqrt(np.var(x, axis=-1, keepdims=True) + 1e-8)
+
 def a2c(logits, advantage):
-    return np.mean(logits * advantage)
+    return -np.mean(logits * whiten(advantage))
+
+def entropy(logits):
+    p = softmax(logits)
+    return - np.mean(np.sum(p * logits, axis=-1))
 
 def make_actor_critic(n_inputs, width, n_actions, activation=Relu):
     init, fn = serial(
@@ -130,29 +137,32 @@ def make_actor_critic(n_inputs, width, n_actions, activation=Relu):
     out_shape, params = init((-1, n_inputs))
 
     def apply_fn(params, x):
+        # NOTE so what is the relationship between the actions and the values?
+        # this effectively learns Q logits?? QUESTION how is actor critic the same as Q?
         y = fn(params, x)
-        return y[:, :-1], y[:,-1]
+        return y[:, :-1], y[:,-1:]
 
     def loss_fn(params, x_t, r_t, v_tp1, gamma, a_t, a_logits):
-        # target value is the greedy choice corrected by probability of taking it
+        # off policy value correction
         p = softmax(a_logits)
         rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
         v_t_target = rho*(r_t+gamma*v_tp1)
 
+        v_t_approx, a_logits_approx = apply_fn(params, x_t)
+
         # mean squared bellman error
-        v_t_approx, _ = apply_fn(params, x_t)
         value_loss = mse(v_t_approx, v_t_target)
 
-        # advantage actor critic
-        _, a_logits_pred = fn(params, x_t)
-        policy_loss = a2c(a_logits_pred[np.argmax(a_t, axis=-1)], v_t_target)
+        # soft advantage actor critic
+        policy_loss = a2c(a_logits_approx[np.argmax(a_t, axis=-1)], v_t_target)
+        policy_loss += -1e-2*entropy(a_logits_approx)
 
         return value_loss + policy_loss
 
     # TODO jit
     dlossdparam = grad(loss_fn)
 
-    opt_init, opt_update = optimizers.adam(step_size=1e-3)
+    opt_init, opt_update = optimizers.adam(step_size=1e-4)
     opt_state = opt_init(params)
 
     def step(i, opt_state, batch):

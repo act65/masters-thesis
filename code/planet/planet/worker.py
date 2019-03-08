@@ -101,6 +101,7 @@ class Worker():
         old_obs = copy.deepcopy(obs)
         x = np.stack([obs, obs-old_obs]).reshape(-1)
         old_x = x
+        episode = []
         while not done:
             ### choose action and simulate
 
@@ -108,7 +109,6 @@ class Worker():
             a = int(sample(a_logits))
             obs, r, done, info = self.env.step(a)
             R += r
-            r = self.value_moments(r)  # HACK does this really make sense??
 
             if render:
                 self.env.render()
@@ -117,11 +117,19 @@ class Worker():
             # HACK this is an episodic task, despite that
             # we can break it up into pairs of examples because it is almost full info
             # but we still need velocity with can be estimated from obs-old_obs
-            self.buffer.add([old_x, np.array([a]), a_logits, np.array([r]), x])
+
+            # NOTE! in the episodic setting, we are optimising the return. not the reward...
+            # need to replace r with R from the episode
+            episode.append([old_x, np.array([a]), a_logits, x])
 
             old_x = copy.deepcopy(x)
             x = np.stack([obs, obs-old_obs]).reshape(-1)
             old_obs = copy.deepcopy(obs)
+
+        # R = self.value_moments(R)  # HACK does this really make sense??
+        R /= 100
+        for old_x, a, a_logits, x in episode:
+            self.buffer.add([old_x, a, a_logits, np.array([R]), x])
 
         return R
 

@@ -78,3 +78,24 @@ class TestWorker(unittest.TestCase):
         returns = worker.work(100)
         batch = worker.get_batch(5)
         self.assertEqual(batch[0].shape, (5, 2*4))
+
+    def test_sample(self):
+        """
+        check action sampling follows the correct distribution
+        """
+        n_actions= 10
+        logits = rnd.standard_normal((n_actions,))
+        a_s = np.vstack([sample(logits, return_onehot=True) for _ in range(2000)])
+        sample_dist = np.mean(a_s, axis=0)
+
+        def norm(x):
+            return x/np.max(x)
+
+        # plt.figure()
+        # plt.bar(range(10), norm(np.exp(logits)), alpha=0.75, label='logits')
+        # plt.bar(range(10), norm(sample_dist), alpha=0.75, label='samples')
+        # plt.legend()
+        # plt.show()
+
+        diff = np.mean((norm(np.exp(logits)) - norm(sample_dist))**2)
+        self.assertTrue(diff < 1e-3)

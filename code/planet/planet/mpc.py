@@ -21,6 +21,9 @@ TODO
 def onehot(idx, N):
     return np.eye(N)[idx]
 
+def whiten(x):
+    return (x - np.mean(x))/np.sqrt(np.var(x) + 1e-8)
+
 def simulate(transition_fn, init_s, pis):
     """
     Args:
@@ -38,9 +41,6 @@ def simulate(transition_fn, init_s, pis):
     for a in pis:
         states.append(transition_fn(states[-1], a.reshape((B, -1))).reshape((B, -1)))
     return states
-
-def whiten(x):
-    return (x - np.mean(x))/np.sqrt(np.var(x) + 1e-8)
 
 def rnd_policy_generator(n_actions, N, T):
     for _ in range(N):
