@@ -2,7 +2,7 @@ import unittest
 import gym
 from nets import *
 
-import numpy as np
+import jax.numpy as np
 import numpy.random as rnd
 
 import time
@@ -91,39 +91,76 @@ class TestNets(unittest.TestCase):
         """
         check these nets can learn something simple
         """
-        net = make_value_net(n_inputs=1, width=128)
+        net = make_value_td_net(n_inputs=1, width=64)
 
-        def toy_fn(x):
-            return np.sin(2*x)
+        def reward_fn(x):
+            """
+            a simple step fn.
+            """
+            t = 1e-1
+            return 0.1*np.greater(x, -t).astype(np.float32) * np.greater(t, x).astype(np.float32)
+
+        def transition_fn(s, a):
+            return s + a
+
+        def policy(s):
+            return -np.sign(s)/100  # actions take us toward x=0
+            # return -0.01  # always go left
 
         def data_generator(N):
             for _ in range(N):
-                x = rnd.random((50, 1))*-1
-                r_t = toy_fn(x)
-                yield x, r_t, None, None
+                s_t = rnd.random((50, 1))*-1
+                a_t = policy(s_t)
+                s_tp1 = transition_fn(s_t, a_t)
+                r_t = reward_fn(s_tp1)
+                yield s_t, a_t, r_t, s_tp1
 
         opt_state = net.opt_state
         losses = []
+        gamma = 0.9
         for i, batch in enumerate(data_generator(2000)):
-            # net = opt_update(i, net, batch)
-            L = net.loss_fn(net.params, *batch)
+            x_t, a_t, r_t, s_tp1 = tuple(batch)
+            v_tp1 = net.fn(net.params, s_tp1)
+            L = net.loss_fn(net.params, x_t, r_t, v_tp1, gamma, a_t)
             losses.append(L)
             print("\r{}.".format(L), end='', flush=True)
-            opt_state = net.step(i, opt_state, batch)
+            opt_state = net.step(i, opt_state, (x_t, r_t, v_tp1, gamma, a_t))
+
+        def play_episode(x, N):
+            xs = [x]
+            for _ in range(N-1):
+                xs.append(transition_fn(xs[-1], policy(xs[-1])))
+            return xs
+
+        N = 100
+        x = np.linspace(-1, 1, N)
 
         plt.figure()
+        plt.subplot(3, 1, 1)
+        plt.title('Loss')
         plt.plot(losses)
 
-        x = np.linspace(-1, 1, 100)
-        y = net.fn(optimizers.get_params(opt_state), x.reshape((100, 1)))
+        plt.subplot(3, 1, 2)
+        plt.title('Reward fn')
+        plt.plot(x, reward_fn(x))
 
-        plt.figure()
-        plt.plot(x, y)
-        plt.plot(x, toy_fn(x))
+        plt.subplot(3, 1, 3)
+        plt.title('Value')
+
+        y = net.fn(optimizers.get_params(opt_state), x.reshape((N, 1)))
+        plt.plot(x, y, label='estimate')
+
+        rs = reward_fn(np.vstack(play_episode(x, 1000)))
+        vs = discount(rs, gamma)
+        plt.plot(x, vs, label='truth')
+        plt.legend()
 
         plt.show()
 
+def discount(rs, discount):
+    return np.sum(np.vstack([r*discount**(i) for i, r in enumerate(rs)]), axis=0)
 
+class TestActorCritic(unittest.TestCase):
     def test_actor_critic(self):
         """
         """
@@ -142,3 +179,38 @@ class TestNets(unittest.TestCase):
 
         loss = net.loss_fn(net.params, x, r, v_tp1, 0.9, a, a_logits)
         g = net.grad_fn(net.params, x, r, v_tp1, 0.9, a, a_logits)
+
+
+    def test_a2c_value(self):
+        """
+        check that the value fn is well behaved
+        """
+
+        n_actions = 8
+        batch_size = 5
+        net = make_actor_critic(n_inputs=1, width=32, n_actions=n_actions)
+
+        def toy_fn(x):
+            t = 1e-1
+            return np.greater(x, -t).astype(np.float32) * np.greater(t, x).astype(np.float32)
+
+        def data_generator(N):
+            gamma = 0.99
+            for _ in range(N):
+                x_t = rnd.random((50, 1))*-1
+                a_logits = -x_t/2  # actions take us toward x=0
+                r_t = toy_fn(x_t+a_logits)
+                yield x_t, r_t, gamma, np.zeros_like(a_logits), a_logits
+
+        opt_state = net.opt_state
+        losses = []
+        for i, batch in enumerate(data_generator(2000)):
+            x_t, r_t, gamma, a_t, a_logits = tuple(batch)
+            a, v_tp1 = net.fn(net.params, x_t+a_logits)
+            L = net.loss_fn(net.params, x_t, r_t, v_tp1, gamma, a_t, a_logits)
+            losses.append(L)
+            print("\r{}.".format(L), end='', flush=True)
+            opt_state = net.step(i, opt_state, (x_t, r_t, v_tp1, gamma, a_t, a_logits))
+
+        plt.plot(losses)
+        plt.show()

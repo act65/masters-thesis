@@ -46,7 +46,7 @@ def rnd_policy_generator(n_actions, N, T):
     for _ in range(N):
         yield onehot(rnd.randint(0, n_actions, (T,)), n_actions)
 
-def mpc(s_init, transition_fn, n_actions, T, N, value_fn=None, reward_fn=None, gamma=0.9):
+def mc_rollout(s_init, transition_fn, n_actions, T, N, value_fn=None, reward_fn=None, gamma=0.9):
     pis = np.stack(list(rnd_policy_generator(n_actions, N, T)), axis=1)
 
     # TODO this is super wasteful.
@@ -81,7 +81,7 @@ def exploration_value(s, s_t):
 def make_planner(transition_net, value_net):
     # !! this works nicely. way faster!
     @jit
-    def mpc(s_init, transition_params, value_params, n_actions, T, N):
+    def mc_rollout(s_init, transition_params, value_params, n_actions, T, N):
         pis = np.stack(list(rnd_policy_generator(n_actions, N, T)), axis=1)
         # run pis in parallel
         # TODO wrap in jit
@@ -98,4 +98,4 @@ def make_planner(transition_net, value_net):
         logits = np.mean(pis[0, :, :] * vs, axis=0)
         return logits
 
-    return mpc
+    return mc_rollout

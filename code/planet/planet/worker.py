@@ -4,6 +4,8 @@ import copy
 import numpy as np
 import random
 import numpy.random as rnd
+from numpy.polynomial.polynomial import polyval
+from scipy.linalg import hankel
 
 def sample(logits, return_onehot=False):
     g = -np.log(-np.log(rnd.random(logits.shape)))
@@ -76,6 +78,12 @@ class IncrementalMoments():
 
         return  (x - self.mu_n)/(np.sqrt(self.S_n/(self.counter)) + 1e-6)
 
+    def correct(self, x):
+        return (x - self.mu_n)/(np.sqrt(self.S_n/(self.counter)) + 1e-6)
+
+def discounted_rewards(rs, discount=0.99):
+    return polyval(discount, hankel(rs))
+
 class Worker():
     """
     Worker is in charge of;
@@ -92,23 +100,24 @@ class Worker():
         self.player = player(n_inputs=2*obs.shape[0], n_actions=self.env.action_space.n)
 
         self.maxsteps = maxsteps
+        # NOTE is might not be ideal when distributing the workers.
+        # each will have a different mean / var.
         self.value_moments = IncrementalMoments()
 
     def play_episode(self, render=False):
         obs = self.env.reset()
         done = False
-        R = 0
         old_obs = copy.deepcopy(obs)
         x = np.stack([obs, obs-old_obs]).reshape(-1)
         old_x = x
         episode = []
+        rs = []
         while not done:
             ### choose action and simulate
-
             a_logits = self.player.choose_action(x.reshape((1, -1)))
             a = int(sample(a_logits))
             obs, r, done, info = self.env.step(a)
-            R += r
+            rs.append(r)
 
             if render:
                 self.env.render()
@@ -126,8 +135,9 @@ class Worker():
             x = np.stack([obs, obs-old_obs]).reshape(-1)
             old_obs = copy.deepcopy(obs)
 
-        # R = self.value_moments(R)  # HACK does this really make sense??
-        R /= 100
+        R = np.sum(rs)
+        _ = self.value_moments(R)  # HACK does this normalisation really make sense??
+
         for old_x, a, a_logits, x in episode:
             self.buffer.add([old_x, a, a_logits, np.array([R]), x])
 
@@ -141,6 +151,9 @@ class Worker():
 
     def get_batch(self, n):
         if self.buffer.size > n:
-            return self.buffer.get_batch(n)
+            old_x, a, a_logits, r, x = self.buffer.get_batch(n)
+            # NOTE use our incremental moment estimates to normalise the rewards of the batch
+            r = np.clip(self.value_moments.correct(r), -3, 3)
+            return old_x, a, a_logits, r, x
         else:
             return None

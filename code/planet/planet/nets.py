@@ -1,3 +1,4 @@
+import jax
 import jax.numpy as np
 from jax import grad, jit, vmap
 from jax.experimental.stax import serial, Dense, Relu, Softplus, Tanh, Softmax
@@ -20,6 +21,7 @@ network = collections.namedtuple(
     ['params', 'fn', 'outshape', 'loss_fn', 'grad_fn', 'step', 'opt_state'])
 
 def mse(x, y):
+    assert x.shape == y.shape
     return np.mean(np.sum((x-y)**2, axis=-1))
 
 def opt_update(i, net, batch):
@@ -80,7 +82,7 @@ def make_transition_net(n_inputs, n_actions, width, n_outputs, activation=Relu):
 def softmax(x):
     return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
 
-def make_value_net(n_inputs, width, activation=Relu):
+def make_value_td_net(n_inputs, width, activation=Relu):
     init, fn = serial(
         Dense(width), activation,
         Dense(width), activation,
@@ -93,16 +95,20 @@ def make_value_net(n_inputs, width, activation=Relu):
 
     # BUG  want to learn the value of the optimal policy! not fit to the current policy
     # TODO need off policy corrections!
-    def loss_fn(params, x_t, r_t, v_tp1, gamma, a_t, a_logits):
+    def loss_fn(params, x_t, r_t, v_tp1, gamma, a_t, a_logits=None):
         # mean squared bellman error - with importance sampled correction
         # delta = v(x_t) - rho gamma max_a [ r_t + v(t(s, a)) ]
-        p = softmax(a_logits)
-        rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
         v_t_approx = fn(params, x_t)
-        v_t_target = rho*(r_t+gamma*v_tp1)
+
+        if a_logits is not None:
+            p = softmax(a_logits)
+            rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
+            v_t_target = rho*(r_t+gamma*v_tp1)
+        else:
+            v_t_target = r_t+gamma*v_tp1
+
         return mse(v_t_approx, v_t_target)
 
-    # TODO jit
     dlossdparam = grad(loss_fn)
 
     opt_init, opt_update = optimizers.adam(step_size=1e-3)
@@ -115,17 +121,65 @@ def make_value_net(n_inputs, width, activation=Relu):
 
     return network(params, jit(fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
 
+def make_value_net(n_inputs, width, activation=Relu):
+    """
+    We can just use MC samples of the value rather than V(s).
+    We trade bias (in V(s)) for variance.
+    This turns into supervised learning.
+    """
+    init, fn = serial(
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(width), activation,
+        Dense(1)
+    )
+
+    out_shape, params = init((-1, n_inputs))
+
+    def loss_fn(params, x_t, v_t):
+        # mean squared error
+        v_t_approx = fn(params, x_t)
+        return mse(v_t_approx, v_t)
+
+    dlossdparam = grad(loss_fn)
+
+    opt_init, opt_update = optimizers.adam(step_size=1e-3)
+    opt_state = opt_init(params)
+
+    def step(i, opt_state, batch):
+          params = optimizers.get_params(opt_state)
+          g = dlossdparam(params, *batch)
+          return opt_update(i, g, opt_state)
+
+    return network(params, jit(fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)
+
+
 def whiten(x):
     return (x - np.mean(x, axis=-1, keepdims=True))/np.sqrt(np.var(x, axis=-1, keepdims=True) + 1e-8)
 
 def a2c(logits, advantage):
-    return -np.mean(logits * whiten(advantage))
+    return - np.mean(logits * advantage)
 
-def entropy(logits):
-    p = softmax(logits)
+def entropy(p, logits):
     return - np.mean(np.sum(p * logits, axis=-1))
 
+def nested_map(iterable, fn):
+    if isinstance(iterable, np.ndarray):
+        return fn(iterable)
+    else:
+        return type(iterable)([nested_map(val, fn) for val in iterable])
+
+def clip_by_norm(x, t):
+    return x * t / np.linalg.norm(x)
+
 def make_actor_critic(n_inputs, width, n_actions, activation=Relu):
+    """
+    An actor critic.
+    A single neural network, with two heads.
+        One predicts the value, and is trained via TD.
+        the other predicts the actions and is trained via PG.
+    """
     init, fn = serial(
         Dense(width), activation,
         Dense(width), activation,
@@ -144,30 +198,38 @@ def make_actor_critic(n_inputs, width, n_actions, activation=Relu):
 
     def loss_fn(params, x_t, r_t, v_tp1, gamma, a_t, a_logits):
         # off policy value correction
-        p = softmax(a_logits)
-        rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
-        v_t_target = rho*(r_t+gamma*v_tp1)
 
-        v_t_approx, a_logits_approx = apply_fn(params, x_t)
+        # p = softmax(a_logits)
+        # rho = p[np.argmax(a_logits, axis=-1)] / p[np.argmax(a_t, axis=-1)]  # p = pi / b
+        # v_t_target = rho*(r_t+gamma*v_tp1)
+
+        v_t_target = r_t+gamma*v_tp1
+
+        a_logits_approx, v_t_approx = apply_fn(params, x_t)
+
+        p = softmax(a_logits_approx)
+        logits_approx = np.log(p)
 
         # mean squared bellman error
         value_loss = mse(v_t_approx, v_t_target)
 
-        # soft advantage actor critic
-        policy_loss = a2c(a_logits_approx[np.argmax(a_t, axis=-1)], v_t_target)
-        policy_loss += -1e-2*entropy(a_logits_approx)
+        # (soft) advantage actor critic
+        advantage = jax.lax.stop_gradient(v_t_target - v_t_approx)
+        selected_logits = logits_approx[np.argmax(a_t, axis=-1)]
+        policy_loss = a2c(selected_logits, advantage)
+        policy_loss += -1e-6*entropy(p, logits_approx)
 
-        return value_loss + policy_loss
+        return value_loss # + policy_loss
 
-    # TODO jit
     dlossdparam = grad(loss_fn)
 
-    opt_init, opt_update = optimizers.adam(step_size=1e-4)
+    opt_init, opt_update = optimizers.adam(step_size=1e-3)
     opt_state = opt_init(params)
 
     def step(i, opt_state, batch):
           params = optimizers.get_params(opt_state)
           g = dlossdparam(params, *batch)
+          g = nested_map(g, lambda x: clip_by_norm(x, 1))
           return opt_update(i, g, opt_state)
 
     return network(params, jit(apply_fn) , out_shape, jit(loss_fn), jit(dlossdparam), jit(step), opt_state)

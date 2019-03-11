@@ -26,8 +26,8 @@ def argumentparser():
     return parser.parse_args()
 
 def main(args):
-    worker = wk.Worker(env_name=args.env_name, player=ln.Planet)
-    # worker = wk.Worker(env_name=args.env_name, player=ln.ActorCritic)
+    # worker = wk.Worker(env_name=args.env_name, player=ln.Planet)
+    worker = wk.Worker(env_name=args.env_name, player=ln.ActorCritic)
 
     losses = []
     returns = []
@@ -48,18 +48,18 @@ def main(args):
         # if i % 50 == 0:
         #     Rs = worker.play_episode(render=True)
 
-    transition_losses, value_losses = tuple(zip(*losses))
-    plt.subplot(3,1,1)
-    plt.plot(np.log(transition_losses))
-    plt.subplot(3,1,2)
-    plt.plot(np.log(value_losses))
-    plt.subplot(3,1,3)
-    plt.plot(returns)
-
-    # plt.subplot(2,1,1)
-    # plt.plot(np.log(losses))
-    # plt.subplot(2,1,2)
+    # transition_losses, value_losses = tuple(zip(*losses))
+    # plt.subplot(3,1,1)
+    # plt.plot(np.log(transition_losses))
+    # plt.subplot(3,1,2)
+    # plt.plot(np.log(value_losses))
+    # plt.subplot(3,1,3)
     # plt.plot(returns)
+
+    plt.subplot(2,1,1)
+    plt.plot(np.log(losses))
+    plt.subplot(2,1,2)
+    plt.plot(returns)
 
     plt.show()
 
