@@ -27,3 +27,24 @@ Ok. So what properties might the present in the mapping from abstract actions to
 - Invertible (just a rotation or permutation)
 - Heirarchical
 - ?
+
+
+## Interfaces
+
+We have an environment, an interface and an agent.
+The agent must learn to use the interface to act in the environment.
+
+An interface is a mapping from the agents actions to actions within the environment.
+$$I: A_{agent} \to A_{env}$$
+For example; a mouse an keyboard for interfacing with a computer, a steering wheel and foot pedals for interacting with a car, etc...
+
+But;
+- the interface might add unnecessary complexity to the action space.  
+- the interface might change or break.
+-
+
+Want to;
+- adapt quickly to a new, similar interface.
+- generalise and still achieve goals despite a break / change in the interface.
+- compress the complexity within the interface's action space
+- ?

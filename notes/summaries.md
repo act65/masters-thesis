@@ -115,6 +115,7 @@ __Q:__ How does specialisation relate to independence?
 
 > The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.
 
+
 ## Near optimal representation learnning for HRL
 (https://openreview.net/forum?id=H1emus0qF7)
 
@@ -135,5 +136,23 @@ E(x) = D(x, d(e(x))) \\
 \end{align}
 $$
 
+
+## Model based RL for atari
+
+(https://arxiv.org/abs/1903.00374)
+
+- Achieve sota in approx 100k interactions.
+- Learn the transition fn and the reward fn via (self) supervision
+- Learn the policy and value via simulation (only)
+- Short planning horizon, augmented with mixture of real data.
+- Give reward for final (planned) time step.
+
+
+## Understanding the asymptotic performance of model based RL methods
+
+(http://willwhitney.com/assets/papers/Understanding.the.Asymptotic.Performance.of.MBRL.pdf)
+
+- Multi time step transition models (somehow) achieve less error (constant wrt horizon!?) than single time step models (linear wrt horizon!?). (WHY?!)
+- Planning with the environment simulator (MUJOCU) still only allows 40 time steps (for the half cheeta) before diverging.
 
 </div>
