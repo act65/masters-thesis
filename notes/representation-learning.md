@@ -2,7 +2,9 @@
 
 <!-- Intro -->
 Representation learning is the key idea hiding behind current advances in machine learning.
-From deep learning []() to evolutionary computation []() to ... we see representation learning being used.
+From deep learning []() to evolutionary computation []() to ... we see representation learning being used. It goes by many names, abstraction, unsupervised pretraining, ...
+
+We want to learn a representation of the problem that makes the problem easier to solve.
 
 ### What do we mean by a representation?
 

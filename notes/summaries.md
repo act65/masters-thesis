@@ -155,4 +155,13 @@ $$
 - Multi time step transition models (somehow) achieve less error (constant wrt horizon!?) than single time step models (linear wrt horizon!?). (WHY?!)
 - Planning with the environment simulator (MUJOCU) still only allows 40 time steps (for the half cheeta) before diverging.
 
+## Near Optimal Behavior via Approximate State Abstraction
+(https://arxiv.org/abs/1701.04113)
+
+What are the necessary conditions of epsilon-optimality on an abstraction?
+$$
+\forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le 2 \epsilon \eta_f \implies \phi() ???
+$$
+
+
 </div>
