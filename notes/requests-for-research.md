@@ -25,8 +25,11 @@ __Unbiased online recurrent opptimisation__ &#9734; &#9734; Can we extent [UORO]
 
 __Meta learning emerges from temporal decompositions__ &#9734; &#9734; [Meta-RL](https://arxiv.org/abs/1611.05763) trains a learner on the aggregated return over many episodes (a larger time scale). If we construct a temporal decomposition (moving averages at different time-scales) of rewards and aproximate them with a set of value functions, does this produce a heirarchy of meta learners? (will need a way to aggregate actions chosen in different time scales, for example $\pi(s_t) = g(\sum_k f_k(z_t))$)
 
-<!-- __Visualise and understand the loss surface of simple RL problems__ &#9734; &#9734; -->
+__The learning complexity of small details for RL__ &#9734; &#9734; In [Model based learning for atari](https://arxiv.org/abs/1903.00374) they learn a model using self-supervision. They study the model and show that in some cases it misses small (yet extremely important) details, such as bullets. How much easier does learning these details become when we have access to correlations with rewards, rather than just a reconstruction error?
 
+<!-- __Discounting using future uncertainty__ &#9734; &#9734; When predicting the future, there is uncertainty. This uncertainty is the reason we might prefer a short term reward, over a less likely, yet larger, reward. Rather than picking a discount of some value less than one, discount rewards based on our certainty of achieving them. -->
+
+<!-- __Visualise and understand the loss surface of simple RL problems__ &#9734; &#9734; -->
 
 <!-- ## Continuious options
 
@@ -35,7 +38,6 @@ https://arxiv.org/pdf/1703.00956.pdf -->
 <!-- A spectrum between accurate/fast models and slow/accurate ones.
 How can we bootstrap one model from others?
 Reverse, local-global interactions, accuracy mask, time step, ... -->
-
 
 
 </div>

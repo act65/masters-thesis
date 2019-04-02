@@ -1,19 +1,34 @@
-There are a fw different parts to the complexity!?
+There are a few different parts to charachterising the complexity of an abstraction.
 
 - Discovery of the abstraction
 - Solving the abstraction
 - Mapping back to the original
 
-Each can be split into sample and computational complexity. (??) Although they are related... one depends on the other.
+What do we mean by complexity?
+
+Sample,
+computational complexity (memory, time, ?)
+Regret,
+...
+
+Also, what do we mean by worst case? Worst case with probability < X?
+
 
 ## Qs and Ts
 
-- Comparing complex seems superhard!? If one is cts and the other discrete then we can use different algorithms. So, Q: in general which representations allow the use of different optimisation algols? It doesnt seem sufficient to solve it for a single algol... But first step blah blah...
+#### General computational complexity
+
+- Comparing complexity of algols seems superhard!? If one is cts and the other discrete then we can use different algorithms. So, Q: in general which representations allow the use of different optimisation algols? It doesnt seem sufficient to solve it for a single algol... But first step blah blah... Instead use lower bounds?!
+- ?
+
+#### Abstraction computational complexity
+
 - Dont just care abou finding the optimal solution, but also $\epsilon$ accurate solutions. How has the space of these changed? Is it now disconnected? Or does it have less volume? Etc...
 - (when) Is finding the optimal policy harder in the abstraction than in the original space, even if value is preserved!??
 
 
-### Computational complexity
+### Upper bound
+
 (problem is that for computational complexity, the details of the algol become important.
   when analysing approximation bounds we dont have to consider how to find the approximations...)
 
@@ -24,8 +39,6 @@ MPD + GPI.
 - Need to show these converge.
 
 MDP + PG.
-
-
 
 ## Computational complexity
 
