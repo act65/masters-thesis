@@ -61,6 +61,8 @@ For example, sprinting 100m is equivalent regardless of which track lane you are
 
 Action abstraction groups together actions that are similar.
 For example, X and Y both yeild the state change in state,
+> Approximation perspective: we have a set of options and we want to use them to approximate the optimal policy. A good set of options can efficiently achieve an accurate approximation.
+
 
 ### Motivating example: Symmetric maze
 _(Some intuition behind claim 2.)_

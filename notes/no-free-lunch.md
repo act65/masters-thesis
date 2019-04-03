@@ -1,5 +1,5 @@
 For a long time, when I was approaching HRL I was trying to figure out how it was better then RL.
-Short answer is, it isn't. And that is because of the no-free-lunch theorem.
+Obvious (in hindsight) but not so short answer is: it isn't 'better'. That is because of the no-free-lunch theorem.
 
 Simply split the learning complexity between discovering a higher level language.
 And the using it.

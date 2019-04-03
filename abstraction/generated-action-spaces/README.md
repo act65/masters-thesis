@@ -48,3 +48,9 @@ Want to;
 - generalise and still achieve goals despite a break / change in the interface.
 - compress the complexity within the interface's action space
 - ?
+
+
+***
+
+Pieter Abbeel mentioned an env they designed.
+> Grid world where agent must discover the passcodes for the actions (left right up down). For example left might be 0,0,1.

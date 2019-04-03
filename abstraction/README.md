@@ -1,15 +1,5 @@
 Ideate and pick 4 more sprints.
 
-> 1) What do we mean my HRL? Let's generate some RL problems that can be exploited by a hierarchical learner.
-
-> 2) How does HRL actually help? Computational complexity, sample complexity, ... when doesn't it help? When it is guaranteed to help?
-
-> 3) Can we learn a set of disentangled actions. How does that help?
-
-> 4) How can we use an abstraction to solve a problem more efficiently? Use MPC + abstraction. Explore how different abstractions help find solutions!?
-
-***
-
 - [ ] Unsupervised options (how good can random ones be!?)
 - [ ] Equivalence of goal/option conditioned value fns
 - [ ] Build a three (or even better, N) layer heirarchy
@@ -24,14 +14,20 @@ Ideate and pick 4 more sprints.
 - [ ] The benefit of a heirarchy of abstractions? (versus use a single layer of abstraction). Transfer!?
 - [ ] Design a new programming language. Learner gets access to assembly and must ??? (build a calculator? allow a learner to build websites easy? ...?). What would be the task / reward fn? (should be easy to learn to use, require few commands to do X, ...?)
 - [ ] A single dict with the ability to merge, versus a heirarchy!?
+- [ ] What is the relationship between abstraction and generalisation!?
 
 ***
 
-What is the relationship between abstraction and generalisation!?
+> 1) What do we mean my abstraction? Let's generate some RL problems that can be exploited by a learner that abstracts.
 
-Definition of abstraction: ignoring irrelevant details.
+> 2) How does abstraction actually help? Computational complexity, sample complexity, ... when doesn't it help? When it is guaranteed to help?
+
+> 3) Can we learn a set of disentangled actions. How does that help?
+
+> 4) How can we use an abstraction to solve a problem more efficiently? Use MPC + abstraction. Explore how different abstractions help find solutions!?
 
 
-https://arxiv.org/pdf/1712.00948.pdf
-https://david-abel.github.io/papers/rlit_aaai_2019.pdf
-https://arxiv.org/pdf/1705.06366.pdf
+***
+
+- Relationship between tree search and HRL? (divide and conquer for MPC) Recursive subgoal decomposition.  https://arxiv.org/pdf/1706.05825.pdf
+- Absolute versus relative perspectives (relationship to subgoals and options)

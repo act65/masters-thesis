@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Serving models as a service</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../style.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script type="text/x-mathjax-config">
+    // MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "all"} } });
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": { fonts: ["TeX"] }
+    });
+  </script>
+</head>
+<body>
+<div>
+<p>I am trying to imagine the future of model-based RL: model-based RL as a service?</p>
+<p>I have some problems I want to solve;</p>
+<ul>
+<li>generating new drugs for curing cancer,</li>
+<li>a room that needs cleaning,</li>
+<li>explaining matriods,</li>
+<li>driving,</li>
+<li>poverty.</li>
+</ul>
+<p>What service would help me solve them? Well, if I had an accurate, efficient model of the world, then I could simulate possibilities and search for ‘valuable’ states and policies to reach them. In short, I could plan for the outcomes I want.</p>
+<hr />
+<p>We could offer two services;</p>
+<ol type="1">
+<li>pretrained models, including ones for;
+<ul>
+<li>human scale robots,</li>
+<li>classical physical physics,</li>
+<li>human behaviour,</li>
+<li>traffic,</li>
+<li>generalised reactions, (and give guarantees on the models accuracy!?)</li>
+</ul></li>
+<li>model learners (will want to learn quickly!!!)
+<ul>
+<li>does experiments, (possibly breaks things…)</li>
+<li>returns a model</li>
+</ul></li>
+</ol>
+<h2 id="pretrained">Pretrained</h2>
+<p>Given a domain specification (the model of robot, the sensors, a high level description of its task) we supply a model tailored to (but what about online learning, and the ability of the planner to exploit the model – various resolutions of modelling!?)</p>
+<p>Question: why would anyone trust us? Our guarantee on a model would be ??? on a set of open benchmarks?</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="im">import</span> world_models <span class="im">as</span> wm</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="im">import</span> mcts</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">domain.config <span class="op">=</span> {</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">    <span class="st">&#39;actions&#39;</span>: [],</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="st">&#39;observations&#39;</span>: []</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">    <span class="st">&#39;reward&#39;</span>: fn</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">}</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">model <span class="op">=</span> wm.build(</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">    config<span class="op">=</span>domain.config</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">)</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">planner <span class="op">=</span> mcts.Planner(</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">    transition_fn<span class="op">=</span>model,</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">    action_space<span class="op">=</span>domain.action_space,</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">)</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">planner <span class="op">=</span> planner.rollout(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co"># can now roll the model out to the real world</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co"># will need to adapt the model if its predictions are incorrect.</span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co"># ?</span></a></code></pre></div>
+<p>What about on the service side?</p>
+<p>Want a meta learned fn that takes configs in and returns models designed for that domain.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" data-line-number="1">request <span class="op">=</span> requests.watch(<span class="st">&#39;https://...&#39;</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="cf">if</span> request:</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">    observations, actions, reward <span class="op">=</span> parse_config(request.config)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">    design_model(observations, actions, reward)</a></code></pre></div>
+<p>Will need a massive amount of transfer.</p>
+<p>Imagine we can separately model physics and human behaviour and we are tasked with designing a new model for self-driving cars. How can this work?</p>
+<p>encoder(s): observations -&gt; distribution over entities transition_fn is constructed from many modules f o g o h: state -&gt; state</p>
+<p>How can these models be composed meaningfully? When is it ok to apply them independently? f(state) + g(state) -&gt; state_t</p>
+<p>Need both the encoder from physics and from human behaviour to map into the same latent space!?!?!?</p>
+<h2 id="explorers">Explorers</h2>
+<p>(only has observations and actions. no reward or goal.)</p>
+<p>Want the learner to come with as many relevant priors as possible. To speed up the learning.</p>
+<p>This will be closer to meta learning.</p>
+<p>You put the explorer in your environment, and set back, well back. If quickly constructs a model of its environment.</p>
+<ul>
+<li>allowed to mix chemicals, (should produce the periodic table, …)</li>
+<li>interact with a computer (…)</li>
+<li>??? -&gt;</li>
+</ul>
+<h2 id="marketplace">Marketplace</h2>
+<p>What about model marketplace?</p>
+<p>Consists of; - models - benchmarks - rewards</p>
+<p>People pay for the use of each.</p>
+<p>Benchmarking could become a big business. - Have your models (say driving robots) independently verified by a trusted service. (will need common physical targets) - ?</p>
+<p>Problem is the protection of IP.</p>
+</div>
+</body>
+</html>

@@ -3,36 +3,39 @@ pagetitle: Serving models as a service
 ---
 
 <div>
-I am trying to imagine the future of model-based RL, model-based RL as a service.
+I am trying to imagine the future of model-based RL: model-based RL as a service?
 
 I have some problems I want to solve;
+
 - generating new drugs for curing cancer,
 - a room that needs cleaning,
 - explaining matriods,
 - driving,
 - poverty.
 
-What service would help me solve them? Well, if I had an accurate, efficient model of the world, then I could simply simulate, search for 'valuable' states and policies to reach them. In short, I could plan ahead.
+What service would help me solve them? Well, if I had an accurate, efficient model of the world, I could plan for the outcomes I want.
 
-***
+I can imagine two types of service;
 
-We could offer two services;
-
-1. pretrained models, including ones for;
-    - human scale robots,
-    - classical physical physics,
+1. (pretrained) Models. Including ones for;
+    - human scale robots (indoors / outdoors),
+    - classical physics,
     - human behaviour,
     - traffic,
-    - ?
+    - generalised chemical reactions,
     (and give guarantees on the models accuracy!?)
-2. model learners (will want to learn quickly!!!)
-    - does experiments, (possibly breaks things...)
-    - returns a model
+2. Explorers
+    - learns a model of a new environment
+    - does experiments (possibly breaks things...)
 
-## Pretrained
+## Pretrained Models
 
 Given a domain specification (the model of robot, the sensors, a high level description of its task)
-we supply a model tailored to
+we supply a model of internal and external dynamics.
+
+For example, a customer might request
+The model is able to identify things like; water, glass,
+
 (but what about online learning, and the ability of the planner to exploit the model -- various resolutions of modelling!?)
 
 

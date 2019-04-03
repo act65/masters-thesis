@@ -1,4 +1,6 @@
+## Eligibility traces
 
+Given the typical temporal difference update, we can augment it with a 'trace', $e_t(s_t, a_t)$.
 $$
 \begin{align}
 Q_{t+1}(s_t, a_t) &= Q_t(s_t, a_t) + \alpha \delta_t e_t(s_t, a_t) \tag{for all $s, a$} \\
@@ -6,9 +8,7 @@ Q_{t+1}(s_t, a_t) &= Q_t(s_t, a_t) + \alpha \delta_t e_t(s_t, a_t) \tag{for all 
 \end{align}
 $$
 
-Problem. Need to update for all state-action pairs. How can this be solved efficiently?
-Use a discrete representation... (neural discrete AE or the results of some clustering?)
-
+In the tabular case, this amounts to keeping a exponentially decaying trace of the most recent use of a value.
 
 $$
 \begin{align}
@@ -16,10 +16,21 @@ e_t &= \begin{cases}
 \gamma \lambda e_{t-1} + 1, & s=s_t, a=a_t \\
 \gamma \lambda e_{t-1}, & s\neq s_t, a \neq a_t\\
 \end{cases} \tag{if binary features, ie tabular} \\
-e_t &= \gamma \lambda e_{t-1} + \nabla_{\theta_t} Q_t(s_t, a_t) \tag{generalised to cts}\\
-e_t &= \gamma \lambda e_{t-1} + \nabla_{\theta_t} V_t(s_t)
 \end{align}
 $$
+
+But what if we want to use some sort of function approximation to represent $Q(s_t, a_t)$? We generalise the definition above to;
+
+$$
+\begin{align}
+e_t &= \gamma \lambda e_{t-1} + \nabla_{\theta_t} Q_t(s_t, a_t)\\
+\end{align}
+$$
+
+Problem. Need to update for all state-action pairs. How can this be solved efficiently?
+Use a discrete representation... (neural discrete AE or the results of some clustering?)
+
+
 
 So we are keeping an exponential average of the gradient of the state(-action) value with respect to each parameter.
 
