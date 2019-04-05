@@ -3,8 +3,7 @@
 How can we estimate the dreivative of a stochastic, unknown and possibly discrete function?
 An answer is to learn a critic, a differentiable approximation of the stochastic, unknown function.
 
-- Which function approximators are suited to the types of function we are interested in approximating (changing distribution, sparse/unbalanced, ...?)
-- ??
+__Q:__ Which function approximators are suited to the types of function we are interested in approximating (changing distribution, sparse/unbalanced, ...?)
 
 ### REINFORCE
 
@@ -13,22 +12,25 @@ $$
 L(\pi) &= \mathbb E_{s\sim\pi}[R(s)] \\
 \pi^* &= \mathop{\text{argmax}}_{\pi}  L(\pi) \\
 \nabla L(\pi) &= \nabla \mathbb E_{s\sim\pi}[R(s)] \\
-&= \nabla \int \pi(s) R(s) \\
-&= -\nabla log(\pi(s)) R \\
+&= \nabla_\theta \int \pi(s, \theta) R(s) ds\\
+&=  \int \nabla_\theta \pi(s, \theta) R(s)ds\\
+&=  \int \frac{\pi(s, \theta)}{\pi(s, \theta)}\nabla_\theta \pi(s, \theta) R(s)ds\\
+&=  \int \pi(s, \theta)\nabla_\theta \log\pi(s, \theta) R(s)ds\tag{$\nabla_x \log(z(x)) = \frac{1}{z}\nabla_x z(x)$}\\
+&= E_{s\sim \pi}[-\nabla_\theta log(\pi(s, \theta)) R(s)]\\
 \end{align*}
 $$
 
-
-(why does less variance mean faster learning!? need to motivate)
 Advantage actor critic improves this by reducing the variance of the gradient estimation.
 
 $$
 \begin{align*}
-A &= R(s) - V(s) \\
-&\approx V(s_t) + r(s) - V(s) \\
-&= -\nabla log(\pi(s)) A \\
+A &= R(s, a) - V(s) \\
+&= Q(s, a) - V(s) \\
+&\implies -\nabla log(\pi(s)) A \\
 \end{align*}
 $$
+
+__Q:__ Why does less variance mean faster learning!?
 
 But what if $V(s)$ is not a reliable estimate of $R(s)$? Are there cases where this could actually give worse behaviour? How about the average case in training?
 
@@ -45,14 +47,12 @@ Meaning it provides little variance reduction.
 
 ## Model-based RL
 
-(In the unconstrained memory case)
-__Cojecture:__ Model-based learning is the optimal solution to model-free learning
+__Cojecture:__ Model-based learning is the optimal solution to model-free learning. Aka the Q network will learn to model the dynamics of the environment.
+(optimal if you include computatunal complexity and ability to transfer to new tasks)
 
-I can imagine a model-free system learning to learn to use future inputs as targets to learn a model!!?!
-If we used a very large RNN to model $Q(s_t, a_t)$, it could correlate the difference between past and future state and actions, thus ...?
+How hard is it for a model-free system (to learn) to learn to use future inputs as targets for training?
 
-Model-free methods must learn some estimate of future dynamics!? (how can this be shown? neurons that correlate with dynamics?)
-How much of the future dynamics does a model-free method learn? How much is necessary?
+Model-free methods must learn someweak correlate of dynamics!? They must know which states are reachable to give valid estimates.
 
 ## Resources
 
@@ -60,29 +60,10 @@ How much of the future dynamics does a model-free method learn? How much is nece
 - [Successor features](https://arxiv.org/abs/1606.05312)
 - [Model-free planning](https://openreview.net/forum?id)
 
-## Structured models
-
-Why is it hard to learn a good model?
-
-- uncertainty
-- partial observations
-- complexity
-- low frequency events (how is this related to complexity?)
-
-### Causal inference
-
-- How is RL like the interventional level of the causal heirarchy?
-- How is model-based RL like the counter-factual level of the causal heirarchy?
-- How can we automate reductionism?
-- ?
-
-
-
 ## Planning
 
 CFRM, MCTS, ... cool.
 What about planning in with continuious actions?  -> LQR, MPC
-
 
 __Q:__ How much harder is planning in a stochastic system than in a deterministic system?!?
 
