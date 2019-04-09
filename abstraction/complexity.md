@@ -52,3 +52,9 @@ No, not sure this works.
 
 But what does the heirarchy provide here?!?
 This canbe done with a single layer...
+
+
+***
+
+Want to charachterise the convergence of $V_A^{\pi_t} \to V_G^{\pi^* }$ under $\pi_t = \pi_{t-1} - \nabla J()$.
+Want show that the error decreases as a funtion of time steps. $\mathcal O(\frac{1}{t^2})$
