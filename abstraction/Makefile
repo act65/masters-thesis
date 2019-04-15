@@ -1,2 +1,3 @@
 build_html:
-	pandoc accuracy.md -f markdown --pdf-engine=xelatex --template=../../template.tex -o accuracy.pdf
+	pandoc exploration.md -f markdown --pdf-engine=xelatex --template=../../template.tex -o exploration.pdf
+	pandoc representation.md -f markdown --pdf-engine=xelatex --template=../../template.tex -o representation.pdf
