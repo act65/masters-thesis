@@ -92,3 +92,10 @@ Actions define changes to the state.
 The tools for analysing the learnability of X are ??? crappy.
 
 How can I accurately estimate learnability and generalisation?
+
+
+***
+
+Problem that occurs in POMDPs. Am I correctly modelling the state?
+You want to learn what action a does. So you do $\tau(s, a)$ over many $s\in A$. But the effect of $a$ correlates with the subset of states $A \subset S$ yo are experimenting in.
+For example. Balls always fall towards the gound (if you test only on earth).

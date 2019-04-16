@@ -89,3 +89,5 @@ But can we guarantee that these abstractions do not make it harder to find the o
 So this is about messing with what information the value function has. Given more information about the future, we should expect the acuracy (or speed of learning) of the estimate to go up!?
 
 Want a general way (a function) to take an abstraction of an MDP (defined by certain propreties) and return the difference between its optimal policy and the true optimal policy.
+
+Want automated computational complexity to solve this!

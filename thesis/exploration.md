@@ -17,6 +17,7 @@ r_t &= p(s_t, a_t \mid s_{t-1}, a_{t-1}) \\
 r_t &= 1[p(s_t\mid s_{t-1}) > 0.001] \tag{in memory novelty}\\
 \end{align}
 $$
+
 (also there are many ways we could decompose these probabilities?? $p(s_t, a_t) = p(s_t)p( a_t)$. Sparse vs dense rewards, ...?)
 
 
@@ -47,9 +48,12 @@ Ok, with enough iterations. Random search will achieve uniform coverage! We care
 
 
 Want to measure the probablity that a state (-action) will be reached after n steps.
+
 $$
+\begin{align}
 p(s_j \mid n, s_i) = ??? \\
 L = \sum p(s_j \mid n, s_i)
+\end{align}
 $$
 
 ### Density fn
@@ -65,7 +69,7 @@ Also, want a motivating example.
 1. What does a random policy look like? And what is its complexity?
 1. Given arbitrary $\pi, G$. Visualise how $\pi$ diffuses over $G$.
 1. Adapt $\pi$ via a learning algol, $A$ and intrinsic motivation.
-1.
+1. ???
 
 ### Learning dynamics
 
@@ -79,7 +83,7 @@ R(t) &= (I-\gamma P_{\pi(t)})^{-1} \cdot \xi(t) \\
 \end{align}
 $$
 
-
+Learning algols
 
 $$
 \begin{align}
@@ -91,8 +95,6 @@ $$
 ### Thoughts
 
 - The most valuable node should be the most central node? (well depends on the policy / learning algol$)
-
-
 
 ## Background: Random walks on graphs
 
