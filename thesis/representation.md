@@ -91,3 +91,8 @@ So this is about messing with what information the value function has. Given mor
 Want a general way (a function) to take an abstraction of an MDP (defined by certain propreties) and return the difference between its optimal policy and the true optimal policy.
 
 Want automated computational complexity to solve this!
+
+
+### Disentangled action abstractions
+
+(what can we prove about this!?)

@@ -99,3 +99,93 @@ How can I accurately estimate learnability and generalisation?
 Problem that occurs in POMDPs. Am I correctly modelling the state?
 You want to learn what action a does. So you do $\tau(s, a)$ over many $s\in A$. But the effect of $a$ correlates with the subset of states $A \subset S$ yo are experimenting in.
 For example. Balls always fall towards the gound (if you test only on earth).
+
+
+***
+
+Ideate and pick 4 more sprints.
+
+- [ ] Unsupervised options (how good can random ones be!?)
+- [ ] Equivalence of goal/option conditioned value fns
+- [ ] Build a three (or even better, N) layer heirarchy
+- [ ] Explore how different approaches scale (computational complexity) in the number of layers in the heirarchy
+- [ ] Use a learned reachability metric to measure proximity to subgoals (and thus use to give rewards)
+- [ ] A heirarchical subgoal net that uses MPC rather than learned policies
+- [ ] Explore function approximation for options a = f(w) (rather than look up table)
+- [ ] How does this related to a decomposition of the value function?
+- [ ] How to achieve stable training of a hierarchy?
+- [ ] Filtering / gating state space to the lower levels
+- [ ] Connection to evolution of language.
+- [ ] The benefit of a heirarchy of abstractions? (versus use a single layer of abstraction). Transfer!?
+- [ ] Design a new programming language. Learner gets access to assembly and must ??? (build a calculator? allow a learner to build websites easy? ...?). What would be the task / reward fn? (should be easy to learn to use, require few commands to do X, ...?)
+- [ ] A single dict with the ability to merge, versus a heirarchy!?
+- [ ] What is the relationship between abstraction and generalisation!?
+
+***
+
+> 1) What do we mean my abstraction? Let's generate some RL problems that can be exploited by a learner that abstracts.
+
+> 2) How does abstraction actually help? Computational complexity, sample complexity, ... when doesn't it help? When it is guaranteed to help?
+
+> 3) Can we learn a set of disentangled actions. How does that help?
+
+> 4) How can we use an abstraction to solve a problem more efficiently? Use MPC + abstraction. Explore how different abstractions help find solutions!?
+
+
+***
+
+- Relationship between tree search and HRL? (divide and conquer for MPC) Recursive subgoal decomposition.  https://arxiv.org/pdf/1706.05825.pdf
+- Absolute versus relative perspectives (relationship to subgoals and options)
+
+
+***
+
+**
+
+> 5.Build a differentiable neural computer (Graves et al. 2016) with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Under which conditions does the learned index to a locally structured memory approximate the position of the agent in its environment.
+
+
+Memory structures + Locality.
+
+- https://www.nature.com/articles/nn.4661.pdf
+- https://arxiv.org/pdf/1602.03218.pdf
+- https://arxiv.org/pdf/1609.01704.pdf
+- DNC
+
+
+***
+
+An alternative view on disentanglement. But what is its relationship to independence?
+
+- Counterfactual estimates of gradients for modules?
+- Blackbox jacobian sensing
+
+
+We want n different modules that specialise in their tasks? How can we learn different specialists?
+
+- winner takes all credit assignment. positive feedback/lateral inhibition/...?
+- give access to different inputs/resources. they physically/computationally cannot do the same thing...
+- train on different tasks...
+- ?
+
+
+***
+
+Ok, imagine we give two specialists different inputs (say, left-right halves of mnist) and train them separately on the same classification task. Their outputs are __not__ going to be independent... The fact the the left half classifies its input as a 2, makes it likely that the right half will also classify its input as a 2.
+
+So, in this instance, the two modules will output independent results if;
+
+- they are trained on the same task yet receive independent inputs
+- the two experts are trained on different tasks, which are independent
+- ?
+
+***
+
+Questions
+- __Specialisation__! Independently useful contributions.
+- __Q__ How is independence related to decomposition?
+
+## Resources
+
+- [MoE](https://arxiv.org/abs/1701.06538) <-- could measure the hidden states MI/TC!?
+- [DDP for Structured Prediction](https://arxiv.org/pdf/1802.03676.pdf)
