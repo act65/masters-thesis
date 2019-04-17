@@ -1,17 +1,5 @@
-
-
-def normalise(x, axis):
-    return x/np.sum(x, axis=axis, keepdims=True)
-
-def exp_dist(x, lambda_=3.5):  # why 3.5!?
-    return lambda_*np.exp(-lambda_*x)
-
-def uniform_simplex(shape):
-    # god damn. it's not as simple as I thought to generate uniform distributions on simplexs
-    # https://cs.stackexchange.com/questions/3227/uniform-sampling-from-a-simplex
-    # http://www.cs.cmu.edu/~nasmith/papers/smith+tromble.tr04.pdf
-    return normalise(exp_dist(rnd.random(shape)),axis=1)
-
+import numpy as np
+import numpy.random as rnd
 
 def generate_Mpi(n_states, n_actions, ps):
     """
@@ -36,3 +24,18 @@ def pi(M_pi, s, a):
     Then we have that M[i, i x |A| + j] = pi(a|s)
     """
     return M_pi[s, s*n_actions+a]
+
+def normalise(x, axis):
+    return x/np.sum(x, axis=axis, keepdims=True)
+
+def exp_dist(x, lambda_=3.5):  # why 3.5!?
+    return lambda_*np.exp(-lambda_*x)
+
+def uniform_simplex(shape):
+    # god damn. it's not as simple as I thought to generate uniform distributions on simplexs
+    # https://cs.stackexchange.com/questions/3227/uniform-sampling-from-a-simplex
+    # http://www.cs.cmu.edu/~nasmith/papers/smith+tromble.tr04.pdf
+    return normalise(exp_dist(rnd.random(shape)),axis=1)
+
+def generate_rnd_policy(n_states, n_actions):
+    return generate_Mpi(n_states, n_actions, uniform_simplex((n_states, n_actions)))

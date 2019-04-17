@@ -1,9 +1,7 @@
 """
-Want to generate entropy polytope plots.
+Want to generate polytopes.
 
-TODO
-- compare with different abstractions
-- ???
+Varying the number of actions, gamma, ...?
 """
 import numpy as np
 import numpy.random as rnd
@@ -35,27 +33,30 @@ def generate_rnd_polytope_densities():
     n_states = 2
 
 
-    n = 4
+    n = 16
+    m = 2
     N = 100000
 
-    n_actions = [2]*8 + [3]*8
+    n_actions = [i for i in range (2, n//m+2) for _ in range(m)]
     plt.figure(figsize=(16, 16))
-    for i in range(n*n):
-        print(i)
-        P, r = trl.generate_rnd_problem(n_states, n_actions[i])
+    count = 0
+    for i in range(n//m):
+        for _ in range(m):
+            count += 1
+            P, r = trl.generate_rnd_problem(n_states, n_actions[i])
 
-        # TODO can we calculate this analytically? p(V) = inv(abs(1/det(dVdx))) p(x)
-        Vs = np.hstack([trl.value_functional(P, r, generate_rnd_policy(n_states, n_actions[i]), 0.9) for _ in range(N)])
-        im, _, _ = np.histogram2d(Vs[0, :], Vs[1, :], (100, 100))
+            # TODO can we calculate this analytically? p(V) = inv(abs(1/det(dVdx))) p(x)
+            Vs = np.hstack([trl.value_functional(P, r, generate_rnd_policy(n_states, n_actions[i]), 0.9) for _ in range(N)])
 
-        plt.subplot(n,n,i+1)
-        # BUG not sure why we need to flip the ims
-        fig = plt.imshow(np.flip(im, axis=1), cmap=plt.cm.jet)
-        fig.axes.get_xaxis().set_visible(False)
-        fig.axes.get_yaxis().set_visible(False)
+            plt.subplot(n//m,n//m,count+1)
+            fig = plt.scatter(Vs[0, :], Vs[1, :],)
+            fig.axes.get_xaxis().set_visible(False)
+            fig.axes.get_yaxis().set_visible(False)
+
+
 
     plt.tight_layout()
-    plt.savefig('../pictures/figures/polytope_rnd_densities.png'.format(i))
+    plt.savefig('../pictures/figures/polytope_n_actions.png'.format(i))
 
 if __name__ =='__main__':
     generate_rnd_polytope_densities()
