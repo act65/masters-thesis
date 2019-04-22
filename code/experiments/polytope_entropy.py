@@ -33,7 +33,7 @@ def generate_rnd_polytope_densities():
                                                                    n_actions,
                                                                    uniform_simplex((n_states, n_actions)))
     n_states = 2
-
+    # BUG ? i think the sampling from the simplex might be wrong?
 
     n = 4
     N = 100000
@@ -57,5 +57,39 @@ def generate_rnd_polytope_densities():
     plt.tight_layout()
     plt.savefig('../pictures/figures/polytope_rnd_densities.png'.format(i))
 
+def generate_polytope_densities():
+    """
+
+    """
+    n_states, n_actions = 2, 2
+    M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,31)]
+
+    n = 4
+    plt.figure(figsize=(16, 16))
+
+    for i in range(n*n):
+        print(i)
+        P, r = trl.generate_rnd_problem(n_states, n_actions)
+        Vs = np.hstack([trl.value_functional(P, r, M_pi, 0.9) for M_pi in M_pis])
+
+        # just set all to be the same probability
+        # does that make sense?
+        px = 0.1
+
+        pVs = [trl.density_value_functional(px, P, r, M_pi, 0.9) for M_pi in M_pis]
+
+        plt.subplot(n,n,i+1)
+        fig = plt.scatter(Vs[0, :], Vs[1, :], c=pVs)
+        plt.colorbar()
+        fig.axes.get_xaxis().set_visible(False)
+        fig.axes.get_yaxis().set_visible(False)
+
+    plt.tight_layout()
+    plt.savefig('../pictures/figures/polytope_densities.png'.format(i))
+
+
+    plt.show()
+
 if __name__ =='__main__':
-    generate_rnd_polytope_densities()
+    # generate_rnd_polytope_densities()
+    generate_polytope_densities()

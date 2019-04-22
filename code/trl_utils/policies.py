@@ -39,3 +39,11 @@ def uniform_simplex(shape):
 
 def generate_rnd_policy(n_states, n_actions):
     return generate_Mpi(n_states, n_actions, uniform_simplex((n_states, n_actions)))
+
+def gen_grid_policies(n_states, n_actions, N=11):
+    # TODO need to generalise to nD
+    # only works for 2 states, 2 actions
+    x = np.linspace(0, 1, N)
+    return [np.array([x[i],1-x[i],x[j],1-x[j]]) # will not generalise to n states
+                  for i in range(N)
+                  for j in range(N)]
