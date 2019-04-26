@@ -109,3 +109,4 @@ Eigenvectors etc.
 
 - [Provably Efficient Maximum Entropy Exploration](https://arxiv.org/abs/1812.02690)
 - [Is Q learning provably efficient?](https://arxiv.org/abs/1807.03765)
+- https://www.cs.cmu.edu/afs/cs/Web/People/avrim/598/chap5only.pdf
