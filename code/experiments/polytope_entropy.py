@@ -64,10 +64,11 @@ def generate_polytope_densities():
     n_states, n_actions = 2, 2
     M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,31)]
 
-    n = 4
+    nx = 4
+    ny = 5
     plt.figure(figsize=(16, 16))
 
-    for i in range(n*n):
+    for i in range(nx*ny):
         print(i)
         P, r = trl.generate_rnd_problem(n_states, n_actions)
         Vs = np.hstack([trl.value_functional(P, r, M_pi, 0.9) for M_pi in M_pis])
@@ -78,9 +79,9 @@ def generate_polytope_densities():
 
         pVs = [trl.density_value_functional(px, P, r, M_pi, 0.9) for M_pi in M_pis]
 
-        plt.subplot(n,n,i+1)
+        plt.subplot(nx,ny,i+1)
         fig = plt.scatter(Vs[0, :], Vs[1, :], c=pVs)
-        plt.colorbar()
+        # plt.colorbar()
         fig.axes.get_xaxis().set_visible(False)
         fig.axes.get_yaxis().set_visible(False)
 

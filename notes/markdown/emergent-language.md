@@ -1,3 +1,5 @@
+> How is the structure of an agent’s environment reflected in the ‘grammar’ of its actions?
+
 Action space gets abstracted into more 'meaningful' concepts.
 But is influenced by the interaction with the model and the reward.
 

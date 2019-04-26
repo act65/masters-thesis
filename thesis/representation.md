@@ -2,7 +2,19 @@ We are working with MDPs $(S, A, \tau, r)$, therefore we have a state space, $S$
 
 ## Near optimal abstraction
 
-Following from [Near Optimal Behavior via Approximate State Abstraction](https://arxiv.org/abs/1701.04113), I am interested in using their framework to reason about which policies are representable with an abstraction. We care about showing that an abstraction with certain properties can approximately represent the optimal solution to the original problem.
+Following from [Near Optimal Behavior via Approximate State Abstraction](https://arxiv.org/abs/1701.04113), I am interested in using their framework to reason about which policies are representable within an abstracted MDP. We care about showing that an abstraction with certain properties can approximately represent the optimal solution to the original problem.
+
+An abstract MDP is defined as;
+
+<!-- (Must be smaller / lower complexity than the original) -->
+
+Given an abstraction of the form above, we can ask how well this abstraction can represent the optimal solution.
+
+$$
+\forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le 2 \epsilon \eta_f
+$$
+
+***
 
 We can impose properties on an abstraction using something like the following;
 $$
@@ -10,12 +22,6 @@ $$
 $$
 
 <!-- What does the above say? _We want our abstraction to contain approximate symmetries $\forall x \mid f(x) - f(T(x)) \mid \approx 0$_. -->
-
-Given an abstraction of the form above, we can ask how well this abstraction can represent the optimal solution.
-
-$$
-\forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le 2 \epsilon \eta_f
-$$
 
 (where $\eta_f$ is some bound to be derived)
 
@@ -49,7 +55,7 @@ $$
 \phi: S \to X&: \quad \pi(s) \to \pi(\phi(s)) \quad Q(s, a) \to Q(\phi(s), a) \tag{State abstraction} \\
 \psi: A\to Y&: \quad \pi(s) \to \psi^{-1}(\pi(s)) \quad Q(s, a) \to Q(s, \psi(a)) \tag{Action abstraction} \\
 \phi, \psi&: \quad \pi(s) \to \psi^{-1}(\pi(\phi(s))) \quad Q(s, a) \to Q(\phi(s), \psi(a)) \tag{State and action abstraction} \\
-\varphi: S \times A \to Z&: \quad \pi(s)\to \pi(s)??? \quad\quad Q(s, a) \to V(\phi(s, a)) \tag{State-action abstraction} \\
+\varphi: S \times A \to Z&: \quad \pi(s)\to \mathop{\text{argmax}}_a V(\varphi(s, a)) \quad\quad Q(s, a) \to V(\varphi(s, a)) \tag{State-action abstraction} \\
 \end{align}
 $$
 
@@ -63,13 +69,20 @@ Action abstraction groups together actions that are similar.
 For example, X and Y both yeild the state change in state,
 > Approximation perspective: we have a set of options and we want to use them to approximate the optimal policy. A good set of options can efficiently achieve an accurate approximation.
 
+### Motivating example for state and action abstraction: ???
 
-### Motivating example: Symmetric maze
+Might want to transfer. But some envs share state space, some share action space. Want to
+
+- Might be teleported to a new environment? (new state space, same action space)
+- Might have to drive a new vehicle (same state space, new action space)
+
+
+### Motivating example for state-action abstraction: Symmetric maze
 _(Some intuition behind claim 2.)_
 
 Imagine you are in a mirror symmetric maze. It should not matter to you which side of mirror you are on.
 
-<!-- ![maze.png](maze.png) -->
+![maze.png](../pictures/drawings/maze.png){ width=250px }
 
 This reduces the state-action space by half! $\frac{1}{2}\mid S \mid \times \mid A \mid$. Note: just using state abstraction it is not possible to achieve this reduction. Mirrored states are not equivalent as the actions are inverted.
 
@@ -79,6 +92,8 @@ What about other types of symmetry, other than mirror?
 
 - $\exists f\in X: \forall_{s, a} r(s, a) = r(f(s), a)$. Where $X=GL_N \lor S_N \lor \dots$
  -->
+
+While other learners can still solve this problem. They miss out on efficiency gains by abstracting first.
 
 ### Notes
 
@@ -96,3 +111,4 @@ Want automated computational complexity to solve this!
 ### Disentangled action abstractions
 
 (what can we prove about this!?)
+How does this related to finding symmetries and state-actions!?

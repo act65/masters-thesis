@@ -96,8 +96,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </head>
 <body>
 <div>
-<p>I am trying to imagine the future of model-based RL: model-based RL as a service?</p>
-<p>I have some problems I want to solve;</p>
+<h1 id="model-based-rl">Model based RL</h1>
+<p>I am trying to imagine the future of model-based RL: model-based RL as a service (?).</p>
+<p>Imagine you are an enterprising individual. You have some problems you want to solve;</p>
 <ul>
 <li>generating new drugs for curing cancer,</li>
 <li>a room that needs cleaning,</li>
@@ -105,26 +106,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>driving,</li>
 <li>poverty.</li>
 </ul>
-<p>What service would help me solve them? Well, if I had an accurate, efficient model of the world, then I could simulate possibilities and search for ‘valuable’ states and policies to reach them. In short, I could plan for the outcomes I want.</p>
-<hr />
-<p>We could offer two services;</p>
-<ol type="1">
-<li>pretrained models, including ones for;
+<p>What service would help you solve them? Well, if you had an accurate, efficient model of the world, you could plan for the outcomes you want.</p>
 <ul>
-<li>human scale robots,</li>
-<li>classical physical physics,</li>
+<li>generating new drugs for curing cancer () A model of an individuals knowledge and human learning</li>
+<li>a room that needs cleaning,</li>
+<li>explaining matriods,</li>
+<li>driving,</li>
+<li>poverty.</li>
+</ul>
+<hr />
+<p>I can imagine two types of service;</p>
+<ol type="1">
+<li>(pretrained) Models. Including ones for;
+<ul>
+<li>human scale robots (indoors / outdoors),</li>
+<li>classical physics,</li>
 <li>human behaviour,</li>
 <li>traffic,</li>
-<li>generalised reactions, (and give guarantees on the models accuracy!?)</li>
+<li>generalised chemical reactions, (and give guarantees on the models accuracy!?)</li>
 </ul></li>
-<li>model learners (will want to learn quickly!!!)
+<li>Explorers
 <ul>
-<li>does experiments, (possibly breaks things…)</li>
-<li>returns a model</li>
+<li>learns a model of a new environment</li>
+<li>does experiments (possibly breaks things…)</li>
 </ul></li>
 </ol>
-<h2 id="pretrained">Pretrained</h2>
-<p>Given a domain specification (the model of robot, the sensors, a high level description of its task) we supply a model tailored to (but what about online learning, and the ability of the planner to exploit the model – various resolutions of modelling!?)</p>
+<h2 id="pretrained-models">Pretrained Models</h2>
+<p>Given a domain specification (the model of robot, the sensors, a high level description of its task) we supply a model of internal and external dynamics.</p>
+<p>For example, a customer might request The model is able to identify things like; water, glass,</p>
+<p>(but what about online learning, and the ability of the planner to exploit the model – various resolutions of modelling!?)</p>
 <p>Question: why would anyone trust us? Our guarantee on a model would be ??? on a set of open benchmarks?</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="im">import</span> world_models <span class="im">as</span> wm</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="im">import</span> mcts</a>

@@ -163,5 +163,19 @@ $$
 \forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le 2 \epsilon \eta_f \implies \phi() ???
 $$
 
+## The Value Function Polytope in Reinforcement Learning
+(https://arxiv.org/abs/1901.11524)
+
+$$
+\begin{align}
+V &= r_{\pi} + \gamma P_{\pi} V \\
+V - \gamma P_{\pi} V &= r_{\pi}\\
+(I-\gamma P_{\pi})V &= r_{\pi}\\
+V &= (I-\gamma P_{\pi})^{-1}r_{\pi}\\
+\end{align}
+$$
+
+
+
 
 </div>
