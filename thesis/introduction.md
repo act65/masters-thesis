@@ -1,15 +1,3 @@
-The goal is to find a representation that decomposes knowledge into its parts.
-
-Another way to frame this is: trying to find the basis with the right properties.
-
-- sparsity,
-- independence,
-- multi scale,
-- locality/connectedness
-- ???
-
-
-
 ## Reinforcement learning
 
 > Reinforcement learning (RL) defines a type of problem, closely related to Markov decision problems (MDPs).
@@ -25,10 +13,28 @@ A RL problem is an extension of the MDP definition adove. Where, rather than the
 
 For example _"Dynamic programming is one type of RL. More specifically, it is a value-based, model-based, bootstrapping and off-policy algorithm. All of those traits can vary. Probably the "opposite" of DP is REINFORCE which is policy-gradient, model-free, does not bootstrap, and is on-policy. Both DP and REINFORCE methods are considered to be Reinforcement Learning methods."_ [SE](https://datascience.stackexchange.com/questions/38845/what-is-the-relationship-between-mdp-and-rl)
 
+#### Model-based RL
 
-## Abstraction
+...
 
-???
+## Representation learning and abstraction
+
+The goal is to find a representation that decomposes knowledge into its parts.
+
+Another way to frame this is: trying to find the basis with the right properties.
+
+- sparsity,
+- independence,
+- multi scale,
+- locality/connectedness
+- ???
+
+
+
+### Action abstraction
+
+Include my caterpillar here.
+
 
 ## Related work
 
@@ -56,8 +62,7 @@ Reasons to do HRL??? (want to verify these claims - and have refs for them)
 - [HLMDPs](https://arxiv.org/abs/1612.02757)
 - [Modulated policy heirarchies](https://arxiv.org/abs/1812.00025)
 - [Model free representations for HRL](https://arxiv.org/abs/1810.10096)
-
-#### ???
+- [Prierarchy: Implicit Hierarchies](https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/)
 
 
 #### Pre training

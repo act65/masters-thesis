@@ -12,8 +12,8 @@ Experiments
 ***
 
 - [ ] `reproduce_abstraction.py`: Simply reproduce the figures from [Near Optimal Behavior via Approximate State Abstraction](https://arxiv.org/abs/1701.04113)
-- [ ] `disentangled_actions.py`: ???
-- [ ] `symmetry_detection.py`: ???
+- [ ] `symmetry_detection.py`: Reproduce results from [Theja](???)
+- [ ] `disentangled_actions.py`: ??/
 
 ***
 
@@ -23,3 +23,5 @@ Other possible experiments
 - [ ] `discount_basis_state_values.py`
 - [ ] Action value, V(a). When action can be applied at all states, we can take the dual of the MDP, where the actions and state spaces are swapped. How does this effect the value? Can a solution to one be transferred to the other.
 - [ ] Verify that the distribution over values (under uniform policies) is also uniform. (random matrix theory flavour)
+- [ ] `action_meta_learning.py` Given a very large space of actions (or actions that are changing). Want to be able to quickly figure out what the action does.
+- [ ] `symmetric_action.py` Construct a measure of similarity based on ???

@@ -1,4 +1,4 @@
-We are working with MDPs $(S, A, \tau, r)$, therefore we have a state space, $S$, an action space, $A$, a transition function $\tau: S\times A \times S \to [0, 1]$ and a reward function $R: S\times A \to R$.
+We are working with MDPs $(S, A, \tau, r)$, therefore we have a state space, $S$, an action space, $A$, a transition function $P: S\times A \times S \to [0, 1]$ and a reward function $r: S\times A \to \mathbb R$.
 
 ## Near optimal abstraction
 
@@ -17,8 +17,12 @@ $$
 ***
 
 We can impose properties on an abstraction using something like the following;
+
 $$
-\phi (\cdot_a) = \phi(\cdot_b) \implies \forall_{\cdot_a, \cdot_b \in D} \mid f(\cdot_a) - f(\cdot_b)\mid \le \epsilon\\
+\begin{align}
+\phi (\cdot_a) = \phi(\cdot_b) &\implies \forall_{\cdot_a, \cdot_b \in D} \mid f(\cdot_a) - f(\cdot_b)\mid \le \epsilon\\
+\forall_{\cdot_a, \cdot_b \in D} \mid f(\cdot_a) - f(\cdot_b)\mid \le \epsilon &\implies \phi (\cdot_a) = \phi(\cdot_b)\\
+\end{align}
 $$
 
 <!-- What does the above say? _We want our abstraction to contain approximate symmetries $\forall x \mid f(x) - f(T(x)) \mid \approx 0$_. -->
@@ -30,19 +34,22 @@ $$
 
 Using the above method of imposing properties on an abstraction, what should we pick as $f$?
 
-1. The transition function: $\forall_{\cdot_a, \cdot_b \in D} \mid \tau(\cdot_a) - \tau(\cdot_b)\mid \le \epsilon$ is approximately the same.
-1. The reward function: $\forall_{\cdot_a, \cdot_b \in D} \mid r(\cdot_a) - r(\cdot_b) \mid \le \epsilon$ is approximately the same.
-1. The policy function: $\forall_{\cdot_a, \cdot_b \in D} \mid \pi(\cdot_a) - \pi(\cdot_b) \mid \le \epsilon$ is approximately the same.
 1. The value function: $\forall_{\cdot_a, \cdot_b \in D} \mid Q(\cdot_a) - Q(\cdot_b)\mid \le \epsilon$ is approximately the same.
-1. Some  combination of 1-4
+1. The policy function: $\forall_{\cdot_a, \cdot_b \in D} \mid \pi(\cdot_a) - \pi(\cdot_b) \mid \le \epsilon$ is approximately the same.
+1. The policy trajectory: $\forall_{\cdot_a, \cdot_b \in D} \mid \pi(\cdot_a) - \pi(\cdot_b) \mid \le \epsilon$ is approximately the same.
+1. The transition function: $\forall_{\cdot_a, \cdot_b \in D} \mid \tau(\cdot_a) - \tau(\cdot_b)\mid \le \epsilon$ is approximately the same.
+1. The transition trajectory: $\forall_{\cdot_a, \cdot_b \in D} \mid \sum_{t=0}^T\parallel \tau(\cdot_{a_t}) - \tau(\cdot_{b_t})\parallel_1\mid \le \epsilon$ is approximately the same.
+1. The reward function: $\forall_{\cdot_a, \cdot_b \in D} \mid r(\cdot_a) - r(\cdot_b) \mid \le \epsilon$ is approximately the same.
+1. The reward trajectory: $\forall_{\cdot_a, \cdot_b \in D} \mid \sum_{t=0}^T \parallel r(\cdot_{a_t}) - r(\cdot_{b_t})\parallel_1 \mid \le \epsilon$ is approximately the same.
+1. Some  combination of 1-7
 
-(3. seems rather nonsensical. why?)
+(1. seems rather nonsensical. why?)
 
 <!-- Note: two states having similar $f$ are not guaranteed to have similar abstraction! -->
 
 __Q:__ Which is best?
 
-> __Claim 1:__ 4. will yield the most compression, while performing well. But, it is a task specific representation, thus it will not transfer / generalise well.
+> __Claim 1:__ 1.(the value fn) will yield the most compression, while performing well. But, it is a task specific representation, thus it will not transfer / generalise well.
 
 #### Extension to other types of abstraction
 
@@ -94,6 +101,12 @@ What about other types of symmetry, other than mirror?
  -->
 
 While other learners can still solve this problem. They miss out on efficiency gains by abstracting first.
+
+### Completeness
+
+(_want to show that the way we build our repesentation is capable of capturing all symmetries_)
+
+...
 
 ### Notes
 

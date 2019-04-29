@@ -176,6 +176,22 @@ V &= (I-\gamma P_{\pi})^{-1}r_{\pi}\\
 $$
 
 
+## On the Complexity of Solving Markov Decision Problems
+(https://arxiv.org/abs/1302.4971)
+
+Sketch of proof of value iteration computational complexity
+
+1. Bound the distance from the initial total-cost function to the optimal total-cost function.
+1. Show that each iteration results in an improvement of a factor of at least $\gamma$. (standard contraction mapping result from Puterman)
+1. Give an expression for the distance between estimated and optimal total-cost functions after $n$ iterations. Show how this gives a bound on the number of iterations required for an $\epsilon$-optimal policy.
+1. Argue that there is a value for $\epsilon > 0$ for which an $\epsilon$-optimal policy is, in fact, optimal.
+1. Substitute this value of $\epsilon$ into the bound to get a bound on the number of iterations needed for an exact answer.
+
+> Let $\pi_n$ be the policy found after $n$ iterations of policy iteration. Let $E_{\pi_n}[\Sigma_{\gamma}\mid i]$ be the total-cost fuction associated with $\pi$. Let $E^n[\Sigma_{\gamma}\mid i]$ be the total-cost function found by n steps of value iteration, starting with $E_{\pi_0}[\Sigma_{\gamma}\mid i]$ as an initial total-cost function. Puterman (1994 theorem 6.4.6) shows that $E_{\pi_n}[\Sigma_{\gamma}\mid i]$ always dominates or is equal to $E^n[\Sigma_{\gamma}\mid i]$ and therefore policy iteration converges no more slowly than value iteration for discounted infinite-horizon MDPs
+
+So this is the only proof of the computational complexity of policy iteration?!
+
+
 
 
 </div>
