@@ -6,7 +6,8 @@ Model reductions.
 
 ### Increased sample efficiency
 
-?!?
+- Want to generalise to new pairs! $\langle s,a\rangle, \langle s', a'\rangle$. (zero shot)
+- Want to generalise past experience! After figuring out two states are similar, share their data. (one shot)
 
 ### Completeness
 
@@ -64,3 +65,87 @@ $$
 - Question. If we are training a NN in this way, how does the invariance get implemented within the NN?
 - As training proceeds, and more symmetries have been observed. There might be very many pairs that are 'similar'. Want to visualise these clusters?!
 - Oh... All we are doing is clustering based on a similarity measure... How does that relate to symmetry and quotients?
+
+
+> Want an abstraction that makes the problem easier to solve.
+
+How does disentangled states and / or actions make it easier to solve?
+???
+
+
+### Towards a definition of disentangled representations
+(https://arxiv.org/abs/1812.02230)
+
+Linear disentangled representations.
+
+We know that a set of obsevations have group structure $G=G_1\times \dots G_n$ (how do we know that? dont ask).
+We say that the representation (of the observations) $x \in X$ is disentangled if
+
+$$
+\begin{align}
+&\forall g\in G, \forall x \in X: \\
+g\circ x &= (g_1, \dots, g_n) \circ (x_1 \dots x_n)\\
+& =(g_1 \circ_1 x_1, \dots g_n \circ_n x_n) \\
+\end{align}
+$$
+
+***
+
+If the linear disentangled representation. This implies a block diagonal structure on the gradients of the action of $G$. __!!!__
+How can we flexibly parameterise a block diagonal strucutre?
+
+And sparsity! NO it doesnt! That assumes statistical independence as well!?
+
+For linear group representations, $g_i\in GL(\mathbb R^{n_i})$. And the action of $g_i$ on $x_i$ is matrix multiplication: $g_i \circ x_i = g_ix_i$. If we consider
+
+
+__HOW?__ Learning group decompositions
+
+Learn a similarity measure $\chi(\langle s,a\rangle, \langle s', a'\rangle)$ based on data (maybe reward trajectories).
+
+
+A pair is similar if we can find a transformation that $\chi$ is invariant to.
+Given $f,g$ we can learn $\chi$. Or vice versa.
+
+$$
+\begin{align}
+L(f, g) &= \mathop{\mathbb E}_{\langle s,a\rangle, \langle s', a'\rangle \sim \chi} \parallel \phi(s) - f(\phi(s')) \parallel + \parallel \varphi(a) + g_s(\varphi(a')) \parallel \\
+\end{align}
+$$
+
+Given a similarity measure. Want to find its invariant transformations!
+
+By requiring some decomposition structure of $f,g$ we can learn the decomposition of the symmetry, and thus disentangle the representation?!
+- Need a soft way to pick the number of dims.
+- Need to ensure the diagonals are orthogonal (? maybe not ?).
+
+$$F = \text{vstack}(F_{1:n}), \; f(x) = \text{kron}(\textbf 1(x) \cdot D)Fx$$
+So we are designing some sort of gated attention mechanism. That selects the relevant transform(s).
+
+$$
+\begin{align}
+\parallel \phi(s) - f(\phi(s')) \parallel \tag{equvariance of $\phi$ to $f$} \\
+\parallel \phi(s) - \phi(f(s')) \parallel \tag{invariance of $\phi$ to $f$} \\
+\end{align}
+$$
+
+
+***
+
+
+Have a function $f(x)$ (where $x = (y, z)$?)
+Want to find its invariants, $g_i\in G$.
+
+$$
+\begin{align}
+g_i(f(x)) &= f(g_i(x)) \tag{equivariance} \\
+L(g_i) &=  \mathop{\mathbb E}_xD(g_i(f(x)), f(g_i(x))) \\
+&=  \mathop{\mathbb E}_{x, x'=T(x)} D(f(x), g_i^{-1}(f(x')) \\
+L &= \sum_{i\neq j} \langle g_i, g_j \rangle + \sum_i L(g_i) \\
+L &=   \tag{optimise a group}\\
+\end{align}
+$$
+
+How to optimise for a group? Closure, inverse, associativity, id, ...?
+
+equivariance. aka commutativity. aka homomorphism. aka ...?

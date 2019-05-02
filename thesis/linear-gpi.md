@@ -4,20 +4,26 @@ What about an abstraction that reduces the problem to a linear space? That seems
 - We know how to solve linear systems of equations with $O()$.
 - And we know how to use these solutions to calculate the optimal, policy: generalised policy iteration.
 
-## Linear representations and policy iteration
+## Linear evaluation and policy iteration
+
+Evaluation is normally expensive. But here ...
 
 $$
 \begin{align}
-V &= r_{\pi} + \gamma P_{\pi} V \\
+V &= r_{\pi} + \gamma P_{\pi} V \tag{bellman eqn}\\
 V - \gamma P_{\pi} V &= r_{\pi}\\
 (I-\gamma P_{\pi})V &= r_{\pi}\\
 V &= (I-\gamma P_{\pi})^{-1}r_{\pi}\\
 \end{align}
 $$
 
-Evaluation is normally expensive. But here ...
+(finding the optimal policy is still a non-linear problem. how is it non-linear?!)
 
-## Learning the linear abstraction
+## LMDPs?!?!?
+
+section on LMDPs here!?
+
+## Learning the (linear) abstraction
 
 Describe algol.
 

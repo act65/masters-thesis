@@ -192,6 +192,11 @@ Sketch of proof of value iteration computational complexity
 So this is the only proof of the computational complexity of policy iteration?!
 
 
+## On the Complexity of Policy Iteration
+(http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.4677&rep=rep1&type=pdf)
 
+> We are interested in bounds on the complexity of PI that do not depend on the value of the discount factor
+
+Why? Also, how would the discount effect the complexity??
 
 </div>
