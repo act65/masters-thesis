@@ -6,9 +6,42 @@ Model reductions.
 
 ### Increased sample efficiency
 
-?!?
+Size of the initial space $n = \mid S \mid, m = \mid A \mid$.
+Size of the quotient space $\tilde n = \mid S \mid, \tilde m = \mid A \mid$.
 
-### Completeness
+(need to derive the relationship between the two depending on the amount of symmetry)
+
+Therefore, if we have inferred the structure of our MDP, then solving it requires $\mathcal O()$ samples, rathern than $\mathcal O(?)$
+
+But what is the sample complexity of learning the symmetry?!?!!
+
+### Group theory (plus ML) puzzles
+
+Group discovery. Want to infer group structure examples.
+Two levels?! Subgroups and their symmetries. 
+
+##### Group completion
+
+Given the binary relation and some elements of the group. Solve for the rest.
+
+How many elements do you need? Does it depend on the relation??
+
+Can be done in many simple cases for example. $+_{mod 5}, \{0,1,3,4\}$.
+
+
+##### Invariant transform recovery
+
+
+### Learning a measure of symmetry / similarity
+
+Without a metric. Symmetry does make sense.
+A symmetry is defined as the conservation of a ? under transformations.
+We need a measure of that conserved quantity if we want to 
+
+For example; an apple classifier oracle. It tells us that a picture of an apple is still an apply if rotated, translated, sharpened, ...
+
+
+__Completeness of the metric__
 
 (_want to show that the way we build our repesentation is capable of capturing all symmetries_)
 
@@ -18,6 +51,9 @@ $$
 ???
 \end{align}
 $$
+
+
+
 
 
 
@@ -64,3 +100,14 @@ $$
 - Question. If we are training a NN in this way, how does the invariance get implemented within the NN?
 - As training proceeds, and more symmetries have been observed. There might be very many pairs that are 'similar'. Want to visualise these clusters?!
 - Oh... All we are doing is clustering based on a similarity measure... How does that relate to symmetry and quotients?
+
+
+### Disentanglement
+
+Typical setting.
+Pick $z$ from $Z$. This is our generating code. The true factors within the data we see. We assume $Z$ is disentangled.
+Now, $x\in X$ are created by $f: Z \to X$.
+
+Alternatively we can think about disentanglement as invariance to transformation. $f(g(x)) = f(x)$. A nicer property is equivariance, $f(g \circ x)) = g \circ f(x))$. Or maybe $f(g_1 \circ \dots g_n \circ x) = g \circ \dots g_n \circ f(x))$.
+
+We could reframe 1) as $z = z_1 \circ \ dots z_n = z_1 + \ dots z_n$. Giving, $x = f(z_1 \circ \ dots z_n)$.
