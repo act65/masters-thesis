@@ -1,3 +1,8 @@
+Blah blah. [Challenges of Real-World Reinforcement Learning](https://arxiv.org/abs/1904.12901).
+- Learning on the real system from limited samples.
+- High-dimensional continuous state and action spaces.
+
+
 ## Reinforcement learning
 
 > Reinforcement learning (RL) defines a type of problem, closely related to Markov decision problems (MDPs).
@@ -33,6 +38,8 @@ Another way to frame this is: trying to find the basis with the right properties
 
 ### Action abstraction
 
+Has been a large amount of work focusing on state abstraction. Need refs here.
+
 Include my caterpillar here.
 
 
@@ -63,10 +70,8 @@ Reasons to do HRL??? (want to verify these claims - and have refs for them)
 - [Modulated policy heirarchies](https://arxiv.org/abs/1812.00025)
 - [Model free representations for HRL](https://arxiv.org/abs/1810.10096)
 - [Prierarchy: Implicit Hierarchies](https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/)
+- Options
+- [Near optimal representation learning for heirarchical RL](https://openreview.net/forum?id=H1emus0qF7)
 
 
-#### Pre training
-
-
-
-#### Pre conditioning
+Relation to pretraining / conditioning?
