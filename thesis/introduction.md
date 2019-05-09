@@ -18,9 +18,16 @@ A RL problem is an extension of the MDP definition adove. Where, rather than the
 
 For example _"Dynamic programming is one type of RL. More specifically, it is a value-based, model-based, bootstrapping and off-policy algorithm. All of those traits can vary. Probably the "opposite" of DP is REINFORCE which is policy-gradient, model-free, does not bootstrap, and is on-policy. Both DP and REINFORCE methods are considered to be Reinforcement Learning methods."_ [SE](https://datascience.stackexchange.com/questions/38845/what-is-the-relationship-between-mdp-and-rl)
 
-#### Model-based RL
+## Model-based RL
 
-...
+Pros and cons.
+
+
+Model-based learning can be bad...
+There may be many irrelevant details in the environment that do not need to be modelled.
+A model-free learning naturally ignores these things.
+
+The importance of having an accurate model!
 
 ## Representation learning and abstraction
 
@@ -41,6 +48,18 @@ Another way to frame this is: trying to find the basis with the right properties
 Has been a large amount of work focusing on state abstraction. Need refs here.
 
 Include my caterpillar here.
+
+
+
+
+
+$$
+K, n \ge 2 \\
+(k-1) ^ n \ge k^{n-1} \\
+k^n - k^{n-1} = ??? \\
+k^n - (k-1) ^ n = k \\
+$$
+
 
 
 ## Related work

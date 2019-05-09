@@ -31,7 +31,7 @@ $$
 Q(s_t, a_t, s_g, \tau) = E_{p(s_{t+1}\mid s_t, a_t)}(-D(s_{t+1}, s_g)) \cdot1[\tau =0] + \text{max}_a Q(s_{t+1}, a, s_g, \tau-1)\cdot1[\tau \neq0]
 $$
 
-_Wait, doesnt $\tau -1$ mean that we willhave negative $\tau$s? I think it ishould be $1[\tau>0]$?_
+_Wait, doesnt $\tau -1$ mean that we will have negative $\tau$s? I think it ishould be $1[\tau>0]$?_
 
 So if $\tau=0$, and $s_{t+1} = s_g$ then then $Q$ value should be zero.
 
@@ -116,7 +116,7 @@ __Q:__ How does specialisation relate to independence?
 > The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.
 
 
-## Near optimal representation learnning for HRL
+## Near optimal representation learning for HRL
 (https://openreview.net/forum?id=H1emus0qF7)
 
 
@@ -198,5 +198,56 @@ So this is the only proof of the computational complexity of policy iteration?!
 > We are interested in bounds on the complexity of PI that do not depend on the value of the discount factor
 
 Why? Also, how would the discount effect the complexity??
+
+
+## Efficient computation of optimal abstractions
+(https://www.pnas.org/content/106/28/11478)
+
+Searching through policy space is expensive. Want to use the structure in the MDP to reduce the search space.
+
+$$
+v(s) = \mathop{\text{min}}_a \big[ r(s, a) + \mathop{\mathbb E}_{x' \sim p(\cdot | x, a)} v(x') \big]\\
+r(s, a) = q(x) + \mathop{\mathbb E}_{x'\sim a(\cdot | x)} \log \frac{a(x' | x)}{p(x' | x)} \\
+a(x' | x) = p(x' | x, \pi(x)) \\
+v(x) = e^{-z} \\
+$$
+
+$$
+\begin{align}
+v(s) &= q(x) + \mathop{\text{min}}_a \big[\mathop{\mathbb E}_{x'\sim a(\cdot | x)} \log \frac{a(x' | x)}{p(x' | x)} +  \mathop{\mathbb E}_{x' \sim p(\cdot | x, a)} v(x') \big]\\
+ &= q(x) + \mathop{\text{min}}_a \big[\mathop{\mathbb E}_{x'\sim a(\cdot | x)} \log \frac{a(x' | x)}{p(x' | x)} -  \mathop{\mathbb E}_{x' \sim p(\cdot | x, a)} \log z(x') \big]\\
+  &= q(x) + \mathop{\text{min}}_a \big[\mathop{\mathbb E}_{x'\sim a(\cdot | x)} \log \frac{a(x' | x)}{p(x' | x)z(x')} \big]\\
+\end{align}
+$$
+
+Words
+
+$$
+\begin{align}
+a^{* }(x' | x) &= \frac{p(x' | x)z(x')}{G[z](x)} \\
+G[z](x) &= \mathop{\mathbb E}_{x'\sim p(\cdot | x)} z(x') \\
+-\log z(x)  &= q(x) + \mathop{\mathbb E}_{x'\sim a^{* }(\cdot | x)} \log \frac{a^{* }(x' | x)}{p(x' | x)z(x')} \\
+&= q(x) + \mathop{\mathbb E}_{x'\sim a^{* }(\cdot | x)} \log G[z](x) \\
+z(x)  &= e^{-q(x)} e^{\mathop{\mathbb E}_{x'\sim a^{* }(\cdot | x)} \log G[z](x)} \\
+&= e^{-q(x)} e^{\log G[z](x)} \\
+&= e^{-q(x)}G[z](x) \\
+z &= e^{-q}Pz \\
+\end{align}
+$$
+
+
+__Want to embed!? How?__
+
+Given $\{(s, a, r, s')\}$ can estimate $r(s, a), \tau(s' | s, a)$. Want to estimate $q(x), p(x' | x)$.
+
+$$
+p(x' | x) = E_{a \sim U(n)} \tau(s' | x, a) \\
+q(x) =  r(x, a) - KL(\tau(\cdot|x, a) \parallel p(\cdot | x)) \\
+$$
+
+
+__Connection to preirarchy__
+
+???.
 
 </div>
