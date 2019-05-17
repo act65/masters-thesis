@@ -235,6 +235,16 @@ z &= e^{-q}Pz \\
 \end{align}
 $$
 
+Or in the finite case with terminating states.
+
+$$
+\begin{align}
+P_n &\in [0,1]^{n_{int} \times n_{int}}, P_t \in [0,1]^{n_{int} \times n_{ext}} \\
+M_n &=  \text{diag}(e^{-q_n}) \\
+(I - M_n P_n)z_n &= M_n P_tz_t \\
+z_n &= (I - M_n P_n)^{-1} M_n P_t z_t\\
+\end{align}
+$$
 
 __Want to embed!? How?__
 
@@ -248,6 +258,16 @@ $$
 
 __Connection to preirarchy__
 
-???.
+
+## Symmetry-adapted representation learning
+[https://www.sciencedirect.com/science/article/pii/S0031320318302620](https://www.sciencedirect.com/science/article/pii/S0031320318302620)
+
+$$
+\text{argmin} \;\; L(W, S_N) + \gamma L'(W, S_n) + \beta R(W) \\
+$$
+
+- $L(W, S_N)$: The training target. Maybe defined via supervision
+- $L'(W, S_n)$: The unsupervised symmetry loss.
+- $R(W)$: Regularise so that the representation forms an orbit of a group
 
 </div>

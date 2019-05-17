@@ -264,8 +264,89 @@ L_{inv} &=  ??? \tag{inverse}\\
 \end{align}
 $$
 
+## Invariant representations for RL
+
+
+#### Pairwise matching
+
+Tabular state-action representation.
+(what happened to the representation!?). Cheating, using $Q(s, a) = w^T \cdot \phi(s, a) = 1 \cdot Q(s, a)$.!?
+(what benefit can ths even provide!? using the invariant metric to help learn the q values!?)
+
+$$
+\begin{align}
+Q_{t+1}(s, a) &= Q_t(s, a) + \eta \Big(t - Q_t(s, a) \Big)\\
+\forall (s, a), (s', a') &\in \mathcal S \times \mathcal A \\
+Q_{t+1}(s, a) &= Q_t(s, a) + \eta \Big(Q_t(s', a') - Q_t(s, a) \Big)\\
+Q_{t+1}(s', a') &= Q_t(s, a) + \eta \Big(Q_t(s, a) - Q_t(s', a') \Big)\\
+\end{align}
+$$
+
+But only want to make
+$$
+\begin{align}
+Q_{t+1}(s, a) &= Q_t(s, a) + \eta \Big(Q_t(s', a') - Q_t(s, a) \Big) \chi((s, a), (s', a'))\\
+Q_{t+1}(s', a') &= Q_t(s, a) + \eta \Big(Q_t(s, a) - Q_t(s', a') \Big)  \chi((s, a), (s', a'))\\
+\end{align}
+$$
+
+Want to correct for uneven sampling. Maybe we have a lot of data about $Q(s, a)$, but little data about $Q(s', a')$. We assume that $Q(s, a)$ is more accurate and therefore ...?
+$p(s, a)$ is the probability of $(s, a)$ under the data collected so far. Normalised counts!?
+
+$$
+\begin{align}
+Q_{t+1}(s, a) &= Q_t(s, a) + \eta \Big(Q_t(s', a') - Q_t(s, a) \Big) \chi((s, a), (s', a'))\frac{p(s', a')}{p(s, a)}\\
+Q_{t+1}(s', a') &= Q_t(s, a) + \eta \Big(Q_t(s, a) - Q_t(s', a') \Big)  \chi((s, a), (s', a'))\frac{p(s, a)}{p(s', a')}\\
+\end{align}
+$$
+
+
+$$
+\begin{align}
+Q &\in \mathbb R^{\mid S \mid \times \mid A \mid}\\
+\delta &\in \mathbb R^{\mid S \mid \times \mid A \mid \times \mid S \mid \times \mid A \mid} = Q \ominus Q\\
+P &\in \mathbb R^{\mid S \mid \times \mid A \mid}\\
+Q &= Q + \eta \sum_{kl} \delta_{kl} \chi_{kl}\frac{P_{kl}}{P} \\
+\end{align}
+$$
+
+
+What is the geometry of this?
+- Have the Q values being pulled towards their true values by the tradtional TD error, or similar.
+- Have 'similar' state-actions being pulled together.
+  - In the case the $\chi$ is based on Q values. This would mean a kind of density based attractive force!?
+  - Higher density positions are more attractive.
+
+BUT. How do we correct for differing policies? That is a problem for $\chi$!?
+Also. A large $p(s, a)$ doesnt really imply an accurate $Q(s, a)$ if the policy has changed... Could use $u(s, a)$. The uncertainty $Q$ fn?
+
+
+#### New targets
+
+Rather we could create extra data by generating targets.
+
+$$
+\begin{align}
+t &= \sum_i \gamma^i r_i \\
+t &= r_t + \gamma Q_t(s_{t+1}, a_{t+1}) \\
+t &= Q_t(s', a') : \chi((s,a), (s', a')) > 1-\epsilon \\
+&= (1- \chi((s,a), (s', a')))Q_t(s, a) + \chi((s,a), (s', a'))Q_t(s', a') \\
+Q_{t+1}(s, a) &= Q_t(s, a) + \eta \Big(t - Q_t(s, a) \Big)\\
+\end{align}
+$$
+
+is equivalent to the above.
+
 
 ***
 
 - where does compression come into disentanglement?!
 -
+
+
+
+***
+
+- Test clustering with unparameterised $\chi$
+- Test clustering and generalisation with parameterised $\chi$
+- Test ?!?
