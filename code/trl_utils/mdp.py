@@ -31,6 +31,10 @@ def density_value_functional(px, P, r, M_pi, discount):
     return probability_chain_rule(px, J)
 
 def value_jacobian(r_pi, P_pi, discount):
+    """
+    Returns:
+        [inputs x outputs] ???
+    """
     return r_pi * (np.eye(P_pi.shape[0]) - discount * P_pi)**(-2)
 
 def probability_chain_rule(px, J):

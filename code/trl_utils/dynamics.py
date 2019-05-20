@@ -28,3 +28,23 @@ def solve(update_fn, P, r, Mpi, discount, atol=1e-4, maxiters=10):
             break
 
     return pis, vs
+
+def greedy_solution(V, P):
+    n_states = P.shape[-1]
+    n_actions = P.shape[0]//P.shape[-1]
+    EV = np.dot(P, V).reshape((n_states, n_actions))  # expected value of each action in each state
+    return trl.generate_Mpi(n_states, n_actions, np.clip(np.round(softmax(EV)),0, 1))
+
+def policy_iteration_update(P, r, M_pi, gamma):
+    V = trl.value_functional(P, r, M_pi, gamma)
+    return greedy_solution(V, P)
+
+def interior_iteration_update(P, r, M_pi, gamma):
+    """
+    How can we get more information about the shape of the polytope by
+    tranversing the interior, rather than jumping to the edges.
+
+    Like a compressed sensing problem?! Take a set of random actions,
+    and mix together the directions.
+    """
+    pass

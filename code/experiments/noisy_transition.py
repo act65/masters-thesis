@@ -17,7 +17,7 @@ def generate_noisy_transitions():
     n_states = 2
     n_actions = 2
     discount = 0.75
-    P, r= trl.generate_rnd_problem(n_states, n_actions)
+    P, r = trl.generate_rnd_problem(n_states, n_actions)
 
     M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,31)]
     Vs = np.hstack([trl.value_functional(P, r, M_pi, discount) for M_pi in M_pis])
