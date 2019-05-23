@@ -20,3 +20,8 @@ Does my abstraction make optimisation easier?
 
 
 How does knowledge about the value of one policy / action help you figure out the value ofother policies / actions?
+
+
+So policy search can be reduced to ??? because
+In every state, if I improve my action for more reward / value then it increases the value of the policy globally.
+We can decompose it into many local value based problems, rather than optimising over possible policies.

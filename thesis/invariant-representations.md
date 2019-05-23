@@ -350,3 +350,10 @@ is equivalent to the above.
 - Test clustering with unparameterised $\chi$
 - Test clustering and generalisation with parameterised $\chi$
 - Test ?!?
+
+
+***
+
+
+How hard is model free RL when there are many non-sense confounders and extra variables?
+How much easier is model free RL when we have learned an invariant representation?

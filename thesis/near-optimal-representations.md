@@ -19,6 +19,7 @@ We could impose properties on a state abstraction using something like the follo
 $$
 \begin{align}
 \forall_{s_1, s_2 \in S} \mid f(s_1) - f(s_2)\mid \le \epsilon &\implies \phi (s_1) = \phi(s_2)\\
+\forall_{\cdot} \mid f(\cdot) - f(\cdot)\mid \le \epsilon &\implies g_1(\cdot) = g_2(\cdot)\\
 \end{align}
 $$
 

@@ -30,6 +30,7 @@ def solve(update_fn, P, r, Mpi, discount, atol=1e-4, maxiters=10):
     return pis, vs
 
 def greedy_solution(V, P):
+    # TODO this isnt correct?! should be: argmax_a r + gamma P V?!
     n_states = P.shape[-1]
     n_actions = P.shape[0]//P.shape[-1]
     EV = np.dot(P, V).reshape((n_states, n_actions))  # expected value of each action in each state

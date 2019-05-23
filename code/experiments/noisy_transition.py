@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 
 import trl_utils as trl
 
+def ce_losses(xs, y):
+    return 1
+
 
 def generate_noisy_transitions():
     n_states = 2
@@ -35,6 +38,11 @@ def generate_noisy_transitions():
         idx = int(6.5*32)
         M_pi = M_pis[idx]
         Ps_hat = [P + stddev[i]*(2*np.random.random(P.shape)-1) for _ in range(n)]
+
+        # TODO want an intuition for how the accuracy of the learned P
+        # matches to the expected amount of error in the estimation
+        # plt.title('Noise mag: {:.3f}'.format(ce_losses(P, Ps_hat)))
+
         Vs_hat = np.hstack([trl.value_functional(Pi, r, M_pi, discount) for Pi in Ps_hat])
         fig = plt.scatter(Vs_hat[0, :], Vs_hat[1, :], alpha=0.95, s=1, c='g')
 

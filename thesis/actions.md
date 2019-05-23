@@ -84,3 +84,12 @@ $$
 
 Should point in the same direction, and have the same magnitude.
 Does it really need to have the same magnitude??
+
+
+## Temporal abstraction
+
+A transformation between action spaces.
+
+### Chunking
+
+???

@@ -110,3 +110,12 @@ Eigenvectors etc.
 - [Provably Efficient Maximum Entropy Exploration](https://arxiv.org/abs/1812.02690)
 - [Is Q learning provably efficient?](https://arxiv.org/abs/1807.03765)
 - https://www.cs.cmu.edu/afs/cs/Web/People/avrim/598/chap5only.pdf
+
+
+
+## Derivation from approximate / asynchronous dynamic programming
+
+Start from DP. We enuerate all states and sweep through them, evluating and updating.
+ADP. We evaluate and update the states we visit, but now we require that: we visit all states eventually, we dont spend too much time stuck in small neighborhoods.
+We need to explore.
+DP was coordinating the exploration for us.

@@ -94,3 +94,20 @@ Reasons to do HRL??? (want to verify these claims - and have refs for them)
 
 
 Relation to pretraining / conditioning?
+
+
+
+#### Reinforcement learning theory
+
+Recent work has bounded the error of representation learning for RL. [Abel et al. 2017](), [Abel et al. 2019]()
+
+But. It is possible that this representation achieves no compression of the state space, making the statement rather vacuous.
+Further more, it consider how easy it is to find the optimal policy in each of the two representations. It is possible to learn a representation that makes the optimal control problem harder. For example. TODO
+
+
+
+***
+
+Representations for;
+- Model based RL. Can use MDP solution techniques, DP, tree search, ... one we have the model and reward fns. Solvable representations.
+- Model free RL. Want a representation than make model free RL easier. How? Factor out all the extraeneous crap. Invariant representations.
