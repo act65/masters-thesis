@@ -121,3 +121,27 @@ Want automated computational complexity to solve this!
 Actually, we are not considering computational complexity here only approximation error.
 For that can we just use automatic differentiation!?
 Want a way to get bounds for all of these combinations!
+
+
+***
+
+
+How do we know one policy is better than another?
+How do we know a policy is optimal?
+
+$$
+\forall \pi\;\; V^{\pi^* } \ge V^{\pi} \\
+$$
+
+But, this definition of optimality implicitly assumes a uniform distribution over states. This is unlikely. Rather, the distribution is determined by the policy.
+
+$$
+\mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi^* } \big] \ge \mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi} \big] \\
+D_{\pi}(s) = P(s | \pi) = \sum_{\text{all } \tau \text{ with } s_t = s} P(\tau | \pi)
+$$
+
+Now. How different is this?
+
+I can imagine some degenerate solutions now being possible? Because we can control the distribution we are being evaluated on. We could pick a policy that oscillates between two states, never leaving the cycle. Therefore it would have $p(s_1) = p(s_2) = 0.5$ and $p(s_{i \neq 1,2}) = 0$.
+
+That doesn't seem so bad?

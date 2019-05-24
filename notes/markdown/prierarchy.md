@@ -30,3 +30,7 @@ G[z](x) &= \sum_k w_k z_k(x') \\
 z(x) &= e^{-q(x)}G[z](x) \\
 \end{align}
 $$
+
+
+Want to find a relationship to this.
+http://papers.nips.cc/paper/3842-compositionality-of-optimal-control-laws.pdf

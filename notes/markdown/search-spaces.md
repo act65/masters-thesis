@@ -25,3 +25,46 @@ How does knowledge about the value of one policy / action help you figure out th
 So policy search can be reduced to ??? because
 In every state, if I improve my action for more reward / value then it increases the value of the policy globally.
 We can decompose it into many local value based problems, rather than optimising over possible policies.
+
+
+$$
+\mathop{\text{max}}_V \mathop{\mathbb E}_{s\sim D} V(s) \\
+\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{s\sim D}V^{\pi}(s) \\
+\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V_{\theta}(s) \\
+\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta}}}(s) \\
+\mathop{\text{max}}_{\phi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi}}}}(s) \\
+\mathop{\text{max}}_{\varphi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi_{\varphi}}}}}(s) \\
+$$
+
+We can pick the space we optimise in. Why would we want to pick one space over another?
+
+- In which spaces does momentum work well?
+- In which spaces can we do convex optimisation?
+- In which spaces ...
+
+### Value iteration
+
+```python
+value = init()
+while not converged(value):
+  value = update(value)
+```
+
+### Policy iteration
+
+```python
+policy = init()
+while not converged(value):
+  value = evaluate(policy)
+  policy = greedy_update(value)
+```
+
+### Parameter iteration
+
+```python
+parameters = init()
+while not converged(value):
+  policy = fn(parameters)
+  value = evaluate(policy)
+  parameters = greedy_step(value)
+```

@@ -37,8 +37,24 @@ def value_jacobian(r_pi, P_pi, discount):
     """
     return r_pi * (np.eye(P_pi.shape[0]) - discount * P_pi)**(-2)
 
+def entropy_jacobian(pi):
+    """
+    H(pi) = - sum p log p
+    dHdpi(j) = 1 + log p
+    """
+    return -1 - np.log(pi)
+
 def probability_chain_rule(px, J):
     """
     p(f(x)) = abs(|J|)^-1 . p(x)
     """
     return (np.abs(np.linalg.det(J))**(-1)) * px
+
+def get_pi(M_pi):
+    n, m = M_pi.shape
+    n_actions = m // n
+    pi = np.zeros((n, n_actions))
+    for i in range(n):
+        for j in range(n_actions):
+            pi[i, j] = M_pi[i, i*n_actions + j]
+    return pi

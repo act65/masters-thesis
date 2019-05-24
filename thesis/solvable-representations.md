@@ -80,7 +80,10 @@ L_{P} &= \mathop{\text{max}}_{\theta} \textbf P[\phi(s_{t+1}),\phi(s_t), a_t]\ta
 \end{align}
 $$
 
-### Evaluating the learned abstraction
+### Policy iteration
+
+
+#### Evaluating the learned abstraction
 
 But what about the error in our approximation?
 Error in the reward doesnt seem like such a big deal? (why?!?)
@@ -136,7 +139,13 @@ $$
 - To calculate this we will need to bound the det of P?!
 - Also, we cant add noise like this. P needs to be a row stochastic matix...
 
-## A linear representation
+
+#### Dynamics
+
+!?
+
+
+### A linear representation
 
 The bellman equation is a non-linear optimisation problem.
 Is there a way to turn this into a linear problem? What do we need to sacrifice to do so?
@@ -148,7 +157,7 @@ $$
 ^^^ What makes it non-linear?!?
 
 
-### Linear markov decision problems (LMDPs)
+#### Linear markov decision problems (LMDPs)
 
 How can we remove the sources of non-linearity from the bellman equation? The answer is a couple of 'tricks';
 
@@ -171,6 +180,22 @@ l(s, a) = q(s) + KL(u(\cdot | s) \parallel p(\cdot | s)) \\
 v(x) = q(s) + \mathop{\text{max}}_a \Big[ KL(u(\cdot | s) \parallel p(\cdot | s)) +  \gamma \mathop{\mathbb E}_{x' \sim P(\cdot | x, a)} v(x') \Big]\\
 $$
 
+## Linear programming
+
+(doesnt need to be tabular!? what does this require?!)
+
+So far, "solvable representations" has meant having an efficient method to solve a representation of an MDP. Easy (optimisation) problems to solve;
+matrix inversion, policy iteration, linear programming...
+
 ## A convex representation
 
 MAYBE???? Need more time...
+https://bodono.github.io/thesis/bod_thesis.pdf !!!
+
+
+***
+
+
+Ok great. How does computational complexity relate to sample complexity?
+We are considering different problems.
+- Sample complexity in MBRL comes from learning the transition and reward function. Computational complexity is considered (here) for the optimal control problem (only?).
