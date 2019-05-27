@@ -1,5 +1,7 @@
 import numpy as np
+
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 import trl_utils as trl
 
@@ -61,7 +63,40 @@ def generate_discounted_polytopes():
             fig.axes.get_yaxis().set_visible(False)
 
     plt.tight_layout()
-    plt.savefig('../pictures/figures/discounts.png')
+    # plt.savefig('../pictures/figures/discounts.png')
+    plt.show()
+
+def discount_trajectories():
+    """
+    Plot the trajectory of the different deterministic policies
+    """
+    n_states, n_actions = 2, 6
+
+    M_pis = [trl.generate_Mpi(n_states, n_actions, p) for p in trl.get_deterministic_policies(n_states, n_actions)]
+    fig = plt.figure(figsize=(16, 16))
+    # ax = fig.add_subplot(111)
+    n = 20
+    P, r = trl.generate_rnd_problem(n_states, n_actions)
+    discounts = np.linspace(0.1, 0.999, n)
+
+    Vs = []
+    for i in range(n):
+        V = np.hstack([trl.value_functional(P, r, M_pi, discounts[i]) for M_pi in M_pis])
+        Vs.append(V/np.max(V))
+    Vs = np.stack(Vs, axis=-1)
+    # print(np.stack(Vs).shape)
+    # d x n_M_pi x n
+    colors = cm.viridis(np.linspace(0, 1, n))
+
+
+    for x, y, c in zip(Vs[0, :, :].T, Vs[1, :, :].T, colors):
+        plt.scatter(x, y, c=c)
+    # plt.show()
+    plt.xlabel('V2. max normed')
+    plt.ylabel('V1. max normed')
+    plt.title('A random {}-state, {}-action MDP'.format(n_states, n_actions))
+    plt.savefig('../pictures/figures/policy-discount-trajectories.png')
 
 if __name__ == '__main__':
     generate_discounted_polytopes()
+    discount_trajectories()

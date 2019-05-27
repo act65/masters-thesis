@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.random as rnd
+import itertools
 
 def generate_Mpi(n_states, n_actions, ps):
     """
@@ -13,9 +14,11 @@ def generate_Mpi(n_states, n_actions, ps):
     Returns:
         (array[n_states, n_states x n_actions])
     """
-    # ps = len n_states. ps[0] = len n_actions
+    A = np.ones((1, n_actions))
+    S = np.eye(n_states)
+
     M_pi = np.zeros((n_states, n_states * n_actions))
-    M_pi[tuple(zip(*[(i, i*n_actions+j) for i in range(n_states) for j in range(n_actions) ]))] = ps.reshape(-1)
+    M_pi[np.where(np.equal(1, np.kron(S, A)))] = ps.reshape(-1)
     return M_pi
 
 def pi(M_pi, s, a):
@@ -40,10 +43,23 @@ def uniform_simplex(shape):
 def generate_rnd_policy(n_states, n_actions):
     return generate_Mpi(n_states, n_actions, uniform_simplex((n_states, n_actions)))
 
+# def gen_grid_policies(n_states, n_actions, N=11):
+#     # TODO need to generalise to nD
+#     # only works for 2 states, 2 actions
+#     x = np.linspace(0, 1, N)
+#     return [np.array([x[i],1-x[i],x[j],1-x[j]]) # will not generalise to n states
+#                   for i in range(N)
+#                   for j in range(N)]
+
 def gen_grid_policies(n_states, n_actions, N=11):
-    # TODO need to generalise to nD
-    # only works for 2 states, 2 actions
-    x = np.linspace(0, 1, N)
-    return [np.array([x[i],1-x[i],x[j],1-x[j]]) # will not generalise to n states
-                  for i in range(N)
-                  for j in range(N)]
+    """
+    This scales badly!!!
+    """
+    simplicies = list(itertools.product(np.linspace(0, 1, N), repeat=n_actions))
+    simplicies = [s/np.sum(s) for s in simplicies]
+    return [np.vstack(x) for x in itertools.product(*[simplicies for _ in range(n_states)])]
+
+def get_deterministic_policies(n_states, n_actions):
+    simplicies = list([np.eye(n_actions)[i] for i in range(n_actions)])
+    pis = list(itertools.product(*[simplicies for _ in range(n_states)]))
+    return [np.stack(p) for p in pis]

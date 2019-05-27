@@ -10,7 +10,7 @@ A potentially interesting question to ask about the polytopes is how the policie
 
 <!-- NOTE: Only works when `n_actions == n_states`, unless we use $det|A| = \sqrt{det|A^2|}$ to estimate the `det` of a non square matrix!? -->
 
-!['2-state 2-action MDPs. We have visualised the likelihood of values under a uniform on policies. They are coloured by density. Lighter colour is higher probability'](../pictures/figures/polytope_densities.png){ width=450px }
+!['2-state 2-action MDPs. We have visualised the likelihood of values under a uniform on policies. They are coloured by density. Lighter colour is higher probability'](../../pictures/figures/polytope_densities.png){ width=450px }
 
 - __Observation__ In some polytopes, many of the policies are close to the optimal policy. In other polytopes, many of the policiesare far away from the optimal policy. __Question__ Does this make the MDP harder or easier to solve? __Intuition__ If there is a high density near the optimal policy then we could simply sample policies and evaluate them. This would allow us to find a near optimal policy with relative easy.
 - __Observation__ The density is always concentrated / centered on an edge.
@@ -73,7 +73,7 @@ NOTE:
 
 How does the shape of the polytope depend on the discount rate? Given an MDP, we can vary the discount rate from $0$ to $1$ and explore how the shape of the value polytope changes.
 
-!['2-state 2-action MDPs. Here we have shown a few different P/r MDPs and how their polytopes change with changes in discount rate.'](../pictures/figures/discounts.png){ width=450px }
+!['2-state 2-action MDPs. Here we have shown a few different P/r MDPs and how their polytopes change with changes in discount rate.'](../../pictures/figures/discounts.png){ width=450px }
 
 - __Observation__ As $\gamma \to 1$, all the policies are projected into a 1D space? __Question__ Does this make things easier to learn? __Intuition__ Orderd 1D spaces are easy to search.
 - __Observation__ The tranformation that changing the discount applies is quite restricted. They are not generally non-linear, but appear 'close to linear', but not quite. __Question__ What is the set of functions /transformations that the discount can apply?
@@ -116,7 +116,7 @@ while not converged:
   pi = greedy_update(value)
 ``` -->
 
-!['2-state 2-action MDPs. We have visualised the number of steps required for convergence to the optimal policy. The number of steps are show by color.'](../pictures/figures/gpi-partitions.png){ width=450px }
+!['2-state 2-action MDPs. We have visualised the number of steps required for convergence to the optimal policy. The number of steps are show by color.'](../../pictures/figures/gpi-partitions.png){ width=450px }
 
 - __Observation__ Two policies can be within $\epsilon$ yet requires more iterations of GPI. __Question__ Why are some initial points far harder to solve than others, despite being approximately the same?
 - __Observation__ With only 2 states and 2 actions, it is possible for 3 partitions to exist. (2,3,4 steps), (2,3,2 steps). __Questions__ ???

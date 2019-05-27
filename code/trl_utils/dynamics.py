@@ -1,6 +1,13 @@
 import numpy as np
 import trl_utils as trl
 
+def softmax(x):
+    assert len(x.shape) == 2
+    return np.exp(x) / np.sum(np.exp(x), axis=1, keepdims=True)
+
+def onehot(x, n):
+    return np.eye(n)[x]
+
 def solve(update_fn, P, r, Mpi, discount, atol=1e-4, maxiters=10):
     """
     Generates the dynamics of update_fn .
@@ -34,7 +41,8 @@ def greedy_solution(V, P):
     n_states = P.shape[-1]
     n_actions = P.shape[0]//P.shape[-1]
     EV = np.dot(P, V).reshape((n_states, n_actions))  # expected value of each action in each state
-    return trl.generate_Mpi(n_states, n_actions, np.clip(np.round(softmax(EV)),0, 1))
+
+    return trl.generate_Mpi(n_states, n_actions, onehot(np.argmax(EV,axis=1), n_actions))
 
 def policy_iteration_update(P, r, M_pi, gamma):
     V = trl.value_functional(P, r, M_pi, gamma)
