@@ -68,3 +68,51 @@ while not converged(value):
   value = evaluate(policy)
   parameters = greedy_step(value)
 ```
+
+
+## Indexing: Width versus Depth
+
+You could index all possible policies with a unique id.
+
+Given a connected MDP (defined as ...)
+
+For all states, there must exist a sequence of actions (or policy) that (with high probability) reaches a target state from a given state.
+
+$$
+\forall s' \in S \; \exists \omega : s' = P_{\omega}(s)
+$$
+
+In a well connected MDP (defined as ?!?) the space of options is the actions $\Omega = A$.
+
+But in a sparsely connected MDP, options are constructed from the action space.
+
+(note: this has nothing to do with the reward so far. there may be many action sequences that yield the same option, but the reward fn will help us choose the most valueable.)
+
+
+A wide MDP is a multi-armed bandit problem where each arm is an option within an MDP.
+
+
+## Dynamics and connectivity
+
+Ok, so if we parameterise our search space. We have now changed the topology of our search space (i think?!?).
+If we overparameterise, then ?!? we can move between solutions in new ways!?
+
+
+## Contextual decision problems
+
+Desicions are made in stages.
+
+But what if they were not?! Rather than adapting decision to new observations, you picked actions before you knew
+
+- Decision problem $|A|^H$
+- Contextual decision problem $|S\times A|^H$.
+
+If adaption decisions based on history us always advantaegous, then decision problems should give an upper boun on the performance of a sequential learner.
+
+__Q__ Is there an intermediate setting between n-armed bandits and sequential learners that controls how much information (about the past) a learner can use?
+
+
+***
+
+- Relationship to autoregressive models?
+- Delay a choice for as long as possible??? Then you will have more information.

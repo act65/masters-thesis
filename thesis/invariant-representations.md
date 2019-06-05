@@ -1,6 +1,11 @@
 ## Intro: Symmetry.
 
+!!? [The Information Bottleneck Method](https://www.cs.huji.ac.il/labs/learning/Papers/allerton.pdf)
+
+
 > Want a representation that makes the problem easier to solve.
+
+
 
 What is it?
 Why do we care?

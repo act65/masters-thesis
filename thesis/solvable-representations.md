@@ -83,62 +83,6 @@ $$
 ### Policy iteration
 
 
-#### Evaluating the learned abstraction
-
-But what about the error in our approximation?
-Error in the reward doesnt seem like such a big deal? (why?!?)
-
-- Is the approximation error, $E$ likely to be biased in any way? Certain states or actions having more error than others? Or can we just model it as noise?
-- Are some of the elements likely to be correlated? Or can we sample the noise IID?  
-- If so, what sort of noise is $E$. Want uniform noise on a simplex. One draw for each state.
-
-$$
-\begin{align}
-E &\sim \mathcal N, \parallel E \parallel_{\infty} < \delta \\
-\hat P &= P + E \\
-\hat V &= (I-\gamma \hat P \pi)^{-1}r \pi \\
-\epsilon &= \parallel V - \hat V \parallel_{\infty}\\
-&= \parallel (I-\gamma P \pi)^{-1}r \pi -  (I-\gamma (P + E) \pi)^{-1}r \pi \parallel_{\infty} \\
-&= \parallel\Big((I-\gamma P \pi)^{-1} -  (I-\gamma P\pi + \gamma E\pi)^{-1} \Big)r \pi \parallel_{\infty} \\
-\end{align}
-$$
-
-Want to find $X$ such that $(I-\gamma P\pi)^{-1} - (I-\gamma P\pi + \gamma\Delta\pi)^{-1} = X$. or an upper bound on $X$?
-
-Hmph.
-- Why are we inverting.
-- What does the inverse do? How does it deal with small pertubations?
-- https://en.wikipedia.org/wiki/Woodbury_matrix_identity. Can be derived by solving $(A + UCV)X = I$. Nice!
-
-$$
-\begin{align}
-X &= (I-\gamma P\pi)^{-1}U(C^{-1}+ V(I-\gamma P\pi)^{-1}U)V(I-\gamma P\pi)^{-1} \\
-\epsilon &= X r \pi \\
-\epsilon[i] &\le \parallel Xr\pi \parallel_{\infty}
-\end{align}
-$$
-
-What is the goal here? To write the error in terms of properties of $P, r, \pi$. The condition of $P$, the ...?
-
-
-TODO. Could visualise this using 2-state 2-action MDP.
-
-![The effect of adding noise to the transition function and then evaluating the policy under the approximately correct estimate.](../pictures/figures/noisy-transitions.png)
-
-__WANT__ How does the variance in the estimated value scale with the variance in the noise?
-
-$$
-\begin{align}
-V(x) &= (I-\gamma (P + x) \pi)^{-1}r \pi \\
-\epsilon(n) &= \parallel V(\textbf 0) - V(n) \parallel_{\infty} \\
-\text{var}(\epsilon) &= \mathop{E}_{n \sim N(0, \sigma)}[\epsilon(n)^2] - \mathop{E}_{n \sim N(0, \sigma)}[\epsilon(n)]^2 \\
-&= \mathop{E}_{n \sim N(0, \sigma)}[(\parallel V(\textbf 0) -  V(n) \parallel_{\infty})^2] - \mathop{E}_{n \sim N(0, \sigma)}[(\parallel V(\textbf 0) -  V(n) \parallel_{\infty})]^2\\
-\end{align}
-$$
-
-- To calculate this we will need to bound the det of P?!
-- Also, we cant add noise like this. P needs to be a row stochastic matix...
-
 
 #### Dynamics
 
