@@ -196,3 +196,18 @@ $$
 - Distributed representations (various tensors) don't store knowledge in nice ways... What alternative representation are there?
 - Relationship to bases. Is there a way to reason about a basis with many different ways of combining the bases? More complicated structure? (designing algebras!?)
 - learning the long term effects of actions OR exploration!? OR unsupervised tasks/learning from context/automatic curriculum/? OR using temporal info to disentangle?
+
+
+***
+
+Statistical estimation problem.
+Ok, so you start off being uncertain about everything.
+But then you see some data and can estimate the value of some actions.
+You then use these estimates to change your policy.
+
+But those estimates might not be accurate.
+And changing your policy might mean that it takes you longer to realise that your evaluation of those states was very wrong.
+
+- How can many noisy evaluations of related policies be combined?
+- How many samples to we need to evaluate a policy with confidence = X?
+- ?

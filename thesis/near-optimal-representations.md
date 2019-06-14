@@ -71,6 +71,7 @@ $$
 
 > __Claim 2:__ The state-action abstraction is the most powerful because it allows the compression of the most symmetries. (want to prove!)
 
+(relationship to [Successor features](http://www.gatsby.ucl.ac.uk/~dayan/papers/d93b.pdf)!?)
 
 State abstraction groups together states that are similar.
 For example, sprinting 100m is equivalent regardless of which track lane you are in.

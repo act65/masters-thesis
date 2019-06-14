@@ -1,46 +1,51 @@
 ## Intro
 
-In principle, Dynamic programming can be used to solve any / all MDPs. So why isn't it used in practice? The computational cost of using DP to find a solution doesn't scale well with increasingly complex MDPs.
+In principle, Dynamic programming can be used to solve any / all MDPs and (MB)RL problems (assuming you are provided with the transition and reward functions - aka model-based RL). So why isn't it used in practice? The computational cost of using DP to find a solution doesn't scale well with increasingly complex MDPs.
 
 <!-- Insert paragraph describing DP's computational complexity-->
 
-For example;
-...
+For example; ...
+
 the curse of dimensionality, and stochasticity.
 
 <!-- Want to demonstrate the problem being solved -->
 
 A strategy for efficiently solving MDPs is to transform it into an easier problem and solve that problem. But, which types of MDP are easily solved (and why)? And how can we map our problem into these easily solved instansiations?
 
-This strategy might look like ...
-It is also known by many names; abstraction, representation learning, factoring ...
+This is also known by many names; abstraction, representation learning, factoring ...
 Ultimately, we want to find an abstraction that makes our problem easier to solve.
 
-Which types of (reinforcement learning) problem are easily solved?
+Which types of MDP are easily solved?
 
 - Discrete state space and linear transition fn?
 - We know how to solve linear systems of equations with $O()$.
 - And we know how to use these solutions to calculate the optimal, policy: generalised policy iteration.
+- (Convex?)
+- Well conditioned transitions!? (/ topology?)
+- Tabular MDPs for small enough size ($n\le 200,000$ states) can be analytically solved.
+- Linear systems can be solved with computational complexity $\mathcal O(n^3)$.
+- Dense rewards.
+- ?
 
 Note that it will not always be possible to find an efficient solution to an MDP.
 Are some MDPs just fundammentally harder to solve than others?
 Could mention no free lunch.
 
-Which types of problem are easy to solve?
-
-- Tabular MDPs for small enough size ($n\le 200,000$ states) can be analytically solved.
-- Linear systems can be solved with computational complexity $\mathcal O(n^3)$.
-
-Which types of MDP are hard to solve?
-- The size of the state space, the size of the action space, the topology of the environment, the distribution of rewards.
+<!-- Want an example -->
 
 
 ### Related work
 
-Many thers have tried to find algorithm with better a computational complexity that scales better with MDP compplexity.
+Many thers have tried to find algorithm with better a computational complexity. One that scales better with MDP complexity.
 For example; X, Y, Z.
 
 What is the lower bound? How close are they to it? Work still to be done!
+
+## Definition
+
+What is the problem we are solving here?
+
+Find $\pi^{* }$ given $P, r$.
 
 ## A tabular representation
 
@@ -82,11 +87,6 @@ $$
 
 ### Policy iteration
 
-
-
-#### Dynamics
-
-!?
 
 
 ### A linear representation
@@ -139,7 +139,6 @@ https://bodono.github.io/thesis/bod_thesis.pdf !!!
 
 ***
 
-
-Ok great. How does computational complexity relate to sample complexity?
-We are considering different problems.
-- Sample complexity in MBRL comes from learning the transition and reward function. Computational complexity is considered (here) for the optimal control problem (only?).
+- How does computational complexity relate to sample complexity?
+We are considering different problems. Sample complexity in MBRL comes from learning the transition and reward function. Computational complexity is considered (here) for the optimal control problem (only?).
+- What about analytical solutions for cts problems?

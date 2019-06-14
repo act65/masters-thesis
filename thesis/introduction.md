@@ -77,6 +77,14 @@ $$
 
 Dynamic programming, linear programming, ...?
 
+$$
+Q^{\pi}(s_0, a_0) = r(s_0, a_0)
++ \gamma \mathop{\text{max}}_{a_1} \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ r(s_1, a_1)
++ \gamma \mathop{\text{max}}_{a_2} \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[r(s_2, a_2)
++ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
+\dots \Big] \bigg] \Bigg]
+$$
+
 ##### HRL
 
 Temoral abstractions of actions.(how does this related to a decomposition of rewards)
@@ -113,6 +121,10 @@ Recent work has bounded the error of representation learning for RL. [Abel et al
 But. It is possible that this representation achieves no compression of the state space, making the statement rather vacuous.
 Further more, it consider how easy it is to find the optimal policy in each of the two representations. It is possible to learn a representation that makes the optimal control problem harder. For example. TODO
 
+### Dynamic programming
+
+What is it? Memoized search.
+Why should we care?
 
 
 ***
