@@ -46,12 +46,43 @@ Want to explore first;
 - states that behave the most unpredictably (have large variance).
   or the opposite? states that we can be certain about.
 - state-actions with large effect. a large change in state
+- actions with disentangled effects (leaving other state dimension invariant)
+- states / actions that allow efficient traversals. (fewer actions required to get from A to B)
 
 ***
 
 How does this make sense?
 - in discrete spaces. likely to have a bias towards more central nodes? the ones that are 'easy' to reach.
 - how does inductive bias make sense in cts spaces? exploring some dimensions more than others. but we can find another basis when that might not be true?!
+
+***
+
+Surprise has the inductive bias that it wants to explore noisy states first. The nosier the better, as they are the least predictable.
+This doesnt seem like a useful inductive bias...
+
+
+***
+
+$$
+\pi_0 = \mathcal A(d_0) \\
+\pi_1 = \mathcal A(d_{\pi_0}) \\
+\pi_2 = \mathcal A(d_{\pi_1}) \\
+$$
+
+$$
+\begin{align}
+\frac{d\pi}{dt} &= \mathcal A(d(\pi(t))) \\
+&= \nabla_{\pi} H(d(\pi(t))) \tag{max entropy}\\
+\end{align}
+$$
+
+__Assumption:__ Between each time step there have been enough samples to accurately estimate the state visitation distribution $d(\pi)$. (_This might be an ok assumption to start with_)
+
+$$
+\frac{\partial d}{\partial t} = \frac{\partial d}{\partial\pi} \frac{\partial\pi}{\partial t} \\
+\epsilon(t) = D(d(t), ?)
+$$
+
 
 ***
 
@@ -64,6 +95,33 @@ exploration strategies
 - count based
   - and pseudo count?
 - max entropy
+
+***
+
+I expect that intrinsic motivation exploration strategies will be highly dependent on their past.
+If it sees a few rewards for doing X, then it will continue to explore within X, possibly getting more rewards.
+Positive feedback.
+
+Is also dependent on how the value fn approximator generalises the rewards it has seen.
+
+
+***
+
+$$
+\begin{aligned}
+P^{\pi}(\tau | \pi) = d_0(s_0) \Pi_{t=0}^{\infty} \pi(a_t | s_t)P(s_{t+1} | s_t, a_t) \\
+d^{\pi}(s, t) = \sum_{\text{all $\tau$ with $s = s_t$}}P^{\pi}(\tau | \pi) \\
+d^{\pi}(s) = (1-\gamma)\sum_{t=0}^{\infty} \gamma^t d^{\pi}(s, t) \\
+\end{aligned}
+$$
+
+Does this discounted state distribution really make sense???
+
+Convergence
+$$
+KL(d^{\pi}(s, t), d^{\pi}(s))
+$$
+
 
 ***
 
