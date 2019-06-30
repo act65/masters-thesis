@@ -11,7 +11,7 @@ header-includes: \metroset{progressbar=frametitle,sectionpage=progressbar}
 ---
 ## What is RL?
 
-Reinforcement learning is a (sub)set of solutions to the collection of optimal control problems the look like;
+Reinforcement learning is a (sub)set of solutions to the collection of 'optimal control problems' that look like;
 
 $$
 V(\pi) = \mathop{\mathbb E} [\sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) ]
@@ -21,11 +21,13 @@ $$
 \pi^{* } = \mathop{\text{argmax}}_{\pi} V(\pi)
 $$
 
-## ???
+
+
+## Alternative formualation
 
 $$
 \begin{aligned}
-V(\pi^{* }) =  \mathop{\mathbb E}_{s_0\sim d_0} \mathop{\text{max}}_{a_0} r(s_0, a_0)
+V(\pi^{* }) \equiv  \mathop{\mathbb E}_{s_0\sim d_0} \mathop{\text{max}}_{a_0} r(s_0, a_0)
 + \gamma  \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ \\ \mathop{\text{max}}_{a_1} r(s_1, a_1)
 + \gamma \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[ \\ \mathop{\text{max}}_{a_2} r(s_2, a_2)
 + \gamma  \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
@@ -36,20 +38,20 @@ $$
 
 ## Why are RL problems hard?
 
-Some of the following properties;
+Because of three main properties;
 
-1. allow, evaluations, but dont give 'feedback',
-2. the data is not sampled IID,
-3. provide delayed credit assignment.
+1. they allow, __evaluations__, but dont give 'feedback',
+2. the observations are sampled __non-IID__,
+3. they provide __delayed__ credit assignment.
 
 ## Example: Multi-armed Bandits
 
 The two armed bandit is one of the simplest problems in RL.
 
-1. [10, -100, 0, 0, 0]
-2. [2, 0]
+- Arm 1: [10, -100, 0, 0, 30]
+- Arm 2: [2, 0]
 
-Which arm should I pick next?
+Which arm should you pick next?
 
 ## Why do exploration strategies matter?
 
@@ -60,55 +62,44 @@ insert pic
 - Too much exploration and you will take many sub optimal actions, despite knowing better.
 - Too little exploration and you will take 'optimal' actions, at least you think they are optimal...
 
-## An example: Minecraft!
+## An example: MineRL!
 
-Crafting is super imporant. But has a combinatorial nature.
-We bring many priors to help us. We know that;
+http://minerl.io/competition/
+Goal: Find and mine a diamond.
 
 - iron is useful for making tools.
 - coal and a furnace is probably needed to make iron.
-- ?
+- we can guess which of these is likely to be diamond
+- we know that diamonds are likely to be found (deep) underground
+- we
 
-![The various places to explore](../../pictures/images/vista.png){width=200}
-![The various recipies to explore](../../pictures/images/crafting.png){width=200}
+> Last time I tried to mine the blue sparkly rocks, nothing happened, This time, 1,000 actions later, I got diamonds. Which action(s) helped?
 
-## What is an inductive bias?
-
-Underconstrained problems.
-
-Why might this matter in exploration?
-
-## Example: Matrix factorisation
-
-Lowest rank solution
-
-- wug test?
-
+(we have an understanding of tools, and that they are the reason we got diamonds this time. This allows us to assign credit to the act of forging and mining with an iron pick-axe.)
 
 
 ## What do we require from an exploration strategy?
 
-- Non-zero probability of reaching all state, and trying all actions in each state.
+- Non-zero probability of reaching all states, and trying all actions in each state.
 - Converges to a uniform distribution over states. (?)
 - ?
 
 Nice to have
 
 - Scales sub-linearly with states
+- Samples states according to their variance. More variance, more samples.
 - ?
 
 ## What are some existing exploration strategies?
 
 - Injecting noise: [Epsilon greedy](), [boltzman]()
 - Optimism in the face of uncertainty
-- [Thompson sampling]()
-- [Counts](https://arxiv.org/abs/1703.01310) / densities
-- Intrinsic motivation ([Surprise](https://arxiv.org/abs/1808.04355) and [Reachability](https://arxiv.org/abs/1810.02274))
-- [Max entropy](https://arxiv.org/abs/1812.02690)
+- Bayesian model uncertainty and [Thompson sampling]()
+- [Counts](https://arxiv.org/abs/1703.01310) / densities and [Max entropy](https://arxiv.org/abs/1812.02690)
+- Intrinsic motivation ([Surprise](https://arxiv.org/abs/1808.04355), [Reachability](https://arxiv.org/abs/1810.02274), Randomly picking goals)
 - [Disagreement](https://arxiv.org/abs/1906.04161)
-- Randomly picking goals
 
-Note. They mostly require some form of memory.
+Note. They mostly require some form of memory and / or a model of uncertainty.
 Exploration without memory is just random search...
 
 ## Counts / densities
@@ -148,6 +139,17 @@ d^{\pi}(s) = (1-\gamma)\sum_{t=0}^{\infty} \gamma^t d^{\pi}(s, t) \\
 \end{aligned}
 $$
 
+## What is an inductive bias?
+
+Underconstrained problems.
+
+## Example: Matrix factorisation
+
+Lowest rank solution
+
+- wug test?
+
+
 ## Inductive biases in exploration strategies
 
 So my questions are;
@@ -157,6 +159,31 @@ So my questions are;
 - how can we design an inductive biases to accelerate learning?
 - what is the optimal set of inductive biases for certain classes of RL problem?
 - how quickly does the state visitation distribution converge?
+
+
+## Examples
+
+Surprise
+- A bias towards states with more noise in them.
+
+Density
+- The approximation of the density may be biased
+
+Intrinsic motivation
+-
+
+
+## Minecraft
+
+Crafting is super imporant. But has a combinatorial nature.
+We bring many priors to help us. We know that;
+
+![The various places to explore](../../pictures/images/vista.png){width=200}
+![The various recipies to explore](../../pictures/images/crafting.png){width=200}
+
+
+![The Nether portal](../../pictures/images/portal.png){width=200}
+
 
 ## A principled approach.
 
