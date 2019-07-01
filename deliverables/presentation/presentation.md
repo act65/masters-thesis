@@ -11,7 +11,12 @@ header-includes: \metroset{progressbar=frametitle,sectionpage=progressbar}
 ---
 ## What is RL?
 
-Reinforcement learning is a (sub)set of solutions to the collection of 'optimal control problems' that look like;
+> (learning to) make optimal decisions
+
+Context, potential actions, goal / utility function / reward.
+
+
+## MDPs
 
 $$
 V(\pi) = \mathop{\mathbb E} [\sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) ]
@@ -62,20 +67,17 @@ insert pic
 - Too much exploration and you will take many sub optimal actions, despite knowing better.
 - Too little exploration and you will take 'optimal' actions, at least you think they are optimal...
 
-## An example: MineRL!
+## An example: MineRL
 
 http://minerl.io/competition/
+
 Goal: Find and mine a diamond.
 
-- iron is useful for making tools.
-- coal and a furnace is probably needed to make iron.
-- we can guess which of these is likely to be diamond
-- we know that diamonds are likely to be found (deep) underground
-- we
+Solving this without priors is going to take a long time.
 
-> Last time I tried to mine the blue sparkly rocks, nothing happened, This time, 1,000 actions later, I got diamonds. Which action(s) helped?
+> Last time I tried to mine a yellow sparkly rock, nothing happened, this time, 1,000 actions later, I got gold. Which action(s) helped?
 
-(we have an understanding of tools, and that they are the reason we got diamonds this time. This allows us to assign credit to the act of forging and mining with an iron pick-axe.)
+>
 
 
 ## What do we require from an exploration strategy?
@@ -88,6 +90,9 @@ Nice to have
 
 - Scales sub-linearly with states
 - Samples states according to their variance. More variance, more samples.
+
+What about goal conditioned exploration?
+
 - ?
 
 ## What are some existing exploration strategies?
@@ -114,7 +119,7 @@ a_t = \mathop{\text{argmin}}_{a} P(s=\tau(s_t, a)) \\
 \end{aligned}
 $$
 
-## Intrisnic motivation
+## Intrinsic motivation
 
 'Surprise'
 
@@ -139,17 +144,6 @@ d^{\pi}(s) = (1-\gamma)\sum_{t=0}^{\infty} \gamma^t d^{\pi}(s, t) \\
 \end{aligned}
 $$
 
-## What is an inductive bias?
-
-Underconstrained problems.
-
-## Example: Matrix factorisation
-
-Lowest rank solution
-
-- wug test?
-
-
 ## Inductive biases in exploration strategies
 
 So my questions are;
@@ -160,20 +154,13 @@ So my questions are;
 - what is the optimal set of inductive biases for certain classes of RL problem?
 - how quickly does the state visitation distribution converge?
 
+## Inductive bias
 
-## Examples
+Underconstrained problems.
 
-Surprise
-- A bias towards states with more noise in them.
+Occam's Razor and overfitting.
 
-Density
-- The approximation of the density may be biased
-
-Intrinsic motivation
--
-
-
-## Minecraft
+## Human bias in Minecraft
 
 Crafting is super imporant. But has a combinatorial nature.
 We bring many priors to help us. We know that;
@@ -181,18 +168,56 @@ We bring many priors to help us. We know that;
 ![The various places to explore](../../pictures/images/vista.png){width=200}
 ![The various recipies to explore](../../pictures/images/crafting.png){width=200}
 
+- iron is useful for making tools.
+- coal and a furnace is probably needed to make iron.
+- we can guess which of these is likely to be diamond
+- we know that diamonds are likely to be found (deep) underground
+- we
 
-![The Nether portal](../../pictures/images/portal.png){width=200}
+(we have an understanding of tools, and that they are the reason we got diamonds this time. This allows us to assign credit to the act of forging and mining with an iron pick-axe.)
 
+## Implicit regularisation
 
-## A principled approach.
+Matrix factorisation ($m << d^2, Z \in \mathbb R^{d\times}$)
 
-> How can we reason about inductive biases in exploration strategies in principled manner?
-
-Convergence
 $$
-KL(d^{\pi}(s, t), d^{\pi}(s))
+\begin{aligned}
+y_i = \langle A_i, W^{* } \rangle \\
+\mathcal L(X) = \frac{1}{2} \sum_{i=1}^m (y_i - \langle A_i, XX^T \rangle )^2 \\
+X^{* } = \mathop{\text{argmin}}_X \;\; \mathcal L(X)
+\end{aligned}
 $$
+
+When stochastic gradient descent is used to optimise this loss (with initialisation near zero and small learning rate), the solution returned also has minimal nuclear norm $X^{* } \in \{X: \mathop{\text{argmin}}_{X\in S} \parallel X \parallel_{* } \}$,  $S =\{X: \mathcal L(X) = 0\}$.
+
+
+## How do RL algorithms implicitly regularise exploration?
+
+Surprise
+- Has a bias towards states with more noise in them.
+
+Density
+- The approximation of the density may be biased.
+
+Intrinsic motivation
+- Highly dependent on its sampled history.
+
+## The state visitation distribution
+
+> How can we reason, in a principled manner, about bias / regularisation in exploration strategies?
+
+$$
+\begin{aligned}
+d^{\mathcal A}(s, t) &= (1-\gamma)\sum_{t=0}^{t} \gamma^t Pr^{\mathcal A}(s =s_t)  \\
+\end{aligned}
+$$
+
+For each different RL algol;
+
+- Does $d(s_i, t)$ converge monotonically to $\frac{1}{n}$?
+- Which $d(s_i, t)$ converge first?
+- What is the difference between the $i$ different convergence rates?
+- Does $d(s, t)$ converge to uniform as $t \to \infty$?
 
 ## {.standout}
 
