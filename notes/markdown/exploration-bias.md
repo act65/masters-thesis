@@ -141,3 +141,6 @@ $$
 Want: for a given finite time horizon, the state visitation distribution is approimately max entropy. If we only require convergence in the limit, we could
 
 Also, algorithms with short memories may forget.
+
+
+***

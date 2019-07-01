@@ -13,32 +13,34 @@ header-includes: \metroset{progressbar=frametitle,sectionpage=progressbar}
 
 > (learning to) make optimal decisions
 
-Context, potential actions, goal / utility function / reward.
+Context ($S$), potential actions ($A$), utility function / reward ($r$).
 
+__Markov decision problems__
+
+\begin{align*}
+M = \{S, A, \tau, r\} \tag{the MDP}\\
+\tau: S \times A \to \Delta(S) \tag{the transition fn}\\
+r: S \times A \to \mathbb R^+ \tag{the reward fn}\\
+\end{align*}
 
 ## MDPs
 
-$$
-V(\pi) = \mathop{\mathbb E} [\sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) ]
-$$
+\begin{align*}
+\pi: S \to \Delta(A)  \tag{the policy}\\
+s_{t+1} \sim \tau(s_t, a_t), a_t \sim \pi(s_t) \tag{sampled actions and states} \\
+V(\pi) = \mathop{\mathbb E} [\sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) ] \tag{value estimate} \\
+\pi^{* } = \mathop{\text{argmax}}_{\pi} V(\pi) \tag{the optimisation problem}
+\end{align*}
 
-$$
-\pi^{* } = \mathop{\text{argmax}}_{\pi} V(\pi)
-$$
+## Alternative formulation
 
-
-
-## Alternative formualation
-
-$$
-\begin{aligned}
+\begin{align*}
 V(\pi^{* }) \equiv  \mathop{\mathbb E}_{s_0\sim d_0} \mathop{\text{max}}_{a_0} r(s_0, a_0)
 + \gamma  \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ \\ \mathop{\text{max}}_{a_1} r(s_1, a_1)
 + \gamma \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[ \\ \mathop{\text{max}}_{a_2} r(s_2, a_2)
 + \gamma  \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
 \dots \Big] \bigg] \Bigg]
-\end{aligned}
-$$
+\end{align*}
 
 
 ## Why are RL problems hard?
@@ -53,41 +55,35 @@ Because of three main properties;
 
 The two armed bandit is one of the simplest problems in RL.
 
-- Arm 1: [10, -100, 0, 0, 30]
-- Arm 2: [2, 0]
+- Arm 1: $[10, -100, 0, 0, 30]$
+- Arm 2: $[2, 0]$
 
 Which arm should you pick next?
+
+<!-- Try to get them to answer! -->
 
 ## Why do exploration strategies matter?
 
 Why not just do random search?
 
-insert pic
+<!-- insert pic -->
 
 - Too much exploration and you will take many sub optimal actions, despite knowing better.
 - Too little exploration and you will take 'optimal' actions, at least you think they are optimal...
 
 ## An example: MineRL
 
-http://minerl.io/competition/
-
 Goal: Find and mine a diamond.
 
-Solving this without priors is going to take a long time.
-
-> Last time I tried to mine a yellow sparkly rock, nothing happened, this time, 1,000 actions later, I got gold. Which action(s) helped?
-
->
-
+![http://minerl.io/competition/](../../pictures/images/mine-rl.png){width=400}
 
 ## What do we require from an exploration strategy?
 
 - Non-zero probability of reaching all states, and trying all actions in each state.
-- Converges to a uniform distribution over states. (?)
-- ?
 
 Nice to have
 
+- Converges to a uniform distribution over states.
 - Scales sub-linearly with states
 - Samples states according to their variance. More variance, more samples.
 
@@ -112,22 +108,20 @@ Exploration without memory is just random search...
 In the simplest setting, we can just count how many times we have been in a state.
 We can use this to explore states that have have low visitation counts.
 
-$$
-\begin{aligned}
-P(s=s_t) = \frac{\sum_{s=s_t} 1 }{\sum_{s\in S}1} \\
-a_t = \mathop{\text{argmin}}_{a} P(s=\tau(s_t, a)) \\
-\end{aligned}
-$$
+\begin{align*}
+P(s=s_t) = \frac{\sum_{s=s_t} 1 }{\sum_{s\in S}1} \tag{normalised counts} \\
+a_t = \mathop{\text{argmin}}_{a} P(s=\tau(s_t, a)) \tag{pick the least freq $s$} \\
+\end{align*}
 
 ## Intrinsic motivation
 
-'Surprise'
+'Surprise' (prediction error)
 
 $$
 r_t = \parallel s_{t+1} - f_{dec}(f_{enc}(s_t, a_t)) \parallel_2^2
 $$
 
-'Reachability'
+'Reachability' (is reachable within k steps?)
 
 $$
 r_t = \mathop{\text{min}}_{x \in M} D_k(s_t, x)
@@ -154,6 +148,8 @@ So my questions are;
 - what is the optimal set of inductive biases for certain classes of RL problem?
 - how quickly does the state visitation distribution converge?
 
+(we will come back to this)
+
 ## Inductive bias
 
 Underconstrained problems.
@@ -162,45 +158,88 @@ Occam's Razor and overfitting.
 
 ## Human bias in Minecraft
 
-Crafting is super imporant. But has a combinatorial nature.
-We bring many priors to help us. We know that;
+Types of prior?
+
+- relational
+- visual
+- subgoals
+- exploration
+
+> Last time I tried to mine a yellow sparkly rock, nothing happened, this time, 1,000 actions later, I got gold. Which action(s) helped?
+
+> I took 10,000 actions, now I have an axe. It doesn't appear to help me get diamonds.
+
+## Relational priors
+
+We know;
+
+- what furnaces are 'for' (ore -> metal)
+- that coal is needed for heat (furnace + coal -> on(furnace))
+- that iron can be profuced via a furnace (on(furnace) + iron ore -> iron)
+
+![A furnace](../../pictures/images/furnace.png){width=200}
+![Smelting](../../pictures/images/forging.png){width=200}
+
+## Visual priors
+
+![Which one is probably diamond?](../../pictures/images/mining-blocks.png){width=400}
+
+## (Sub)goal priors
+
+We can easily generate a curriculum of subgoals;
+
+1. Kill food
+2. Find shelter
+3. Build tools
+4. Get money
+
+<!-- An RL agent needs to learn this.
+Oh, hunger kills me. If I figure out how to avoid hunger then I can explore more.
+Oh, these zombie things kill me. If I figure out how to avoid them I can explore more.
+...
+-->
+
+## Exploration priors
+
+We quickly generalise spatial exploration to be much of the same; trees, rivers, mountains, ... And focus on exploring the many crafting possibilities.
 
 ![The various places to explore](../../pictures/images/vista.png){width=200}
 ![The various recipies to explore](../../pictures/images/crafting.png){width=200}
 
-- iron is useful for making tools.
-- coal and a furnace is probably needed to make iron.
-- we can guess which of these is likely to be diamond
+Also;
+
 - we know that diamonds are likely to be found (deep) underground
-- we
+- we know that pick axes will be useful for exploring underground
 
-(we have an understanding of tools, and that they are the reason we got diamonds this time. This allows us to assign credit to the act of forging and mining with an iron pick-axe.)
-
-## Implicit regularisation
+## A quick aside: Implicit regularisation
 
 Matrix factorisation ($m << d^2, Z \in \mathbb R^{d\times}$)
 
-$$
-\begin{aligned}
-y_i = \langle A_i, W^{* } \rangle \\
-\mathcal L(X) = \frac{1}{2} \sum_{i=1}^m (y_i - \langle A_i, XX^T \rangle )^2 \\
-X^{* } = \mathop{\text{argmin}}_X \;\; \mathcal L(X)
-\end{aligned}
-$$
+\begin{align*}
+y_i = \langle A_i, W^{* } \rangle \tag{matrix sensing}\\
+\mathcal L(X) = \frac{1}{2} \sum_{i=1}^m (y_i - \langle A_i, XX^T \rangle )^2 \tag{factorisation from observations} \\
+X^{* } = \mathop{\text{argmin}}_X \;\; \mathcal L(X) \tag{the optimisation problems}\\
+\end{align*}
 
 When stochastic gradient descent is used to optimise this loss (with initialisation near zero and small learning rate), the solution returned also has minimal nuclear norm $X^{* } \in \{X: \mathop{\text{argmin}}_{X\in S} \parallel X \parallel_{* } \}$,  $S =\{X: \mathcal L(X) = 0\}$.
 
+<!-- > Why? -->
 
 ## How do RL algorithms implicitly regularise exploration?
 
+Exploration via;
+
 Surprise
+
 - Has a bias towards states with more noise in them.
 
 Density
+
 - The approximation of the density may be biased.
 
 Intrinsic motivation
-- Highly dependent on its sampled history.
+
+- Highly dependent on its history of samples.
 
 ## The state visitation distribution
 
