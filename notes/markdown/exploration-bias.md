@@ -144,3 +144,15 @@ Also, algorithms with short memories may forget.
 
 
 ***
+
+
+
+## What do we require from an exploration strategy?
+
+- Non-zero probability of reaching all states, and trying all actions in each state.
+
+Nice to have
+
+- Converges to a uniform distribution over states.
+- Scales sub-linearly with states
+- Samples according to uncertainty.
