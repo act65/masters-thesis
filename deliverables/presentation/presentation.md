@@ -18,7 +18,7 @@ Context ($S$), potential actions ($A$), utility function / reward ($r$).
 __Markov decision problems__
 
 \begin{align*}
-M = \{S, A, \tau, r\} \tag{the MDP}\\
+M = \{S, A, \tau, r, d_0\} \tag{the MDP}\\
 \tau: S \times A \to \Delta(S) \tag{the transition fn}\\
 r: S \times A \to \mathbb R^+ \tag{the reward fn}\\
 \end{align*}
@@ -61,35 +61,13 @@ The two armed bandit is one of the simplest problems in RL.
 Which arm should you pick next?
 
 <!-- Try to get them to answer! -->
-
-## Why do exploration strategies matter?
-
 Why not just do random search?
-
-<!-- insert pic -->
-
-- Too much exploration and you will take many sub optimal actions, despite knowing better.
-- Too little exploration and you will take 'optimal' actions, at least you think they are optimal...
 
 ## An example: MineRL
 
 Goal: Find and mine a diamond.
 
 ![http://minerl.io/competition/](../../pictures/images/mine-rl.png){width=400}
-
-## What do we require from an exploration strategy?
-
-- Non-zero probability of reaching all states, and trying all actions in each state.
-
-Nice to have
-
-- Converges to a uniform distribution over states.
-- Scales sub-linearly with states
-- Samples states according to their variance. More variance, more samples.
-
-What about goal conditioned exploration?
-
-- ?
 
 ## What are some existing exploration strategies?
 
@@ -115,6 +93,8 @@ a_t = \mathop{\text{argmin}}_{a} P(s=\tau(s_t, a)) \tag{pick the least freq $s$}
 
 ## Intrinsic motivation
 
+The policy is rewarded for;
+
 'Surprise' (prediction error)
 
 $$
@@ -129,14 +109,12 @@ $$
 
 ## Maximum entropy
 
-$$
-\begin{aligned}
-P^{\pi}(\tau | \pi) = d_0(s_0) \Pi_{t=0}^{\infty} \pi(a_t | s_t)P(s_{t+1} | s_t, a_t) \\
-d^{\pi}(s, t) = \sum_{\text{all $\tau$ with $s = s_t$}}P^{\pi}(\tau | \pi) \\
+\begin{align*}
+P^{\pi}(\xi | \pi) = d_0(s_0)\pi(a_0 | s_0)\tau(s_{1} | s_0, a_0)\pi(a_1 | s_1)\tau(s_{2} | s_1, a_1) \dots \tag{probability of a trajectory} \\
+d^{\pi}(s, t) = \sum_{\text{all $\xi$ with $s = s_t$}}P^{\pi}(\xi | \pi) \tag{all trajectories with $s$ at $t$}\\
 d^{\pi}(s) = (1-\gamma)\sum_{t=0}^{\infty} \gamma^t d^{\pi}(s, t) \\
-\pi^{* } = \mathop{\text{argmax}}_{\pi} \mathop{\mathbb E}_{s \sim d^{\pi}} [ \log d^{\pi}(s)] \\
-\end{aligned}
-$$
+\pi^{* } = \mathop{\text{argmax}}_{\pi} \mathop{\mathbb E}_{s \sim d^{\pi}} [ -\log d^{\pi}(s)] \\
+\end{align*}
 
 ## Inductive biases in exploration strategies
 
@@ -152,9 +130,31 @@ So my questions are;
 
 ## Inductive bias
 
-Underconstrained problems.
+> Of the possible candidates, which one should we pick?
+> Well, we could try each of them, or... just pick the one we think will work, a priori.
 
-Occam's Razor and overfitting.
+- The 'simplest'.
+- The one most likely to generalise.
+
+A set of priors, that guide the search where data doesn't.
+
+<!-- Underconstrained problems. -->
+
+<!-- Occam's Razor and overfitting. -->
+
+## Implicit regularisation
+
+Matrix factorisation ($m << d^2, Z \in \mathbb R^{d\times}$)
+
+\begin{align*}
+y_i = \langle A_i, W^{* } \rangle \tag{matrix sensing}\\
+\mathcal L(X) = \frac{1}{2} \sum_{i=1}^m (y_i - \langle A_i, XX^T \rangle )^2 \tag{factorisation from observations} \\
+X^{* } = \mathop{\text{argmin}}_X \;\; \mathcal L(X) \tag{the optimisation problems}\\
+\end{align*}
+
+When stochastic gradient descent is used to optimise this loss (with initialisation near zero and small learning rate), the solution returned also has minimal nuclear norm $X^{* } \in \{X: \mathop{\text{argmin}}_{X\in S} \parallel X \parallel_{* } \}$,  $S =\{X: \mathcal L(X) = 0\}$.
+
+<!-- > Why? -->
 
 ## Human bias in Minecraft
 
@@ -164,10 +164,6 @@ Types of prior?
 - visual
 - subgoals
 - exploration
-
-> Last time I tried to mine a yellow sparkly rock, nothing happened, this time, 1,000 actions later, I got gold. Which action(s) helped?
-
-> I took 10,000 actions, now I have an axe. It doesn't appear to help me get diamonds.
 
 ## Relational priors
 
@@ -211,19 +207,13 @@ Also;
 - we know that diamonds are likely to be found (deep) underground
 - we know that pick axes will be useful for exploring underground
 
-## A quick aside: Implicit regularisation
+## The power of priors
 
-Matrix factorisation ($m << d^2, Z \in \mathbb R^{d\times}$)
+> Last time I tried to mine a yellow sparkly rock, nothing happened, this time, 1,000 actions later, I got gold. Which action(s) helped?
 
-\begin{align*}
-y_i = \langle A_i, W^{* } \rangle \tag{matrix sensing}\\
-\mathcal L(X) = \frac{1}{2} \sum_{i=1}^m (y_i - \langle A_i, XX^T \rangle )^2 \tag{factorisation from observations} \\
-X^{* } = \mathop{\text{argmin}}_X \;\; \mathcal L(X) \tag{the optimisation problems}\\
-\end{align*}
+> I took 10,000 actions, now I have an axe. It doesn't appear to help me get diamonds.
 
-When stochastic gradient descent is used to optimise this loss (with initialisation near zero and small learning rate), the solution returned also has minimal nuclear norm $X^{* } \in \{X: \mathop{\text{argmin}}_{X\in S} \parallel X \parallel_{* } \}$,  $S =\{X: \mathcal L(X) = 0\}$.
-
-<!-- > Why? -->
+> After trying all 2,000 different ways of cutting down a tree. I am ready to conclude that you cannot get diamonds from cutting down trees. What about exploding a tree?
 
 ## How do RL algorithms implicitly regularise exploration?
 
@@ -253,8 +243,8 @@ $$
 
 For each different RL algol;
 
-- Does $d(s_i, t)$ converge monotonically to $\frac{1}{n}$?
-- Which $d(s_i, t)$ converge first?
+- Do state-visitations, $d(s_i, t)$ converge monotonically to $\frac{1}{n}$?
+- Which state-visitations, $d(s_i, t)$, converge first?
 - What is the difference between the $i$ different convergence rates?
 - Does $d(s, t)$ converge to uniform as $t \to \infty$?
 
