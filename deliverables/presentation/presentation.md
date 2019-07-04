@@ -248,10 +248,6 @@ For each different RL algol;
 - What is the difference between the $i$ different convergence rates?
 - Does $d(s, t)$ converge to uniform as $t \to \infty$?
 
-## Damn
-
-[Efficient Exploration via State Marginal Matching](https://arxiv.org/abs/1906.05274)
-
 ## {.standout}
 
 Thank you!

@@ -270,4 +270,5 @@ $$
 - $L'(W, S_n)$: The unsupervised symmetry loss.
 - $R(W)$: Regularise so that the representation forms an orbit of a group
 
+
 </div>
