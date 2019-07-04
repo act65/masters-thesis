@@ -45,25 +45,43 @@ def solve(update_fn, init):
 def value_iteration(mdp, lr):
     T = lambda Q: mdp.r + mdp.discount * np.argmax(mdp.P * Q.reshape((1, -1)))  # bellman optimality operator
     U = lambda Q: Q + lr * (T(Q) - Q)  # GD update operator
-    return solve(U, np.random.standard_normal((mdp.S, mdp.A)))
-
-def value_iteration_w_momentum(mdp, lr):
-    # how am I going to do this...?
-    pass
+    return U
 
 def parameterised_value_iteration(mdp, lr):
-    T = lambda w: mdp.r + mdp.discount * np.argmax(mdp.P * Q_value(w))
-    U = lambda w: w + lr * np.dot((T(Q_value(w)) - Q_value(w)), dQdw)
-    return solve(U, np.random.standard_normal((mdp.S, mdp.A)))
+    T = lambda w: mdp.r + mdp.discount * np.argmax(mdp.P * Q(w))
+    dQdw = lambda w: grad(Q)
+    U = lambda w: w + lr * np.dot((T(Q(w)) - Q(w)), dQdw(w))
+    return U
 
 def corrected_value_iteration(mdp, lr):
     T = lambda theta: mdp.r + mdp.discount * np.argmax(mdp.P * Q(w))
-    # dQdw = lambda w: ???
+    dQdw = lambda w: grad(Q)
     Km1 = lambda w: np.linalg.inv(np.dot(dQdw(w).T, dQdw(w)))
     U = lambda w: w + lr * np.dot(dQdw(w), np.dot(Km1, T(Q(w) - Q(w))))
-    return solve(U, np.random.standard_normal((mdp.S, mdp.A)))
+    return U
+
+def policy_gradient_iteration(mdp, lr):
+    dlogpidw = grad(np.log(pi(w)))
+    dpidw = grad(pi(w))
+    delta = lambda w: np.dot(dpidw(w), dlogpdw(w))
+    U = lambda w: w + lr * delta
+    return U
+
+def momentum_bundler(U, decay):
+    """
+    Wraps an update fn in
+    """
+    def momentum_update_fn(x):
+        w_t, m_t = x[0], x[1]
+        dw = U(w_t) - w_t
+        m_tp1 = decay * m_t + dw
+        w_tp1 = w_t + m_tp1
+        return np.stack([w_tp1, m_tp1], axis=0)
+    return momentum_update_fn
+
 
 if __name__ == '__main__':
+    import matplotlib.pyplot as plt
     n_states = 2
     n_actions = 2
 
@@ -77,12 +95,14 @@ if __name__ == '__main__':
 
 
     mdp = build_random_mdp(n_states, n_actions, 0.99)
-    qs = value_iteration(mdp, 0.1)
-    print(qs, qs[-1].shape)
+    qs = solve(value_iteration(mdp, 0.1), np.random.standard_normal((mdp.S, mdp.A)))
     vs = np.vstack([np.max(q, axis=1) for q in qs])
-    print(vs.shape)
 
-    
-    import matplotlib.pyplot as plt
-    plt.scatter(vs[:, 0], vs[:, 1])
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(vs.shape[0]))
+
+    init = np.stack([np.zeros((mdp.S, mdp.A)), np.random.standard_normal((mdp.S, mdp.A))], axis=0)
+    qs = solve(momentum_bundler(value_iteration(mdp, 0.001), 0.9), init)
+    vs = np.vstack([np.max(q[0], axis=1) for q in qs])
+
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(vs.shape[0]))
     plt.show()
