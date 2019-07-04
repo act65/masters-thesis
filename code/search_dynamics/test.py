@@ -49,6 +49,11 @@ def value_iteration(mdp, lr):
     U = lambda Q: Q + lr * (T(Q) - Q)
     return U
 
+def adjusted_value_iteration(mdp, lr, D, K):
+    T = lambda Q: mdp.r + mdp.discount * np.argmax(mdp.P * Q.reshape((1, -1)))
+    U = lambda Q: Q + lr * np.dot(K, np.dot(D, T(Q) - Q))
+    return U
+
 def parameterised_value_iteration(mdp, lr):
     T = lambda w: mdp.r + mdp.discount * np.argmax(mdp.P * Q(w))
     dQdw = lambda w: grad(Q)  # might need to do some reshaping here!?
@@ -74,7 +79,7 @@ def parameterised_policy_gradient_iteration(mdp, lr):
     U = lambda w: w + lr * delta
     return U
 
-def momentum_bundler(U, decay):
+def momentum_bundler(update_fn, decay):
     """
     Wraps an update fn in with its exponentially averaged grad.
     Uses the exponentially averaged grad to make updates rather than the grad itself.
@@ -88,11 +93,39 @@ def momentum_bundler(U, decay):
     """
     def momentum_update_fn(x):
         w_t, m_t = x[0], x[1]
-        dw = U(w_t) - w_t  # should divide by lr here?
+        dw = update_fn(w_t) - w_t  # should divide by lr here?
         m_tp1 = decay * m_t + dw
         w_tp1 = w_t + m_tp1
         return np.stack([w_tp1, m_tp1], axis=0)
     return momentum_update_fn
+
+def generate_avi_vs_vi():
+    n_states, n_actions = 2, 2
+
+    mdp = build_random_mdp(n_states, n_actions, 0.9)
+
+    # vi
+    init = np.random.standard_normal((mdp.S, mdp.A))
+    qs = solve(value_iteration(mdp, 0.01), init)
+    vs = np.vstack([np.max(q, axis=1) for q in qs])
+
+    n = vs.shape[0]
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', label='vi')
+
+    # avi
+    # K = np.eye(n_states)
+    K = np.random.standard_normal((n_states))
+    K = (K + K.T)/2 + 1  # this can accelerate learning. but also lead to divergence. want to explore this more!!!
+    d = np.random.random(n_states)
+    D = np.diag(d/d.sum())  # this can change the optima!!
+    # D = np.eye(n_states)
+    qs = solve(adjusted_value_iteration(mdp, 0.01, D, K), init)
+    vs = np.vstack([np.max(q, axis=1) for q in qs])
+
+    m = vs.shape[0]
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='avi')
+    plt.title('VI: {}, Avi {}'.format(n, m))
+    plt.show()
 
 def generate_vi_sgd_vs_mom():
     n_states, n_actions = 2, 2
@@ -108,7 +141,7 @@ def generate_vi_sgd_vs_mom():
     plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', label='sgd')
 
     # momentum
-    init = np.stack([init, np.zeros((mdp.S, mdp.A))], axis=0)
+    init = np.stack([init, np.zeros_like(init)], axis=0)
     qs = solve(momentum_bundler(value_iteration(mdp, 0.01), 0.9), init)
     vs = np.vstack([np.max(q[0], axis=1) for q in qs])
 
@@ -119,7 +152,8 @@ def generate_vi_sgd_vs_mom():
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    generate_vi_sgd_vs_mom()
+    # generate_vi_sgd_vs_mom()
+    generate_avi_vs_vi()
 
     # TEST parameterised
     # C = random_parameterised_matrix(n_states, n_actions, 8, 2)
