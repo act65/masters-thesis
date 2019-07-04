@@ -14,24 +14,34 @@ import collections
 mdp = collections.namedtuple('mdp', ['S', 'A', 'P', 'r', 'discount', 'd0'])
 
 def build_random_mdp(n_states, n_actions, discount):
-    P = rnd.standard_normal((n_states*n_actions, n_states))
+    P = np.abs(rnd.standard_normal((n_states*n_actions, n_states)))
     r = rnd.standard_normal((n_states, n_actions))
-    d0 = rnd.standard_normal((n_states, 1))
-    return mdp(n_states, n_actions, P/P.sum(axis=1, keepdims=True), r, discount, d0)
+    d0 = rnd.random((n_states, 1))
+    return mdp(n_states, n_actions, P/P.sum(axis=1, keepdims=True), r, discount, d0/d0.sum(axis=0, keepdims=True))
 
 ######################
 
+"""
+Various ways to parameterise these fns.
+Want to be able to try different topologies!!
+"""
+
 def random_parameterised_matrix(n, m, d_hidden, n_hidden):
-    cores = [rnd.standard_normal((d_hidden, d_hidden)) for _ in range(n_hidden)]
-    cores = [rnd.standard_normal((n, d_hidden))] + cores + [rnd.standard_normal((d_hidden, m))]
+    rnd_init = lambda shape: (1/d_hidden)*rnd.standard_normal(shape)
+    cores = [rnd_init((d_hidden, d_hidden)) for _ in range(n_hidden)]
+    cores = [rnd_init((n, d_hidden))] + cores + [rnd_init((d_hidden, m))]
     return cores
 
 def value(cores):
     return functools.reduce(np.dot, cores)
 
 def pi(cores):
-    M = functools.reduce(np.dot, cores)
+    M = np.abs(functools.reduce(np.dot, cores))
     return M/M.sum(axis=1, keepdims=True)
+
+
+######################
+
 
 def mpi(p):
     """
@@ -55,7 +65,8 @@ def mpi(p):
     # M_pi[idx] = p.reshape(-1)
     # return M_pi
 
-    # a special case for n = 2
+    # a special case for;
+    assert n_states == 2 and n_actions == 2
     idx = np.concatenate([
         np.kron(np.array([[1, 0], [0, 0]]), np.eye(n_actions)),
         np.kron(np.array([[0, 0], [0, 1]]), np.eye(n_actions))], axis=0)
@@ -63,11 +74,24 @@ def mpi(p):
 
 ######################
 
+def isclose(x, y, atol=1e-8):
+    if isinstance(x, np.ndarray):
+        return np.isclose(x, y, atol=atol).all()
+    elif isinstance(x, list):
+        # return all(np.isclose(x[0], y[0], atol=1e-03).all() for i in range(len(x)))
+        return np.isclose(value(x), value(y), atol=atol).all()
+    elif isinstance(x, tuple) and isinstance(x[0], np.ndarray):
+        return np.isclose(x[0], y[0], atol=atol).all()
+    elif isinstance(x, tuple) and isinstance(x[0], list):
+        return np.isclose(value(x[0]), value(y[0]), atol=atol).all()
+    else:
+        raise ValueError('wrong format')
+
 def converged(l):
     if len(l)>10:
         if len(l)>1000:
             return True
-        elif np.isclose(l[-1], l[-2], atol=1e-03).all():
+        elif isclose(l[-1], l[-2]):
             return True
         else:
             False
@@ -80,6 +104,7 @@ def solve(update_fn, init):
     while not converged(xs):
         x = update_fn(x)
         xs.append(x)
+        print(len(xs))
     return xs
 
 #####################
@@ -98,24 +123,61 @@ def value_functional(P, r, M_pi, discount):
     n = P.shape[-1]
     P_pi = np.dot(M_pi, P)
     r_pi = np.dot(M_pi, r)
+
+    # assert np.isclose(M_pi/M_pi.sum(), M_pi).all()
+    assert np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi).all()
+
     return np.dot(np.linalg.inv(np.eye(n) - discount*P_pi), r_pi)
 
 def bellman_optimality_operator(P, r, Q, discount):
-    return r + discount * np.argmax(P * Q)
+    return r + discount * np.dot(P, np.argmax(Q, axis=1)).reshape(r.shape)
 
+def state_visitation_distribution(P, M_pi, discount, d0):
+    """
+    Ps + yPPs + yyPPPs + yyyPPPPs ...
+    (P + yPP + yyPPP + yyyPPPP ... )s
+    (I - yP)^-1 s
+    """
+    n = d0.size
+    P_pi = np.dot(M_pi, P)
+
+    # check we have been given normalised distributions
+    assert np.isclose(d0/d0.sum(), d0).all()
+    # if np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi, atol=1e-3).all():
+    #     print(P_pi.sum(axis=1, keepdims=True))
+    #     raise ValueError('P_pi is not normalised')
+
+    return (1-discount)*np.dot(np.linalg.inv(np.eye(n) - discount * P_pi), d0)
 
 ######################
 
 def value_iteration(mdp, lr):
-    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q.reshape((-1, 1)), mdp.discount)
+    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     U = lambda Q: Q + lr * (T(Q) - Q)
     return U
 
-# def parameterised_value_iteration(mdp, lr):
-#     T = lambda w: mdp.r + mdp.discount * np.argmax(mdp.P * Q(w))
-#     dQdw = lambda w: grad(Q)  # might need to do some reshaping here!?
-#     U = lambda w: w + lr * np.dot((T(Q(w)) - Q(w)), dQdw(w))
-#     return U
+# BUG this wont work with momentum bundler
+def parameterised_value_iteration(mdp, lr):
+    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
+    TD = lambda cores: T(value(cores)) - value(cores)
+    dVdw = jacrev(value)
+
+    def update_fn(cores):
+        delta = TD(cores)
+        grads = [np.einsum('ij,ijkl->kl', delta, dc) for dc in dVdw(cores)]
+        # the -1e4*c is l2 regularisation on the weights
+        return [c+lr*g for c, g in zip(cores, grads)]
+    return update_fn
+
+# NOTE this isnt really value iteration...!?
+# def parameterised_expected_value_iteration(mdp, lr):
+#     pi = lambda cores: softmax(value(cores), axis=1)
+#     d = lambda cores: state_visitation_distribution(mdp.P, mpi(pi(cores)), mdp.discount, mdp.d0)
+#     EV = lambda cores: np.sum(d(cores) * softmax(value(cores), axis=1))
+#     def update_fn(cores):
+#         dEVdw = grad(EV)
+#         return [c+lr*g for c, g in zip(cores, dEVdw(cores))]
+#     return update_fn
 
 ######################
 # Neural tangent kernel and ...
@@ -148,7 +210,7 @@ def adjusted_value_iteration(mdp, lr, D, K):
 #     U = lambda pi: pi + lr * np.dot(V, delta(pi))
 #     return U
 
-def softmax(x):
+def softmax(x, axis=-1):
     return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
 
 def policy_gradient_iteration_logits(mdp, lr):
@@ -197,11 +259,22 @@ def momentum_bundler(update_fn, decay):
         (callable): The new update fn. U: params'-> new_params'. Where params' = [params, param_momentum].
     """
     def momentum_update_fn(x):
-        w_t, m_t = x[0], x[1]
-        dw = update_fn(w_t) - w_t  # should divide by lr here?
-        m_tp1 = decay * m_t + dw
-        w_tp1 = w_t + m_tp1
-        return np.stack([w_tp1, m_tp1], axis=0)
+        W_t, M_t = x[0], x[1]
+
+        # TODO want a nicer way to do thisself.
+        # nested fn application
+        if isinstance(W_t, np.ndarray):
+            dW = update_fn(W_t) - W_t  # should divide by lr here?
+            M_tp1 = decay * M_t + dW
+            W_tp1 = W_t + (1 - decay) * M_tp1
+        elif isinstance(W_t, list):
+            dW = [w_tp1 - w_t for w_tp1, w_t in zip(update_fn(W_t), W_t)]
+            M_tp1 = [decay * m_t + dw for m_t, dw in zip(M_t, dW)]
+            W_tp1 = [w_t + (1 - decay) * m_tp1 for w_t, m_tp1 in zip(W_t, M_tp1)]
+        else:
+            raise ValueError('Unknown format: {}'.format(type(W_t)))
+
+        return W_tp1, M_tp1
     return momentum_update_fn
 
 if __name__ == '__main__':
