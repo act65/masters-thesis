@@ -128,26 +128,28 @@ def state_visitation_distribution(P, pi, discount, d0):
 
     return (1-discount)*np.dot(np.linalg.inv(np.eye(n) - discount * P_pi), d0)
 
-######################
+"""
+Value iteration;
+- Q_t+1 = Q_t + lr . (TQ_t - Q)
+- and a parameterised version. where Q is a fn of some params.
+"""
 
 def value_iteration(mdp, lr):
     T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     U = lambda Q: Q + lr * (T(Q) - Q)
     return jit(U)
 
-# BUG this wont work with momentum bundler
 def parameterised_value_iteration(mdp, lr):
     T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     TD = lambda cores: T(value(cores)) - value(cores)
     dVdw = jacrev(value)
 
-    @jit
     def update_fn(cores):
         delta = TD(cores)
         grads = [np.einsum('ij,ijkl->kl', delta, dc) for dc in dVdw(cores)]
-        # the -1e4*c is l2 regularisation on the weights
+        # TODO attempt to understand the properties of dc. and its relation to K
         return [c+lr*g for c, g in zip(cores, grads)]
-    return update_fn
+    return jit(update_fn)
 
 # NOTE this isnt really value iteration...!?
 # def parameterised_expected_value_iteration(mdp, lr):
@@ -171,7 +173,7 @@ https://arxiv.org/abs/1903.08894
 def adjusted_value_iteration(mdp, lr, D, K):
     T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q.reshape((-1, 1)), mdp.discount)
     U = lambda Q: Q + lr * np.dot(K, np.dot(D, T(Q) - Q))
-    return U
+    return jit(U)
 
 # def corrected_value_iteration(mdp, lr):
 #     T = lambda theta: mdp.r + mdp.discount * np.argmax(mdp.P * Q(w))
@@ -238,7 +240,6 @@ def momentum_bundler(update_fn, decay):
     Returns:
         (callable): The new update fn. U: params'-> new_params'. Where params' = [params, param_momentum].
     """
-    @jit
     def momentum_update_fn(x):
         W_t, M_t = x[0], x[1]
 
@@ -256,7 +257,7 @@ def momentum_bundler(update_fn, decay):
             raise ValueError('Unknown format: {}'.format(type(W_t)))
 
         return W_tp1, M_tp1
-    return momentum_update_fn
+    return jit(momentum_update_fn)
 
 if __name__ == '__main__':
     n_states, n_actions = 2, 2

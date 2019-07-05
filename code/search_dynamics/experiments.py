@@ -116,7 +116,7 @@ def generate_mpvi_vs_mvi():
     params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
     vs = np.vstack([np.max(value(c[0]), axis=-1) for c in params])
     m = vs.shape[0]
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='mpvi', alpha=0.5, s=100)
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='mpvi')
 
     # mvi
     init = copy.deepcopy(value(core_init))  # use the same init
@@ -124,7 +124,7 @@ def generate_mpvi_vs_mvi():
     qs = solve(momentum_bundler(value_iteration(mdp, 0.01), 0.9), init)
     vs = np.vstack([np.max(q[0], axis=-1) for q in qs])
     n = vs.shape[0]
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', label='mvi', alpha=0.5, s=100)
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', label='mvi')
 
     plt.title('MVI: {}, MPVI {}'.format(n, m))
     plt.show()
