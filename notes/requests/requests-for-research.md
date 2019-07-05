@@ -29,9 +29,7 @@ __The learning complexity of small details for RL__ &#9734; &#9734; In [Model ba
 
 __Optimsable values__ &#9734; &#9734; &#9734; When working with continuious actions, it is a hard problem to calculate the action that yields the max value $\mathop{\text{argmax}}_a Q(s, a)$, especially when $Q$ is a large non-linear neural network, then solving the equation below can be hard. What if we could do sgd on $Q(s, a)$, or learn $Q(s, a)$ that is convex wrt a?
 
-
-
-<!-- __Discounting using future uncertainty__ &#9734; &#9734; When predicting the future, there is uncertainty. This uncertainty is the reason we might prefer a short term reward, over a less likely, yet larger, reward. Rather than picking a discount of some value less than one, discount rewards based on our certainty of achieving them. -->
+<!-- - Relationship between tree search and HRL? (divide and conquer for MPC) Recursive subgoal decomposition.  https://arxiv.org/pdf/1706.05825.pdf -->
 
 <!-- __Visualise and understand the loss surface of simple RL problems__ &#9734; &#9734; -->
 

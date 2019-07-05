@@ -14,12 +14,11 @@ $\pi (a|s) > 0$ implies $b(a|s) > 0$. This is called the assumption of coverage.
 ok. So 'coverage' means that our exploration policy will take the optimal action with non-zero probability.
 But the lower the probability is the harder it is to learn the value of the optimal action...
 
-
 ## Importance sampling
 
 ref - https://statweb.stanford.edu/~owen/mc/Ch-var-is.pdf
 
-> In many applications we want to compute $µ = E(f(X))$ where $f(x)$ is nearly
+> In many applications we want to compute $\mu = E(f(X))$ where $f(x)$ is nearly
 zero outside a region $A$ for which $P(X ∈ A)$ is small. The set A may have
 small volume, or it may be in the tail of the $X$ distribution. A plain Monte
 Carlo sample from the distribution of $X$ could fail to have even one point inside
@@ -50,11 +49,7 @@ $$
 
 Why is weighted importance sampling so much better?
 
-> Ordinary importance sampling is
-unbiased whereas weighted importance sampling is biased (though the bias converges
-asymptotically to zero). On the other hand, the variance of ordinary importance sampling
-is in general unbounded because the variance of the ratios can be unbounded, whereas in
-the weighted estimator the largest weight on any single return is one.
+> Ordinary importance sampling is unbiased whereas weighted importance sampling is biased (though the bias converges asymptotically to zero). On the other hand, the variance of ordinary importance sampling is in general unbounded because the variance of the ratios can be unbounded, whereas in the weighted estimator the largest weight on any single return is one.
 
 Problem in RL tho is that we are trying to estimate the mean return. So $\rho$ is likey to be very small!? There are a lot of possible action sequences...
 

@@ -1,17 +1,8 @@
-__!!!__ The problem we are trying to solve?
+What is problem we are trying to solve?
 
-> Want to scale to very long sequences. 10 chores, 100 tasks, 1000 movements, 10000 actions...
+> Want to scale to very long sequences. 10 chores, 100 tasks, 1,000 movements, 10,000 actions...
+
 > Variance in long sequences is a bigger problem than in shorter sequences!?  -- !? random noise slowly erodes the effets of an action making credit assignment hard!? (could email Emma Brunskill to get more details!?)
-
-## Transition based abstraction for transfer
-
-Abstraction for model based RL!? Learning abstract models of the transition function.
-
-As noted above. Using the $Q$ function or the reward function to construct an abstraction makes the abstraction task specific.
-
-$$
-\forall_{s_A \in S_A} \mid \sum_{s_G' \in G(s_A)} \tau(s_1, a, s_G') - \tau_G(T(s_2), T(a),T(s_G'))\mid\le \epsilon
-$$
 
 ## Temporal abstraction
 
@@ -25,9 +16,7 @@ Q(s, a_{1:m}) &= \sum_1^{m-1} \gamma^t r(s_t, a_t) + \gamma^mQ(s_m, a_m)\\
 \end{align}
 $$
 
-Can be framed as an unusual type of action abstraction, where the meaning of abstraction is being stretched...
-Initially we had $Q(s,a)\quad s\in S, a\in A$ but we have transformed this (in the case of temporal-action abstraction) to $Q(s,a)\quad s\in S, a\in A^{* }$.
-
+Not sure temporal state abstraction makes sense.
 
 ## Temporal credit assignment
 
@@ -46,4 +35,4 @@ Why is it easier to learn in a more temporally abstract space?
  [A neural model of HRL](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0180234)
 
 
-Credit assignement is harder when there are more possible assignments of credit. (but we are not donig credit assignment!?)
+Credit assignement is harder when there are more possible assignments of credit. (but we are not doing credit assignment!?)

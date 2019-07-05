@@ -88,114 +88,11 @@ $$
 
 Planning/Reasoning with limited compute. Only get to evaluate N trajectories. Looking for a single trajectory that is sufficient. Versus the best possible trajectory1?
 
-### General problem
-
-Need to integrate a dynamical system.
-But how to do this when it is;
-- stochastic?
-- biased?
-
-Want to learn to integrate!?
-
 ### Resources
 
 - [Differential Dynamic Programming](https://homes.cs.washington.edu/~todorov/papers/TassaICRA14.pdf)
 - [mpc.torch](https://locuslab.github.io/mpc.pytorch/)
 - ?
-
-
-## Search
-
-__Q__ Efficient search. Relationship between tree search and gradient descent? Local and global optimisation.
-
-
-Why do we want to do this?
-Optimisation in the loop.
-
-### Definition
-
-Searching through policy space.
-Searching through parameter space.
-Searching through state space(the env).
-
-Making the most of self-play.
-
-
-### Idea - searching through param vs action
-
-At the end of the day we are searching for a policy, what action to take when. We are searching through distributions over state-action pairs.
-But instead, we decide to frame this as searching through parameters of a NN that pairs the state-actions.
-
-The problem is that often changes in NN params my have little/no effect on the state-action pairs. Therefore serching there is a waste of time.
-
-So we should scale the gradients by the sensitivity of the actions to the parameters!?
-
-Moving through distribution space versus moving through parameter space. How are they structured? What are the differences?
-
-
-$$
-\frac{\partial a}{\partial \theta}^{-1}\cdot\frac{\partial L}{\partial \theta}
-$$
-
-## Invariance under a contraction operator
-
- Both Bellman and GD, and !?.
-
-$$
-\begin{align}
-x(t+1) &= T_{GD} x(t) \\
-&= x(t) - \eta \frac{\partial E}{\partial x} \\
-x_i(t+1) &= T_{BM} x_i(t) \\
-&= R + \gamma \mathop{\text{max}}_a \int p(x_i(t), a) \cdot x_{i+1}(t) dx  \\
-\end{align}
-$$
-
-This just means the steps/iterations will converge to a fixed value.
-
-Hmph.
-- But GD isnt always a contraction? GD is only a contraction operator when the loss surface is convex?
-- My formulation of the bellman operator doesnt seem right. Is the bellman operator a contraction over $t$ or $i$, or both?
-
-Is it possible to do an eigen analysis of these linear operators?
-
-## Representation
-
-What if I have an independent variable that is a ring, or has some other topology other than a line?
-
-The latent variable to match the generating variable types. (the ability to construct sets equipped with a metric/product/transform!? mnist -> a dimension with 10 categorical variables, a ring of reals describing azimuth, bounded dims describing translation, ...)
-
-What about a dataset with varying numbers of sprites/digits in the image.
-
-## Transition fn
-
-Want a linear decomposition of the transition function so we can use feature expectations.
-
-$$
-\begin{align}
-s_{t+1}^i = f(s_t^i) \tag{wwhitney} \\
-s_{t+1}^i = s_t^i +  \\
-\end{align}
-$$
-
-$$
-\begin{align}
-R(s) &= w^T \phi(s)\\
-V^{\pi}(s) &= w^T\mathbb E [\sum \gamma^i\phi(s_i)] \\
-&= w^T \mathbb E [\Big(\phi(s_i) + \gamma \mu^{\pi}(\tau(s_i,a_i))\Big)] \\
-R(s,a) &= w^T \phi(s, a)\\
-Q^{\pi}(s, a) &= w^T \mathbb E [\sum \gamma^i\phi(s_i, a_i)] \\
-&= w^T \mathbb E [\Big(\phi(s_i, a_i) + \gamma \mu^{\pi}(s_{i+1},a_{i+1})\Big)] \\
-\end{align}
-$$
-
-***
-
-- __Q__ What can you learn from an interactive environment (you can take actions and observe their results) that you cannot learn from a (possibly comprehensive) static dataset? Similarly, what can you learn when you have access to an $\epsilon$-accurate model, that you cannot learn from an interactive environment?
-- (recomposable) modular systems. Want to be able to build up complexity from simple parts. Recursively!
-- symmetric transformations/factorisation of the game tree. learn f(s) such that the resulting game tree is the same!?
-- Distributed representations (various tensors) don't store knowledge in nice ways... What alternative representation are there?
-- Relationship to bases. Is there a way to reason about a basis with many different ways of combining the bases? More complicated structure? (designing algebras!?)
-- learning the long term effects of actions OR exploration!? OR unsupervised tasks/learning from context/automatic curriculum/? OR using temporal info to disentangle?
 
 
 ***
@@ -208,6 +105,38 @@ You then use these estimates to change your policy.
 But those estimates might not be accurate.
 And changing your policy might mean that it takes you longer to realise that your evaluation of those states was very wrong.
 
-- How can many noisy evaluations of related policies be combined?
-- How many samples to we need to evaluate a policy with confidence = X?
-- ?
+***
+
+Problem that occurs in POMDPs. Am I correctly modelling the state?
+You want to learn what action a does. So you do $\tau(s, a)$ over many $s\in A$. But the effect of $a$ correlates with the subset of states $A \subset S$ yo are experimenting in.
+For example. Balls always fall towards the gound (if you test only on earth).
+
+***
+
+- [ ] Equivalence of goal/option conditioned value fns
+- [ ] Build a three (or even better, N) layer heirarchy
+- [ ] Explore how different approaches scale (computational complexity) in the number of layers in the heirarchy
+- [ ] A heirarchical subgoal net that uses MPC rather than learned policies
+- [ ] Explore function approximation for options a = f(w) (rather than look up table)
+- [ ] How to achieve stable training of a hierarchy?
+- [ ] The benefit of a heirarchy of abstractions? (versus use a single layer of abstraction). Transfer!?
+- [ ] Design a new programming language. Learner gets access to assembly and must ??? (build a calculator? allow a learner to build websites easy? ...?). What would be the task / reward fn? (should be easy to learn to use, require few commands to do X, ...?)
+- [ ] A single dict with the ability to merge, versus a heirarchy!? Or are they the same?
+
+> 1) What do we mean my abstraction? Let's generate some RL problems that can be exploited by a learner that abstracts.
+
+> 2) How does abstraction actually help? Computational complexity, sample complexity, ... when doesn't it help? When it is guaranteed to help?
+
+> 3) Can we learn a set of disentangled actions. How does that help?
+
+> 4) How can we use an abstraction to solve a problem more efficiently? Use MPC + abstraction. Explore how different abstractions help find solutions!?
+
+> 5.Build a differentiable neural computer (Graves et al. 2016) with locally structured memory (start with 1d and then generalise to higher dimensions). Is the ability to localise oneself necessary to efficiently solve partial information decision problems? Under which conditions does the learned index to a locally structured memory approximate the position of the agent in its environment.
+
+
+Memory structures + Locality.
+
+- https://www.nature.com/articles/nn.4661.pdf
+- https://arxiv.org/pdf/1602.03218.pdf
+- https://arxiv.org/pdf/1609.01704.pdf
+- DNC
