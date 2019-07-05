@@ -1,16 +1,18 @@
 from utls import *
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 def generate_avi_vs_vi():
     print('Running AVI vs VI')
     n_states, n_actions = 2, 2
+    lr = 0.1
 
     mdp = build_random_mdp(n_states, n_actions, 0.9)
 
     # vi
     init = np.random.standard_normal((mdp.S, mdp.A))
-    qs = solve(value_iteration(mdp, 0.01), init)
+    qs = solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
 
     n = vs.shape[0]
@@ -23,7 +25,7 @@ def generate_avi_vs_vi():
     d = np.random.random(n_states)
     D = np.diag(d/d.sum())  # this can change the optima!!
     # D = np.eye(n_states)
-    qs = solve(adjusted_value_iteration(mdp, 0.01, D, K), init)
+    qs = solve(adjusted_value_iteration(mdp, lr, D, K), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
 
     m = vs.shape[0]
@@ -49,7 +51,6 @@ def generate_vi_sgd_vs_mom():
     init = (init, np.zeros_like(init))
     qs = solve(momentum_bundler(value_iteration(mdp, 0.01), 0.9), init)
     vs = np.vstack([np.max(q[0], axis=1) for q in qs])
-
     m = vs.shape[0]
     plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='momentum')
     plt.title('SGD: {}, Mom {}'.format(n, m))
@@ -106,25 +107,24 @@ def generate_pvi_vs_vi():
 def generate_mpvi_vs_mvi():
     print('Running MPVI vs MVI')
     n_states, n_actions = 2, 2
-    lr = 0.001
 
     mdp = build_random_mdp(n_states, n_actions, 0.9)
 
     # mpvi
-    core_init = random_parameterised_matrix(2, 2, 32, 2)
+    core_init = random_parameterised_matrix(2, 2, 32, 8)
     init = (core_init, [np.zeros_like(c) for c in core_init])
     params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
-    vs = np.hstack([value(c[0]) for c in params]).T
+    vs = np.vstack([np.max(value(c[0]), axis=-1) for c in params])
     m = vs.shape[0]
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='pvi')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='mpvi', alpha=0.5, s=100)
 
     # mvi
-    init = value(core_init)  # use the same init
+    init = copy.deepcopy(value(core_init))  # use the same init
     init = (init, np.zeros_like(init))
-    qs = solve(momentum_bundler(value_iteration(mdp, lr), 0.9), init)
-    vs = np.vstack([np.max(qs[0], axis=1) for q in qs])
+    qs = solve(momentum_bundler(value_iteration(mdp, 0.01), 0.9), init)
+    vs = np.vstack([np.max(q[0], axis=-1) for q in qs])
     n = vs.shape[0]
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', label='vi')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', label='mvi', alpha=0.5, s=100)
 
     plt.title('MVI: {}, MPVI {}'.format(n, m))
     plt.show()

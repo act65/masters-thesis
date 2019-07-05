@@ -12,10 +12,10 @@ import numpy.random as rnd
 mdp = collections.namedtuple('mdp', ['S', 'A', 'P', 'r', 'discount', 'd0'])
 
 def build_random_mdp(n_states, n_actions, discount):
-    P = np.abs(rnd.standard_normal((n_states*n_actions, n_states)))
+    P = rnd.random((n_states, n_states, n_actions))
     r = rnd.standard_normal((n_states, n_actions))
     d0 = rnd.random((n_states, 1))
-    return mdp(n_states, n_actions, P/P.sum(axis=1, keepdims=True), r, discount, d0/d0.sum(axis=0, keepdims=True))
+    return mdp(n_states, n_actions, P/P.sum(axis=0, keepdims=True), r, discount, d0/d0.sum(axis=0, keepdims=True))
 
 ######################
 
@@ -25,9 +25,9 @@ Want to be able to try different topologies!!
 """
 
 def random_parameterised_matrix(n, m, d_hidden, n_hidden):
-    rnd_init = lambda shape: (1/d_hidden)*rnd.standard_normal(shape)
-    cores = [rnd_init((d_hidden, d_hidden)) for _ in range(n_hidden)]
-    cores = [rnd_init((n, d_hidden))] + cores + [rnd_init((d_hidden, m))]
+    glorot_init = lambda shape: (1/np.sqrt(shape[0] + shape[1]))*rnd.standard_normal(shape)
+    cores = [glorot_init((d_hidden, d_hidden)) for _ in range(n_hidden)]
+    cores = [glorot_init((n, d_hidden))] + cores + [glorot_init((d_hidden, m))]
     return cores
 
 def value(cores):
@@ -37,38 +37,9 @@ def pi(cores):
     M = np.abs(functools.reduce(np.dot, cores))
     return M/M.sum(axis=1, keepdims=True)
 
-######################
-
-def mpi(p):
-    """
-    A policy is represented by a block diagonal |S| x |S||A| matrix M.
-
-    Args:
-        n_states (int): the number of states
-        n-actions (int): the number of actions
-        ps (array[n_states, n_actions]): the probabilities of taking action a in state s.
-
-    Returns:
-        (array[n_states, n_states x n_actions])
-    """
-    n_states, n_actions = p.shape
-    A = np.ones((1, n_actions))
-    S = np.eye(n_states)
-
-    # # BUG doesnt work with jax. sigh
-    # M_pi = np.zeros((n_states, n_states * n_actions))
-    # idx = np.where(np.equal(1, np.kron(S, A)))
-    # M_pi[idx] = p.reshape(-1)
-    # return M_pi
-
-    # a special case for;
-    assert n_states == 2 and n_actions == 2
-    idx = np.concatenate([
-        np.kron(np.array([[1, 0], [0, 0]]), np.eye(n_actions)),
-        np.kron(np.array([[0, 0], [0, 1]]), np.eye(n_actions))], axis=0)
-    return np.dot(idx, p.reshape(-1)).reshape((n_states, n_states * n_actions))
-
-######################
+"""
+Tools for simulating dyanmical systems.
+"""
 
 def isclose(x, y, atol=1e-8):
     if isinstance(x, np.ndarray):
@@ -85,7 +56,7 @@ def isclose(x, y, atol=1e-8):
 
 def converged(l):
     if len(l)>10:
-        if len(l)>1000:
+        if len(l)>10000:
             return True
         elif isclose(l[-1], l[-2]):
             return True
@@ -103,45 +74,57 @@ def solve(update_fn, init):
         xs.append(x)
     return xs
 
-#####################
+"""
+Some useful functions that will be repeately used.
+- `value_functional`: evaluates a policy within a mdp
+- `bellman_optimality_operator`: calculates a step of the bellman operator
+- `state_visitation_distribution`: calculates the expected distribution over states given a mdp + policy
+"""
 
-def value_functional(P, r, M_pi, discount):
+def value_functional(P, r, pi, discount):
     """
     V = r_{\pi} + \gamma P_{\pi} V
       = (I-\gamma P_{\pi})^{-1}r_{\pi}
 
     Args:
-        P (): n_states*n_actions, n_states
-        r ():
-        M_pi (): [n_states, n_states x n_actions]
+        P (np.ndarray): [n_states x n_states x n_actions]
+        r (np.ndarray): [n_states x n_actions]
+        pi (np.ndarray): [n_states x n_actions]
         discount (float): the temporal discount value
     """
     n = P.shape[-1]
-    P_pi = np.dot(M_pi, P)
-    r_pi = np.dot(M_pi, r)
+    P_pi = np.einsum('ijk,jk->ij', P, pi)
+    r_pi = np.einsum('jk,jk->jk', r, pi)
 
-    # assert np.isclose(M_pi/M_pi.sum(), M_pi).all()
+    assert np.isclose(pi/pi.sum(axis=1, keepdims=True), pi).all()
     assert np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi).all()
 
     return np.dot(np.linalg.inv(np.eye(n) - discount*P_pi), r_pi)
 
 def bellman_optimality_operator(P, r, Q, discount):
-    return r + discount * np.dot(P, np.argmax(Q, axis=1)).reshape(r.shape)
+    """
+    Args:
+        P (np.ndarray): [n_states x n_states x n_actions]
+        r (np.ndarray): [n_states x n_actions]
+        Q (np.ndarray): [n_states x n_actions]
+        discount (float): the temporal discount value
+    """
+    return r + discount * np.einsum('ijk,i->jk', P, np.argmax(Q, axis=1))
 
-def state_visitation_distribution(P, M_pi, discount, d0):
+def state_visitation_distribution(P, pi, discount, d0):
     """
     Ps + yPPs + yyPPPs + yyyPPPPs ...
     (P + yPP + yyPPP + yyyPPPP ... )s
     (I - yP)^-1 s
     """
     n = d0.size
-    P_pi = np.dot(M_pi, P)
+    P_pi = np.einsum('ijk,jk->ij', P, pi)
 
     # check we have been given normalised distributions
     assert np.isclose(d0/d0.sum(), d0).all()
-    # if np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi, atol=1e-3).all():
-    #     print(P_pi.sum(axis=1, keepdims=True))
-    #     raise ValueError('P_pi is not normalised')
+    if np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi, atol=1e-8).all():
+        print(P_pi.sum(axis=1, keepdims=True))
+        raise ValueError('P_pi is not normalised')
 
     return (1-discount)*np.dot(np.linalg.inv(np.eye(n) - discount * P_pi), d0)
 
@@ -150,7 +133,7 @@ def state_visitation_distribution(P, M_pi, discount, d0):
 def value_iteration(mdp, lr):
     T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     U = lambda Q: Q + lr * (T(Q) - Q)
-    return U
+    return jit(U)
 
 # BUG this wont work with momentum bundler
 def parameterised_value_iteration(mdp, lr):
@@ -158,6 +141,7 @@ def parameterised_value_iteration(mdp, lr):
     TD = lambda cores: T(value(cores)) - value(cores)
     dVdw = jacrev(value)
 
+    @jit
     def update_fn(cores):
         delta = TD(cores)
         grads = [np.einsum('ij,ijkl->kl', delta, dc) for dc in dVdw(cores)]
@@ -254,6 +238,7 @@ def momentum_bundler(update_fn, decay):
     Returns:
         (callable): The new update fn. U: params'-> new_params'. Where params' = [params, param_momentum].
     """
+    @jit
     def momentum_update_fn(x):
         W_t, M_t = x[0], x[1]
 
