@@ -1,6 +1,6 @@
 __Claim:__ Low policy entropy implies low evaluation variance.
 
-> If the prior is low entropy, then you should be able to significantly increase the discount factor. This is because the noise of policy gradient algorithms scales with the amount of information that is injected into the trajectories by sampling from the policy. [ref](https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/)
+> If the [policy] is low entropy, then you should be able to significantly increase the discount factor. This is because the noise of policy gradient algorithms scales with the amount of information that is injected into the trajectories by sampling from the policy. [ref](https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/)
 
 $$
 \begin{align}

@@ -1,4 +1,4 @@
-There are a few different parts to charachterising the complexity of an abstraction.
+There are a few different parts to characterising the 'complexity' of an abstraction.
 
 - Discovery of the abstraction
 - Solving the abstraction
@@ -8,8 +8,6 @@ What do we mean by complexity?
 
 Sample,
 computational complexity (memory, time, ?)
-Regret,
-...
 
 Also, what do we mean by worst case? Worst case with probability < X?
 

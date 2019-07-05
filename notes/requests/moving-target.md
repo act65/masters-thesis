@@ -17,3 +17,6 @@ $$
 > Overall, our experiments indicate that nonstationarities in both distributions and target values, when isolated, do not cause significant stability issues. Instead, other factors such as sampling error and function approximation appear to have more significant effects on performance.
 
 uhh...
+
+
+Also. use https://arxiv.org/pdf/1901.11356.pdf to summarise a distribution?!

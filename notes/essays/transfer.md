@@ -1,36 +1,8 @@
-## What is transfer
+---
+pagetitle: Notes on transfer learning
+---
 
-Can be constructed from two parts. Communication and generalisation.
-
-
-The right information neesds to be preserved while being comminicated. But it also needs to generalise to the new domain.
-
-Knowledge/representations have two requirements!?
-
-- interpretable by the receiver.
-- applicable to the receivers current problems.
-
-### Definition
-
-What is necessary for transfer?
-
-- memory of the past
-- a way to project old representations into ...?
-- ?
-
-What is sufficient?
-
-- increased performance after learning
-- ?
-
-
-Not necessarily a compression?
-How does transfer relate to;
-
-- compression
-- minimisation of energy/resources (necessarily leads to transfer!? if there is structure...)
-- Generalisation = zero shot learning? (a good guess)
-- Transfer = one shot learning (given information about your target task, find similarities to past tasks)
+<div>
 
 
 ### Useful examples
@@ -69,10 +41,6 @@ $$
 Could apply this notion to the various $f_{ij}^{* }$ as well. How easily can they be transformed into each other?
 
 - how much compute should be spent on trying to find similarities? when it could just be spent on learning the new domain. it depends on memory constraints...
-
-***
-
-Or. A good representation is one that helps in different tasks. We culd assign credit via ???.
 
 ## Graph similarity
 
@@ -177,3 +145,6 @@ If we had a theory of transfer learning we would be able to;
 
 Want to generate different MDPs that share various 'orders' of similarity.
 If we mode each environment as a graph and the task is navigation, then it might be possible to easily generate graphs/rewards with structural similarities!? Various orders of persistent homology?
+
+
+</div>

@@ -1,3 +1,10 @@
+In [Policy invariance under reward transformations](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf) the authors prove that __TODO__... explain.
+
+The next question is, what other transforms is the optimal policy invariant to?
+- transformations of the transition fn
+- transformations of both the reward and transition fn
+- anything else?s
+
 $$
 \pi^{* } = \mathop{\text{max}}_{\pi}  \mathop{\mathbb E}_{s\sim d_{\pi}}[ V^{\pi}(s) ] \\
 V^{\pi}(s) = \mathop{\mathbb E}_{\tau \sim d_{\pi}(s)} [\sum^{\infty}_{t=0} \gamma^t r_t ] \\

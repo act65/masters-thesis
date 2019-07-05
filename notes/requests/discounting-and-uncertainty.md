@@ -2,7 +2,7 @@ Discounts and uncertainty about the future (not considering temporal credit assi
 
 ### Machine behaviour
 
-Lets just build some intutiion for what the discount does, what it controls, etc.
+Lets just build some intuition for what the discount does, what it controls, etc.
 
 Define depression as:
 Define succeptibility to addiction (/ impulsiveness) as:
@@ -39,8 +39,6 @@ For many possible actions, this could be expensive to calculate at every step.
 
 Can this still be solved as a set of linear equations?
 
-> If the [policy] is low entropy, then you should be able to significantly increase the discount factor. This is because the noise of policy gradient algorithms scales with the amount of information that is injected into the trajectories by sampling from the policy. [Alex Nichol](https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/)
-
 Take a minimum entropy policy, $H(\pi) = 0$, then $\gamma = 1$. This is a deterministic policy, yielding zero ... making it far easier to plan.
 
 ##### Transition entropy
@@ -56,3 +54,27 @@ $$
 ## Discount rates
 
 Why exponential discounting?
+
+
+How to deal with uncertainty?
+
+## Uncertain transitions.
+
+We should only get less certain about future states.
+
+$$
+H(s_t) \le H(s_{t+1}) \\
+$$
+
+Want to enforce this prior.
+
+- In the tabular case, this naturally occurs as a function of the row normalisation.
+- In a function approximation case, how can we enforce this prior?
+
+$$
+R(s_t, a_t) = \big | \log(\frac{H(\tau(s_t, a_t))}{H(s_t)} ) \big | \\
+$$
+
+Properties.
+- Asymmetric. Care a lot if $H(s_t) \le H(s_{t+1})$ but not so worried about $H(s_t) \ge H(s_{t+1})$.
+- ?
