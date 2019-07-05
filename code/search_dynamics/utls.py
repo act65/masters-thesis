@@ -2,8 +2,10 @@
 Explore how the different search spaces effect the GD dynamics.
 """
 import functools
+import itertools
 import collections
 
+import numpy
 import jax.numpy as np
 from jax import grad, jit, jacrev
 
@@ -19,6 +21,20 @@ def build_random_mdp(n_states, n_actions, discount):
 
 ######################
 
+def gen_grid_policies(N=31):
+    # special case for 2 x 2
+    p1s, p2s = np.linspace(0,1,N), np.linspace(0,1,N)
+    p1s = p1s.ravel()
+    p2s = p2s.ravel()
+    return [np.array([[p1, 1-p1],[1-p2, p2]]) for p1 in p1s for p2 in p2s]
+
+def polytope(P, r, discount):
+    pis = gen_grid_policies()
+    print('n pis:{}'.format(len(pis)))
+    vs = np.vstack([np.sum(value_functional(P, r, pi, discount), axis=1) for pi in pis])
+    return vs
+
+#############################
 """
 Various ways to parameterise these fns.
 Want to be able to try different topologies!!
@@ -84,7 +100,7 @@ def isclose(x, y, atol=1e-8):
 
 def converged(l):
     if len(l)>10:
-        if len(l)>10000:
+        if len(l)>2000:
             return True
         elif isclose(l[-1], l[-2]):
             return True
@@ -121,13 +137,15 @@ def value_functional(P, r, pi, discount):
         discount (float): the temporal discount value
     """
     n = P.shape[-1]
+    # P_{\pi}(s_t+1 | s_t) = sum_{a_t} P(s_{t+1} | s_t, a_t)\pi(a_t | s_t)
     P_pi = np.einsum('ijk,jk->ij', P, pi)
-    r_pi = np.einsum('jk,jk->jk', r, pi)
+    r_pi = r * pi
 
     assert np.isclose(pi/pi.sum(axis=1, keepdims=True), pi).all()
-    assert np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi).all()
+    assert np.isclose(P_pi/P_pi.sum(axis=0, keepdims=True), P_pi, atol=1e-4).all()
 
-    return np.dot(np.linalg.inv(np.eye(n) - discount*P_pi), r_pi)
+    # BUG why transpose here?!?!
+    return np.dot(np.linalg.inv(np.eye(n) - discount*P_pi.T), r_pi)
 
 def bellman_optimality_operator(P, r, Q, discount):
     """
@@ -136,8 +154,12 @@ def bellman_optimality_operator(P, r, Q, discount):
         r (np.ndarray): [n_states x n_actions]
         Q (np.ndarray): [n_states x n_actions]
         discount (float): the temporal discount value
+
+    Returns:
+        (np.ndarray): [n_states, n_actions]
     """
-    return r + discount * np.einsum('ijk,i->jk', P, np.argmax(Q, axis=1))
+    # Q(s, a) =  r(s, a) + \gamma max_a' E_{s'~P(s' | s, a)} Q(s', a')
+    return r + discount*np.max(np.einsum('ijk,ik->jk', P, Q), axis=1)
 
 def state_visitation_distribution(P, pi, discount, d0):
     """
@@ -199,7 +221,7 @@ https://arxiv.org/abs/1903.08894
 """
 
 def adjusted_value_iteration(mdp, lr, D, K):
-    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q.reshape((-1, 1)), mdp.discount)
+    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     U = lambda Q: Q + lr * np.dot(K, np.dot(D, T(Q) - Q))
     return jit(U)
 
@@ -223,15 +245,22 @@ def adjusted_value_iteration(mdp, lr, D, K):
 def softmax(x, axis=-1):
     return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
 
+def greedy(x):
+    return np.argmax(x, axis=1)
+
 def policy_gradient_iteration_logits(mdp, lr):
     # d/dlogits V = E_{\pi}[V] = E[V . d/dlogit log \pi]
     dpi_dlogit_ = jacrev(softmax)
     dlogpi_dlogit_ = jacrev(lambda logits: np.log(softmax(logits)))
+
+    # @jit
     def update_fn(logits):
-        V = value_functional(mdp.P, mdp.r.reshape((-1, 1)), mpi(softmax(logits)), mdp.discount)
-        dpi_dlogit = np.sum(dpi_dlogit_(logits), axis=[0, 1])  # BUG or axis=[-1, -1]?
-        dlogpi_dlogit = np.sum(dlogpi_dlogit_(logits), axis=[0, 1])
-        return logits + lr * np.dot(dlogpi_dlogit.T, V)  # BUG?!?!?!?
+        V = value_functional(mdp.P, mdp.r, softmax(logits), mdp.discount)
+        # dpi_dlogit = dpi_dlogit_(logits)  # BUG or axis=[-1, -1]?
+        dlogpi_dlogit = dlogpi_dlogit_(logits)
+        # print(dpi_dlogit.shape, dlogpi_dlogit.shape)
+        # raise SystemExit
+        return logits + lr * np.einsum('ijkl,ij->kl',dlogpi_dlogit, V)  # BUG?!?!?!?
     return update_fn
 
 def clip_by_norm(x, axis=-1, norm=2):
