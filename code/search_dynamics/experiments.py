@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def generate_avi_vs_vi():
+    print('Running AVI vs VI')
     n_states, n_actions = 2, 2
 
     mdp = build_random_mdp(n_states, n_actions, 0.9)
@@ -31,6 +32,7 @@ def generate_avi_vs_vi():
     plt.show()
 
 def generate_vi_sgd_vs_mom():
+    print('Running VI SGD vs Mom')
     n_states, n_actions = 2, 2
 
     mdp = build_random_mdp(n_states, n_actions, 0.9)
@@ -55,6 +57,7 @@ def generate_vi_sgd_vs_mom():
 
 
 def generate_PG_vs_MPG():
+    print('Running PG vs MPG')
     n_states, n_actions = 2, 2
     lr = 0.1
 
@@ -77,6 +80,7 @@ def generate_PG_vs_MPG():
     plt.show()
 
 def generate_pvi_vs_vi():
+    print('Running PVI vs VI')
     n_states, n_actions = 2, 2
     lr = 0.001
 
@@ -100,6 +104,7 @@ def generate_pvi_vs_vi():
     plt.show()
 
 def generate_mpvi_vs_mvi():
+    print('Running MPVI vs MVI')
     n_states, n_actions = 2, 2
     lr = 0.001
 

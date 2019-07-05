@@ -1,15 +1,13 @@
 """
 Explore how the different search spaces effect the GD dynamics.
 """
-# import numpy as np
+import functools
+import collections
+
 import jax.numpy as np
 from jax import grad, jit, jacrev
 
 import numpy.random as rnd
-
-import functools
-import trl_utils as trl
-import collections
 
 mdp = collections.namedtuple('mdp', ['S', 'A', 'P', 'r', 'discount', 'd0'])
 
@@ -39,9 +37,7 @@ def pi(cores):
     M = np.abs(functools.reduce(np.dot, cores))
     return M/M.sum(axis=1, keepdims=True)
 
-
 ######################
-
 
 def mpi(p):
     """
@@ -102,9 +98,9 @@ def solve(update_fn, init):
     xs = [init]
     x = init
     while not converged(xs):
+        print('\rStep: {}'.format(len(xs)), end='', flush=True)
         x = update_fn(x)
         xs.append(x)
-        print(len(xs))
     return xs
 
 #####################
@@ -115,9 +111,9 @@ def value_functional(P, r, M_pi, discount):
       = (I-\gamma P_{\pi})^{-1}r_{\pi}
 
     Args:
-        P ():
+        P (): n_states*n_actions, n_states
         r ():
-        M_pi ():
+        M_pi (): [n_states, n_states x n_actions]
         discount (float): the temporal discount value
     """
     n = P.shape[-1]
