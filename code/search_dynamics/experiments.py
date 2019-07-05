@@ -129,6 +129,37 @@ def generate_mpvi_vs_mvi():
     plt.title('MVI: {}, MPVI {}'.format(n, m))
     plt.show()
 
+
+def generate_mpvi_inits():
+    print('Running MPVI inits')
+    n_states, n_actions = 2, 2
+
+    mdp = build_random_mdp(n_states, n_actions, 0.9)
+
+    core_init = random_parameterised_matrix(2, 2, 16, 6)
+    init = (core_init, [np.zeros_like(c) for c in core_init])
+    params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
+    vs = np.vstack([np.max(value(c[0]), axis=-1) for c in params])
+    m = vs.shape[0]
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='mpvi', alpha=0.5)
+
+
+    new_init = random_reparameterisation(core_init, 2)
+    # sanity check
+    assert np.isclose(value(core_init), value(new_init), atol=1e-4).all()
+    init = (new_init, [np.zeros_like(c) for c in core_init])
+    params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
+    vs = np.vstack([np.max(value(c[0]), axis=-1) for c in params])
+    m = vs.shape[0]
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='summer', label='mpvi', alpha=0.5)
+
+    plt.show()
+
+    """
+    Hmm. I thought this would change the dynamics.
+    It is because the value is only a linear function of the parameters???
+    """
+
 # pg vs pi
 
 if __name__ == '__main__':
@@ -136,4 +167,5 @@ if __name__ == '__main__':
     # generate_avi_vs_vi()
     # generate_PG_vs_MPG()
     # generate_pvi_vs_vi()
-    generate_mpvi_vs_mvi()
+    # generate_mpvi_vs_mvi()
+    generate_mpvi_inits()

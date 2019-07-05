@@ -30,6 +30,34 @@ def random_parameterised_matrix(n, m, d_hidden, n_hidden):
     cores = [glorot_init((n, d_hidden))] + cores + [glorot_init((d_hidden, m))]
     return cores
 
+def combine_svd(u, s, vT):
+    return np.dot(u, np.dot(np.diag(s), vT))
+
+def random_reparameterisation(cores, i):
+    assert i > 0 and i < len(cores)-1
+    n = cores[i].shape[-1]
+    m = cores[i+1].shape[0]
+    assert n == m  # else not invertible...
+
+    # M = rnd.standard_normal((n,m))
+    # Mm1 = np.linalg.inv(M)
+    # assert np.isclose(np.dot(M, Mm1), np.eye(n), atol=1e-4).all()
+    # return cores[:i-1] + [np.dot(cores[i], M)] + [np.dot(Mm1, cores[i+1])] + cores[i+2:]
+
+    u_i, s_i, vT_i = np.linalg.svd(cores[i])
+    u_ip1, s_ip1, vT_ip1 = np.linalg.svd(cores[i+1])
+
+    # X = np.dot(cores[i], cores[i+1])
+    # Y = np.dot(combine_svd(u_i, s_i, np.dot(vT_i, u_ip1)), combine_svd(np.eye(n), s_ip1, vT_ip1))
+    # print(np.isclose(X, Y, atol=1e-6).all())
+
+    return (
+        cores[:i] +
+        [combine_svd(u_i, s_i, np.dot(vT_i, u_ip1))] +
+        [combine_svd(np.eye(n), s_ip1, vT_ip1)] +
+        cores[i+2:]
+        )
+
 def value(cores):
     return functools.reduce(np.dot, cores)
 
