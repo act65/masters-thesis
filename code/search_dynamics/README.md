@@ -3,6 +3,7 @@ Todos.
 - Verify these alogls are converging to the optimal policy. (plot the polytope)
 - Generalise the parameterised fns (jax must have some tools for this)
 - Implement policy gradients.
+- calculate the tangent fields. are they similar? what about for parameterised versions, how can we calculate their vector fields???
 
 Questions
 - Is param + momentum dynamics are more unstable? Or that you move around value-space in non-linear ways??
@@ -24,3 +25,7 @@ optimisers = [
     momentum
 ]
 ```
+
+***
+
+How to reason about the similarity between two vector fields despite the fact that we are going to take discrete steps on them?

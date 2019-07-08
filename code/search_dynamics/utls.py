@@ -7,31 +7,33 @@ import collections
 
 import numpy
 import jax.numpy as np
-from jax import grad, jit, jacrev
+from jax import grad, jit, jacrev, vmap
 
 import numpy.random as rnd
 
-mdp = collections.namedtuple('mdp', ['S', 'A', 'P', 'r', 'discount', 'd0'])
+MDP = collections.namedtuple('mdp', ['S', 'A', 'P', 'r', 'discount', 'd0'])
 
 def build_random_mdp(n_states, n_actions, discount):
     P = rnd.random((n_states, n_states, n_actions))
     r = rnd.standard_normal((n_states, n_actions))
     d0 = rnd.random((n_states, 1))
-    return mdp(n_states, n_actions, P/P.sum(axis=0, keepdims=True), r, discount, d0/d0.sum(axis=0, keepdims=True))
+    return MDP(n_states, n_actions, P/P.sum(axis=0, keepdims=True), r, discount, d0/d0.sum(axis=0, keepdims=True))
 
 ######################
 
-def gen_grid_policies(N=31):
+def gen_grid_policies(N):
     # special case for 2 x 2
     p1s, p2s = np.linspace(0,1,N), np.linspace(0,1,N)
     p1s = p1s.ravel()
     p2s = p2s.ravel()
     return [np.array([[p1, 1-p1],[1-p2, p2]]) for p1 in p1s for p2 in p2s]
 
-def polytope(P, r, discount):
-    pis = gen_grid_policies()
+# @jit
+def polytope(P, r, discount, pis):
     print('n pis:{}'.format(len(pis)))
-    vs = np.vstack([np.sum(value_functional(P, r, pi, discount), axis=1) for pi in pis])
+    def V(pi):
+        return np.sum(value_functional(P, r, pi, discount), axis=1)
+    vs = np.vstack([V(pi) for pi in pis])
     return vs
 
 #############################
@@ -100,7 +102,7 @@ def isclose(x, y, atol=1e-8):
 
 def converged(l):
     if len(l)>10:
-        if len(l)>2000:
+        if len(l)>20000:
             return True
         elif isclose(l[-1], l[-2]):
             return True
@@ -125,6 +127,7 @@ Some useful functions that will be repeately used.
 - `state_visitation_distribution`: calculates the expected distribution over states given a mdp + policy
 """
 
+@jit
 def value_functional(P, r, pi, discount):
     """
     V = r_{\pi} + \gamma P_{\pi} V
@@ -139,13 +142,15 @@ def value_functional(P, r, pi, discount):
     n = P.shape[-1]
     # P_{\pi}(s_t+1 | s_t) = sum_{a_t} P(s_{t+1} | s_t, a_t)\pi(a_t | s_t)
     P_pi = np.einsum('ijk,jk->ij', P, pi)
-    r_pi = r * pi
+    r_pi = np.expand_dims(np.einsum('ij,ij->i', pi, r), 1)
 
-    assert np.isclose(pi/pi.sum(axis=1, keepdims=True), pi).all()
-    assert np.isclose(P_pi/P_pi.sum(axis=0, keepdims=True), P_pi, atol=1e-4).all()
+    # assert np.isclose(pi/pi.sum(axis=1, keepdims=True), pi).all()
+    # assert np.isclose(P_pi/P_pi.sum(axis=0, keepdims=True), P_pi, atol=1e-4).all()
 
     # BUG why transpose here?!?!
-    return np.dot(np.linalg.inv(np.eye(n) - discount*P_pi.T), r_pi)
+    vs = np.dot(np.linalg.inv(np.eye(n) - discount*P_pi.T), r_pi)
+    # print(vs.shape, P_pi.shape)
+    return vs
 
 def bellman_optimality_operator(P, r, Q, discount):
     """
@@ -159,7 +164,7 @@ def bellman_optimality_operator(P, r, Q, discount):
         (np.ndarray): [n_states, n_actions]
     """
     # Q(s, a) =  r(s, a) + \gamma max_a' E_{s'~P(s' | s, a)} Q(s', a')
-    return r + discount*np.max(np.einsum('ijk,ik->jk', P, Q), axis=1)
+    return r + discount*np.max(np.einsum('ijk,ik->jk', P, Q), axis=1, keepdims=True)
 
 def state_visitation_distribution(P, pi, discount, d0):
     """
@@ -194,6 +199,7 @@ def parameterised_value_iteration(mdp, lr):
     TD = lambda cores: T(value(cores)) - value(cores)
     dVdw = jacrev(value)
 
+    @jit
     def update_fn(cores):
         delta = TD(cores)
         grads = [np.einsum('ij,ijkl->kl', delta, dc) for dc in dVdw(cores)]
@@ -253,14 +259,11 @@ def policy_gradient_iteration_logits(mdp, lr):
     dpi_dlogit_ = jacrev(softmax)
     dlogpi_dlogit_ = jacrev(lambda logits: np.log(softmax(logits)))
 
-    # @jit
+    @jit
     def update_fn(logits):
         V = value_functional(mdp.P, mdp.r, softmax(logits), mdp.discount)
-        # dpi_dlogit = dpi_dlogit_(logits)  # BUG or axis=[-1, -1]?
         dlogpi_dlogit = dlogpi_dlogit_(logits)
-        # print(dpi_dlogit.shape, dlogpi_dlogit.shape)
-        # raise SystemExit
-        return logits + lr * np.einsum('ijkl,ij->kl',dlogpi_dlogit, V)  # BUG?!?!?!?
+        return logits - lr * np.einsum('ijkl,jm->kl', dlogpi_dlogit, V)
     return update_fn
 
 def clip_by_norm(x, axis=-1, norm=2):

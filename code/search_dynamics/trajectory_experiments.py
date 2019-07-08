@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import copy
 
 def generate_avi_vs_vi(mdp):
-    print('Running AVI vs VI')
+    print('\nRunning AVI vs VI')
     lr = 0.1
 
     # vi
@@ -14,7 +14,7 @@ def generate_avi_vs_vi(mdp):
 
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', s=1,)
 
     # avi
     # K = np.eye(n_states)
@@ -28,7 +28,7 @@ def generate_avi_vs_vi(mdp):
 
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='avi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=1)
     plt.title('VI: {}, Avi {}'.format(n, m))
     plt.legend()
     plt.colorbar()
@@ -37,24 +37,25 @@ def generate_avi_vs_vi(mdp):
     plt.close()
 
 def generate_vi_sgd_vs_mom(mdp):
-    print('Running VI SGD vs Mom')
+    print('\nRunning VI SGD vs Mom')
+    lr = 0.1
 
     # sgd
     init = np.random.standard_normal((mdp.S, mdp.A))
-    qs = solve(value_iteration(mdp, 0.01), init)
+    qs = solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
 
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='sgd')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', s=1)
 
     # momentum
     init = (init, np.zeros_like(init))
-    qs = solve(momentum_bundler(value_iteration(mdp, 0.01), 0.9), init)
+    qs = solve(momentum_bundler(value_iteration(mdp, lr), 0.9), init)
     vs = np.vstack([np.max(q[0], axis=1) for q in qs])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='momentum')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=1)
 
     plt.title('SGD: {}, Mom {}'.format(n, m))
     plt.legend()
@@ -64,7 +65,7 @@ def generate_vi_sgd_vs_mom(mdp):
     plt.close()
 
 def generate_PG_vs_VI(mdp):
-    print('Running PG vs VI')
+    print('\nRunning PG vs VI')
     lr = 0.1
 
     # PG
@@ -74,15 +75,16 @@ def generate_PG_vs_VI(mdp):
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='PG')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='autumn')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='autumn', s=1)
 
     # VI
     init = value_functional(mdp.P, mdp.r, softmax(init, axis=-1), mdp.discount)
+    init = np.einsum('ijk,il->ik', mdp.P, init)
     qs = solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='summer')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='summer', s=1)
     plt.title('PG: {}, VI {}'.format(n, m))
     plt.legend()
     plt.colorbar()
@@ -91,7 +93,7 @@ def generate_PG_vs_VI(mdp):
     plt.close()
 
 def generate_pvi_vs_vi(mdp):
-    print('Running PVI vs VI')
+    print('\nRunning PVI vs VI')
     lr = 0.01
 
     # pvi
@@ -108,7 +110,7 @@ def generate_pvi_vs_vi(mdp):
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', s=1)
 
     plt.title('VI: {}, PVI {}'.format(n, m))
     plt.legend()
@@ -118,7 +120,7 @@ def generate_pvi_vs_vi(mdp):
     plt.close()
 
 def generate_mpvi_vs_mvi(mdp):
-    print('Running MPVI vs MVI')
+    print('\nRunning MPVI vs MVI')
     # mpvi
     core_init = random_parameterised_matrix(2, 2, 32, 8)
     init = (core_init, [np.zeros_like(c) for c in core_init])
@@ -127,7 +129,7 @@ def generate_mpvi_vs_mvi(mdp):
     m = vs.shape[0]
 
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='mpvi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=1)
 
     # mvi
     init = copy.deepcopy(value(core_init))  # use the same init
@@ -137,7 +139,7 @@ def generate_mpvi_vs_mvi(mdp):
     n = vs.shape[0]
 
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='mvi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer')
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', s=1)
 
     plt.title('MVI: {}, MPVI {}'.format(n, m))
     plt.legend()
@@ -145,6 +147,9 @@ def generate_mpvi_vs_mvi(mdp):
 
     plt.savefig('figs/mpvi-vs-pvi.png')
     plt.close()
+
+
+
 
 # def generate_mpvi_inits(mdp):
 #     print('Running MPVI inits')
@@ -206,20 +211,31 @@ def generate_mpvi_vs_mvi(mdp):
 
 # pg vs pi
 
+# def argumentparser():
+#     parser = argparse.ArgumentParser(description='Visualise losses and returns')
+#     parser.add_argument('--logdir', type=str, default='logs',
+#                         help='location to save logs')
+#     return parser.parse_args()
+
+# def plot(vs1, vs2, save_path):
+
+
 if __name__ == '__main__':
     n_states, n_actions = 2, 2
     mdp = build_random_mdp(n_states, n_actions, 0.9)
     vs = polytope(mdp.P, mdp.r, mdp.discount)
 
     experiments = [
-        generate_avi_vs_vi,
-        generate_vi_sgd_vs_mom,
-        generate_pvi_vs_vi,
-        generate_mpvi_vs_mvi,
+        # generate_vi_sgd_vs_mom,
+        # generate_avi_vs_vi,
+        # generate_pvi_vs_vi,
+        # generate_mpvi_vs_mvi,
         generate_PG_vs_VI,
         # generate_mpvi_inits,
     ]
 
     for exp in experiments:
+        plt.figure(figsize=(16,16))
         plt.scatter(vs[:, 0], vs[:, 1], s=1, alpha=0.25)
         exp(mdp)
+        # plt.show()
