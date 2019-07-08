@@ -76,12 +76,8 @@ def random_reparameterisation(cores, i):
         cores[i+2:]
         )
 
-def value(cores):
+def build(cores):
     return functools.reduce(np.dot, cores)
-
-def pi(cores):
-    M = np.abs(functools.reduce(np.dot, cores))
-    return M/M.sum(axis=1, keepdims=True)
 
 """
 Tools for simulating dyanmical systems.
@@ -92,11 +88,11 @@ def isclose(x, y, atol=1e-8):
         return np.isclose(x, y, atol=atol).all()
     elif isinstance(x, list):
         # return all(np.isclose(x[0], y[0], atol=1e-03).all() for i in range(len(x)))
-        return np.isclose(value(x), value(y), atol=atol).all()
+        return np.isclose(build(x), build(y), atol=atol).all()
     elif isinstance(x, tuple) and isinstance(x[0], np.ndarray):
         return np.isclose(x[0], y[0], atol=atol).all()
     elif isinstance(x, tuple) and isinstance(x[0], list):
-        return np.isclose(value(x[0]), value(y[0]), atol=atol).all()
+        return np.isclose(build(x[0]), build(y[0]), atol=atol).all()
     else:
         raise ValueError('wrong format')
 
@@ -196,8 +192,8 @@ def value_iteration(mdp, lr):
 
 def parameterised_value_iteration(mdp, lr):
     T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
-    TD = lambda cores: T(value(cores)) - value(cores)
-    dVdw = jacrev(value)
+    TD = lambda cores: T(build(cores)) - build(cores)
+    dVdw = jacrev(build)
 
     @jit
     def update_fn(cores):
@@ -209,9 +205,9 @@ def parameterised_value_iteration(mdp, lr):
 
 # NOTE this isnt really value iteration...!?
 # def parameterised_expected_value_iteration(mdp, lr):
-#     pi = lambda cores: softmax(value(cores), axis=1)
+#     pi = lambda cores: softmax(build(cores), axis=1)
 #     d = lambda cores: state_visitation_distribution(mdp.P, mpi(pi(cores)), mdp.discount, mdp.d0)
-#     EV = lambda cores: np.sum(d(cores) * softmax(value(cores), axis=1))
+#     EV = lambda cores: np.sum(d(cores) * softmax(build(cores), axis=1))
 #     def update_fn(cores):
 #         dEVdw = grad(EV)
 #         return [c+lr*g for c, g in zip(cores, dEVdw(cores))]
@@ -256,35 +252,27 @@ def greedy(x):
 
 def policy_gradient_iteration_logits(mdp, lr):
     # d/dlogits V = E_{\pi}[V] = E[V . d/dlogit log \pi]
-    dpi_dlogit_ = jacrev(softmax)
-    dlogpi_dlogit_ = jacrev(lambda logits: np.log(softmax(logits)))
+    dlogpi_dlogit = jacrev(lambda logits: np.log(softmax(logits, axis=1)))
 
     @jit
     def update_fn(logits):
-        V = value_functional(mdp.P, mdp.r, softmax(logits), mdp.discount)
-        dlogpi_dlogit = dlogpi_dlogit_(logits)
-        return logits - lr * np.einsum('ijkl,jm->kl', dlogpi_dlogit, V)
+        V = value_functional(mdp.P, mdp.r, softmax(logits, axis=1), mdp.discount)
+        Q = np.einsum('ijk,il->jk', mdp.P, V)
+        A = Q-V
+        return logits + lr * np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A)
     return update_fn
 
-def clip_by_norm(x, axis=-1, norm=2):
-    v = np.linalg.norm(x, axis=axis, ord=norm, keepdims=True)
-    norm_vals = np.where(v>1, v, np.ones_like(v))
-    return x/norm_vals
+def parameterised_policy_gradient_iteration(mdp, lr):
+    dlogpi_dw = jacrev(lambda cores: np.log(softmax(build(cores), axis=1)))
 
-def policy_gradient_iteration_projected(mdp, lr):
-    V = lambda pi: value_functional(mdp.P, mdp.r.reshape((-1, 1)), mpi(pi), mdp.discount)
-    delta = lambda pi: 1/(pi)
-    U = lambda pi: clip_by_norm(pi + lr * np.dot(delta(pi), V(pi)), axis=1, norm=1)
-    # this feels weird. would prefer to use logits??
-    # dynamics will depend on which projection is used!??
-    return U
-
-# def parameterised_policy_gradient_iteration(mdp, lr):
-#     dlogpidw = grad(np.log(pi(w)))
-#     dpidw = grad(pi(w))
-#     delta = lambda w: np.dot(dpidw(w), dlogpdw(w))
-#     U = lambda w: w + lr * delta
-#     return U
+    @jit
+    def update_fn(cores):
+        V = value_functional(mdp.P, mdp.r, softmax(build(cores), axis=1), mdp.discount)
+        Q = np.einsum('ijk,il->jk', mdp.P, V)
+        A = Q-V
+        grads = [np.einsum('ijkl,ij->kl', d, A) for d in dlogpi_dw(cores)]
+        return [c+lr*g for c, g in zip(cores, grads)]
+    return update_fn
 
 ######################
 
@@ -324,7 +312,7 @@ if __name__ == '__main__':
 
     # # TEST parameterised
     # C = random_parameterised_matrix(n_states, n_actions, 8, 2)
-    # print(value(C).shape)
+    # print(build(C).shape)
     #
     # # but these wont be distributed unformly in policy space!?
     # C = random_parameterised_matrix(n_states, n_actions, 8, 2)

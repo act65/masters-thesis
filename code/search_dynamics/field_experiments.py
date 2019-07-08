@@ -9,14 +9,14 @@ def approximate(v, cores):
     cores = random_parameterised_matrix(2, 1, d_hidden=8, n_hidden=4)
     v = rnd.standard_normal((2,1))
     cores_ = approximate(v, cores)
-    print(v, '\n',value(cores_))
+    print(v, '\n',build(cores_))
     """
-    loss = lambda cores: np.sum(np.square(v - value(cores)))
+    loss = lambda cores: np.sum(np.square(v - build(cores)))
     dl2dc = grad(loss)
     l2_update_fn = lambda cores: [c - 0.01*g for g, c in zip(dl2dc(cores), cores)]
     init = (cores, [np.zeros_like(c) for c in cores])
     traj = solve(momentum_bundler(l2_update_fn, 0.9), init)[-1]
-    return traj[0]  # the parameters, not the momentum variables
+    return traj[0]  # return the parameters only, not the momentum variables
 
 def vi_vector_field(mdp, qs, lr):
     update_fn = value_iteration(mdp, lr)
@@ -25,7 +25,7 @@ def vi_vector_field(mdp, qs, lr):
 
 def pvi_vector_field(mdp, many_cores, lr):
     update_fn = parameterised_value_iteration(mdp, lr)
-    delta = lambda cores: np.max(value(cores),axis=1) - np.max(value(update_fn(cores)), axis=1)
+    delta = lambda cores: np.max(build(cores),axis=1) - np.max(build(update_fn(cores)), axis=1)
     return np.vstack([delta(cores) for cores in many_cores])
 
 def fitted_cores(mdp, qs):
@@ -75,7 +75,7 @@ def cts_lr_fields(mdp):
     """
     How does the learning rate change the vector field???
     """
-    n = 4
+    n = 3
     lrs = np.logspace(-5, 0, n*n)
 
     pis = gen_grid_policies(N=31)
@@ -88,14 +88,16 @@ def cts_lr_fields(mdp):
     for i, lr in enumerate(lrs):
 
         dpvis = pvi_vector_field(mdp, many_cores, lr)
+        # dont expect vi to change with the lr?!
         # dvis = vi_vector_field(mdp, qs, lr)
 
-        plt.subplot(n,n, i+1)
+        plt.subplot(n, n, i+1)
+        plt.title('lr: {:.3f}'.format(lr))
         plt_field(vs, dpvis)
 
         # plt.title('Pamameterised VI')
     # plt.savefig('figs/lr_limit_{:.3f}.png'.format(lr))
-    plt.savefig('figs/lr_limit_pvi.png')
+    plt.savefig('figs/lr_limit_pvi.png', dpi=300)
 
 
 ################################################
