@@ -3,13 +3,6 @@ import jax.numpy as np
 from jax import jit, grad
 import numpy.random as rnd
 import matplotlib.pyplot as plt
-import copy
-import json
-
-def vi_vector_field(mdp, qs, lr):
-    update_fn = value_iteration(mdp, lr)
-    delta = lambda q: np.max(update_fn(q) - q, axis=1)
-    return np.vstack([delta(q) for q in qs])
 
 def approximate(v, cores):
     """
@@ -25,6 +18,11 @@ def approximate(v, cores):
     traj = solve(momentum_bundler(l2_update_fn, 0.9), init)[-1]
     return traj[0]  # the parameters, not the momentum variables
 
+def vi_vector_field(mdp, qs, lr):
+    update_fn = value_iteration(mdp, lr)
+    delta = lambda q: np.max(update_fn(q) - q, axis=1)
+    return np.vstack([delta(q) for q in qs])
+
 def pvi_vector_field(mdp, many_cores, lr):
     update_fn = parameterised_value_iteration(mdp, lr)
     delta = lambda cores: np.max(value(cores),axis=1) - np.max(value(update_fn(cores)), axis=1)
@@ -35,19 +33,17 @@ def fitted_cores(mdp, qs):
     approxs = [approximate(q, cores) for q in qs]
     return approxs
 
-def cts_lr_fields(mdp):
-    lrs = np.linspace(0, 1, 10)
-
-    pis = gen_grid_policies(N=11)
-    vs = polytope(mdp.P, mdp.r, mdp.discount, pis)
-    qs = [np.einsum('ijk,i->jk', mdp.P, v) for v in vs]
-    many_cores = fitted_cores(mdp, qs)
-
-    for lr in lrs:
-        dpvis = pvi_vector_field(mdp, many_cores, lr)
-        dvis = vi_vector_field(mdp, qs, lr)
+def plt_field(xs, dxs):
+    mags = np.linalg.norm(dxs, axis=1, keepdims=True)
+    normed_dxs = dxs/mags
+    plt.quiver(xs[:, 0], xs[:, 1], normed_dxs[:, 0], normed_dxs[:,1], mags)
+    plt.colorbar()
 
 def generate_pvi_vs_vi(mdp):
+    """
+    How does search in the parameter space versus the value space
+    change the dynamics?
+    """
     print('\nRunning PVI vs VI')
     lr = 0.1
 
@@ -60,26 +56,46 @@ def generate_pvi_vs_vi(mdp):
     # pvi
     many_cores = fitted_cores(mdp, qs)
     dpvis = pvi_vector_field(mdp, many_cores, lr)
-    mags = np.linalg.norm(dpvis, axis=1, keepdims=True)
-    normed_dpvis = dpvis/mags
 
     plt.subplot(2,1,1)
     plt.title('Pamameterised VI')
-    plt.quiver(vs[:, 0], vs[:, 1], normed_dpvis[:, 0], normed_dpvis[:,1], mags)
-    plt.colorbar()
+    plt_field(vs, dpvis)
 
     # vi
     dvis = vi_vector_field(mdp, qs, lr)
-    mags = np.linalg.norm(dvis, axis=1, keepdims=True)
-    normed_dvis = dvis/mags
 
     plt.subplot(2,1,2)
     plt.title('VI')
-    plt.quiver(vs[:, 0], vs[:, 1], normed_dvis[:, 0], normed_dvis[:,1], mags)
-    plt.colorbar()
+    plt_field(vs, dvis)
 
     plt.show()
 
+
+def cts_lr_fields(mdp):
+    """
+    How does the learning rate change the vector field???
+    """
+    n = 4
+    lrs = np.logspace(-5, 0, n*n)
+
+    pis = gen_grid_policies(N=31)
+    vs = polytope(mdp.P, mdp.r, mdp.discount, pis)
+    qs = [np.einsum('ijk,i->jk', mdp.P, v) for v in vs]
+    many_cores = fitted_cores(mdp, qs)
+
+    plt.figure(figsize=(16,16))
+    plt.title('PVI')
+    for i, lr in enumerate(lrs):
+
+        dpvis = pvi_vector_field(mdp, many_cores, lr)
+        # dvis = vi_vector_field(mdp, qs, lr)
+
+        plt.subplot(n,n, i+1)
+        plt_field(vs, dpvis)
+
+        # plt.title('Pamameterised VI')
+    # plt.savefig('figs/lr_limit_{:.3f}.png'.format(lr))
+    plt.savefig('figs/lr_limit_pvi.png')
 
 
 ################################################
@@ -125,5 +141,5 @@ def generate_pvi_vs_vi(mdp):
 if __name__ == '__main__':
     n_states, n_actions = 2, 2
     mdp = build_random_mdp(n_states, n_actions, 0.5)
-    generate_pvi_vs_vi(mdp)
-    # cts_lr_fields(mdp)
+    # generate_pvi_vs_vi(mdp)
+    cts_lr_fields(mdp)
