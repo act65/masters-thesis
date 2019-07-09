@@ -159,8 +159,12 @@ def bellman_optimality_operator(P, r, Q, discount):
     Returns:
         (np.ndarray): [n_states, n_actions]
     """
-    # Q(s, a) =  r(s, a) + \gamma max_a' E_{s'~P(s' | s, a)} Q(s', a')
-    return r + discount*np.max(np.einsum('ijk,ik->jk', P, Q), axis=1, keepdims=True)
+    if Q.shape[1] == 1:  # Q == V
+        # Q(s, a) =  r(s, a) + \gamma E_{s'~P(s' | s, a)} V(s')
+        return r + discount*np.einsum('ijk,il->jk', P, Q)
+    else:
+        # Q(s, a) =  r(s, a) + \gamma max_a' E_{s'~P(s' | s, a)} Q(s', a')
+        return r + discount*np.max(np.einsum('ijk,il->jkl', P, Q), axis=-1)
 
 def state_visitation_distribution(P, pi, discount, d0):
     """
@@ -240,30 +244,29 @@ def adjusted_value_iteration(mdp, lr, D, K):
 
 # def policy_iteration(mdp, lr):
 #     V = lambda pi: value_functional(mdp.P, mdp.r, mpi(pi), mdp.discount)
+#     greedy =
 #     delta = lambda pi: np.dot(dpidw, 1/(pi*np.log(mdp.A)))
 #     U = lambda pi: pi + lr * np.dot(V, delta(pi))
 #     return U
 
 def entropy(p, axis=1):
-    return np.sum(np.log(p) * p)
+    return -np.sum(np.log(p) * p)
 
 def softmax(x, axis=-1):
     return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
 
-def greedy(x):
-    return np.argmax(x, axis=1)
-
 def policy_gradient_iteration_logits(mdp, lr):
     # d/dlogits V = E_{\pi}[V] = E[V . d/dlogit log \pi]
-    dlogpi_dlogit = jacrev(lambda logits: np.log(softmax(logits, axis=1)))
+    dlogpi_dlogit = jacrev(lambda logits: np.log(softmax(logits)))
     dHdlogit = jacrev(lambda logits: entropy(softmax(logits)))
 
     @jit
     def update_fn(logits):
-        V = value_functional(mdp.P, mdp.r, softmax(logits, axis=1), mdp.discount)
-        Q = np.einsum('ijk,il->jk', mdp.P, V)
+        V = value_functional(mdp.P, mdp.r, softmax(logits), mdp.discount)
+        Q = bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
         A = Q-V
-        return logits + lr * np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A) + (1e-4*dHdlogit(logits))
+        g = np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A)
+        return logits + (1e-6*dHdlogit(logits)) + lr * g
     return update_fn
 
 def parameterised_policy_gradient_iteration(mdp, lr):
@@ -273,10 +276,10 @@ def parameterised_policy_gradient_iteration(mdp, lr):
     @jit
     def update_fn(cores):
         V = value_functional(mdp.P, mdp.r, softmax(build(cores), axis=1), mdp.discount)
-        Q = np.einsum('ijk,il->jk', mdp.P, V)
+        Q = bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
         A = Q-V
         grads = [np.einsum('ijkl,ij->kl', d, A) for d in dlogpi_dw(cores)]
-        return [c+lr*g+1e-4*dH for c, g, dH in zip(cores, grads, dHdw(cores))]
+        return [c+lr*g+1e-6*dH for c, g, dH in zip(cores, grads, dHdw(cores))]
     return update_fn
 
 ######################

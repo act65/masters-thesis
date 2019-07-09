@@ -105,61 +105,52 @@ def generate_PG_vs_VI(mdp, init):
 
     # PG
     logits = solve(policy_gradient_iteration_logits(mdp, lr), init)
-    vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit in logits])
+    vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit), mdp.discount), axis=1) for logit in logits])
     n = vs.shape[0]
-    plt.scatter(vs[0, 0], vs[0, 1], c='r', label='PG')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='autumn', s=1)
+    plt.scatter(vs[0, 0], vs[0, 1], c='g', label='PG')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='summer', s=1)
+    plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
     # VI
-    init = value_functional(mdp.P, mdp.r, softmax(init, axis=-1), mdp.discount)
-    init = np.einsum('ijk,il->ik', mdp.P, init)
+    init = bellman_optimality_operator(mdp.P, mdp.r, vs[0:1, :].T, mdp.discount)  # V->Q
     qs = solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     m = vs.shape[0]
-    plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='summer', s=1)
-    plt.title('PG: {}, VI {}'.format(n, m))
+    plt.scatter(vs[0, 0], vs[0, 1], c='r', label='VI')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=1)
+    plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
     plt.legend()
     plt.colorbar()
 
     plt.savefig('figs/pg-vs-vi.png')
     plt.close()
 
-def generate_PG_vs_PPG(mdp):
+def generate_PG_vs_PPG(mdp, init):
     print('\nRunning PG vs PPG')
-    lr = 0.01
+    lr = 0.1
 
     # PPG
     core_init = random_parameterised_matrix(2, 2, 32, 8)
+    core_init = approximate(init, core_init)
     all_params = solve(parameterised_policy_gradient_iteration(mdp, lr), core_init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(build(params), axis=-1), mdp.discount), axis=1)
                     for params in all_params])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='PPG')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='summer')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='summer', s=1)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
-    if np.isnan(vs).any() or np.isinf(vs).any:
-        print('NAN')
-        print(vs[np.isnan(vs)], vs[np.isinf(vs)])
-        print(vs[-1])
-
     # PG
-    init = build(core_init)
     logits = solve(policy_gradient_iteration_logits(mdp, lr), init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='PG')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='autumn')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='autumn', s=1)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
 
     plt.title('PG: {}, PPG {}'.format(n, m))
     plt.legend()
     # plt.colorbar()
-    if np.isnan(vs).any() or np.isinf(vs).any:
-        print('NAN')
-        print(vs[np.isnan(vs)], vs[np.isinf(vs)])
-        print(vs[-1])
 
     plt.savefig('figs/pg-vs-ppg.png', dpi=300)
     plt.close()
@@ -275,12 +266,15 @@ if __name__ == '__main__':
     init = np.random.standard_normal((mdp.S, mdp.A))
 
     experiments = [
-        generate_vi_sgd_vs_mom,
-        generate_pvi_vs_vi,
+        # generate_vi_sgd_vs_mom,
+        # generate_pvi_vs_vi,
+        #
         # generate_avi_vs_vi,
         # generate_mpvi_vs_mvi,
-        # generate_PG_vs_VI,
-        # generate_PG_vs_PPG,
+        #
+        generate_PG_vs_VI,
+        generate_PG_vs_PPG,
+        #
         # generate_mpvi_inits,
     ]
 
