@@ -5,7 +5,7 @@ tf.enable_eager_execution()
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-import trl_utils as trl
+from polytope_tools import *
 
 """
 The question that has been bugging me.
@@ -90,11 +90,11 @@ def spectrogram(P, r, pi, n=10):
 
     discounts = np.linspace(0.5, 0.75, n)
 
-    detMpis = [trl.generate_Mpi(n_states, n_actions, p) for p in trl.get_deterministic_policies(n_states, n_actions)]
+    detMpis = [generate_Mpi(n_states, n_actions, p) for p in get_deterministic_policies(n_states, n_actions)]
 
-    detVs = [np.hstack([trl.value_functional(P, r, M_pi, discount) for M_pi in detMpis])
+    detVs = [np.hstack([value_functional(P, r, M_pi, discount) for M_pi in detMpis])
             for discount in discounts]
-    Vs = np.hstack([trl.value_functional(P, r, pi, discount) for discount in discounts])
+    Vs = np.hstack([value_functional(P, r, pi, discount) for discount in discounts])
 
     energies = np.hstack([solve(detVs[i], Vs[:, i:i+1]) for i in range(n)])
     # energies = list(sorted(list(energies), key=np.linalg.norm))
@@ -118,9 +118,9 @@ def compressed_spectrogram():
 
     fig = plt.figure(figsize=(16, 16))
 
-    P, r = trl.generate_rnd_problem(n_states, n_actions)
+    P, r = generate_rnd_problem(n_states, n_actions)
 
-    energy = spectrogram(P, r, trl.generate_rnd_policy(n_states, n_actions))
+    energy = spectrogram(P, r, generate_rnd_policy(n_states, n_actions))
 
     plt.imshow(energy)
     plt.ylabel('Discounts')
@@ -142,8 +142,8 @@ def basis_energies():
 
     fig = plt.figure(figsize=(16, 16))
 
-    P, r = trl.generate_rnd_problem(n_states, n_actions)
-    energies = [spectrogram(P, r, trl.generate_rnd_policy(n_states, n_actions)) for _ in range(10)]
+    P, r = generate_rnd_problem(n_states, n_actions)
+    energies = [spectrogram(P, r, generate_rnd_policy(n_states, n_actions)) for _ in range(10)]
 
     n, m = energy.shape
     plt.figure()
@@ -158,13 +158,13 @@ def total():
     n_states, n_actions = 6, 2
 
 
-    P, r = trl.generate_rnd_problem(n_states, n_actions)
-    energies = np.stack([spectrogram(P, r, trl.generate_rnd_policy(n_states, n_actions)) for _ in range(20)], axis=-1)
+    P, r = generate_rnd_problem(n_states, n_actions)
+    energies = np.stack([spectrogram(P, r, generate_rnd_policy(n_states, n_actions)) for _ in range(20)], axis=-1)
 
     n = 10
     discounts = np.linspace(0.5, 0.75, n)
-    pi_stars = [trl.solve_optimal(P, r, discount) for discount in discounts]
-    detMpis = [trl.generate_Mpi(n_states, n_actions, p) for p in trl.get_deterministic_policies(n_states, n_actions)]
+    pi_stars = [solve_optimal(P, r, discount) for discount in discounts]
+    detMpis = [generate_Mpi(n_states, n_actions, p) for p in get_deterministic_policies(n_states, n_actions)]
     is_star = [np.argmax([np.isclose(star, dpi).all().astype(np.float32) for dpi in detMpis]) for star in pi_stars]
     print(is_star)
 
@@ -175,7 +175,7 @@ def total():
     for i in range(n):
         plt.subplot(5, 2, i+1)
         plt.scatter(range(m), np.mean(energies[i], axis=-1))
-        plt.scatter(is_star[i], np.linalg.norm(trl.value_functional(P, r, pi_stars[i], discounts[i])))
+        plt.scatter(is_star[i], np.linalg.norm(value_functional(P, r, pi_stars[i], discounts[i])))
 
     plt.show()
 

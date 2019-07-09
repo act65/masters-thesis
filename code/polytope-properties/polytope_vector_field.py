@@ -10,7 +10,7 @@ import numpy.random as rnd
 
 import matplotlib.pyplot as plt
 
-import trl_utils as trl
+from polytope_tools import *
 
 def generate_field():
     """
@@ -22,10 +22,10 @@ def generate_field():
     n = 3
     for i in range(n*n):
         plt.subplot(n, n, i+1)
-        P, r = trl.generate_rnd_problem(n_states, n_actions)
-        M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,21)]
-        Vs = np.squeeze(np.stack([trl.value_functional(P, r, M_pi, discount) for M_pi in M_pis], axis=0))
-        dVs = np.sum(np.stack([trl.value_jacobian(np.dot(M_pi, r), np.dot(M_pi, P), discount) for M_pi in M_pis], axis=0), axis=1)  # QUESTION 1 or 2?
+        P, r = generate_rnd_problem(n_states, n_actions)
+        M_pis = [generate_Mpi(n_states, n_actions, pi) for pi in gen_grid_policies(2,2,21)]
+        Vs = np.squeeze(np.stack([value_functional(P, r, M_pi, discount) for M_pi in M_pis], axis=0))
+        dVs = np.sum(np.stack([value_jacobian(np.dot(M_pi, r), np.dot(M_pi, P), discount) for M_pi in M_pis], axis=0), axis=1)  # QUESTION 1 or 2?
         n_dVs = np.stack([v/np.linalg.norm(v) for v in dVs], axis=0)
 
         fig = plt.quiver(Vs[:, 0], Vs[:, 1], n_dVs[:, 0], n_dVs[:, 1], np.sum(dVs,axis=1))
@@ -49,10 +49,10 @@ def distribution_of_grads():
 
     n = 10000
     vals = []
-    M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,4)]
+    M_pis = [generate_Mpi(n_states, n_actions, pi) for pi in gen_grid_policies(2,2,4)]
     for i in range(n):
-        P, r = trl.generate_rnd_problem(n_states, n_actions)
-        dVs = np.sum(np.stack([trl.value_jacobian(np.dot(M_pi, r), np.dot(M_pi, P), discount) for M_pi in M_pis]), axis=1)  # 1 or 2?
+        P, r = generate_rnd_problem(n_states, n_actions)
+        dVs = np.sum(np.stack([value_jacobian(np.dot(M_pi, r), np.dot(M_pi, P), discount) for M_pi in M_pis]), axis=1)  # 1 or 2?
         dVs = list(sorted(dVs, key=np.linalg.norm))
         vals.append(np.linalg.norm(dVs[0] - dVs[-1]))
 
@@ -62,8 +62,8 @@ def distribution_of_grads():
 
 
 def soft_functional(P, r, M_pi, discount, alpha):
-    V = trl.value_functional(P, r, M_pi, discount)
-    pi = trl.get_pi(M_pi)
+    V = value_functional(P, r, M_pi, discount)
+    pi = get_pi(M_pi)
     return V - alpha * entropy(pi)
 
 def soft_jacobian(M_pi, P, r, discount, alpha):
@@ -71,8 +71,8 @@ def soft_jacobian(M_pi, P, r, discount, alpha):
     Calculate the jacobian of a entropy regularised MDP.
     L(pi) = V(pi) - H(pi)
     """
-    dVdpi = trl.value_jacobian(np.dot(M_pi, r), np.dot(M_pi, P), discount)
-    dHdpi = trl.entropy_jacobian(trl.get_pi(M_pi)+1e-8)
+    dVdpi = value_jacobian(np.dot(M_pi, r), np.dot(M_pi, P), discount)
+    dHdpi = entropy_jacobian(get_pi(M_pi)+1e-8)
     # return dVdpi - alpha*dHdpi
     return - alpha*dHdpi
 
@@ -87,8 +87,8 @@ def generate_entropy_fields():
     n_actions = 2
     discount = 0.7
 
-    P, r = trl.generate_rnd_problem(n_states, n_actions)
-    M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,21)]
+    P, r = generate_rnd_problem(n_states, n_actions)
+    M_pis = [generate_Mpi(n_states, n_actions, pi) for pi in gen_grid_policies(2,2,21)]
     n = 3
 
     x = np.linspace(0, 1, 21)
@@ -100,7 +100,7 @@ def generate_entropy_fields():
         plt.subplot(n, n, i+1)
 
 
-        Vs = np.squeeze(np.stack([trl.value_functional(P, r, M_pi, discount) for M_pi in M_pis], axis=0))
+        Vs = np.squeeze(np.stack([value_functional(P, r, M_pi, discount) for M_pi in M_pis], axis=0))
         dVs = np.sum(np.stack([soft_jacobian(M_pi, P, r, discount, alphas[i]) for M_pi in M_pis], axis=0), axis=-1)  # QUESTION 1 or 2?
         n_dVs = np.stack([v/np.linalg.norm(v) for v in dVs], axis=0)
 

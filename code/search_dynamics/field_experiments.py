@@ -83,7 +83,7 @@ def cts_lr_fields(mdp):
 
         # plt.title('Pamameterised VI')
     # plt.savefig('figs/lr_limit_{:.3f}.png'.format(lr))
-    plt.savefig('figs/lr_limit_pvi.png', dpi=300)
+    plt.savefig('traj-figs/lr_limit_pvi.png', dpi=300)
 
 
 ################################################

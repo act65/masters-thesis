@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import trl_utils as trl
+from polytope_tools import *
 
 def softmax(x, axis=1, temp=10.0):
     x *= temp
@@ -15,10 +15,10 @@ def policy_iteration_partitions(n_states, n_actions, P, r, N=31):
     """
     lens, Vs, pis = [], [], []
 
-    M_pis = [trl.generate_Mpi(n_states, n_actions, pi)
-             for pi in trl.gen_grid_policies(n_states,n_actions,N)]
+    M_pis = [generate_Mpi(n_states, n_actions, pi)
+             for pi in gen_grid_policies(n_states,n_actions,N)]
     for M_pi in M_pis:
-        pi, vs = trl.solve(trl.policy_iteration_update, P, r, M_pi, 0.9)
+        pi, vs = solve(policy_iteration_update, P, r, M_pi, 0.9)
 
         Vs.append(vs[0])
         pis.append(pi[0][:, ::2].sum(axis=1, keepdims=True))
@@ -44,7 +44,7 @@ def generate_partition_figures():
     count = 0
     for i in range(nx*ny):
         print(i)
-        P, r = trl.generate_rnd_problem(n_states, n_actions)
+        P, r = generate_rnd_problem(n_states, n_actions)
         lens, Vs, pis = policy_iteration_partitions(n_states, n_actions, P, r, 41)
 
         count += 1

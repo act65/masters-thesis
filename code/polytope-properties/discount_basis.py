@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import trl_utils as trl
+from polytope_tools import *
 
 def generate_discounted_polytopes():
     n_states = 2
@@ -9,19 +9,19 @@ def generate_discounted_polytopes():
 
     ny = 6
     nx = 10
-    M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,31)]
-    P, r = trl.generate_rnd_problem(n_states,n_actions)
+    M_pis = [generate_Mpi(n_states, n_actions, pi) for pi in gen_grid_policies(2,2,31)]
+    P, r = generate_rnd_problem(n_states,n_actions)
     count = 0
     plt.figure(figsize=(16,16))
 
     discounts = np.linspace(1e-2, 1-1e-2,nx)
 
-    Vs0 = np.hstack([trl.value_functional(P, r, M_pi, 0) for M_pi in M_pis])
+    Vs0 = np.hstack([value_functional(P, r, M_pi, 0) for M_pi in M_pis])
 
     for i in range(nx-1):
         print(i)
-        Vs_tp1 = np.hstack([trl.value_functional(P, r, M_pi, discounts[i+1]) for M_pi in M_pis])
-        Vs = np.hstack([trl.value_functional(P, r, M_pi, discounts[i]) for M_pi in M_pis])
+        Vs_tp1 = np.hstack([value_functional(P, r, M_pi, discounts[i+1]) for M_pi in M_pis])
+        Vs = np.hstack([value_functional(P, r, M_pi, discounts[i]) for M_pi in M_pis])
 
         Ws = np.sum((Vs - Vs_tp1)**2, axis=0)
 

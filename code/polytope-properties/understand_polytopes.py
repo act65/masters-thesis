@@ -8,7 +8,7 @@ import numpy.random as rnd
 
 import matplotlib.pyplot as plt
 
-import trl_utils as trl
+from polytope_tools import *
 
 def normalise(x, axis):
     return x/np.sum(x, axis=axis, keepdims=True)
@@ -27,7 +27,7 @@ def generate_rnd_polytope_densities():
     Randomly sample from `n_action` simplexes.
     And then use the value functional to solve for V.
     """
-    generate_rnd_policy = lambda n_states, n_actions: trl.generate_Mpi(n_states,
+    generate_rnd_policy = lambda n_states, n_actions: generate_Mpi(n_states,
                                                                    n_actions,
                                                                    uniform_simplex((n_states, n_actions)))
     n_states = 2
@@ -43,10 +43,10 @@ def generate_rnd_polytope_densities():
     for i in range(n//m):
         for _ in range(m):
             count += 1
-            P, r = trl.generate_rnd_problem(n_states, n_actions[i])
+            P, r = generate_rnd_problem(n_states, n_actions[i])
 
             # TODO can we calculate this analytically? p(V) = inv(abs(1/det(dVdx))) p(x)
-            Vs = np.hstack([trl.value_functional(P, r, generate_rnd_policy(n_states, n_actions[i]), 0.9) for _ in range(N)])
+            Vs = np.hstack([value_functional(P, r, generate_rnd_policy(n_states, n_actions[i]), 0.9) for _ in range(N)])
 
             plt.subplot(n//m,n//m,count+1)
             fig = plt.scatter(Vs[0, :], Vs[1, :],)
@@ -56,7 +56,7 @@ def generate_rnd_polytope_densities():
 
 
     plt.tight_layout()
-    plt.savefig('../pictures/figures/polytope_n_actions.png'.format(i))
+    plt.savefig('figs/polytope_n_actions.png'.format(i))
 
 if __name__ =='__main__':
     generate_rnd_polytope_densities()

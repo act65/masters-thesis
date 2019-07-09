@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-import trl_utils as trl
+from polytope_tools import *
 
 import collections
 
@@ -22,10 +22,10 @@ def discount_partitions():
 
 
     for _ in range(10):
-        P, r = trl.generate_rnd_problem(n_states, n_actions)
+        P, r = generate_rnd_problem(n_states, n_actions)
         stars = []
         for i in range(n):
-            stars.append(trl.solve(P, r, discounts[i]))
+            stars.append(solve(P, r, discounts[i]))
 
         diffs = [np.sum(np.abs(stars[i]-stars[i+1])) for i in range(n-1)]
         plt.plot(discounts[:-1], np.cumsum(diffs))

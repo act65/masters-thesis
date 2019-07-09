@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-import trl_utils as trl
+from polytope_tools import *
 
 def generate_discounted_polytopes_forvideo():
     """
@@ -14,8 +14,8 @@ def generate_discounted_polytopes_forvideo():
 
     N = 100
     n = 4
-    M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,31)]
-    Prs = [trl.generate_rnd_problem(n_states,n_actions)for _ in range(n*n)]
+    M_pis = [generate_Mpi(n_states, n_actions, pi) for pi in gen_grid_policies(2,2,31)]
+    Prs = [generate_rnd_problem(n_states,n_actions)for _ in range(n*n)]
 
     for i, discount in enumerate(np.linspace(0, 1-1e-4,N)):
         print(i)
@@ -23,7 +23,7 @@ def generate_discounted_polytopes_forvideo():
         for j in range(n*n):
             ax = plt.subplot(n,n,j+1)
             P, r = Prs[j]
-            Vs = np.hstack([trl.value_functional(P, r, M_pi, discount) for M_pi in M_pis])
+            Vs = np.hstack([value_functional(P, r, M_pi, discount) for M_pi in M_pis])
             fig = plt.plot(Vs[0, :], Vs[1, :], 'b.')[0]
             ax.set_xlim(np.min(Vs[0, :]),np.max(Vs[0, :]))
             ax.set_ylim(np.min(Vs[1, :]),np.max(Vs[1, :]))
@@ -41,8 +41,8 @@ def generate_discounted_polytopes():
 
     ny = 6
     nx = 12
-    M_pis = [trl.generate_Mpi(n_states, n_actions, pi) for pi in trl.gen_grid_policies(2,2,31)]
-    Prs = [trl.generate_rnd_problem(n_states,n_actions)for _ in range(ny)]
+    M_pis = [generate_Mpi(n_states, n_actions, pi) for pi in gen_grid_policies(2,2,31)]
+    Prs = [generate_rnd_problem(n_states,n_actions)for _ in range(ny)]
     count = 0
     plt.figure(figsize=(16,16))
     for j in range(ny):
@@ -52,8 +52,8 @@ def generate_discounted_polytopes():
             ax = plt.subplot(ny,nx,count)
 
             P, r = Prs[j]
-            Vs = np.hstack([trl.value_functional(P, r, M_pi, discount) for M_pi in M_pis])
-            pVs = [trl.density_value_functional(0.1, P, r, M_pi, 0.9) for M_pi in M_pis]
+            Vs = np.hstack([value_functional(P, r, M_pi, discount) for M_pi in M_pis])
+            pVs = [density_value_functional(0.1, P, r, M_pi, 0.9) for M_pi in M_pis]
 
             fig = plt.scatter(Vs[0, :], Vs[1, :], c=pVs)
             ax.set_xlim(np.min(Vs[0, :]),np.max(Vs[0, :]))
@@ -72,16 +72,16 @@ def discount_trajectories():
     """
     n_states, n_actions = 2, 6
 
-    M_pis = [trl.generate_Mpi(n_states, n_actions, p) for p in trl.get_deterministic_policies(n_states, n_actions)]
+    M_pis = [generate_Mpi(n_states, n_actions, p) for p in get_deterministic_policies(n_states, n_actions)]
     fig = plt.figure(figsize=(16, 16))
     # ax = fig.add_subplot(111)
     n = 20
-    P, r = trl.generate_rnd_problem(n_states, n_actions)
+    P, r = generate_rnd_problem(n_states, n_actions)
     discounts = np.linspace(0.1, 0.999, n)
 
     Vs = []
     for i in range(n):
-        V = np.hstack([trl.value_functional(P, r, M_pi, discounts[i]) for M_pi in M_pis])
+        V = np.hstack([value_functional(P, r, M_pi, discounts[i]) for M_pi in M_pis])
         Vs.append(V/np.max(V))
     Vs = np.stack(Vs, axis=-1)
     # print(np.stack(Vs).shape)
