@@ -9,7 +9,7 @@ Smaller search spaces are better. But added structure (for example, locally line
 When transforming between two spaces, how does the optimisation space change?
 Does my abstraction make optimisation easier?
 
-$$
+
 \begin{align}
 &\mathop{\text{max}}_V \mathop{\mathbb E}_{s\sim D} V(s) \\
 &\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{s\sim D}V^{\pi}(s) \\
@@ -18,7 +18,7 @@ $$
 &\mathop{\text{max}}_{\phi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi}}}}(s) \\
 &\mathop{\text{max}}_{\varphi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi_{\varphi}}}}}(s) \\
 \end{align}
-$$
+
 
 We can pick the space we optimise in. Why would we want to pick one space over another?
 
@@ -27,7 +27,7 @@ We can pick the space we optimise in. Why would we want to pick one space over a
 - In which spaces does momentum work well?
 - ...
 
-### Value iteration
+#### Value iteration
 
 ```python
 value = init()
@@ -35,7 +35,7 @@ while not converged(value):
   value = update(value)
 ```
 
-### Policy iteration
+#### Policy iteration
 
 ```python
 policy = init()
@@ -44,7 +44,7 @@ while not converged(value):
   policy = update(value)
 ```
 
-### Parameter iteration
+#### Parameter iteration
 
 ```python
 parameters = init()
@@ -54,22 +54,22 @@ while not converged(value):
   parameters = step(value)
 ```
 
-## Dynamics and connectivity
+### Dynamics and connectivity
 
 Ok, so if we parameterise our search space. We have now changed the topology of our search space. See these gradient flows for example;
 
-![]()
+![The optimisation dynamics of value iteration versus parameterised value iteration.](../../code/search_dynamics/figs/vi-vs-pvi.png){ width=300px }
+
+![The optimisation dynamics of value iteration versus value iteration with momentum.](../../code/search_dynamics/figs/vi_sgd-vs-vi_mom.png){ width=300px }
 
 If we overparameterise the search space, then we can move between solutions in new ways. We can 'tunnel' from A to B, without crossing C.
 
-What advantages does this provide?
+__Q:__ What advantages does this provide?
 
-Every point is closer, under some measure of distance?!?
-
-
+Intuition: Every point is closer, under some measure of distance?!?
 But. Momentum seems like it might be a bad thing here?
 
-## Momentum in higher dimensions
+### Momentum in higher dimensions
 
 Intuition. Something weird happens with momentum in overparameterised spaces.
 
@@ -77,6 +77,11 @@ It is necessary to consider the trajectory to study momentum. It depends on what
 Can we construct a space of possible trajectories?
 What properties do trajectories have? They are connected by the update fn.
 
-## Continuous flow and its discretisation
+### Continuous flow and its discretisation
 
 A linear step of size, $\alpha$, in parameter space, ie by gradient descent, is not necessrily a linear step in parameter space.
+
+![The gradient field dV as a function of different learning. ](../../code/search_dynamics/figs/lr_limit_pvi.png){ width=300px }
+
+
+### Refs

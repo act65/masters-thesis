@@ -4,20 +4,6 @@ from jax import jit, grad
 import numpy.random as rnd
 import matplotlib.pyplot as plt
 
-def approximate(v, cores):
-    """
-    cores = random_parameterised_matrix(2, 1, d_hidden=8, n_hidden=4)
-    v = rnd.standard_normal((2,1))
-    cores_ = approximate(v, cores)
-    print(v, '\n',build(cores_))
-    """
-    loss = lambda cores: np.sum(np.square(v - build(cores)))
-    dl2dc = grad(loss)
-    l2_update_fn = lambda cores: [c - 0.01*g for g, c in zip(dl2dc(cores), cores)]
-    init = (cores, [np.zeros_like(c) for c in cores])
-    traj = solve(momentum_bundler(l2_update_fn, 0.9), init)[-1]
-    return traj[0]  # return the parameters only, not the momentum variables
-
 def vi_vector_field(mdp, qs, lr):
     update_fn = value_iteration(mdp, lr)
     delta = lambda q: np.max(update_fn(q) - q, axis=1)

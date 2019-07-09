@@ -244,6 +244,9 @@ def adjusted_value_iteration(mdp, lr, D, K):
 #     U = lambda pi: pi + lr * np.dot(V, delta(pi))
 #     return U
 
+def entropy(p, axis=1):
+    return np.sum(np.log(p) * p)
+
 def softmax(x, axis=-1):
     return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
 
@@ -253,17 +256,19 @@ def greedy(x):
 def policy_gradient_iteration_logits(mdp, lr):
     # d/dlogits V = E_{\pi}[V] = E[V . d/dlogit log \pi]
     dlogpi_dlogit = jacrev(lambda logits: np.log(softmax(logits, axis=1)))
+    dHdlogit = jacrev(lambda logits: entropy(softmax(logits)))
 
     @jit
     def update_fn(logits):
         V = value_functional(mdp.P, mdp.r, softmax(logits, axis=1), mdp.discount)
         Q = np.einsum('ijk,il->jk', mdp.P, V)
         A = Q-V
-        return logits + lr * np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A)
+        return logits + lr * np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A) + (1e-4*dHdlogit(logits))
     return update_fn
 
 def parameterised_policy_gradient_iteration(mdp, lr):
     dlogpi_dw = jacrev(lambda cores: np.log(softmax(build(cores), axis=1)))
+    dHdw = jacrev(lambda cores: entropy(softmax(build(cores))))
 
     @jit
     def update_fn(cores):
@@ -271,7 +276,7 @@ def parameterised_policy_gradient_iteration(mdp, lr):
         Q = np.einsum('ijk,il->jk', mdp.P, V)
         A = Q-V
         grads = [np.einsum('ijkl,ij->kl', d, A) for d in dlogpi_dw(cores)]
-        return [c+lr*g for c, g in zip(cores, grads)]
+        return [c+lr*g+1e-4*dH for c, g, dH in zip(cores, grads, dHdw(cores))]
     return update_fn
 
 ######################
@@ -306,6 +311,22 @@ def momentum_bundler(update_fn, decay):
 
         return W_tp1, M_tp1
     return jit(momentum_update_fn)
+
+def approximate(v, cores):
+    """
+    cores = random_parameterised_matrix(2, 1, d_hidden=8, n_hidden=4)
+    v = rnd.standard_normal((2,1))
+    cores_ = approximate(v, cores)
+    print(v, '\n',build(cores_))
+    """
+    loss = lambda cores: np.sum(np.square(v - build(cores)))
+    dl2dc = grad(loss)
+    l2_update_fn = lambda cores: [c - 0.01*g for g, c in zip(dl2dc(cores), cores)]
+    init = (cores, [np.zeros_like(c) for c in cores])
+    traj = solve(momentum_bundler(l2_update_fn, 0.9), init)[-1]
+    return traj[0]  # return the parameters only, not the momentum variables
+
+
 
 if __name__ == '__main__':
     n_states, n_actions = 2, 2
