@@ -1,8 +1,10 @@
-from utls import *
 import jax.numpy as np
 from jax import jit, grad
 import numpy.random as rnd
+
 import matplotlib.pyplot as plt
+
+from utils import *
 
 def vi_vector_field(mdp, qs, lr):
     update_fn = value_iteration(mdp, lr)

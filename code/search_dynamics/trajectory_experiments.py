@@ -1,7 +1,10 @@
-'traj-figsfrom utls import *
-import numpy as np
+import jax.numpy as np
+import numpy.random as rnd
 import matplotlib.pyplot as plt
+
 import copy
+
+from utils import *
 
 def generate_vi_sgd_vs_mom(mdp, init):
     print('\nRunning VI SGD vs Mom')
@@ -12,7 +15,7 @@ def generate_vi_sgd_vs_mom(mdp, init):
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='sgd')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', s=5)
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='spring', s=10)
 
     # momentum
     init = (init, np.zeros_like(init))
@@ -20,7 +23,7 @@ def generate_vi_sgd_vs_mom(mdp, init):
     vs = np.vstack([np.max(q[0], axis=1) for q in qs])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='momentum')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=5)
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=10)
 
     plt.title('SGD: {}, Mom {}'.format(n, m))
     plt.legend()
@@ -37,11 +40,11 @@ def generate_pvi_vs_vi(mdp, init):
     # pvi
     core_init = random_parameterised_matrix(2, 2, 32, 4)
     core_init = approximate(init, core_init)
-    params = solve(parameterised_value_iteration(mdp, lr), core_init)
+    params = solve(parameterised_value_iteration(mdp, lr/len(core_init)), core_init)
     vs = np.vstack([np.max(build(c), axis=1) for c in params])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='pvi')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
 
     # vi
@@ -49,7 +52,7 @@ def generate_pvi_vs_vi(mdp, init):
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='summer', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='spring', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
     plt.title('VI: {}, PVI {}'.format(n, m))
@@ -69,19 +72,19 @@ def generate_avi_vs_vi(mdp):
     lr = 0.1
 
     # vi
-    init = np.random.standard_normal((mdp.S, mdp.A))
+    init = rnd.standard_normal((mdp.S, mdp.A))
     qs = solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
 
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='summer', s=5)
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='spring', s=10)
 
     # avi
     # K = np.eye(n_states)
-    K = np.random.standard_normal((mdp.S))
+    K = rnd.standard_normal((mdp.S))
     K = (K + K.T)/2 + 1  # this can accelerate learning. but also lead to divergence. want to explore this more!!!
-    d = np.random.random(mdp.S)
+    d = rnd.random(mdp.S)
     D = np.diag(d/d.sum())  # this can change the optima!!
     # D = np.eye(n_states)
     qs = solve(adjusted_value_iteration(mdp, lr, D, K), init)
@@ -89,7 +92,7 @@ def generate_avi_vs_vi(mdp):
 
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='avi')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=5)
+    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=10)
     plt.title('VI: {}, Avi {}'.format(n, m))
     plt.legend()
     plt.colorbar()
@@ -106,7 +109,7 @@ def generate_PG_vs_VI(mdp, init):
     vs = np.vstack([value_functional(mdp.P, mdp.r, softmax(logit), mdp.discount).T for logit in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='PG')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='summer', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='spring', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
     # VI
@@ -116,7 +119,7 @@ def generate_PG_vs_VI(mdp, init):
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='VI')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
     plt.legend()
     plt.title('PG: {}, VI {}'.format(n, m))
@@ -132,12 +135,12 @@ def generate_PG_vs_PPG(mdp, init):
     # PPG
     core_init = random_parameterised_matrix(2, 2, 32, 8)
     core_init = approximate(init, core_init)
-    all_params = solve(parameterised_policy_gradient_iteration(mdp, lr), core_init)
+    all_params = solve(parameterised_policy_gradient_iteration(mdp, lr/len(core_init)), core_init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(build(params), axis=-1), mdp.discount), axis=1)
                     for params in all_params])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='PPG')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='summer', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='spring', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
     # PG
@@ -145,7 +148,7 @@ def generate_PG_vs_PPG(mdp, init):
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='PG')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='autumn', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='autumn', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
 
     plt.title('PG: {}, PPG {}'.format(n, m))
@@ -155,28 +158,61 @@ def generate_PG_vs_PPG(mdp, init):
     plt.savefig('traj-figs/pg-vs-ppg.png', dpi=300)
     plt.close()
 
+def generate_mppg_vs_mpg(mdp, init):
+    print('\nRunning MPG vs MPPG')
+    lr = 0.001
+
+    # MPPG
+    core_init = random_parameterised_matrix(2, 2, 32, 8)
+    core_init = approximate(init, core_init)
+    core_init = (core_init, [np.zeros_like(c) for c in core_init])
+    all_params = solve(momentum_bundler(parameterised_policy_gradient_iteration(mdp, lr), 0.9), core_init)
+    vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(build(params), axis=-1), mdp.discount), axis=1)
+                    for params, mom in all_params])
+    m = vs.shape[0]
+    plt.scatter(vs[0, 0], vs[0, 1], c='g', label='MPPG')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='spring', s=10)
+    plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
+
+    # MPG
+    init = (init, np.zeros_like(init))
+    logits = solve(momentum_bundler(policy_gradient_iteration_logits(mdp, lr), 0.9), init)
+    vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit, mom in logits])
+    n = vs.shape[0]
+    plt.scatter(vs[0, 0], vs[0, 1], c='r', label='MPG')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='autumn', s=10)
+    plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
+
+    plt.title('PG: {}, PPG {}'.format(n, m))
+    plt.legend()
+    # plt.colorbar()
+
+    plt.savefig('traj-figs/mpg-vs-mppg.png', dpi=300)
+    plt.close()
+
 def generate_mpvi_vs_mvi(mdp, init):
     print('\nRunning MPVI vs MVI')
+    lr = 1e-2
     # mpvi
     core_init = random_parameterised_matrix(2, 2, 32, 8)
     core_init = approximate(init, core_init)
     c_init = (core_init, [np.zeros_like(c) for c in core_init])
-    params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), c_init)
+    params = solve(momentum_bundler(parameterised_value_iteration(mdp, lr), 0.9), c_init)
     vs = np.vstack([np.max(build(c[0]), axis=-1) for c in params])
     m = vs.shape[0]
 
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='mpvi')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
 
     # mvi
     init = (init, np.zeros_like(init))
-    qs = solve(momentum_bundler(value_iteration(mdp, 0.01), 0.9), init)
+    qs = solve(momentum_bundler(value_iteration(mdp, lr), 0.9), init)
     vs = np.vstack([np.max(q[0], axis=-1) for q in qs])
     n = vs.shape[0]
 
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='mvi')
-    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='summer', s=5)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='spring', s=10)
     plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
 
@@ -207,7 +243,7 @@ def generate_mpvi_vs_mvi(mdp, init):
 #     params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
 #     vs = np.vstack([np.max(build(c[0]), axis=-1) for c in params])
 #     m = vs.shape[0]
-#     plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='summer', label='mpvi')
+#     plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='spring', label='mpvi')
 #
 #     plt.savefig('traj-figs/mpvi-inits.png')
 #     plt.close()
@@ -263,17 +299,19 @@ if __name__ == '__main__':
     mdp = build_random_mdp(n_states, n_actions, 0.5)
     pis = gen_grid_policies(41)
     vs = polytope(mdp.P, mdp.r, mdp.discount, pis)
-    init = np.random.standard_normal((mdp.S, mdp.A))
+    init = rnd.standard_normal((mdp.S, mdp.A))
 
     experiments = [
         # generate_vi_sgd_vs_mom,
         # generate_pvi_vs_vi,
-        # generate_mpvi_vs_mvi,
         #
         # generate_avi_vs_vi,
         #
-        generate_PG_vs_VI,
+        # generate_PG_vs_VI,
         # generate_PG_vs_PPG,
+        #
+        # generate_mpvi_vs_mvi,
+        generate_mppg_vs_mpg,
         #
         # generate_mpvi_inits,
     ]

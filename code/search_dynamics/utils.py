@@ -120,7 +120,6 @@ def solve(update_fn, init):
 Some useful functions that will be repeately used.
 - `value_functional`: evaluates a policy within a mdp
 - `bellman_optimality_operator`: calculates a step of the bellman operator
-- `state_visitation_distribution`: calculates the expected distribution over states given a mdp + policy
 """
 
 @jit
@@ -166,23 +165,6 @@ def bellman_optimality_operator(P, r, Q, discount):
         # Q(s, a) =  r(s, a) + \gamma max_a' E_{s'~P(s' | s, a)} Q(s', a')
         return r + discount*np.max(np.einsum('ijk,il->jkl', P, Q), axis=-1)
 
-def state_visitation_distribution(P, pi, discount, d0):
-    """
-    Ps + yPPs + yyPPPs + yyyPPPPs ...
-    (P + yPP + yyPPP + yyyPPPP ... )s
-    (I - yP)^-1 s
-    """
-    n = d0.size
-    P_pi = np.einsum('ijk,jk->ij', P, pi)
-
-    # check we have been given normalised distributions
-    assert np.isclose(d0/d0.sum(), d0).all()
-    if np.isclose(P_pi/P_pi.sum(axis=1, keepdims=True), P_pi, atol=1e-8).all():
-        print(P_pi.sum(axis=1, keepdims=True))
-        raise ValueError('P_pi is not normalised')
-
-    return (1-discount)*np.dot(np.linalg.inv(np.eye(n) - discount * P_pi), d0)
-
 """
 Value iteration;
 - Q_t+1 = Q_t + lr . (TQ_t - Q)
@@ -206,16 +188,6 @@ def parameterised_value_iteration(mdp, lr):
         # TODO attempt to understand the properties of dc. and its relation to K
         return [c+lr*g for c, g in zip(cores, grads)]
     return jit(update_fn)
-
-# NOTE this isnt really value iteration...!?
-# def parameterised_expected_value_iteration(mdp, lr):
-#     pi = lambda cores: softmax(build(cores), axis=1)
-#     d = lambda cores: state_visitation_distribution(mdp.P, mpi(pi(cores)), mdp.discount, mdp.d0)
-#     EV = lambda cores: np.sum(d(cores) * softmax(build(cores), axis=1))
-#     def update_fn(cores):
-#         dEVdw = grad(EV)
-#         return [c+lr*g for c, g in zip(cores, dEVdw(cores))]
-#     return update_fn
 
 ######################
 # Neural tangent kernel and ...
@@ -242,13 +214,6 @@ def adjusted_value_iteration(mdp, lr, D, K):
 # Policy iteration
 ######################
 
-# def policy_iteration(mdp, lr):
-#     V = lambda pi: value_functional(mdp.P, mdp.r, mpi(pi), mdp.discount)
-#     greedy =
-#     delta = lambda pi: np.dot(dpidw, 1/(pi*np.log(mdp.A)))
-#     U = lambda pi: pi + lr * np.dot(V, delta(pi))
-#     return U
-
 def entropy(p, axis=1):
     return -np.sum(np.log(p) * p)
 
@@ -266,7 +231,7 @@ def policy_gradient_iteration_logits(mdp, lr):
         Q = bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
         A = Q-V
         g = np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A)
-        return logits + (1e-6*dHdlogit(logits)) + lr * g
+        return logits + 1e-4*dHdlogit(logits) + lr * g
     return update_fn
 
 def parameterised_policy_gradient_iteration(mdp, lr):
@@ -279,7 +244,7 @@ def parameterised_policy_gradient_iteration(mdp, lr):
         Q = bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
         A = Q-V
         grads = [np.einsum('ijkl,ij->kl', d, A) for d in dlogpi_dw(cores)]
-        return [c+lr*g+1e-6*dH for c, g, dH in zip(cores, grads, dHdw(cores))]
+        return [c+lr*g+1e-4*dH for c, g, dH in zip(cores, grads, dHdw(cores))]
     return update_fn
 
 ######################
@@ -326,9 +291,8 @@ def approximate(v, cores):
     dl2dc = grad(loss)
     l2_update_fn = lambda cores: [c - 0.01*g for g, c in zip(dl2dc(cores), cores)]
     init = (cores, [np.zeros_like(c) for c in cores])
-    traj = solve(momentum_bundler(l2_update_fn, 0.9), init)[-1]
-    return traj[0]  # return the parameters only, not the momentum variables
-
+    final_variables, momentum_var = solve(momentum_bundler(l2_update_fn, 0.9), init)[-1]
+    return final_variables
 
 
 if __name__ == '__main__':
