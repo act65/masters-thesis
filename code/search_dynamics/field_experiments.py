@@ -17,14 +17,20 @@ def pvi_vector_field(mdp, many_cores, lr):
     return np.vstack([delta(cores) for cores in many_cores])
 
 def fitted_cores(mdp, qs):
+    """
+    For a set of target values, want to init cores that yield these values.
+    """
     cores = random_parameterised_matrix(2, 2, d_hidden=8, n_hidden=4)
     approxs = [approximate(q, cores) for q in qs]
     return approxs
 
+def normalize(x):
+    mags = np.linalg.norm(x, axis=1, keepdims=True)
+    return x/mags
+
 def plt_field(xs, dxs):
-    mags = np.linalg.norm(dxs, axis=1, keepdims=True)
-    normed_dxs = dxs/mags
-    plt.quiver(xs[:, 0], xs[:, 1], normed_dxs[:, 0], normed_dxs[:,1], mags)
+    normed_dxs = normalize(dxs)
+    plt.quiver(xs[:, 0], xs[:, 1], normed_dxs[:, 0], normed_dxs[:,1], np.linalg.norm(dxs, axis=1))
     plt.colorbar()
 
 def generate_pvi_vs_vi(mdp):
@@ -88,6 +94,27 @@ def cts_lr_fields(mdp):
     plt.savefig('traj-figs/lr_limit_pvi.png', dpi=300)
 
 
+
+
+def lr_field_diffs(mdp):
+    """
+    How does the learning rate change the vector field???
+    """
+
+    pis = gen_grid_policies(N=11)
+    vs = polytope(mdp.P, mdp.r, mdp.discount, pis)
+    qs = [np.einsum('ijk,i->jk', mdp.P, v) for v in vs]
+    many_cores = fitted_cores(mdp, qs)
+
+    plt.figure(figsize=(16,16))
+    plt.title('PVI')
+
+    dF = pvi_vector_field(mdp, many_cores, 0.1)/0.1 - pvi_vector_field(mdp, many_cores, 1e-8)/1e-8
+    plt_field(vs, dF)
+
+    plt.savefig('field-figs/lr_field_diffs.png', dpi=300)
+
+
 ################################################
 #
 # # @jit
@@ -132,4 +159,5 @@ if __name__ == '__main__':
     n_states, n_actions = 2, 2
     mdp = build_random_mdp(n_states, n_actions, 0.5)
     # generate_pvi_vs_vi(mdp)
-    cts_lr_fields(mdp)
+    # cts_lr_fields(mdp)
+    lr_field_diffs(mdp)
