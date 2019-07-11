@@ -1,15 +1,11 @@
-In [Policy invariance under reward transformations](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf) the authors prove that __TODO__... explain.
+In [Policy invariance under reward transformations](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf) the authors prove that;
 
-The next question is, what other transforms is the optimal policy invariant to?
+> The set of transforms, $T$, of the reward function, that yield the same optimal policy, $\pi^{* }$ are of the form; $T(R)(s, a, s') = R(s, a, s')+F(s, a, s')$ where $F$ is a potential function, $F(s, a, s') = \gamma \phi(s') - \phi(s)$.
+
+The next question is, what about other transforms of the MDP that yield the same optimal policy?
 - transformations of the transition fn
 - transformations of both the reward and transition fn
-- anything else?s
-
-$$
-\pi^{* } = \mathop{\text{max}}_{\pi}  \mathop{\mathbb E}_{s\sim d_{\pi}}[ V^{\pi}(s) ] \\
-V^{\pi}(s) = \mathop{\mathbb E}_{\tau \sim d_{\pi}(s)} [\sum^{\infty}_{t=0} \gamma^t r_t ] \\
-d_{\pi}(s) = \sum_{t=0}^{\infty} \gamma^t P(s_t=s| \pi, d_0, T)
-$$
+- transformations of the reward and discount
 
 
 Want to find the invariant transformations under the optimal policy.
