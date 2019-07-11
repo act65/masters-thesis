@@ -98,7 +98,7 @@ def isclose(x, y, atol=1e-8):
 
 def converged(l):
     if len(l)>10:
-        if len(l)>20000:
+        if len(l)>50000:
             return True
         elif isclose(l[-1], l[-2]):
             return True

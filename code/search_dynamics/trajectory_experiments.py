@@ -3,33 +3,41 @@ import numpy.random as rnd
 import matplotlib.pyplot as plt
 
 import copy
+import functools
 
 from utils import *
 
-def generate_vi_sgd_vs_mom(mdp, init):
+def clipped_stack(x, n=1000):
+    m = len(x)
+    k = m//n if m//n > 0 else 1
+    return [x[i] for i in range(0, m, k)]
+
+def generate_vi_sgd_vs_mom(mdp, init, lr=0.01):
     print('\nRunning VI SGD vs Mom')
-    lr = 0.01
 
     # sgd
     qs = solve(value_iteration(mdp, lr), init)
+    qs = clipped_stack(qs,1000)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     n = vs.shape[0]
-    plt.scatter(vs[0, 0], vs[0, 1], c='g', label='sgd')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(n), cmap='spring', s=10)
+    plt.scatter(vs[0, 0], vs[0, 1], c='m', label='gd')
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(n-2), cmap='spring', s=10)
+    plt.scatter(vs[-1, 0], vs[-1, 1], c='m', marker='x')
 
     # momentum
     init = (init, np.zeros_like(init))
     qs = solve(momentum_bundler(value_iteration(mdp, lr), 0.99), init)
+    qs = clipped_stack(qs,1000)
     vs = np.vstack([np.max(q[0], axis=1) for q in qs])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='momentum')
-    plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', s=10)
+    plt.scatter(vs[1:-1, 0], vs[1:-1, 1], c=range(m-2), cmap='autumn', s=10)
+    plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
 
-    plt.title('SGD: {}, Mom {}'.format(n, m))
+    plt.title('SGD: {}, Mom {}, Lr: {}'.format(n, m, lr))
     plt.legend()
-    plt.colorbar()
 
-    plt.savefig('traj-figs/vi_sgd-vs-vi_mom.png')
+    plt.savefig('traj-figs/vi_sgd-vs-vi_mom_{}.png'.format(lr))
     plt.close()
 
 
@@ -302,7 +310,9 @@ if __name__ == '__main__':
     init = rnd.standard_normal((mdp.S, mdp.A))
 
     experiments = [
-        # generate_vi_sgd_vs_mom,
+        functools.partial(generate_vi_sgd_vs_mom, lr=a) for a in np.logspace(-5, 0, 6)
+        #
+        # generate_vi_sgd_vs_mom
         # generate_pvi_vs_vi,
         #
         # generate_avi_vs_vi,
@@ -311,13 +321,13 @@ if __name__ == '__main__':
         # generate_PG_vs_PPG,
         #
         # generate_mpvi_vs_mvi,
-        generate_mppg_vs_mpg,
+        # generate_mppg_vs_mpg,
         #
         # generate_mpvi_inits,
     ]
 
     for exp in experiments:
         plt.figure(figsize=(16,16))
-        plt.scatter(vs[:, 0], vs[:, 1], s=10, alpha=0.5)
+        plt.scatter(vs[:, 0], vs[:, 1], s=10, alpha=0.75)
         exp(mdp, init)
         # plt.show()
