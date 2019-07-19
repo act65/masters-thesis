@@ -35,3 +35,8 @@ But what do we gain?
 Stability?
 One-shot learning?
 Reduction to supervised learning.
+
+
+- [Organizing experience](https://arxiv.org/abs/1806.04624)
+- [Striving for simplicity in off-policy DRL](https://arxiv.org/abs/1907.04543)
+- [Large memory layers with product keys](https://arxiv.org/abs/1907.05242)
