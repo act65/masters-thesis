@@ -1,6 +1,6 @@
 [Diagnosing Bottlenecks in Deep Q-learning Algorithms](https://arxiv.org/abs/1902.10250)
 
-What is the effect of distribution shift and a moving target?
+What is the effect of distribution shift, $\mu(t)$, and a moving target, $Q(t)$?
 
 The standard formulation of Q-learning prescribes an update rule, with no corresponding objective function (Sutton et al., 2009a).
 
