@@ -44,3 +44,38 @@ q(s) - KL(P(\cdot | s, a) \parallel p(\cdot | s)) = r(s, a) \\
 $$
 
 The KL. If $P(s' | s, a)$ is zero, then $p(s' | s)$ can be whatever it likes. Thus, $p(x' | x)$ might contain many impossible transitions.
+
+
+## Heirarchical
+
+
+...
+
+
+## Unconstrained dynamics
+
+- What is their function?
+- What do they look like?
+
+
+
+## Maximisation derivation
+
+$$
+\begin{align}
+r(s, a) &= q(s) - \text{KL}(u(\cdot | s) \parallel p(\cdot | s)) \\
+V(s) &= \mathop{\text{max}}_{a} r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim p(\cdot | s, a)} V(s') \tag{mdp}\\
+\\
+\hat V(s) &= q(s) + \mathop{\text{max}}_{u}   \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \big[V(s')\big]  - \text{KL}(u(\cdot | s) \parallel p(\cdot | s)) \tag{lmdp} \\
+&= q(s) + \mathop{\text{max}}_{u} \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \big[V(s')\big]  - \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \log(\frac{p(s' | s) }{ u(s' | s)}\\
+z(s) &= e^{-v(s)} \\
+&= q(s) + \mathop{\text{max}}_{u} \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \big[\log(\frac{u(s' | s)}{z(s')p(s' | s)}) \big]\\
+\mathop{\mathbb E}_{s' \sim u(\cdot | s)} \big[\log(\frac{u(s' | s)}{z(s')p(s' | s)}) \big]&=\\
+u^{* } &= ... \\
+
+\end{align}
+$$
+
+...
+
+***
