@@ -1,19 +1,17 @@
-## Intro
+Solving a problem via abstraction follows a generic formula. Transform the the problem into a new domain, solving the problem in this new domain, decode the solution back into the original domain.
 
-In principle, Dynamic programming can be used to solve any / all MDPs and (MB)RL problems (assuming you are provided with the transition and reward functions - aka model-based RL). So why isn't it used in practice? The computational cost of using DP to find a solution doesn't scale well with increasingly complex MDPs.
+In this section, we approach abstraction by trying to find existing solvers for related optimisation problems and ways to apply them to RL problems.
 
-<!-- Insert paragraph describing DP's computational complexity-->
+A special case of this strategy has been employed in  mathematics and is known as a reduction. Where one type of problem is 'reduced' to another, ... SAT, P, NP, ...
 
-For example; ...
+And within RL, examples of this strategy are...?  [convex RL](https://bodono.github.io/thesis/bod_thesis.pdf)
 
-the curse of dimensionality, and stochasticity.
+Another way of saying the above, is that we want to learn a represetation of the RL problem that yields efficient optimisation with known solvers.
 
 <!-- Want to demonstrate the problem being solved -->
 
-A strategy for efficiently solving MDPs is to transform it into an easier problem and solve that problem. But, which types of MDP are easily solved (and why)? And how can we map our problem into these easily solved instansiations?
+But, which types of MDP are easily solved (and why)? And how can we map our problem into these easily solved instansiations?
 
-This is also known by many names; abstraction, representation learning, factoring ...
-Ultimately, we want to find an abstraction that makes our problem easier to solve.
 
 Which types of MDP are easily solved?
 
@@ -25,21 +23,13 @@ Which types of MDP are easily solved?
 - Tabular MDPs for small enough size ($n\le 200,000$ states) can be analytically solved.
 - Linear systems can be solved with computational complexity $\mathcal O(n^3)$.
 - Dense rewards.
-- ?
+- Linear transitions (LMDPs - 
 
 Note that it will not always be possible to find an efficient solution to an MDP.
 Are some MDPs just fundammentally harder to solve than others?
 Could mention no free lunch.
 
 <!-- Want an example -->
-
-
-### Related work
-
-Many thers have tried to find algorithm with better a computational complexity. One that scales better with MDP complexity.
-For example; X, Y, Z.
-
-What is the lower bound? How close are they to it? Work still to be done!
 
 ## Definition
 
@@ -123,19 +113,6 @@ $$
 l(s, a) = q(s) + KL(u(\cdot | s) \parallel p(\cdot | s)) \\
 v(x) = q(s) + \mathop{\text{max}}_a \Big[ KL(u(\cdot | s) \parallel p(\cdot | s)) +  \gamma \mathop{\mathbb E}_{x' \sim P(\cdot | x, a)} v(x') \Big]\\
 $$
-
-## Linear programming
-
-(doesnt need to be tabular!? what does this require?!)
-
-So far, "solvable representations" has meant having an efficient method to solve a representation of an MDP. Easy (optimisation) problems to solve;
-matrix inversion, policy iteration, linear programming...
-
-## A convex representation
-
-MAYBE???? Need more time...
-https://bodono.github.io/thesis/bod_thesis.pdf !!!
-
 
 ***
 
