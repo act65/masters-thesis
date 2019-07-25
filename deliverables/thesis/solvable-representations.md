@@ -1,10 +1,15 @@
 Solving a problem via abstraction follows a generic formula. Transform the the problem into a new domain, solving the problem in this new domain, decode the solution back into the original domain.
 
-In this section, we approach abstraction by trying to find existing solvers for related optimisation problems and ways to apply them to RL problems.
+In this section, we approach abstraction by identifying nice properties an optimisation problems might have and ways imbue an RL problems with those same properties.
 
 A special case of this strategy has been employed in  mathematics and is known as a reduction. Where one type of problem is 'reduced' to another, ... SAT, P, NP, ...
 
 And within RL, examples of this strategy are...?  [convex RL](https://bodono.github.io/thesis/bod_thesis.pdf)
+
+Other approaches to abstraction for RL focus on ...? 
+- [A Geometric Perspective on Optimal Representations
+for Reinforcement Learning](https://arxiv.org/abs/1901.11530)
+- ?
 
 Another way of saying the above, is that we want to learn a represetation of the RL problem that yields efficient optimisation with known solvers.
 
