@@ -4,6 +4,7 @@ Action space gets abstracted into more 'meaningful' concepts.
 But is influenced by the interaction with the model and the reward.
 
 https://www.mitpressjournals.org/doi/pdf/10.1162/coli_a_00328
+https://www.biorxiv.org/content/10.1101/708891v1
 
 As an agent learns a more abstract action space it invents a language!?
 
