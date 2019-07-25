@@ -16,7 +16,7 @@ $$
 So this is an example of a contractive operator, $f(n) = x^{n}, x\in(-1,1)$.
 But what if our operator is ...?
 
-
+(some intuition about how it is decreasing faster than a linear rate, and because the sum is linear, ...)
 
 
 
@@ -62,3 +62,11 @@ The mean squared bellman error. We can show that the bellman operator converges 
 
 Is it possible to do an spectral analysis of these operators?
 Operators = $GD, T^{* }$.
+
+
+Refs
+
+- https://en.wikipedia.org/wiki/Banach_fixed-point_theorem
+- https://en.wikipedia.org/wiki/Brouwer_fixed-point_theorem
+- GD convergence proof
+- PI convergence proof
