@@ -46,9 +46,15 @@ The symmetries of the reward function.
 
 - Properties of the polytope
 - Search dynamics on the polytope
-- LMDPs
+- ??? LPs? Convergence? Exploration? ...?
 
-## Overview
+### Abstraction
+
+- Near optimal representations
+- Solvable representations (LMDPs)
+- Invariant representations (TODO)
+
+### Algorithms
 
 We explore four algorithms.
 
