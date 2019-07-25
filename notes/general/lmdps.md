@@ -46,12 +46,6 @@ $$
 The KL. If $P(s' | s, a)$ is zero, then $p(s' | s)$ can be whatever it likes. Thus, $p(x' | x)$ might contain many impossible transitions.
 
 
-## Heirarchical
-
-
-...
-
-
 ## Unconstrained dynamics
 
 - What is their function?
@@ -78,4 +72,8 @@ $$
 
 ...
 
-***
+
+## Heirarchical
+
+- Saxe
+- Alex Nichol's preirarchy
