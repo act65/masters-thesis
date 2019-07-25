@@ -1,18 +1,24 @@
-Related to;
+An MDP is normally defined as the set $\{S, A, T, r\}$. But consider a 'fully connected MDP' (fcMDP). Defined as an MDP with the extra requirement that: for any pair of states within the MDP, $A, B$, there is an action that allows the agent to transition from $A$ to $B$. That is, $\forall s_i, s_j \in S\;\;\exists a\in A: \tau(s_j | s_i, a)\approx 1$.
 
-- temporal abstraction
-- deep versus wide representations in neural networks
-- graphs
+Intuitively, this makes the problem a lot easier. Rather than having to navigate through a maze, we simply pick the action that takes us to the exit. But, on closer inspection, it isn't that simple...
 
-Define MDP. $\{S, A, r, T\}$
+(problem here? probability = 1?!? unsure)
 
-__A fully connected MDP.__
-For every pair of states within the MDP, there is an action that allows the agent to transition between them. $\forall s_i, s_j \in S \exists a: s_j =\tau(s_i, a)$
+Why would we want to do this?
 
-If this is the case then the MDP reduces the the n-armed bandit problem.
+> __Lemma__ A fcMDP can be solved in ???.
 
+Proof?!?
 
-__Using options to build FC-MDPs__
+> __Lemma__ A fully connected MDP is just a n-armed bandit problem.
+
+Proof?!?
+
+So fcMDPs have some nice properties, but how does this help us solve MDPs? Consider how we might transform a MDP into a fcMDP.
+
+What needs to happen to a MDP for it to become a fcMDP? We need to transform the action space so that it better connect the states.
+
+Firstly, we are going to need more actions. For each state to be reachable by ... we need $|A| = |S|$.
 
 $$
 \begin{align}
@@ -22,7 +28,7 @@ s_{t+1} &= T[\omega]s_t \tag{a fully connected MDP}\\
 \end{align}
 $$
 
-Here we have constructed a fully connected MDP from a MDP that isn't connected. The options
+Here we have constructed a fully connected MDP from a MDP that isn't connected. This required a change of action space, from the ground actions to a set of temporally abstract options.
 
 - Want to learn a set of actions / options that can easily traverse the state space.
 - Less connectivity means the value of states are more "entangled"? (as to get to one state, you must go through others)
@@ -63,32 +69,6 @@ A necessary condition for this (assuming?) is that $\frac{\partial T}{\partial a
 
 
 
-***
-
-
-
-
-## Indexing: Width versus Depth
-
-You could index all possible policies with a unique id.
-
-Given a connected MDP (defined as ...)
-
-For all states, there must exist a sequence of actions (or policy) that (with high probability) reaches a target state from a given state.
-
-$$
-\forall s' \in S \; \exists \omega : s' = P_{\omega}(s)
-$$
-
-In a well connected MDP (defined as ?!?) the space of options is the actions $\Omega = A$.
-
-But in a sparsely connected MDP, options are constructed from the action space.
-
-(note: this has nothing to do with the reward so far. there may be many action sequences that yield the same option, but the reward fn will help us choose the most valueable.)
-
-
-A wide MDP is a multi-armed bandit problem where each arm is an option within an MDP.
-
 
 ## Contextual decision problems
 
@@ -109,3 +89,10 @@ __Q__ Is there an intermediate setting between n-armed bandits and sequential le
 
 - Relationship to autoregressive models?
 - Delay a choice for as long as possible??? Then you will have more information.
+
+
+Related to;
+
+- temporal abstraction
+- deep versus wide representations in neural networks
+- graphs

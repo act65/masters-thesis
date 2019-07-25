@@ -6,10 +6,6 @@ A special case of this strategy has been employed in  mathematics and is known a
 
 And within RL, examples of this strategy are...?  [convex RL](https://bodono.github.io/thesis/bod_thesis.pdf)
 
-Other approaches to abstraction for RL focus on ...? 
-- [A Geometric Perspective on Optimal Representations
-for Reinforcement Learning](https://arxiv.org/abs/1901.11530)
-- ?
 
 Another way of saying the above, is that we want to learn a represetation of the RL problem that yields efficient optimisation with known solvers.
 
@@ -28,7 +24,7 @@ Which types of MDP are easily solved?
 - Tabular MDPs for small enough size ($n\le 200,000$ states) can be analytically solved.
 - Linear systems can be solved with computational complexity $\mathcal O(n^3)$.
 - Dense rewards.
-- Linear transitions (LMDPs - 
+- Linear transitions (LMDPs -
 
 Note that it will not always be possible to find an efficient solution to an MDP.
 Are some MDPs just fundammentally harder to solve than others?

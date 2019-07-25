@@ -109,7 +109,13 @@ While other learners can still solve this problem. They miss out on efficiency g
 
 ### Related work
 
+Other approaches to abstraction for RL focus on ...?
+
 [Near Optimal Behavior via Approximate State Abstraction](https://arxiv.org/abs/1701.04113)
+- [A Geometric Perspective on Optimal Representations
+for Reinforcement Learning](https://arxiv.org/abs/1901.11530)
+- successor representation
+
 
 ## Discussion
 

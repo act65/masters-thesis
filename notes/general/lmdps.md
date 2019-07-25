@@ -76,4 +76,4 @@ $$
 ## Heirarchical
 
 - Saxe
-- Alex Nichol's preirarchy
+- [Alex Nichol's preirarchy](https://blog.aqnichol.com/2019/07/24/competing-in-the-obstacle-tower-challenge/)
