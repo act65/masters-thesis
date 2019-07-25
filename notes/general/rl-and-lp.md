@@ -1,4 +1,4 @@
-It turns out the problem of finding an optimal control within a MDP, can be solved via linear programming. At first, this seems surprising, other optimisation strategies, for example policy iteration and value iteration, are not linear with respect to the policy. So how can linear programming be applied?
+It turns out the problem of finding an optimal control within a MDP, can be solved via linear programming. At first, this seems surprising, other optimisation strategies for RL, for example policy iteration and value iteration, are not linear with respect to the policy. So how and why can linear programming be applied?
 
 Putterman 19?? showed that ...
 
