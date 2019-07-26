@@ -77,3 +77,12 @@ $$
 
 - Saxe
 - [Alex Nichol's preirarchy](https://blog.aqnichol.com/2019/07/24/competing-in-the-obstacle-tower-challenge/)
+
+
+Refs
+
+- [Efficient computation of optimal actions](https://www.pnas.org/content/106/28/11478)
+- [Linearly-solvable Markov decision problems](https://homes.cs.washington.edu/~todorov/papers/TodorovNIPS06.pdf)
+- [Moving Least-squares Approximations for Linearly-solvable MDP](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5967383)
+- [Aggregation Methods for Lineary-solvable Markov Decision Process](https://homes.cs.washington.edu/~todorov/papers/ZhongIFAC11.pdf)
+- [A Unifying Framework for Linearly Solvable Control](https://arxiv.org/abs/1202.3715)
