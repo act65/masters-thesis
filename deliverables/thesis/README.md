@@ -10,7 +10,11 @@ Thesis sections.
   - Over parameterisation
   - Momentum
   - ???
-- Model-based
+- Transitions / Model-based
+  - Imagined rewards / error
+  - Multi scale supervision
+  - Exploraton???
+  
 
 ## Abstraction
 
