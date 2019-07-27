@@ -75,9 +75,8 @@ $$
 
 ## Heirarchical
 
-- Saxe
+- [Hierarchy through Composition with Linearly Solvable Markov Decision Processes](https://arxiv.org/abs/1612.02757)
 - [Alex Nichol's preirarchy](https://blog.aqnichol.com/2019/07/24/competing-in-the-obstacle-tower-challenge/)
-
 
 Refs
 
@@ -86,3 +85,4 @@ Refs
 - [Moving Least-squares Approximations for Linearly-solvable MDP](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5967383)
 - [Aggregation Methods for Lineary-solvable Markov Decision Process](https://homes.cs.washington.edu/~todorov/papers/ZhongIFAC11.pdf)
 - [A Unifying Framework for Linearly Solvable Control](https://arxiv.org/abs/1202.3715)
+- [A Stability Result for Linear Markov Decision Processes](http://www.optimization-online.org/DB_FILE/2017/03/5893.pdf)
