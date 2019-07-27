@@ -4,3 +4,7 @@ Existing work, ... It's even a started technique used by mathematicians (give ex
 
 
 Give pseudo definition?!
+
+Mention the important of temporal abstraction.
+
+Relate abstraction to heirarchical RL.
