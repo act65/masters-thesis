@@ -14,6 +14,7 @@ Thesis sections.
   - Imagined rewards / error
   - Multi scale supervision
   - Exploraton???
+  - Sparsity?
   
 
 ## Abstraction
