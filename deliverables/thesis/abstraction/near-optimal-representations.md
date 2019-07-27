@@ -2,13 +2,13 @@ We are working with MDPs $(S, A, \tau, r)$, therefore we have a state space, $S$
 
 ## Near optimal abstractions
 
-I am interested in reasoning about which policies are representable within an abstracted MDP. We care about showing that an abstraction with certain properties can approximately represent the optimal solution to the original problem.
+Let's say we have an abstraction, (a road is a road, no real different between them), a natural thing we want to know about the abstraction is: is it possible for me to act optimally using this abstraction, if not, what's the damage (in this case, of driving 100kph on every road, because they are all prety much the same...)? Or, in other words, which policies are approximately representable within this abstracted MDP.
 
 An abstract MDP is defined as;
 
-<!-- (Must be smaller / lower complexity than the original) -->
+???
 
-The metric we are optimising is the representation error of the optimalpolicy. Given an abstraction, we want to knowhow well the abstraction can represent the optimal policy.
+The metric we are optimising is the representation error of the optimal policy. Given an abstraction, we want to know how well the abstraction can represent the optimal policy.
 
 $$
 \forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le 2 \epsilon \eta_f
