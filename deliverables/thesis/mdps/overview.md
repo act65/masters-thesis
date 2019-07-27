@@ -5,6 +5,19 @@ Search spaces
 Transitions
 -->
 
+
+## Applications of MDPs
+
+- Energy markets. https://www.cem.wi.tum.de/index.php?id=5&L=1
+- Gwern and catnip / mail / ...
+- Putterman
+- OR
+- ???
+
+
+And their relation to RL
+
+
 ## A tabular representation of MDPs
 
 Learn a tabular MDP representation of the RL problem.
