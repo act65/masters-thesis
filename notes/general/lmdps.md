@@ -70,13 +70,6 @@ u^{* } &= ... \\
 \end{align}
 $$
 
-...
-
-
-## Heirarchical
-
-- [Hierarchy through Composition with Linearly Solvable Markov Decision Processes](https://arxiv.org/abs/1612.02757)
-- [Alex Nichol's preirarchy](https://blog.aqnichol.com/2019/07/24/competing-in-the-obstacle-tower-challenge/)
 
 Refs
 
