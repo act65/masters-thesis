@@ -65,4 +65,19 @@ l(s, a) = q(s) + KL(u(\cdot | s) \parallel p(\cdot | s)) \\
 v(x) = q(s) + \mathop{\text{max}}_a \Big[ KL(u(\cdot | s) \parallel p(\cdot | s)) +  \gamma \mathop{\mathbb E}_{x' \sim P(\cdot | x, a)} v(x') \Big]\\
 $$
 
-__Insert section on theory of LMDPs. Convergence, approx error, ...__
+### Discussion
+
+So which approach is best? What are the pros / cons of these linearisations?
+
+
+
+## A closer look at LMDPs
+
+(the Todorov ones...)
+
+A few things I want to explore;
+- the composability of policies / tasks
+- the embedding of actions
+- LMDPs as an abstraction
+
+Insert section on theory of LMDPs. Convergence, approx error, ...__
