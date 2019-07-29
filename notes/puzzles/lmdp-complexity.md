@@ -12,13 +12,18 @@ __Question:__ What is the complexity of each part? How does this compare to a tr
 
 ## Linear embedding
 
+```python
+for state in states:
+
+```
+
+$\mathcal O (|S| \times (|S||A|/2)^{2.3}  )$
 
 
 ## Solve the LMDP
 
-
+$\mathcal O ((|S|^{2.3}  )$
 
 ## Decoding
 
-Use KL.
-Not sure if this makes sense? Should use OT instead?
+$\mathcal O( (|S||A|/2)^{2.3} )$

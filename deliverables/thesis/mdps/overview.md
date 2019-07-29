@@ -1,21 +1,23 @@
-<!-- 
-Tabular 
+<!--
+Tabular
 Polytope and properties
 Search spaces
 Transitions
 -->
 
 
-## Applications of MDPs
+Insert some fun worked examples of MDPs from every day life.
+- Gwern and catnip / mail / ...
+
+Point out some important applications of MDPs;
 
 - Energy markets. https://www.cem.wi.tum.de/index.php?id=5&L=1
-- Gwern and catnip / mail / ...
 - Putterman
 - OR
-- ???
 
+How do MDPs related to RL?
 
-And their relation to RL
+Define Optimality.
 
 
 ## A tabular representation of MDPs
@@ -55,5 +57,3 @@ L_{r} &= \text{min} \parallel r_t - \textbf r[\phi(s_t), a_t] \parallel^2_2 \tag
 L_{P} &= \mathop{\text{max}}_{\theta} \textbf P[\phi(s_{t+1}),\phi(s_t), a_t]\tag{max likelihood}\\
 \end{align}
 $$
-
-
