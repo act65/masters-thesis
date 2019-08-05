@@ -68,3 +68,8 @@ If we had a theory of transfer learning we would be able to;
 - predict when X will transfer to Y.
 - write down a pattern to generate representations for transfer between X/Y.
 - __???__
+
+
+***
+
+What is necessary for future reseach on transfer learning.

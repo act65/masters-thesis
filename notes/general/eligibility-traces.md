@@ -1,44 +1,43 @@
 ## Eligibility traces
 
-Given the typical temporal difference update, we can augment it with a 'trace', $e_t(s_t, a_t)$.
+Given the typical temporal difference update (for a tabular representation) we could augment it with a 'trace', $e_t(s_t, a_t)$.
 $$
 \begin{align}
-Q_{t+1}(s_t, a_t) &= Q_t(s_t, a_t) + \alpha \delta_t e_t(s_t, a_t) \tag{for all $s, a$} \\
-\Delta Q &= \alpha \delta_t e_t(s_t, a_t) \\
+Q_{t+1} &= Q_t + \alpha \delta_t e_t \\
+\Delta Q &= \alpha \delta_t e_t \\
+e_t[s, a] &=
+\gamma \lambda e_{t-1}[s, a] + \mathbf 1_{s=s_t, a=a_t}\\
 \end{align}
 $$
 
-In the tabular case, this amounts to keeping a exponentially decaying trace of the most recent use of a value.
+What is this 'trace' doing? Well, it's an exponentially decaying variable, but for a given state-action pair, if they are used at time t, we reset the 'trace' to one.
+
+We can interpret this as keeping a (decaying) memory of the state-action pair, or is exponentially decaying recency. Thus a trace.
+
+***
+
+But what if we want to use some sort of function approximation to represent $Q(s_t, a_t)$, rather than tables? We can generalise the definition above to;
 
 $$
 \begin{align}
-e_t &= \begin{cases}
-\gamma \lambda e_{t-1} + 1, & s=s_t, a=a_t \\
-\gamma \lambda e_{t-1}, & s\neq s_t, a \neq a_t\\
-\end{cases} \tag{if binary features, ie tabular} \\
+e_t(s_t, a_t) &= \gamma \lambda e_{t-1}(s_t, a_t) + \nabla_{\theta_t} Q_t(s_t, a_t)\\
 \end{align}
 $$
 
-But what if we want to use some sort of function approximation to represent $Q(s_t, a_t)$? We generalise the definition above to;
+This generalised definition recovers the tabular case, as $\nabla_{\theta_t} Q_t[s_t, a_t] = \mathbf 1_{s=s_t, a=a_t}$.
 
-$$
-\begin{align}
-e_t &= \gamma \lambda e_{t-1} + \nabla_{\theta_t} Q_t(s_t, a_t)\\
-\end{align}
-$$
+However, we have introduced a new problem. We need to update all of the state-action pairs. In the tabular case, this was possible (but maybe not a good idea), as we could iterate through all the distinct state-action pairs. But how can we efficiently make this update for an infinite number of state-action pairs?  
 
-Problem. Need to update for all state-action pairs. How can this be solved efficiently?
-Use a discrete representation... (neural discrete AE or the results of some clustering?)
+***
+
+A quick aside.
+
+What are we doing here? What is $\nabla_{\theta_t} Q_t(s_t, a_t)$?
+
+We are keeping an exponential average of the gradient of the state-action value with respect to each parameter. Which tells us: how did each parameter contribute to the estimated value. That feels a lot like assigning credit to different parameters.
 
 
-
-So we are keeping an exponential average of the gradient of the state(-action) value with respect to each parameter.
-
-But how does this work? Do we need a window around a cts value?
-
-PROBLEM. To work the various input states and actions would need to be normalised???
-
-Why are these attractive? Keeps the trace of a trajectory lingering. Could simply use the trajectory, but it needs to be feed in, thus we need to store the obs and action. Rather the trace and be stored internally, (hopefully more cheaply!?).
+Forward vs backward views. Why are these attractive? Keeps the trace of a trajectory lingering. Could simply use the trajectory, but it needs to be feed in, thus we need to store the obs and action. Rather the trace and be stored internally, (hopefully more cheaply!?).
 
 https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2007-49.pdf
 
@@ -49,44 +48,22 @@ https://distill.pub/2017/momentum/
 
 $$
 \begin{align}
-m_t &=  \beta m_{t-1} + \nabla L_{\theta} \\
-\Delta \theta &= -\eta m_t \\
+\frac{\partial L}{\partial \theta_t} = \frac{\partial L}{\partial Q} \frac{\partial Q}{\partial \theta}
 \end{align}
 $$
 
-Hypothesis: Any algorithm using momentum (within the optimisation) is using eligibility traces!?
-
-No, not true. In momentum, the past gradients of the loss are (exponentially) averaged and then used to update the parameters. Eligibility traces, are an exponential moving average of the outputs, not the loss.
-
-
-In the above formulation, $\delta$ captures information about the current reward prediction error, and $e$ captures information about parameters/actions that are likely to have resulted in the RPE.
-
-Could this all be summarised within momentum? No. Momentum is the past RPE's effecting future updates. We want capture the past parameter settings/actions and their effect on current/future rewards. Eligibility traces have nothing to do with how wrong you were wrong in the past. They are trying to assign credit for the current RPE.
-
-Want $\frac{\partial L}{\partial \theta}(s_t, a_t)$ but we dont know it. Instead we can approximate it with...?!?
+A kind of momentum?
 
 
 
-***
 
-Is there a relationship to second order information?
 
-$$
-\begin{align}
-\Delta \theta &= \alpha \frac{\partial L}{\partial \theta} \odot \frac{\partial Q}{\partial \theta} \\
-\end{align}
-$$
 
 ***
 
 Integrated gradients = causal effect = eligibility trace?
 
 https://arxiv.org/abs/1703.01365
-
-***
-
-Is there are relationship between eligibility traces and REINFOCE?
-$\nabla_{\theta} \log \pi(s_t) \cdot R$. Correlation between sensitivity/contribution and reward.
 
 
 ***
