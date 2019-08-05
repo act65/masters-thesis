@@ -1,5 +1,17 @@
 # The value function polytope
 
+Why is it a polytope?
+
+Imagine a two state MDP. Following some initial, ill-informed policy, the value that you might get starting from each state is $v_1^0, v_2^0$. Nn the future we learn something new and alter our policy; so the value of (say) the first state is now greater, $v_1_t > v_1^0$. 
+This explains why the edges of the polytope by be "aligned with the positive orthant", they slant upward. An increase in the value of state one, can, at worst, do nothing for state two, aka a flat line, either horizontal or vertical.
+
+What are its properties?
+
+
+***
+
+Some simple question to explore;
+
 - How does the distribution of policies on the polytope effect learning?
 - How does gamma change the shape of the polytope?
 - How do the dynamics of GPI partition the policy / value spaces?
@@ -68,6 +80,7 @@ NOTE:
 
 - What about the variance of the MDP? What does that tell us?
 - How does a uniform distribution on a simplex behave in high dimensions? Does it become more likely to sample from the center? Less likely to sample from vertices??
+- In most cases, this is unlikely to work. A high dimensional polytope ... low density everywhere!?
 
 ## Discounting
 
@@ -107,14 +120,14 @@ V(\alpha + \beta) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \\
 
 For each initial policy, we can solve / optimise it to to find the optimal policy (using policy iteration). Here we count how many iterations were required to find the optima (from different starting points / policies).
 
-<!-- Policy iteration can be summarised easily as an iteration between evaluation and updates, see below.
+Policy iteration can be summarised easily as an iteration between evaluation and updates, see below.
 
 ```
 pi = init
 while not converged:
   value = evaluate(pi)
   pi = greedy_update(value)
-``` -->
+```
 
 !['2-state 2-action MDPs. We have visualised the number of steps required for convergence to the optimal policy. The number of steps are show by color.'](../../pictures/figures/gpi-partitions.png){ width=450px }
 
@@ -122,9 +135,9 @@ while not converged:
 - __Observation__ With only 2 states and 2 actions, it is possible for 3 partitions to exist. (2,3,4 steps), (2,3,2 steps). __Questions__ ???
 - __Observation__ Sometimes the iterations don't converge. (a bug in the code?)
 
-<!-- NOTES:
+NOTES:
 
 - What are the best ways to travel through policy space? (lines of shortest distance?!)
 - How does this scale with `n_actions` or `n_states`??
 - Is there a way to use an interior search to give info about the exterior? (dual methods?!)
-- What if your evaluations are only $\epsilon$-accurate? How does that effect things?!? -->
+- What if your evaluations are only $\epsilon$-accurate? How does that effect things?!?

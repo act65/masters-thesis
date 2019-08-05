@@ -85,12 +85,41 @@ Dating. In the past you dated then/their friends. Now it effects your chances.
 - __Transition fn:__
 - __Reward fn:__ ??? -->
 
-***
+
+#### Ad targeting
+
+
+
+#### Youtube recommendation
+
+
+
+
+#### Salamon harvesting
+
+- __States:__ The size of the salamon population.
+- __Actions:__ The size of the salamon population  to be left to spawn.
+- __Transition fn:__ Given the number left to spawn, it returns the size of the salamon population in the next season.
+- __Reward fn:__ The size of salamon population harvested.
+
+YOu might call this MDP a one dimensional MDP, as there is only a single dimension that is acted up, is transitioned, is rewarded... More salamon
+
+[Real applications of MDPs](http://www.it.uu.se/edu/course/homepage/aism/st11/MDPApplications1.pdf)
+
+#### Fire engine allocation
+
+- __States:__ The magnitude of a fire. The type of alarm. And the total number of first and second fire engines already deployed.
+- __Actions:__ Whether to send more fire engines.
+- __Transition fn:__ Given the number of fire engines fighting the fire, and the fires type / magnitude, the building may be destroyed or saved. Fire may start at anytime, in a random location throughout the city.
+- __Reward fn:__ Damage incurred by the fires.
+
+[Real applications of MDPs](http://www.it.uu.se/edu/course/homepage/aism/st11/MDPApplications1.pdf)
+
 
 Other possible MDPs?
 
 - An animal stockpiling food?!
--
+- Robotics / movement
 
 
 ***

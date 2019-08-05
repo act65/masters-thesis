@@ -2,6 +2,7 @@ What objective are we optimising?
 How can we characterise this optimisation problem?
 
 What does it mean to behave optimally?
+How do we measure it?
 
 $$
 \begin{align*}

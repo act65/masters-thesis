@@ -62,6 +62,11 @@ Notably, we can weaken the information provided to a learner attempting to solve
 
 ### A tabular representation of MDPs
 
+Tabular MDPs with deterministic actions are of little interest to the ML community. Not because they are easy, but because they do not involve ...? They can be solved by planning techniques and dynamic programming.
+
+The minimally complex MDP that poses an interesting challenge to the ML community is when the transition function is non deterministic.
+Alternatives we could add on. Contextua decision problem (transition fn changes with t), stochastic reward function, ...?
+
 Learn a tabular MDP representation of the RL problem.
 
 Why would we want to do this?

@@ -2,7 +2,7 @@ Dynamic programming is a meta strategy for solving complex problems. We reduce t
 
 Works great. An can be summarised by Bellman's equation.
 
-However, when problems are really large, or we can only collect data incrementally, we might want to solve the problem using both 
+However, when problems are really large, or we can only collect data incrementally, we might want to solve the problem using both
 
 We might not control what we get to see and explore.
 
