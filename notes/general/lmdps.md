@@ -51,7 +51,36 @@ The KL. If $P(s' | s, a)$ is zero, then $p(s' | s)$ can be whatever it likes. Th
 - What is their function?
 - What do they look like?
 
+Does it make sense to treat the q(s) like rewards?!
+They reward for bing in state s.
+But cant capture action specific rewards!?
 
+
+## Why do we care about LMDPs???
+
+- Transfer
+- It efficiently solves the optimal control problem (while introducing other problems...)
+- it might provide a way to analyse subgoal techniques!?
+
+LMDPs have the property that if we have already solved two LMDPs, with the same state space, action space, unconditioned transition dynamics, but different state rewards, $q_1, q_2$. Then we can solve a new LMDP, again with the same, ..., and state rewards in the span of $q_1, q_2$, $z_3 = w_1 z_1 + w_2 z_2$, ...
+
+Problem. What does it even mean for two LMDPs to have the same unconditioned dynamics but different state rewards?
+The MDPs must have been the same up to some additive constant (constant in the actions), $r(s, a)=r(s, a) + c(s)$.
+Does this really capture what we mean by different tasks?!?
+
+### Distributions over states
+
+What if we wanted to approximate these distributions?
+Generalise subgoal methods to work with distributions?
+The distribution could be constructed via; parzen window / GMM, neural flow, ?!.
+
+
+### Deep implementation?!
+
+$$
+\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, a,} \bigg[ r(s, a) - q_\theta(s) + \text{KL}(p_\phi(\cdot | s) \parallel P(\cdot | s, a)) \bigg]\\
+\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg] \\
+$$
 
 ## Maximisation derivation
 
@@ -80,6 +109,8 @@ By definition, an LMDP is the optimisation problem in (1). We can move the $\tex
 ***
 
 Alternative perspective. The high value trajectories are the most likely ones.
+
+
 
 
 Refs
