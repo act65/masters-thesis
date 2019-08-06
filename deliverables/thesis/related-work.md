@@ -65,6 +65,8 @@ This leads us to ask, how can we build a representation for model-based learning
 
 Take $S \in R^d$ and let $\hat S = S \times N, N \in R^k$. Where $N$ the is sampled noise. How much harder is it to learn $f: S \to S$ versus $\hat f: \hat S \to \hat S$?
 
+https://arxiv.org/pdf/1903.00374v3.pdf
+https://arxiv.org/abs/1907.02057
 
 ## Representation learning and abstraction
 

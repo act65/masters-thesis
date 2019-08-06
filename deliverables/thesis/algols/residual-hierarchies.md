@@ -25,7 +25,7 @@ Work to be done!?
 - Characterise its complexity
 - Guarantees on when a new task is likely to be acculately solved with the current basis.
 - Generalise to continuous states / actions
-- a 'deep' version of this!? has not been show to scale to more complicated problems.
+- has not been show to scale to more complicated problems. a 'deep' version of this!?
 - under statistical uncertainty!? we might not know $P, r$...
 
 
@@ -36,7 +36,7 @@ $$
 Complexity of solving a new task, that is within the span of the existing tasks.
 Solve $w = Q^{\dagger}q$. Dont need to do any value iteration, or solve an optimal control problem.
 
-Extenstion to temporal abstraction?!
+Extension to temporal abstraction?!
 
 We require that some $Q_i$ are used less frequently than others.
 
@@ -48,6 +48,12 @@ We require that some $Q_i$ are used less frequently than others.
 
 
 > The transitions to subtask states are governed by a new $N^l_t$-by-$N^l_i$ passive dynamics matrix $P^l_t$, which is chosen by the designer to encode the structure of the domain. BAD. How do we choose this!?
+
+
+future works
+
+- [Incremental Hierarchical Reinforcement Learning with Multitask LMDPs](https://openreview.net/forum?id=Hye6uoC9tm)
+- [Hierarchical Subtask Discovery With Non-Negative Matrix Factorization](https://arxiv.org/abs/1708.00463)
 
 ***
 

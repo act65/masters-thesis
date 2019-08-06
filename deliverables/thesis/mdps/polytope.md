@@ -2,7 +2,7 @@
 
 Why is it a polytope?
 
-Imagine a two state MDP. Following some initial, ill-informed policy, the value that you might get starting from each state is $v_1^0, v_2^0$. Nn the future we learn something new and alter our policy; so the value of (say) the first state is now greater, $v_1_t > v_1^0$. 
+Imagine a two state MDP. Following some initial, ill-informed policy, the value that you might get starting from each state is $v_1^0, v_2^0$. Nn the future we learn something new and alter our policy; so the value of (say) the first state is now greater, $v_1_t > v_1^0$.
 This explains why the edges of the polytope by be "aligned with the positive orthant", they slant upward. An increase in the value of state one, can, at worst, do nothing for state two, aka a flat line, either horizontal or vertical.
 
 What are its properties?
