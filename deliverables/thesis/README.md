@@ -6,6 +6,7 @@ Thesis sections.
 - Polytope
   - Entropy
   - Partitions
+  - Partitions
 - Search dynamics
   - Over parameterisation
   - Momentum
@@ -15,7 +16,8 @@ Thesis sections.
   - Multi scale supervision
   - Exploraton???
   - Sparsity?
-  
+  - Model invariance
+
 
 ## Abstraction
 
@@ -24,10 +26,11 @@ Thesis sections.
   - The different types of similarity metric you might want to use to build an abstraction (and their power). The types of abstraction you might want to use (and their power). Bounds on accuracy for action abstractions
   - Stretch. Experiments / bounds for all combinations
 - Solvable (Linear) abstractions
-  - LMDPs
+  - Types of LMDPs. What is their goal?
   - Complexity
 - Invariant abstractions
   - Build an abstraction using an approximate symmetry measure.
   - ???
-  
-  
+
+
+## Algorithms
