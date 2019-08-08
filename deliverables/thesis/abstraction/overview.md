@@ -5,6 +5,13 @@ Existing work, ... It's even a started technique used by mathematicians (give ex
 
 Give pseudo definition?!
 
-Mention the important of temporal abstraction.
+Mention the importance of temporal abstraction.
 
 Relate abstraction to heirarchical RL.
+
+Related work
+
+- https://arxiv.org/abs/1901.11530
+- latent space work
+- action abstraction?!
+- https://www.sciencedirect.com/science/article/pii/S2352154618302080
