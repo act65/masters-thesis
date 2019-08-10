@@ -108,11 +108,12 @@ class TestMDPEmbeddeding():
 class TestLMDPSolver():
     def __init__(self):
         self.simple_solve_test()
+        self.random_solve_test()
 
     @staticmethod
     def simple_solve_test():
         """
-        Want to set up a env that will test long term value over short term rewards.
+        Simple test. Does it pick the best state?
         """
         p = np.array([
             [0.75, 0.5],
@@ -120,10 +121,97 @@ class TestLMDPSolver():
         ])
         q = np.array([1, 0])
         u, v = lmdp_solver(p, q, 0.9)
-        print(u)
-        print(v)
         assert np.argmax(v) == 0
 
+    @staticmethod
+    def random_solve_test():
+        """
+        Want to set up a env that will test long term value over short term rewards.
+        """
+        n_states, n_actions = 12, 3
+        p, q = rnd_lmdp(n_states, n_actions)
+        u, v = lmdp_solver(p, q, 0.99)
+        print(u)
+        print(v)
+
+    def long_term_test():
+        pass
+
+class DecodeLMDPControl():
+    def __init__(self):
+        # self.test_decoder_simple()
+        # self.test_decoder_rnd()
+        self.option_decoder()
+
+    @staticmethod
+    def test_decoder_simple():
+        # Indexed by [s' x s x a]
+        # ensure we have a distribution over s'
+        p000 = 1
+        p100 = 1 - p000
+
+        p001 = 0
+        p101 = 1 - p001
+
+        p010 = 0
+        p110 = 1 - p010
+
+        p011 = 1
+        p111 = 1 - p011
+
+        P = np.array([
+            [[p000, p001],
+             [p010, p011]],
+            [[p100, p101],
+             [p110, p111]],
+        ])
+
+        u = np.array([
+            [0.95, 0.25],
+            [0.05, 0.75]
+        ])
+
+        pi = lmdp_decoder(u, P, lr=1)
+        P_pi = np.einsum('ijk,jk->ij', P, pi)
+
+        assert np.isclose(P_pi, u, atol=1e-4).all()
+        print(P_pi)
+        print(u)
+
+    @staticmethod
+    def test_decoder_rnd():
+        n_states = 6
+        n_actions = 6
+
+        P = rnd.random((n_states, n_states, n_actions))
+        P /= P.sum(0, keepdims=True)
+
+        u = rnd.random((n_states, n_states))
+        u /= u.sum(0, keepdims=True)
+
+        pi = lmdp_decoder(u, P, lr=1)
+        P_pi = np.einsum('ijk,jk->ij', P, pi)
+
+        print(P_pi)
+        print(u)
+        print(KL(P_pi,u))
+        assert np.isclose(P_pi, u, atol=1e-2).all()
+
+    @staticmethod
+    def option_decoder():
+        n_states = 32
+        n_actions = 4
+
+        P = rnd.random((n_states, n_states, n_actions))
+        P /= P.sum(0, keepdims=True)
+
+        u = rnd.random((n_states, n_states))
+        u /= u.sum(0, keepdims=True)
+
+        pi = lmdp_option_decoder(u, P)
+        print(pi)
+
 if __name__ == "__main__":
-    TestMDPEmbeddeding()
+    # TestMDPEmbeddeding()
     # TestLMDPSolver()
+    DecodeLMDPControl()

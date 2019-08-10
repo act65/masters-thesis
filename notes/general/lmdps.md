@@ -143,13 +143,29 @@ The distribution could be constructed via; parzen window / GMM, neural flow, ?!.
 
 Connections to distributional RL?
 
+## Decoding
+
+Ok, so now we have disentangled the search for a policy and the search for optimal controls. At this point, we what what we want, but not how to get it.
+This is where most of the complexity of the RL problem is?!?
+
+We have discounted and pick the optimal state to be in.
+(but what if the actual path we take to get there has a neg rewards?!?)
+
+$$
+P_{\pi}(\cdot | s) = \sum_a P_k(\cdot | s, a) \pi(a | s) \\
+\pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big)
+$$
+
+Maybe this isnt enough? Do we need to add a reward sensitive part as well?!?
+
 
 ## Option decoding
 
 What about using options to help solve the optimal control decoding?
+Does this actually help?!
 
 $$
-P_{\pi} = \sum_\omega P_k(\cdot | s, \omega) \pi(\omega | s) \\
+P_{\pi}(\cdot | s) = \sum_\omega P_k(\cdot | s, \omega) \pi(\omega | s) \\
 \pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big)
 $$
 
