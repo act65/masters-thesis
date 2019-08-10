@@ -1,3 +1,8 @@
+What about the trajectory that the LMDP solver takes through the polytope??
+
+
+***
+
 Goals.
 
 - Understand MDPs and their properties

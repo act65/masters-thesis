@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import copy
 import functools
 
-from utils import *
+from search_spaces import *
 
 def clipped_stack(x, n=1000):
     m = len(x)
@@ -16,7 +16,7 @@ def generate_vi_sgd_vs_mom(mdp, init, lr=0.01):
     print('\nRunning VI SGD vs Mom')
 
     # sgd
-    qs = solve(value_iteration(mdp, lr), init)
+    qs = utils.solve(value_iteration(mdp, lr), init)
     qs = clipped_stack(qs,1000)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     n = vs.shape[0]
@@ -26,7 +26,7 @@ def generate_vi_sgd_vs_mom(mdp, init, lr=0.01):
 
     # momentum
     init = (init, np.zeros_like(init))
-    qs = solve(momentum_bundler(value_iteration(mdp, lr), 0.99), init)
+    qs = utils.solve(momentum_bundler(value_iteration(mdp, lr), 0.99), init)
     qs = clipped_stack(qs,1000)
     vs = np.vstack([np.max(q[0], axis=1) for q in qs])
     m = vs.shape[0]
@@ -48,7 +48,7 @@ def generate_pvi_vs_vi(mdp, init):
     # pvi
     core_init = random_parameterised_matrix(2, 2, 32, 4)
     core_init = approximate(init, core_init)
-    params = solve(parameterised_value_iteration(mdp, lr/len(core_init)), core_init)
+    params = utils.solve(parameterised_value_iteration(mdp, lr/len(core_init)), core_init)
     vs = np.vstack([np.max(build(c), axis=1) for c in params])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='pvi')
@@ -56,7 +56,7 @@ def generate_pvi_vs_vi(mdp, init):
     plt.scatter(vs[-1, 0], vs[-1, 1], c='r', marker='x')
 
     # vi
-    qs = solve(value_iteration(mdp, lr), init)
+    qs = utils.solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='vi')
@@ -81,7 +81,7 @@ def generate_avi_vs_vi(mdp):
 
     # vi
     init = rnd.standard_normal((mdp.S, mdp.A))
-    qs = solve(value_iteration(mdp, lr), init)
+    qs = utils.solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
 
     n = vs.shape[0]
@@ -95,7 +95,7 @@ def generate_avi_vs_vi(mdp):
     d = rnd.random(mdp.S)
     D = np.diag(d/d.sum())  # this can change the optima!!
     # D = np.eye(n_states)
-    qs = solve(adjusted_value_iteration(mdp, lr, D, K), init)
+    qs = utils.solve(adjusted_value_iteration(mdp, lr, D, K), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
 
     m = vs.shape[0]
@@ -113,7 +113,7 @@ def generate_PG_vs_VI(mdp, init):
     lr = 0.1
 
     # PG
-    logits = solve(policy_gradient_iteration_logits(mdp, lr), init)
+    logits = utils.solve(policy_gradient_iteration_logits(mdp, lr), init)
     vs = np.vstack([value_functional(mdp.P, mdp.r, softmax(logit), mdp.discount).T for logit in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='g', label='PG')
@@ -123,7 +123,7 @@ def generate_PG_vs_VI(mdp, init):
     # VI
     v = value_functional(mdp.P, mdp.r, softmax(init), mdp.discount)
     init = np.einsum('ijk,jl->jk', mdp.P, v)  # V->Q
-    qs = solve(value_iteration(mdp, lr), init)
+    qs = utils.solve(value_iteration(mdp, lr), init)
     vs = np.vstack([np.max(q, axis=1) for q in qs])
     m = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='VI')
@@ -143,7 +143,7 @@ def generate_PG_vs_PPG(mdp, init):
     # PPG
     core_init = random_parameterised_matrix(2, 2, 32, 8)
     core_init = approximate(init, core_init)
-    all_params = solve(parameterised_policy_gradient_iteration(mdp, lr/len(core_init)), core_init)
+    all_params = utils.solve(parameterised_policy_gradient_iteration(mdp, lr/len(core_init)), core_init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(build(params), axis=-1), mdp.discount), axis=1)
                     for params in all_params])
     m = vs.shape[0]
@@ -152,7 +152,7 @@ def generate_PG_vs_PPG(mdp, init):
     plt.scatter(vs[-1, 0], vs[-1, 1], c='g', marker='x')
 
     # PG
-    logits = solve(policy_gradient_iteration_logits(mdp, lr), init)
+    logits = utils.solve(policy_gradient_iteration_logits(mdp, lr), init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='PG')
@@ -174,7 +174,7 @@ def generate_mppg_vs_mpg(mdp, init):
     core_init = random_parameterised_matrix(2, 2, 32, 8)
     core_init = approximate(init, core_init)
     core_init = (core_init, [np.zeros_like(c) for c in core_init])
-    all_params = solve(momentum_bundler(parameterised_policy_gradient_iteration(mdp, lr), 0.9), core_init)
+    all_params = utils.solve(momentum_bundler(parameterised_policy_gradient_iteration(mdp, lr), 0.9), core_init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(build(params), axis=-1), mdp.discount), axis=1)
                     for params, mom in all_params])
     m = vs.shape[0]
@@ -184,7 +184,7 @@ def generate_mppg_vs_mpg(mdp, init):
 
     # MPG
     init = (init, np.zeros_like(init))
-    logits = solve(momentum_bundler(policy_gradient_iteration_logits(mdp, lr), 0.9), init)
+    logits = utils.solve(momentum_bundler(policy_gradient_iteration_logits(mdp, lr), 0.9), init)
     vs = np.vstack([np.max(value_functional(mdp.P, mdp.r, softmax(logit, axis=-1), mdp.discount), axis=1) for logit, mom in logits])
     n = vs.shape[0]
     plt.scatter(vs[0, 0], vs[0, 1], c='r', label='MPG')
@@ -205,7 +205,7 @@ def generate_mpvi_vs_mvi(mdp, init):
     core_init = random_parameterised_matrix(2, 2, 32, 8)
     core_init = approximate(init, core_init)
     c_init = (core_init, [np.zeros_like(c) for c in core_init])
-    params = solve(momentum_bundler(parameterised_value_iteration(mdp, lr), 0.9), c_init)
+    params = utils.solve(momentum_bundler(parameterised_value_iteration(mdp, lr), 0.9), c_init)
     vs = np.vstack([np.max(build(c[0]), axis=-1) for c in params])
     m = vs.shape[0]
 
@@ -215,7 +215,7 @@ def generate_mpvi_vs_mvi(mdp, init):
 
     # mvi
     init = (init, np.zeros_like(init))
-    qs = solve(momentum_bundler(value_iteration(mdp, lr), 0.9), init)
+    qs = utils.solve(momentum_bundler(value_iteration(mdp, lr), 0.9), init)
     vs = np.vstack([np.max(q[0], axis=-1) for q in qs])
     n = vs.shape[0]
 
@@ -238,7 +238,7 @@ def generate_mpvi_vs_mvi(mdp, init):
 #
 #     core_init = random_parameterised_matrix(2, 2, 16, 6)
 #     init = (core_init, [np.zeros_like(c) for c in core_init])
-#     params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
+#     params = utils.solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
 #     vs = np.vstack([np.max(build(c[0]), axis=-1) for c in params])
 #     m = vs.shape[0]
 #     plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='mpvi')
@@ -248,7 +248,7 @@ def generate_mpvi_vs_mvi(mdp, init):
 #     # sanity check
 #     assert np.isclose(build(core_init), build(new_init), atol=1e-4).all()
 #     init = (new_init, [np.zeros_like(c) for c in core_init])
-#     params = solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
+#     params = utils.solve(momentum_bundler(parameterised_value_iteration(mdp, 0.01), 0.9), init)
 #     vs = np.vstack([np.max(build(c[0]), axis=-1) for c in params])
 #     m = vs.shape[0]
 #     plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='spring', label='mpvi')
@@ -269,7 +269,7 @@ def generate_mpvi_vs_mvi(mdp, init):
 #
 #     core_init = random_parameterised_matrix(2, 2, 32, 2)
 #     # pvi
-#     params = solve(parameterised_value_iteration(mdp, lr), core_init)
+#     params = utils.solve(parameterised_value_iteration(mdp, lr), core_init)
 #     vs = np.hstack([build(c) for c in params]).T
 #     m = vs.shape[0]
 #     plt.scatter(vs[:, 0], vs[:, 1], c=range(m), cmap='autumn', label='pvi')
@@ -304,16 +304,16 @@ def generate_mpvi_vs_mvi(mdp, init):
 
 if __name__ == '__main__':
     n_states, n_actions = 2, 2
-    mdp = build_random_mdp(n_states, n_actions, 0.5)
-    pis = gen_grid_policies(41)
-    vs = polytope(mdp.P, mdp.r, mdp.discount, pis)
+    mdp = utils.build_random_mdp(n_states, n_actions, 0.5)
+    pis = utils.gen_grid_policies(41)
+    vs = utils.polytope(mdp.P, mdp.r, mdp.discount, pis)
     init = rnd.standard_normal((mdp.S, mdp.A))
 
     experiments = [
-        functools.partial(generate_vi_sgd_vs_mom, lr=a) for a in np.logspace(-5, 0, 6)
+        # functools.partial(generate_vi_sgd_vs_mom, lr=a) for a in np.logspace(-5, 0, 6)
         #
-        # generate_vi_sgd_vs_mom
-        # generate_pvi_vs_vi,
+        generate_vi_sgd_vs_mom,
+        generate_pvi_vs_vi,
         #
         # generate_avi_vs_vi,
         #
@@ -330,4 +330,4 @@ if __name__ == '__main__':
         plt.figure(figsize=(16,16))
         plt.scatter(vs[:, 0], vs[:, 1], s=10, alpha=0.75)
         exp(mdp, init)
-        # plt.show()
+        plt.show()

@@ -132,7 +132,7 @@ def dynamical_system_solver(fn, init):
 def converged(xs):
     if len(xs) <= 1:
         return False
-    elif len(xs) > 1000 and np.isclose(xs[-1], xs[-2], atol=1e-6).all():
+    elif len(xs) > 1000 and np.isclose(xs[-1], xs[-2], atol=1e-3).all():
         print('Close enough...')
         return True
     elif len(xs) > 10000:

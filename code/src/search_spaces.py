@@ -2,8 +2,6 @@
 Explore how the different search spaces effect the GD dynamics.
 """
 import functools
-import itertools
-import collections
 
 import numpy
 import jax.numpy as np
@@ -11,30 +9,7 @@ from jax import grad, jit, jacrev, vmap
 
 import numpy.random as rnd
 
-MDP = collections.namedtuple('mdp', ['S', 'A', 'P', 'r', 'discount', 'd0'])
-
-def build_random_mdp(n_states, n_actions, discount):
-    P = rnd.random((n_states, n_states, n_actions))
-    r = rnd.standard_normal((n_states, n_actions))
-    d0 = rnd.random((n_states, 1))
-    return MDP(n_states, n_actions, P/P.sum(axis=0, keepdims=True), r, discount, d0/d0.sum(axis=0, keepdims=True))
-
-######################
-
-def gen_grid_policies(N):
-    # special case for 2 x 2
-    p1s, p2s = np.linspace(0,1,N), np.linspace(0,1,N)
-    p1s = p1s.ravel()
-    p2s = p2s.ravel()
-    return [np.array([[p1, 1-p1],[1-p2, p2]]) for p1 in p1s for p2 in p2s]
-
-# @jit
-def polytope(P, r, discount, pis):
-    print('n pis:{}'.format(len(pis)))
-    def V(pi):
-        return np.sum(value_functional(P, r, pi, discount), axis=1)
-    vs = np.vstack([V(pi) for pi in pis])
-    return vs
+import src.utils as utils
 
 #############################
 """
@@ -79,91 +54,12 @@ def random_reparameterisation(cores, i):
 def build(cores):
     return functools.reduce(np.dot, cores)
 
-"""
-Tools for simulating dyanmical systems.
-"""
-
-def isclose(x, y, atol=1e-8):
-    if isinstance(x, np.ndarray):
-        return np.isclose(x, y, atol=atol).all()
-    elif isinstance(x, list):
-        # return all(np.isclose(x[0], y[0], atol=1e-03).all() for i in range(len(x)))
-        return np.isclose(build(x), build(y), atol=atol).all()
-    elif isinstance(x, tuple) and isinstance(x[0], np.ndarray):
-        return np.isclose(x[0], y[0], atol=atol).all()
-    elif isinstance(x, tuple) and isinstance(x[0], list):
-        return np.isclose(build(x[0]), build(y[0]), atol=atol).all()
-    else:
-        raise ValueError('wrong format')
-
-def converged(l):
-    if len(l)>10:
-        if len(l)>50000:
-            return True
-        elif isclose(l[-1], l[-2]):
-            return True
-        else:
-            False
-    else:
-        False
-
-def solve(update_fn, init):
-    xs = [init]
-    x = init
-    while not converged(xs):
-        print('\rStep: {}'.format(len(xs)), end='', flush=True)
-        x = update_fn(x)
-        xs.append(x)
-    return xs
-
-"""
-Some useful functions that will be repeately used.
-- `value_functional`: evaluates a policy within a mdp
-- `bellman_optimality_operator`: calculates a step of the bellman operator
-"""
-
-@jit
-def value_functional(P, r, pi, discount):
-    """
-    V = r_{\pi} + \gamma P_{\pi} V
-      = (I-\gamma P_{\pi})^{-1}r_{\pi}
-
-    Args:
-        P (np.ndarray): [n_states x n_states x n_actions]
-        r (np.ndarray): [n_states x n_actions]
-        pi (np.ndarray): [n_states x n_actions]
-        discount (float): the temporal discount value
-    """
-    n = P.shape[-1]
-    # P_{\pi}(s_t+1 | s_t) = sum_{a_t} P(s_{t+1} | s_t, a_t)\pi(a_t | s_t)
-    P_pi = np.einsum('ijk,jk->ij', P, pi)
-    r_pi = np.expand_dims(np.einsum('ij,ij->i', pi, r), 1)
-
-    # assert np.isclose(pi/pi.sum(axis=1, keepdims=True), pi).all()
-    # assert np.isclose(P_pi/P_pi.sum(axis=0, keepdims=True), P_pi, atol=1e-4).all()
-
-    # BUG why transpose here?!?!
-    vs = np.dot(np.linalg.inv(np.eye(n) - discount*P_pi.T), r_pi)
-    # print(vs.shape, P_pi.shape)
-    return vs
-
-def bellman_optimality_operator(P, r, Q, discount):
-    """
-    Args:
-        P (np.ndarray): [n_states x n_states x n_actions]
-        r (np.ndarray): [n_states x n_actions]
-        Q (np.ndarray): [n_states x n_actions]
-        discount (float): the temporal discount value
-
-    Returns:
-        (np.ndarray): [n_states, n_actions]
-    """
-    if Q.shape[1] == 1:  # Q == V
-        # Q(s, a) =  r(s, a) + \gamma E_{s'~P(s' | s, a)} V(s')
-        return r + discount*np.einsum('ijk,il->jk', P, Q)
-    else:
-        # Q(s, a) =  r(s, a) + \gamma max_a' E_{s'~P(s' | s, a)} Q(s', a')
-        return r + discount*np.max(np.einsum('ijk,il->jkl', P, Q), axis=-1)
+def policy_iteration(mdp):
+    def update_fn(pi):
+        V = utils.value_functional(mdp.P, mdp.r, pi, mdp.discount)
+        Q = utils.bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
+        return utils.onehot(np.argmax(Q, axis=1), mdp.A)  # greedy update
+    return update_fn
 
 """
 Value iteration;
@@ -172,12 +68,12 @@ Value iteration;
 """
 
 def value_iteration(mdp, lr):
-    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
+    T = lambda Q: utils.bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     U = lambda Q: Q + lr * (T(Q) - Q)
     return jit(U)
 
 def parameterised_value_iteration(mdp, lr):
-    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
+    T = lambda Q: utils.bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     TD = lambda cores: T(build(cores)) - build(cores)
     dVdw = jacrev(build)
 
@@ -199,7 +95,7 @@ https://arxiv.org/abs/1903.08894
 """
 
 def adjusted_value_iteration(mdp, lr, D, K):
-    T = lambda Q: bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
+    T = lambda Q: utils.bellman_optimality_operator(mdp.P, mdp.r, Q, mdp.discount)
     U = lambda Q: Q + lr * np.dot(K, np.dot(D, T(Q) - Q))
     return jit(U)
 
@@ -214,34 +110,28 @@ def adjusted_value_iteration(mdp, lr, D, K):
 # Policy iteration
 ######################
 
-def entropy(p, axis=1):
-    return -np.sum(np.log(p) * p)
-
-def softmax(x, axis=-1):
-    return np.exp(x)/np.sum(np.exp(x), axis=-1, keepdims=True)
-
 def policy_gradient_iteration_logits(mdp, lr):
     # d/dlogits V = E_{\pi}[V] = E[V . d/dlogit log \pi]
-    dlogpi_dlogit = jacrev(lambda logits: np.log(softmax(logits)))
-    dHdlogit = jacrev(lambda logits: entropy(softmax(logits)))
+    dlogpi_dlogit = jacrev(lambda logits: np.log(utils.softmax(logits)))
+    dHdlogit = jacrev(lambda logits: utils.entropy(utils.softmax(logits)))
 
     @jit
     def update_fn(logits):
-        V = value_functional(mdp.P, mdp.r, softmax(logits), mdp.discount)
-        Q = bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
+        V = utils.value_functional(mdp.P, mdp.r, utils.softmax(logits), mdp.discount)
+        Q = utils.bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
         A = Q-V
         g = np.einsum('ijkl,ij->kl', dlogpi_dlogit(logits), A)
         return logits + 1e-4*dHdlogit(logits) + lr * g
     return update_fn
 
 def parameterised_policy_gradient_iteration(mdp, lr):
-    dlogpi_dw = jacrev(lambda cores: np.log(softmax(build(cores), axis=1)))
-    dHdw = jacrev(lambda cores: entropy(softmax(build(cores))))
+    dlogpi_dw = jacrev(lambda cores: np.log(utils.softmax(build(cores), axis=1)))
+    dHdw = jacrev(lambda cores: utils.entropy(utils.softmax(build(cores))))
 
     @jit
     def update_fn(cores):
-        V = value_functional(mdp.P, mdp.r, softmax(build(cores), axis=1), mdp.discount)
-        Q = bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
+        V = utils.value_functional(mdp.P, mdp.r, utils.softmax(build(cores), axis=1), mdp.discount)
+        Q = utils.bellman_optimality_operator(mdp.P, mdp.r, V, mdp.discount)
         A = Q-V
         grads = [np.einsum('ijkl,ij->kl', d, A) for d in dlogpi_dw(cores)]
         return [c+lr*g+1e-4*dH for c, g, dH in zip(cores, grads, dHdw(cores))]
