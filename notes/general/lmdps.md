@@ -21,41 +21,6 @@ Another way to frame. __Q:__ If we want to optimise the space of transitions, wh
 Pick $a \in A$, versus, pick $\Delta(S)$. $f: S\to A$ vs $f:S \to \Delta(S)$.
 
 
-## Option decoding
-
-What about using options to help solve the optimal control decoding?
-
-$$
-P_{\pi} = \sum_\omega P_k(\cdot | s, \omega) \pi(\omega | s) \\
-\pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big)
-$$
-
-Options would allow greater flexibility in the $P_{\pi}(\cdot | s)$ distribution, making is possible to match $u(s'|s)$ with greater accuracy (and possibly cost).
-
-- First need to demonstrate that action decoding is lossy.
-- Then show that using options is less lossy.
-
-## Embedding
-
-problem with embedding..
-
-$$
-q(s) - KL(P(\cdot | s, a) \parallel p(\cdot | s)) = r(s, a) \\
-$$
-
-The KL. If $P(s' | s, a)$ is zero, then $p(s' | s)$ can be whatever it likes. Thus, $p(x' | x)$ might contain many impossible transitions.
-
-
-## Unconstrained dynamics
-
-- What is their function?
-- What do they look like?
-
-Does it make sense to treat the q(s) like rewards?!
-They reward for bing in state s.
-But cant capture action specific rewards!?
-
-
 ## Why do we care about LMDPs???
 
 - Transfer
@@ -68,19 +33,79 @@ Problem. What does it even mean for two LMDPs to have the same unconditioned dyn
 The MDPs must have been the same up to some additive constant (constant in the actions), $r(s, a)=r(s, a) + c(s)$.
 Does this really capture what we mean by different tasks?!?
 
-### Distributions over states
 
-What if we wanted to approximate these distributions?
-Generalise subgoal methods to work with distributions?
-The distribution could be constructed via; parzen window / GMM, neural flow, ?!.
+## Embedding derivation
+
+Goal. Take a MDP and find a LMDP that has similar structure.
+
+__NOTE:__ The derivation is not the same as in Todorov. He sets $b_a \neq r, b_a = r - \sum P \log P$.
+
+$$
+\begin{align}
+\forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \tag{1}\\
+P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{2}\\
+r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{3}\\
+\\
+r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a)\parallel\frac{P(\cdot | s, a)}{p(\cdot|s)}) \tag{4}\\
+r(s, a) &= q(s) - \sum_{s'}P(s' | s, a) \log(p(s'|s)) \tag{5}\\
+\\
+m_{s'}[s]&:= \log p(s' | s) \tag{6}\\
+D_{as'}[s] &:= p(s'|s, a) \tag{7}\\
+c_{s'}[s] &:= q[s] \mathbf 1 - m_{s'}[s] \;\;\text{such that} \;\; \sum_{s'} e^{m_{s'}[s]} = 1 \tag{8}\\
+\\
+r_a &= D_{as'} ( q \mathbf 1 - m_{s'}) \;\;\forall s \tag{9}\\
+r_a &= D_{as'}c_{s'}  \;\;\forall s \tag{10}\\
+c_{s'} &= r_aD_{as'}^{\dagger} \;\;\forall s\tag{11}\\
+q &= -\log \sum_{s'} e^{-c_{s'}} \;\;\forall s\tag{12}\\
+m_{s'} &= q - c_{s'} \;\;\forall s\tag{14}\\
+\end{align}
+$$
 
 
-### Deep implementation?!
+
+Therefore we have $|A|$ linear relationships, for each $s\in S$.
+
+(5) KL introduces a negative, but we also use the log rule to move $p(s'|s)$ to the nominator, adding another negative, and thus cancelling. Yielding the cross entropy between .. and ... .
+
+(11) The More-Penrose pseudo inverse. We apply to the RHS... ???.
+
+> If $D$ is row-rank defficient, the solution $c$ is not unique, and we should be able to exploit the freedom in choosing $c$ to improve the approximation of the traditional MDP. If $D$ is coumn-rank-defficient then an exact embedding cannot be constructed. However, this is unlikely in to occur in practice because it essentially means that the number of symbolic actions is greater than the number of possible next states.
+
+## Unconstrained dynamics
+
+- What is their function?
+- What do they look like?
+
+Does it make sense to treat the q(s) like rewards?!
+They reward for bing in state s.
+But cant capture action specific rewards!?
+
+## Scaling to more complex problems
+
+- sample based / incremental
+- large / cts state spaces
+- sparse rewards
+- ?
+
+### Incremental implementation
+
+Generalise to a more complex problem. We are only given samples.
+A first step to tackling more complex problems.
+
+##### Model based
+Learn $p, q$ based on samples.
 
 $$
 \mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, a,} \bigg[ r(s, a) - q_\theta(s) + \text{KL}(p_\phi(\cdot | s) \parallel P(\cdot | s, a)) \bigg]\\
 \mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg] \\
 $$
+
+##### Model free
+
+$z$-iterations. But we need to find a way to project $(s_t, a_t, r_t) \to (x_t, p_t, q_t)$.
+
+- Is there a way to construct $p, q$ incrementally!?!?
+- What is the essence of what is being done here?
 
 ## Maximisation derivation
 
@@ -110,8 +135,31 @@ By definition, an LMDP is the optimisation problem in (1). We can move the $\tex
 
 Alternative perspective. The high value trajectories are the most likely ones.
 
+### Distributions over states
+
+What if we wanted to approximate these distributions?
+Generalise subgoal methods to work with distributions?
+The distribution could be constructed via; parzen window / GMM, neural flow, ?!.
+
+Connections to distributional RL?
 
 
+## Option decoding
+
+What about using options to help solve the optimal control decoding?
+
+$$
+P_{\pi} = \sum_\omega P_k(\cdot | s, \omega) \pi(\omega | s) \\
+\pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big)
+$$
+
+Options would allow greater flexibility in the $P_{\pi}(\cdot | s)$ distribution, making is possible to match $u(s'|s)$ with greater accuracy (and possibly cost).
+
+- First need to demonstrate that action decoding is lossy.
+- Then show that using options is less lossy.
+
+
+***
 
 
 Refs

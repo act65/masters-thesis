@@ -4,13 +4,6 @@ Firstly, what makes an optimisation problem easy? The search space is small, the
 
 And within RL, properties that would make the optimisation problem easier; a sparse transition matrix, dense rewards, linearity, ...
 
-Linearity is a nice property that makes optimisation simpler and more efficient.
-
-- Linear programming (see appendix: LP)
-- Linear markov decision processes
-
-Linear optimisation is ... aka linear programming. Has a complexity of ???. Can
-Solving a system of linear relationships. Has a complexity of ???.
 
 Note that it will not always be possible to find an efficient solution to an MDP.
 Are some MDPs just fundammentally harder to solve than others?
@@ -38,6 +31,17 @@ why linearity?
 - it has many mathematical tools for analysis.
 - we know linear systems can be solved efficiently.
 - ?
+
+
+Linearity is a nice property that makes optimisation simpler and more efficient.
+
+- Linear programming (see appendix: LP)
+- Linear markov decision processes
+
+Linear optimisation is ... aka linear programming. Has a complexity of ???. Can
+Solving a system of linear relationships. Has a complexity of ???.
+
+In fact. MDPs can actually be solved via LP. see [appendix].
 
 ### Linear Markov decision process (Todorov 2009)
 (Exponentiated and controlling state distributions)

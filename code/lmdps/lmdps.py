@@ -9,7 +9,7 @@ def rnd_mdp(n_states, n_actions):
     P = rnd.random((n_states, n_states, n_actions))
     P = P/P.sum(0)
 
-    r = rnd.standard_normal((n_states, n_actions))
+    r = rnd.random((n_states, n_actions))
     return P, r
 
 def rnd_lmdp(n_states, n_actions):
@@ -45,18 +45,28 @@ def mdp_encoder(P, r):
         See supplementary material of todorov 2009 for more info
         https://www.pnas.org/content/106/28/11478
         """
-        # b_a = r(x, a) - E_s'~p(s' | s, a) log( p(s' | s, a) / p(x' | x))
-        b = r[idx_x, :] - np.sum(P[:, idx_x, :] * np.log(P[:, idx_x, :]+1e-8), axis=0) # swap +/- of 2nd term
+        # b_a = r(x, a) ## - E_s'~p(s' | s, a) log( p(s' | s, a) / p(x' | x))
+        b = r[idx_x, :] # - np.sum(P[:, idx_x, :] * np.log(P[:, idx_x, :]+1e-8), axis=0) # swap +/- of 2nd term
         # D_ax' = p(x' | x, a)
-        D = -P[:, idx_x, :]  # swap +/-
+        D = P[:, idx_x, :]
 
-        # D(q.1 - m) = b, c = q.1 - m
+        # D(q.1 - m) = b,
         c = np.dot(b, linalg.pinv(D))
         # min c
         q = -np.log(np.sum(np.exp(-c)))
 
+        # c = q.1 - m
         m = q - c
+
+        # p = exp(c + log(sum exp c) ). weird.
         p = np.exp(m)
+
+        # p should be a distribution
+        # QUESTION where does p get normalised!?!?
+        err = np.isclose(p.sum(0), np.ones(p.shape[0]))
+        if not err.any():
+            print(err)
+            raise SystemExit
 
         return p, np.array([q])
 
@@ -94,7 +104,7 @@ def lmdp_solver(p, q, discount):
     # no. this is the value of the unconstrained dynamics, kinda
     # z = np.dot((np.linalg.pinv(np.eye(p.shape[0]) - discount * p)), np.exp(q) + KL(?? || p))
 
-    v = -np.log(z)
+    v = np.log(z)
 
     # Calculate the optimal control
     # G(x) = sum_x' p(x' | x) z(x')
@@ -166,89 +176,11 @@ def lmdp_decoder(u, P, lr=10):
 
     return softmax(pi_star_logits)
 
-def KL(P,Q):
+def KL(P, Q):
     return -np.sum(P*np.log((Q+1e-8)/(P+1e-8)))
 
-def test_embedded_dynamics():
-    """
-    Explore how the unconstrained dynamics in a simple setting.
-    """
-    # What about when p(s'| s) = 0, is not possible under the true dynamics?!
-    r = np.array([
-        [1, 0],
-        [0, 0]
-    ])
-
-    # Indexed by [s' x s x a]
-    # ensure we have a distribution over s'
-    p000 = 1
-    p100 = 1 - p000
-
-    p001 = 0
-    p101 = 1 - p001
-
-    p010 = 0
-    p110 = 1 - p010
-
-    p011 = 1
-    p111 = 1 - p011
-
-    P = np.array([
-        [[p000, p001],
-         [p010, p011]],
-        [[p100, p101],
-         [p110, p111]],
-    ])
-    # BUG ??? only seems to work for deterministic transitions!?
-    # oh, this is because deterministic transitions satisfy the row rank requirement??!
-    # P = np.random.random((2, 2, 2))
-    # P = P/np.sum(P, axis=0)
-
-    # a distribution over future states
-    assert np.isclose(np.sum(P, axis=0), np.ones((2,2))).all()
-
-    pi = softmax(r, axis=1)  # exp Q vals w gamma = 0
-    # a distribution over actions
-    assert np.isclose(np.sum(pi, axis=1), np.ones((2,))).all()
-
-    p, q = mdp_encoder(P, r)
-
-    print('q', q)
-    P_pi = np.einsum('ijk,jk->ij', P, pi)
-
-    print('p', p)
-    print('P_pi', P_pi)
-
-    # the unconstrained dynamics with deterministic transitions,
-    # are the same was using a gamma = 0 boltzman Q vals
-    print("exp(r) is close to p? {}".format(np.isclose(p, P_pi, atol=1e-4).all()))
-
-    # r(s, a) = q(s) - KL(P(. | s, a) || p(. | s))
-    # TODO how to do with matrices!?
-    # kl = - (np.einsum('ijk,ij->jk', P, np.log(p)) - np.einsum('ijk,ijk->jk', P, np.log(P)))
-    kl = numpy.zeros((2, 2))
-    for j in range(2):
-        for k in range(2): # actions
-            kl[j, k] = KL(P[:, j, k], p[:, j])
-
-    r_approx = -q[:, np.newaxis] - kl
-
-    print(np.around(r, 3))
-    print(np.around(r_approx, 3))
-    print('r ~= q - KL(P || p): {}'.format(np.isclose(r, r_approx, atol=1e-3).all()))
-
-def test_lmdp_solver():
-    """
-    Want to set up a env that will test long term value over short term rewards.
-    """
-    p = np.array([
-        [0.75, 0.25],
-        [0.25, 0.75]
-    ])
-    q = np.array([1, 0])
-    u, v = lmdp_solver(p, q, 0.9)
-    print(u)
-    print(v)
+def CE(P, Q):
+    return np.sum(P*np.log(Q+1e-8))
 
 def test_decoder_simple():
     # Indexed by [s' x s x a]
@@ -303,16 +235,7 @@ def test_decoder_rnd():
     assert np.isclose(P_pi, u, atol=1e-2).all()
 
 if __name__ == "__main__":
-    # test_embedded_dynamics()
+    test_embedded_dynamics()
     # test_lmdp_solver()
     # test_decoder_simple()
-    test_decoder_rnd()
-
-    # p, q = rnd_lmdp(n_states, n_actions)
-
-    # u, v = lmdp_solver(p, q, 0.9)
-    # # print(v)
-    # # print(u)
-    #
-    # pi = lmdp_decoder(u, P)
-    # print(pi)
+    # test_decoder_rnd()
