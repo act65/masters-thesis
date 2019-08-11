@@ -158,6 +158,16 @@ Options would allow greater flexibility in the $P_{\pi}(\cdot | s)$ distribution
 - First need to demonstrate that action decoding is lossy.
 - Then show that using options is less lossy.
 
+***
+
+Insights from optimality bounds.
+Need to be able to approximate the optimal controls. 
+When is it hard to approximate the optimal controls?
+When our basis set of distributions oer future states (aka our actions) have little weight...?
+
+Potential solution?
+Use options.
+
 
 ***
 
