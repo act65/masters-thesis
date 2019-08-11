@@ -41,7 +41,7 @@ Can easily make a sequence Markovian by adding information. E.g. time...
 
 ### Optimality
 
-And importantly, existing theory tells us that there is a unique optimal policy. And that this optimal policy is necessarily deterministic. 
+And importantly, existing theory tells us that there is a unique optimal policy. And that this optimal policy is necessarily deterministic.
 
 (why does this make sense?)
 
@@ -49,10 +49,10 @@ And importantly, existing theory tells us that there is a unique optimal policy.
 
 Reinforcement learning set of solutions to a general type of problem. This general, reinforcement learning problem, has the properties;
 
-- evaluation, not feedback. Learners are never provided information about what makes a good policy, rather they told whether a policy is good or not. 
+- evaluation, not feedback. Learners are never provided information about what makes a good policy, rather they told whether a policy is good or not.
 - delayed credit assignment.
 
-MDPs have these properties, so are considered within RL. They are also within the fields of Operational Research, Optimal Control, Mathematical Optimisation, Stochastic Programming. 
+MDPs have these properties, so are considered within RL. They are also within the fields of Operational Research, Optimal Control, Mathematical Optimisation, Stochastic Programming.
 
 Notably, we can weaken the information provided to a learner attempting to solve an MDP in a few interesting ways:
 
@@ -130,4 +130,4 @@ Note: I have not considered MDPs in their many varying dimensions.
 Rather than;
 - pick the state space, or the action space, to be a discrete set, we could pick any set we like.
 - allowing an infinite number of steps, we can add terminal states. This allows us to drop the need for discounting (as the integral will not necessarily diverge to infinity).
-- 
+-

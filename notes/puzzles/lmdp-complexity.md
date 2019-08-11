@@ -27,3 +27,18 @@ $\mathcal O ((|S|^{2.3}  )$
 ## Decoding
 
 $\mathcal O( (|S||A|/2)^{2.3} )$
+
+
+$$
+\begin{align}
+P_{\pi}(\cdot | s) &= \sum_a P_k(\cdot | s, a) \pi(a | s) \\
+\pi &= \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big) \\
+0 &=\text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big) \\
+ &= -\sum_{s'} u(s' | s) \log\frac{P_{\pi}(s' | s)}{u(s' | s)}  \\
+ \begin{cases}
+    x(n), & \text{for } 0 \leq n \leq 1 \\
+    x(n - 1), & \text{for } 0 \leq n \leq 1 \\
+    x(n - 1), & \text{for } 0 \leq n \leq 1
+  \end{cases}
+\end{align}
+$$

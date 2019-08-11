@@ -114,7 +114,9 @@ V(\alpha + \beta) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \\
 - what if we were using hyperbolic discounting instead?
 - Can we think of $\gamma$ as group with representation in $GL(n)$ acting on it?! -->
 
-## Dynamics
+## Dynamics and complexity
+
+__TODO__ Complexity. How many iterations!!! Look up from literature and do some empirical tests.
 
 (we want to know how much it costs to find the optima)
 
