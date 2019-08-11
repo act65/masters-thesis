@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import src.lmdps
+import src.lmdps as lmdps
 import src.utils as utils
+import src.search_spaces as search_spaces
 
 def onehot(x, n):
     return np.eye(n)[x]
@@ -17,14 +18,13 @@ def compare_mdp_lmdp():
     plt.scatter(vs[:, 0], vs[:, 1], s=10, alpha=0.75)
 
     # solve via LMDPs
-    # TODO bug. why do we need to negate this!?
-    p, q = lmdps.mdp_encoder(mdp.P, -mdp.r)
+    p, q = lmdps.mdp_encoder(mdp.P, mdp.r)
     u, v = lmdps.lmdp_solver(p, q, mdp.discount)
     pi_u_star = lmdps.lmdp_decoder(u, mdp.P)
 
     # solve MDP
     init = np.random.standard_normal((n_states, n_actions))
-    qs = utils.solve(utils.value_iteration(mdp, lr=0.1), init)[-1]
+    qs = utils.solve(search_spaces.value_iteration(mdp, lr=0.1), init)[-1]
     pi_star = onehot(np.argmax(qs, axis=1), n_actions)
 
     # evaluate both policies.
@@ -35,7 +35,6 @@ def compare_mdp_lmdp():
     plt.scatter(v_u_star[0, 0], v_u_star[1, 0], c='g', marker='x', label='lmdp')
     plt.legend()
     plt.show()
-
 
 def lmdp_dynamics():
     pass

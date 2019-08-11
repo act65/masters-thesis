@@ -53,10 +53,12 @@ def mdp_encoder(P, r):
         # D(q.1 - m) = b,
         c = np.dot(b, linalg.pinv(D))
         # min c
-        q = -np.log(np.sum(np.exp(-c)))
+        # q = -np.log(np.sum(np.exp(-c)))
+        q = np.log(np.sum(np.exp(c)))  # TODO why?!
 
         # c = q.1 - m
-        m = q - c
+        # m = q - c
+        m = c - q  # TODO why?!
 
         # p = exp(c + log(sum exp c) ). weird.
         p = np.exp(m)

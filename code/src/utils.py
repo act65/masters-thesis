@@ -2,6 +2,7 @@ import jax.numpy as np
 from jax import jit
 import numpy.random as rnd
 import collections
+import itertools
 
 def onehot(x, N):
     return np.eye(N)[x]
@@ -29,6 +30,11 @@ def gen_grid_policies(N):
     p2s = p2s.ravel()
     return [np.array([[p1, 1-p1],[1-p2, p2]]) for p1 in p1s for p2 in p2s]
 
+def get_deterministic_policies(n_states, n_actions):
+    simplicies = list([np.eye(n_actions)[i] for i in range(n_actions)])
+    pis = list(itertools.product(*[simplicies for _ in range(n_states)]))
+    return [np.stack(p) for p in pis]
+
 # @jit
 def polytope(P, r, discount, pis):
     print('n pis:{}'.format(len(pis)))
@@ -55,7 +61,7 @@ def value_functional(P, r, pi, discount):
         pi (np.ndarray): [n_states x n_actions]
         discount (float): the temporal discount value
     """
-    n = P.shape[-1]
+    n = P.shape[0]
     # P_{\pi}(s_t+1 | s_t) = sum_{a_t} P(s_{t+1} | s_t, a_t)\pi(a_t | s_t)
     P_pi = np.einsum('ijk,jk->ij', P, pi)
     r_pi = np.expand_dims(np.einsum('ij,ij->i', pi, r), 1)
