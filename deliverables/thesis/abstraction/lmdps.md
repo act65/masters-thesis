@@ -32,21 +32,46 @@ Another way to frame. __Q:__ If we want to optimise the space of transitions, wh
 ## A linearisation of an MDP
 
 ![''](../../../pictures/drawings/abstract-representations-linear.png){ width=450px }
-> How can we transform a MDP into a LMDP? While preserving the 'structure' of the MDP?
+
+> Ok great, we can solve LMDPs. But how does being able to solve an LMDP help us solve MDPs?
+
+We want a way to transform a MDP into a LMDP, while preserving the 'structure' of the MDP. But what do we mean by a MDP's structure?
+
+The LMDP, $\{S, p, q, \gamma\}$ should;
+
+- be able to represent the same transition dynamics as the original MDP,
+- give the the same rewards was the original MDP,
+- have the same optima.
+
+(It turns out that (1) and (2) imply (3) given some assumptions. See [Optimality]())
+
+So, given a reward function, $r$, and a transition function, $P$, from the MDP, we must translate them into a $p$ and a $q$. Thus we have built a LMDP with the same 'structure'.
 
 $$
 \begin{align}
-\forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \tag{1}\\
-P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{2}\\
-r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{3}\\
+\forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \\
+P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{1}\\
+r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{2}\\
 \end{align}
 $$
 
 Which leads to $|A|$ linear equations to solve, for each state in the MDP.
 
+
+
 See appendix [] for more details.
 
-### Unconstrained dynamics
+
+Alternative views of linearisation.
+
+- A relaxation of the MDP
+- Linelihood interpretation
+
+### Unconstrained dynamics and state rewards
+
+> Let's try and understand this thing we have contructed.
+
+The state rewards are not capable of giving rewards for actions taken. Rather, the differences in reward, by taking another action, is captured by the KL divergence between the control and the unconstrained dynamics.
 
 - What is their function?
 - What do they look like?
@@ -59,11 +84,10 @@ But cant capture action specific rewards!?
 
 ![''](../../../pictures/drawings/abstract-representations-project.png){ width=450px }
 
-Ok, so now we have disentangled the search for a policy and the search for optimal controls. At this point, we what what we want, but not how to get it.
-This is where most of the complexity of the RL problem is?!?
+Ok, so now we get a glimpse at why LMDPs are an interesting abstraction.
+THe LMDP has disentangled the search for the behaviour (go to this or that state) and the search for optimal controls (how to actually achieve that behaviour). This can be seen in the decoding step. As we know which states we want to be in, via the optimal control from solving the LMDP, $u^{* }$, but, we do not know how to implement those controls using the actions we have available.
 
-We have discounted and pick the optimal state to be in.
-(but what if the actual path we take to get there has a neg rewards?!?)
+<!--This is where most of the complexity of the RL problem is?!?-->
 
 $$
 P_{\pi}(\cdot | s) = \sum_a P_k(\cdot | s, a) \pi(a | s) \\
@@ -71,6 +95,7 @@ P_{\pi}(\cdot | s) = \sum_a P_k(\cdot | s, a) \pi(a | s) \\
 $$
 
 Maybe this isnt enough? Do we need to add a reward sensitive part as well?!?
+(but what if the actual path we take to get there has a neg rewards?!?)
 
 ## Optimality of solutions via LMDPs
 
