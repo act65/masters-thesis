@@ -23,6 +23,10 @@ $$
 
 ## Linear markov decision problems (LMDPs)
 
+
+Define an infinite horizon LMDP to be $\{S, p, q, \gamma\}$.
+Where $S$ is the state space, $p: S \to \Delta(S)$ is the unconditioned transition dynamics, $q: S \to \mathbb R$ is the state reward function an $\gamma$ is the discount rate.
+
 How can we exploit linearity to make reinforcement learning easier to understand, more efficient.
 
 There are a few different ways we can introduce linearity to a MDP. Which one is best? We will see...
