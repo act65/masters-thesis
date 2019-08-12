@@ -21,3 +21,13 @@ P(\zeta, \pi, \tau, d_0) = d_0(s_0)\Pi_{t=0}^T \tau(s_{t+1} | s_t, a_t)\pi(a_t|s
 V(\zeta, r, \gamma) = \sum^T_{t=0} \gamma^t r(s_t, a_t) \\
 \pi^{* } = \mathop{\text{argmax}}_{\pi} \;\;  \mathop{\mathbb E}_{\zeta \sim P(\cdot, \pi, \tau, d_0)} V(\zeta, r, \gamma)\\
 $$
+
+For each $t \ge 1$, at the beginning of the $t$-th episode, the adversary picks the initial state $s_t$ and the agent chooses policy $\pi_t$. The difference in values between $V^{* }(s_t)$ and $V_{\pi_t}(s_t)$ serves as the expected regret or the suboptimality of the agent at the $t$-th episode. Thus, after playing for $K$ episodes, the total (expected) regret is;
+
+$$
+\text{Regret}(T) = \sum^T_{t=1} \bigg[ V^{* }(s_t) - V_{\pi_t}(s_t) \bigg] \\
+\pi^{* } = \mathop{\text{argmax}}_{\pi} \;\; \text{Regret}(T) ??!?\\
+$$
+
+[Provably Efficient Reinforcement Learning with Linear
+Function Approximation](https://arxiv.org/abs/1907.05388)
