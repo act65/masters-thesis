@@ -20,3 +20,8 @@ Refs
 - [Markov decision problems]()
 - [LP and PI]()
 - [Value polytope]()
+
+
+***
+
+. Simplex method - PI, interior method - soft Pg?

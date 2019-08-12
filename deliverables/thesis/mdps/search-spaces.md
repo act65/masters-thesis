@@ -24,6 +24,10 @@ Search through possible models, $\tau, r$, calculate the optimal policy $\pi^{* 
 Search through models while trying to find one that yields similar returns to the oracle when playing the same policy.
 
 (note this one is different to the others. as we dont assume we know the model)
+Related to Thompson sampling?!?
+
+Model iteration. Model invariant transforms. Pick a policy. Falsify it, and this falsify all models that yield the same optimal policy.
+
 
 ***
 

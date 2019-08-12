@@ -172,6 +172,8 @@ But the real world isn't as nice as the setting we have been working in. There a
 Generalise to a more complex problem. We are only given samples.
 A first step to tackling more complex problems.
 
+
+
 ##### Model based
 Learn $p, q$ based on samples.
 
@@ -182,10 +184,32 @@ $$
 
 ##### Model free
 
-$z$-iterations. But we need to find a way to project $(s_t, a_t, r_t) \to (x_t, p_t, q_t)$.
+$z$-iterations. But we need to find a way to project $(s_t, a_t, r_t, s_{t+1}) \to (s_t, u_t, q_t, s_{t+1})$.
 
-- Is there a way to construct $p, q$ incrementally!?!?
+$$
+z_{t+1}(s_i) = z_{t+1}(s_i) -\eta \bigg( e^{q(s_i)}z(s{'}_i)^{\gamma} -z_t(s_i)\bigg) \\
+$$
+
+- Is there a way to learn $p, q$ incrementally!?!?
 - What is the essence of what is being done here?
+
+$$
+r(s, a) = q(s) - \sum_{s'}P(s' | s, a) \log(p(s'|s)) \\
+u^{* }(s'| s) = \frac{p(s' | s)\cdot z(s')^{\gamma}}{\sum_{s'} p(s' | s) z(s')^{\gamma}}  \\
+$$
+
+$$
+q_{t+1}(s) = (1-\eta)\;q_{t+1}(s) + \eta \;r(s_{t-1}, a_{t-1}) \\
+p_{t+1}(s'|s) = (1-\eta)\;q_{t+1}(s) + \eta \;r(s_{t-1}, a_{t-1}) \\
+u_t = \\
+$$
+
+So we need counts?!?! The $p(s' | s)$? Hmm. That will be expensive. Or inaccurate. Maybe both.
+
+***
+
+Ok. Lets take a different approach. __Q:__ Why is it a bad idea to try to do incremental RL with this linearisation trick?
+Not sure.
 
 ***
 
