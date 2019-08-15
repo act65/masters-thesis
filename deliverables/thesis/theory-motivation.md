@@ -1,3 +1,5 @@
+Motivating a mastery of theory.
+
 Current state of RL.
 - A summary of the arxiv...
 - Benchmarking
@@ -25,5 +27,6 @@ https://arxiv.org/abs/1908.02388
 https://arxiv.org/abs/1907.02057
 https://arxiv.org/abs/1809.07731
 https://arxiv.org/abs/1604.06778
+https://arxiv.org/abs/1908.03568
 
 Why? Instability, non-convex, hyper parameter searches, subtle design decisions, not analysing the variance, computational cost, ...

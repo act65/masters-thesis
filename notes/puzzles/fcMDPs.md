@@ -96,3 +96,22 @@ Related to;
 - temporal abstraction
 - deep versus wide representations in neural networks
 - graphs
+
+
+***
+### Actions $\to$ Options. And back. Transform
+
+
+Related??
+
+$$
+\mathcal M = \{S, A, r, P, \gamma\} \\
+M_1, M_2 \in \mathcal M \\
+T_k: \mathcal M \to \mathcal M \\
+T_k(M) = \{S_1, A^k, \hat T_k(r), \hat T_k(P)\} \\
+\hat T_k(r) = \sum_{i=t}^{t+k} r(s_i, a_i) \\
+\hat T_k(P) = \prod_{i=t}^{t+k} P(s_{i+1} | s_i, a_i) \\
+$$
+
+
+***
