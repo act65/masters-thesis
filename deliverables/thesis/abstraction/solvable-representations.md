@@ -17,118 +17,18 @@ Linearity is a nice property that makes optimisation simpler and more efficient.
 - Linear programming (see appendix: LP)
 - Linear markov decision processes
 
-Linear optimisation is ... aka linear programming. Has a complexity of ???. Can
 Solving a system of linear relationships. Has a complexity of ???.
 
 In fact. MDPs can actually be solved via LP. see [appendix].
-
-
-### Linear markov decision problems (LMDPs)
-
-> How can we construct a linear representation of an MDP?
-
-There are a few different ways we can introduce linearity to a MDP. But, which one is best? Let's explore.
-
-
-
-
-
-#### Linear Markov decision process (Todorov 2009)
-(Exponentiated and controlling state distributions)
-
-Define an infinite horizon LMDP to be $\{S, p, q, \gamma\}$.
-Where $S$ is the state space, $p: S \to \Delta(S)$ is the unconditioned transition dynamics, $q: S \to \mathbb R$ is the state reward function an $\gamma$ is the discount rate.
-
-How can we remove the sources of non-linearity from the bellman equation? The answer is a couple of 'tricks';
-
-- rather than optimising in the space of actions, optimise in the space of possible transition functions.
-- set the policy to be
-- ?
-
-Let's unpack these tricks and see how they can allow us to convert an MDP into a linear problem. And what the conversion costs.
-
-\begin{aligned}
-V(s) = \mathop{\text{max}}_u \Big[ q(s) -  \text{KL}(u(\cdot | s) \parallel p(\cdot | s)) +  \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} V(s') \Big]\\
-\end{aligned}
-
-
-
-#### Linear Markov decision process (Pires el at. 2016)
-(Factored linear models)
-
-\begin{aligned}
-\mathcal R: \mathcal V \to W \\
-\mathcal Q_a: \mathcal W \to \mathcal V^A \\
-P(s'|s, a) = \int_w \mathcal Q_a(s', w)\mathcal R(w, s)\\
-\end{aligned}
-
-Great. But, how does this help?
-
-
-\begin{aligned}
-T_{\mathcal Q}w &= r + \gamma \mathcal Qw \\
-T_{\mathcal R^A\mathcal Q}w &= \mathcal R^AT_{\mathcal Q} \\
-T_{\mathcal Q \mathcal R} &= T_{\mathcal Q}\mathcal R \;\;\; (= T_P)
-\end{aligned}
-
-
-It allows us to Bellman iterations in a lower dimensional space, $\mathcal W$, rather than the dimension of the transition function.
-
-
-\begin{aligned}
-w^a &= T_{\mathcal R^A\mathcal Q}w \tag{bellman evaluation operator}\\
-w &= M'w^a \tag{greedy update}\\
-\end{aligned}
-
-
-When does this matter?
-Planning!! Simulating the transition function many times. Pick $\mathcal W$...
-
-#### Linear Markov decision process (Jin el at. 2019)
-
-\begin{aligned}
-P(\cdot | s, a) = \langle\phi(s, a), \mu(\cdot) \rangle \\
-r(s, a) = \langle\phi(s, a), \theta \rangle
-\end{aligned}
-
-
-***
-<!-- Discussion -->
-
-So which approach is best? What are the pros / cons of these linearisations?
-
-All of them are trying to insert some kind of linearity into the transition function.
 
 ### A closer look at LMDPs
 
 (the Todorov ones...)
 
-A few things I want to explore;
-- the composability of policies / tasks
-- the embedding of actions
-- LMDPs as an abstraction
-
-Insert section on theory of LMDPs. Convergence, approx error, ...__
-
-What are their properties?
-
-- Efficently solvable
-- Allows the composition of optimal controls.
-- ???
-
-And what are they lacking?
-
-- Assumes we are working with a tabular representation
+The three steps of abstraction
+- relaxation (transform to a new domain)
+- linearisation (and solve)
 -
-
-***
-
-So now that we have explored LMDPs, how can we extract their nice properties into an architecture that might scale to more complex problems: larger state spaces and action spaces, sparse rewards, ...?
-
-The key steps that were taken;
-
-- Exponentiated values
-- learn a policy that chooses state distributions, rather than actions.
 
 
 #### LMDPs; more formally
@@ -139,30 +39,20 @@ Pick $a \in A$, versus, pick $\Delta(S)$. $f: S\to A$ vs $f:S \to \Delta(S)$.
 
 In the original Todorov paper, they derive the LMDP equations for minimising a cost function. This maximisation derivation just changes a few negative signs around. Although there is also a change in the interpretation of what the unconstrained dynamics are doing. ...?
 
-
-\begin{aligned}
+$$
+\begin{align}
 V(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} V(s') \tag{1}\\
 \\
 u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z(s')^{\gamma}} \tag{8}\\
 z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{11}\\
-\end{aligned}
-
+\end{align}
+$$
 
 By definition, an LMDP is the optimisation problem in (1). (3) Define a new variable, $z(s) = e^{v(s)}$. (5) Define a new variable that will be used to normalise $p(s' | s)z(s')^{\gamma}$. (8) Set the optimal policy to minimise the KL distance term. (9) Since we picked the optimal control to be the form in (8), the KL divergence term is zero. (11) Rewrite the equations for the tabular setting, giving a $z$ vector, uncontrolled dynamics matrix.
 
 (see appendix [] for a full derivation)
 
-Main transformations of the LMDP, everything else follows.
-
-1. Allow the direct optimisation of transitions, $u(s'|s)$, rather than policies.
-1. $r(s, a) = q(s) + KL(P(\cdot|s, a)\parallel p(s'|s)), \forall s, a$
-1. Set the optimal policy to be ...
-
-Another way to frame. __Q:__ If we want to optimise the space of transitions, what augmentations of the MDP are necessary to ensure solutions in the LMDP are optimal in the MDP?
-
-- Prove that 2. is necessary and sufficient for optimality. (probs not possible?!)
-
-#### A linearisation of an MDP
+#### A relaxed MDP
 
 ![''](../../../pictures/drawings/abstract-representations-linear.png){ width=450px }
 
@@ -241,8 +131,6 @@ Maybe this isnt enough? Do we need to add a reward sensitive part as well?!?
 One of the main questions we have not addressed yet is; if we solve the MDP directly, or linearise, solve and project, do we end up in the same place? This is a question about the completeness of our abstraction. Can our abstraction represent (and find) the same solutions that the original can?
 
 
-
-
 \begin{aligned}
 \parallel V_{\pi^{* }} - V_{\pi_{u^{* }}} \parallel_{\infty}&= \epsilon  \tag{1}\\
 &=\parallel (I - \gamma P_{\pi^{* }})^{-1}r_{\pi^{* }} - (I - \gamma P_{\pi_{u^{* }}})^{-1}r_{\pi_{u^{* } }} \parallel_{\infty} \tag{2}\\
@@ -315,6 +203,9 @@ But the real world isn't as nice as the setting we have been working in. There a
 - large / cts state spaces
 - sparse rewards
 <!-- more?!? -->
+
+So now that we have explored LMDPs, how can we extract their nice properties into an architecture that might scale to more complex problems: larger state spaces and action spaces, sparse rewards, ...?
+
 
 #### Incremental implementation
 
