@@ -220,6 +220,8 @@ But cant capture action specific rewards!?
 Ok, so now we get a glimpse at why LMDPs are an interesting abstraction.
 THe LMDP has disentangled the search for the behaviour (go to this or that state) and the search for optimal controls (how to actually achieve that behaviour). This can be seen in the decoding step. As we know which states we want to be in, via the optimal control from solving the LMDP, $u^{* }$, but, we do not know how to implement those controls using the actions we have available.
 
+> Two 'simpler' problems. Easier to solve?
+
 <!--This is where most of the complexity of the RL problem is?!?-->
 
 \begin{aligned}
@@ -285,6 +287,8 @@ Options would allow greater flexibility in the $P_{\pi}(\cdot | s)$ distribution
 - First need to demonstrate that action decoding is lossy.
 - Then show that using options is less lossy.
 
+This introduces dangers?!? As an option might accumulate unknown rewards along the way!??
+
 ### The complexity of solutions via LMDPs
 
 > Is my path actually shorter?
@@ -327,34 +331,7 @@ Learn $p, q$ based on samples.
 \mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg] \\
 \end{aligned}
 
-##### Model free
 
-$z$-iterations. But we need to find a way to project $(s_t, a_t, r_t, s_{t+1}) \to (s_t, u_t, q_t, s_{t+1})$.
-
-\begin{aligned}
-z_{t+1}(s_i) = z_{t+1}(s_i) -\eta \bigg( e^{q(s_i)}z(s{'}_i)^{\gamma} -z_t(s_i)\bigg) \\
-\end{aligned}
-
-
-- Is there a way to learn $p, q$ incrementally!?!?
-- What is the essence of what is being done here?
-
-\begin{aligned}
-r(s, a) = q(s) - \sum_{s'}P(s' | s, a) \log(p(s'|s)) \\
-u^{* }(s'| s) = \frac{p(s' | s)\cdot z(s')^{\gamma}}{\sum_{s'} p(s' | s) z(s')^{\gamma}}  \\
-\end{aligned}
-
-\begin{aligned}
-q_{t+1}(s) = (1-\eta)\;q_{t+1}(s) + \eta \;r(s_{t-1}, a_{t-1}) \\
-p_{t+1}(s'|s) = (1-\eta)\;q_{t+1}(s) + \eta \;r(s_{t-1}, a_{t-1}) \\
-u_t = \\
-\end{aligned}
-
-So we need counts?!?! The $p(s' | s)$? Hmm. That will be expensive. Or inaccurate. Maybe both.
-
-Want the story to be;
-Todorov had some ideas here. But there are fundamental problems that were avoided / overlooked.
-That approach only works in a special case.
 
 ***
 
