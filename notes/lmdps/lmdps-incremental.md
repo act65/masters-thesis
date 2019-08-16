@@ -12,7 +12,6 @@ z_{t+1}(s_i) = (1- \eta)z_{t}(s_i) + \eta\tilde z(s_i)\\
 
 TODO implement!
 
-
 - Is there a way to learn $p, q$ incrementally!?!?
 - What is the essence of what is being done here?
 
@@ -27,8 +26,18 @@ p_{t+1}(s'|s) = (1-\eta)\;q_{t+1}(s) + \eta \;r(s_{t-1}, a_{t-1}) \\
 u_t = \\
 \end{aligned}
 
-So we need counts?!?! The $p(s' | s)$? Hmm. That will be expensive. Or inaccurate. Maybe both.
+Do we need $p$? Which policy do we need to be following? Can we follow an arbitrary one? Like SARSA?!
 
-Want the story to be;
-Todorov had some ideas here. But there are fundamental problems that were avoided / overlooked.
-That approach only works in a special case.
+### Convergence
+
+Need to show that the linearised bellman operator, $T_{L}$, is a contractive operator.
+
+$$
+\parallel z^{* } - z_t \parallel_{\infty} \ge \parallel z^{* } - T(z_t) \parallel_{\infty} \forall z_t\\ 
+$$
+
+$$
+\parallel z^{* }(s) - e^{q(s)}z(s{'})^{\gamma} parallel_{\infty}\\
+$$
+
+Uniquenes and ???.
