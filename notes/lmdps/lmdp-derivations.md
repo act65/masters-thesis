@@ -46,7 +46,7 @@ c_{s'}[s] &:= q[s] \mathbf 1 - m_{s'}[s] \;\;\text{such that} \;\; \sum_{s'} e^{
 r_a &= D_{as'} ( q \mathbf 1 - m_{s'}) \;\;\forall s \tag{9}\\
 r_a &= D_{as'}c_{s'}  \;\;\forall s \tag{10}\\
 c_{s'} &= r_aD_{as'}^{\dagger} \;\;\forall s\tag{11}\\
-q &= -\log \sum_{s'} e^{-c_{s'}} \;\;\forall s\tag{12}\\
+q &= \log \sum_{s'} e^{c_{s'}} \;\;\forall s\tag{12}\\
 m_{s'} &= q - c_{s'} \;\;\forall s\tag{14}\\
 \end{align}
 $$

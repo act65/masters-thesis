@@ -24,7 +24,8 @@ $$
 
 - If $P(s'|s, a)$ is zero, then $p(s'|s)$ can be whatever it likes...
 - If $p(s'|s)$ is $1$ then it doesnt matter what $P(s'|s, a)$ as $\log 1 = 0$.
--
+- Rewards for impossible actions. Doesnt make sense. Since transition p is 0, the reward must be q!?
+
 ***
 
 For $|A|<|S|$, the transitions from a given state are low rank. We are restricted to a subspace of distributions over $S$ we can pick. This distribution is the connectivity.

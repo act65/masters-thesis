@@ -337,5 +337,10 @@ Want;
 - test with overparameterisation
 
 
+### BSuite
+
+> We do not have a clear pictureof whether such a learning algorithm will perform well at driving a car, or managing apower plant. If we want to take the next leaps forward, we need to continue to enhance ourunderstanding.
+
+> A notable omission from thebsuite2019 release is the lack of any targeted experiments for‘hierarchical reinforcement learning’ (HRL). We invite the community to help us curate excellentexperiments that can evaluate quality of HRL
 
 </div>

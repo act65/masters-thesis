@@ -15,4 +15,6 @@ z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma}\\
 \end{align}
 $$
 
+Set $\frac{\partial v}{\partial u}(u^{* }) = \mathbf 0$.
+
 Related to a taylor expansion?
