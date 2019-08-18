@@ -7,7 +7,5 @@ A timeline of my masters.
 6. I spent some time thinking about why we care about abstractions. We want to throw away the unimportant parts, so we can focus on the essential. The point is to make the problem easier to solve, in some sense. This led to __Solvable abstractions__. How can we find an abstraction that is easily solvable?
 7. After reading a few papers on the theory of RL, I decided I wanted a better understanding of __MDPs__, which were the main setting considered in the proofs I had been attempting to understand.
 8. I found a great paper (__[Value function polytope](https://arxiv.org/abs/1901.11524)__) that gave insight into the structure of the MDP and it's optimisation. I explored this further and combined it with some theoretical work on [acceleration via overparameterisation](https://arxiv.org/abs/1802.06509).
-9. Now, with my new understanding of MDPs, I returned to the problem of abstraction. A simple, and easily solvable system is a linear one. Is there a way to abstract an MDP into a  __[Linear MDP](https://www.pnas.org/content/106/28/11478)__? But what do we mean by linear? I spent some time trying to dissect this concept.
-10. My exploration of LMDPs gave me some ideas about a potential __heirarchical LMDP__. It exploits the linearity of an LMDP to allow the composition of previously learned optimal controls. This turned out not to be a new idea, but there seemed to be room for improvement.
-11. I finally returned to some ideas from action abstractions and near optimal learners about exploiting __symmetries__ within an MDP to reduce the complexity of the problem.
-12.
+9. Now, with my new understanding of MDPs, I returned to the problem of abstraction. A simple, and easily solvable system is a linear one. Is there a way find and exploit linearity within an MDP? __[Linear MDPs](https://www.pnas.org/content/106/28/11478)__? But what do we mean by linear? ...
+10.

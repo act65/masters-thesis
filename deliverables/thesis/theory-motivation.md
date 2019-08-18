@@ -60,7 +60,6 @@ https://arxiv.org/pdf/1905.12580.pdf
 https://arxiv.org/pdf/1502.04585.pdf
 https://arxiv.org/pdf/1905.10360.pdf
 
-
 ### Generalisation in RL
 
 This is what we are trying to measure.
