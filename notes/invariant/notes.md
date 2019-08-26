@@ -5,6 +5,32 @@ What is the geometry of this?
   - In the case the $\chi$ is based on Q values. This would mean a kind of density based attractive force!?
   - Higher density positions are more attractive.
 
+***
+
+Relationship to off policy RL?!?
+
+***
+__TODOs__. Extend this first order analysis to;
+- momentum. What is $\dot y$ if we update the parameters with momentum?
+- natural gradient?
+- ?
+
+***
+Want a measure of distnace that is low if we can find a simple (linear) transform that takes $x\to y$. And high if $x\to y$ requires lots of non linearity. Kinda.
+
+***
+1. Let $\phi$ be learned via an adversarial value fn.
+2. Could use this representation to construct a kernel: $k(s, s') = \langle \phi(s), \phi(s') \rangle$
+3. Could use kernel to couple gradients. $\dot f = -\eta KH\nabla \ell$
+
+Doesnt make sense if we are learning a value function? Why not just use $\phi$ as a representation for the value fn? What is gained from the coupling versus just using the representation to predict the value?
+
+$V(\phi(s))$ vs $\dot V = -\eta K_{\phi}H\nabla \ell$
+Might even be the same thing?!?
+
+***
+
+[A generalized representer theorem](https://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=FF17282B5B5DAAB20E1CFD46D3A77B05?doi=10.1.1.42.8617&rep=rep1&type=pdf)
 
 ***
 
