@@ -37,3 +37,24 @@ $$
 
 If $\delta(s, a) \approx \delta(s', a')$ what does that tell us!?
 What if we had $f, g$ such that $\delta(s, a) \approx \delta(f(s), g(a))$?
+
+
+***
+Want a representation that captures the symmetries / invariances in the environment.
+
+- [A Theoretical Analysis of Contrastive Unsupervised Representation Learning](https://arxiv.org/abs/1902.09229)
+- [Invariant Risk Minimization](https://arxiv.org/abs/1907.02893)
+- [Probabilistic symmetry and invariant neural networks](https://arxiv.org/abs/1901.06082)
+
+Representation learning for RL
+
+- [A Geometric Perspective on Optimal Representations for Reinforcement Learning](https://arxiv.org/abs/1901.11530)
+- []()
+
+
+***
+[On Variational Bounds of Mutual Information](https://arxiv.org/abs/1905.06922)
+[Mutual information neural estimation](https://arxiv.org/abs/1801.04062)
+[On mutual information maximisation for representation learning](https://arxiv.org/abs/1907.13625)
+Mutual information doesnt work because?!?
+Do some minimal tests to show MI is not what we want!?
