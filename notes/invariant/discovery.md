@@ -58,3 +58,8 @@ Representation learning for RL
 [On mutual information maximisation for representation learning](https://arxiv.org/abs/1907.13625)
 Mutual information doesnt work because?!?
 Do some minimal tests to show MI is not what we want!?
+
+
+***
+
+- Reachability of reward!!!

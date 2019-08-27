@@ -12,7 +12,6 @@ Invariants, equivariants. Quotients.
 - Map back to original.
 
 
-### Toy example. A symmetric maze.
 
 
 ### Symmetries and and sample efficiency
@@ -36,7 +35,7 @@ Use $\chi$ to say that two action-state values are simiar because;
 - similar ???
 - similar (discounted) state trajectories
 - they can reach many of the same states (within k actions)
-- 
+-
 
 ### Learning a measure of symmetry / similarity
 

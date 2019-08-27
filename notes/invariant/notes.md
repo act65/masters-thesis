@@ -53,3 +53,8 @@ TODOs
 - Test clustering with unparameterised $\chi$
 - Test clustering and generalisation with parameterised $\chi$
 - Test ?!?
+
+
+***
+
+Approximate symmetries!!!
