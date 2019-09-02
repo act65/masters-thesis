@@ -16,6 +16,10 @@ Efficient learning.
 (lots of people trying to do this. control variantes... etc)
 [Invariance reduces Variance: Understanding Data Augmentation in Deep Learning and Beyond](https://arxiv.org/abs/1907.10905)
 
+> How do less variant gradient estimates lead to faster convergence?
+
+
+
 ### Controlling generalisation
 
 > How should a NN generalise?

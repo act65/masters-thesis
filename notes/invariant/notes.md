@@ -58,3 +58,88 @@ TODOs
 ***
 
 Approximate symmetries!!!
+
+***
+
+- How can symmetries be discovered?
+- How well do NNs discover symmetries?
+- How can we add priors into NNs to help them learn quicker?
+- How can we learn transferable representations?
+
+## Data augmentation
+
+There exist domain specific strategies for; images, audio, text, ... what about RL?
+
+For images we have;
+For audio we have;
+For text we have;  ...
+
+More generally, there exist techniques like
+
+- [AutoAugment](https://arxiv.org/abs/1805.09501)
+- [Population Based Augmentation](https://arxiv.org/abs/1905.05393)
+
+that, provided some transforms, find the best ones to use.
+
+***
+
+- [Pairing Samples](https://arxiv.org/abs/1801.02929)
+- [mixup](https://arxiv.org/abs/1710.09412), [Manifold Mixup](https://arxiv.org/abs/1806.05236), [Between-class Learning](https://arxiv.org/abs/1711.10284)
+
+### for RL.
+
+> To force exploration in strategy space, during training (and only during training) we randomized the properties (health, speed, start level, etc.) of the units, and it began beating humans. [OpenAI Five](https://openai.com/blog/openai-five/)
+
+> The rules of Go are invariant to rotation and reflection. This fact was exploited inAlphaGoandAlphaGo Zeroin two ways. First, training data was augmented by generating 8 symmetriesfor each position.  Second, during MCTS, board positions were transformed using a randomlyselected rotation or reflection before being evaluated by the neural network, so that the Monte-Carlo evaluation is averaged over different biases. The rules of chess and shogi are asymmetric,and in general symmetries cannot be assumed.AlphaZerodoes not augment the training dataand does not transform the board position during MCTS. [AlphaZero](https://arxiv.org/abs/1712.01815)
+
+- [HER](https://arxiv.org/abs/1707.01495)
+
+
+- The usual image augmentation. Noise, rotations, translations, occlusions?, colour, hue, saturation, ...
+- State augmentation:
+- Action augmentation:
+- Reward augmentation:
+- Value augmentation:
+- Policy augmentation:
+
+Off policy evaluation!!!?!??
+
+## How efficiently do NN discover symmetries?
+
+They dont discover them, they only see them and remember.
+They dont generalise well...
+Want a regulariser that makes their outputs group like?!?
+
+## How to (efficiently) discover symmetries?
+
+- Does it require meta-learning?
+- priors?
+- ?
+
+A measure of complexity?
+
+***
+
+Two trajectories / policies are similar because a similar amount of risk is taken.
+p(V) = p(V).
+
+$$
+\int \int p(\zeta, f_1)p(\zeta, f_2)R(\zeta, \gamma))d\zeta d\gamma \\
+$$
+
+
+***
+
+RL mixup. ???
+
+$$
+V_{\pi_1 + \pi_2}(s) = V_{\pi_1}(s) + V_{\pi_2}(s)
+$$
+
+
+### Approximate symmetries
+
+What do we do when;
+- $f(T(x)) = f(x)$ for most $x$?
+- $f(T(x)) \approx f(x)$
+- 
