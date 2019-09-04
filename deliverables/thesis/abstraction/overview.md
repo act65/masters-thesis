@@ -23,3 +23,9 @@ Related work
 - latent space work
 - action abstraction?!
 - https://www.sciencedirect.com/science/article/pii/S2352154618302080
+
+
+Abstraction for;
+- efficient optimal control
+- efficient exploration
+- efficient ???
