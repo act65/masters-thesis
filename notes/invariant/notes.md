@@ -1,6 +1,6 @@
 
 What is the geometry of this?
-- Have the Q values being pulled towards their true values by the tradtional TD error, or similar.
+- Have the Q values being pulled towards their true values by the traditional TD error, or similar.
 - Have 'similar' state-actions being pulled together.
   - In the case the $\chi$ is based on Q values. This would mean a kind of density based attractive force!?
   - Higher density positions are more attractive.
@@ -16,7 +16,8 @@ __TODOs__. Extend this first order analysis to;
 - ?
 
 ***
-Want a measure of distnace that is low if we can find a simple (linear) transform that takes $x\to y$. And high if $x\to y$ requires lots of non linearity. Kinda.
+
+Want a measure of distaace that is low if we can find a simple (linear) transform that takes $x\to y$. And high if $x\to y$ requires lots of non linearity. Kinda.
 
 ***
 1. Let $\phi$ be learned via an adversarial value fn.
@@ -142,4 +143,63 @@ $$
 What do we do when;
 - $f(T(x)) = f(x)$ for most $x$?
 - $f(T(x)) \approx f(x)$
-- 
+-
+
+
+***
+
+Subgoals.
+Partition the space.
+All within a partition are similar because they are attempting to achieve the same goal.
+Partitions may be similar in a few senses?
+- They share the same actions.
+- Policies used to achieve another goal, B, can be used to also achieve
+
+
+***
+
+Dataset is a collection of $(s, a, r){_i}$ s with some return, $R(i, \gamma)$.
+
+Imagine them as a large graph. Different discounts induce different edge weights. $(s, a, r){_i} \sim (s, a, r){_i}$ if $\parallel R(i, \gamma)-R(j, \gamma)\parallel$.
+
+
+***
+
+Symmetries are about taking the topology / graph of the observed data and reducing it to its quotient.
+
+
+***
+
+$$
+Q(\pi, s, a, \gamma, g) = \mathop{\mathbb E}_{\zeta \sim d(s, a, \pi)} [R(\zeta, \gamma, g)] \\
+Q^{* }(s, a, \gamma, g) = \mathop{\mathbb E}_{\zeta \sim d^{* }(s, a)} [R(\zeta, \gamma, g)] \\
+Q^{* }(s, a, \gamma, g) = Q^{* }(T(s, a, \gamma, g)) \\
+\tau(s, a) = s', r \\
+$$
+
+***
+
+What happens if you give an agent a basis of action extended by some repitions? An over complete basis. L, R, LL, RR, LLL, RRR, ...?
+Which actions does it use?
+
+## Measuring similarity for RL.
+
+If we restrict our attention to only similarity via the return, there are still a few ways to implement this.
+
+Are their;
+- trajectory (/ ordering) of rewards 'similar'?? $\sum_t \gamma^t\mid r_t - r'{_t} \mid$ (no. this doesnt really work. we need to find the closest trajectories between s, s'. or use all of them?!)
+- hyperbolic discounting 'similar'? $\sum_{\gamma} | V^{\gamma}(s) - V^{\gamma}(s')|$
+- aversarial value fns 'similar'? $\parallel\phi(s) - \phi(s')\parallel$
+- expectations 'similar'? $V(s)-V(s')$
+- distributions 'similar' (via some IPM) $\mathop{\text{min}}_{f} f(x) - f(y)$
+- statistical moments 'similar'? $\sum E[(R(s) - R(s'))^p]$
+
+
+Why would we want to choose one over the other?
+__TODO__ Experiments with each measure of similarity.
+Uses these measure of similarity to group states / actions and see which matches what we want.
+__WANT__ Some nice ways to visualise.
+
+***
+
+RL is a type of supervised learning. So we can hope to achieve disentantlement!??
