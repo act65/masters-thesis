@@ -85,6 +85,7 @@ that, provided some transforms, find the best ones to use.
 
 - [Pairing Samples](https://arxiv.org/abs/1801.02929)
 - [mixup](https://arxiv.org/abs/1710.09412), [Manifold Mixup](https://arxiv.org/abs/1806.05236), [Between-class Learning](https://arxiv.org/abs/1711.10284)
+- [MixMatch](https://arxiv.org/pdf/1905.02249v1.pdf)
 
 ### for RL.
 
@@ -142,4 +143,22 @@ $$
 What do we do when;
 - $f(T(x)) = f(x)$ for most $x$?
 - $f(T(x)) \approx f(x)$
-- 
+-
+
+
+***
+
+If we have a set of invariant units and we compose them together. Is the resulting construction still invariant to the same things?
+
+[Tensor network decompositions in the presence of a global symmetry](https://journals.aps.org/pra/pdf/10.1103/PhysRevA.82.050301)
+
+
+***
+
+1) symmetry of architectures; 2) symmetry of weights; 3) symmetry of neurons; 4) symmetry of derivatives; 5) symmetry of processing; and 6) symmetry of learning rules
+https://arxiv.org/pdf/1712.08608.pdf
+
+
+***
+
+How are symmetries in the value fn related to projecting the value polytope!?

@@ -40,3 +40,4 @@ Reduction to supervised learning.
 - [Organizing experience](https://arxiv.org/abs/1806.04624)
 - [Striving for simplicity in off-policy DRL](https://arxiv.org/abs/1907.04543)
 - [Large memory layers with product keys](https://arxiv.org/abs/1907.05242)
+- [Search on the Replay Buffer: Bridging Planning and Reinforcement Learning](https://arxiv.org/pdf/1906.05253.pdf)

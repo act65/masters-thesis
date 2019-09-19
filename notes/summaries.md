@@ -388,4 +388,9 @@ $$
 - Oh... All we are doing is clustering based on a similarity measure... How does that relate to symmetry and quotients?
 
 
+***
+
+- [Latent Space Policies for Hierarchical Reinforcement Learning](https://arxiv.org/pdf/1804.02808.pdf)
+- [Learning latent state representation for speeding up exploration](https://arxiv.org/pdf/1905.12621.pdf)
+
 </div>

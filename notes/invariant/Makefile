@@ -1,2 +1,2 @@
 build_html:
-	pandoc cart-pole.md -f markdown --pdf-engine=xelatex --template=../../template.tex -o cart-pole.pdf
+	pandoc examples.md -f markdown --pdf-engine=xelatex --template=../../template.tex -o examples.pdf
