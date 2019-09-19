@@ -47,8 +47,18 @@ The (discounted) reachable rewards are conserved between the pair. (!!!)
 \forall \gamma: Q^\gamma_\pi(s_1, a_1) = Q^\gamma_\pi(s_2, a_2)= Q^\gamma_\pi(s_1, a_2) = Q^\gamma_\pi(s_2, a_1), \\
 \end{align}
 
+### Local (approximate) symmetry
 
-#### Future translational symmetry
+
+$$
+\begin{align}
+\Delta(s_1, a_1) = \Delta(s_1, a_2) = \Delta(s_2, a_1) = \Delta(s_2, a_2) \\
+\forall a \text{ set}\;\;\pi(a | s_1) = \pi(a| s_2) \\
+\forall \gamma: Q^\gamma_\pi(s_1, a_1) \approx Q^\gamma_\pi(s_2, a_2)  \\
+\end{align}
+$$
+
+### Future translational symmetry
 
 ![Each pair is similar, in a sense](../../pictures/drawings/cart-pole-state.png)
 
@@ -62,7 +72,7 @@ After this action. All future actions will have the same effect. In this sense, 
 
 #### Temporal mirror symmetry
 
-This is simply a result of the eariler mirror symmetry?!? (want to show this!)
+This is simply a result of the earlier mirror symmetry?!? (want to show this!)
 
 permutations of actions that yield similar outcomes.
 
