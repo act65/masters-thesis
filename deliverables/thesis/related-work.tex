@@ -1,0 +1,157 @@
+\chapter{Related work}
+
+How do the topics considered in this thesis relate to the work done in the wider scientific community? Which work uses similar tools, which works build on the same foundations, which works have the same goals?
+
+\hypertarget{related-work}{%
+\section{Related work}\label{related-work}}
+
+\hypertarget{mdps}{%
+\paragraph{MDPs}\label{mdps}}
+
+Dynamic programming, linear programming, \ldots{}?
+
+\[
+Q^{\pi}(s_0, a_0) = r(s_0, a_0)
++ \gamma \mathop{\text{max}}_{a_1} \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ r(s_1, a_1)
++ \gamma \mathop{\text{max}}_{a_2} \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[r(s_2, a_2)
++ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
+\dots \Big] \bigg] \Bigg]
+\]
+
+\hypertarget{hrl}{%
+\subparagraph{HRL}\label{hrl}}
+
+Temoral abstractions of actions.(how does this related to a
+decomposition of rewards) Ok, so we wany a multiscale representation?
+Understanding how actions combine (this is necessary knowledge for HRL?)
+
+Reasons to do HRL??? (want to verify these claims - and have refs for
+them)
+
+\begin{itemize}
+\item
+  credit assignment over long time periods (learning faster in one env)
+\item
+  exploration
+\item
+  transfer
+\item
+  To learn action abstractions they must capture info about the model.
+  How much harder is it to learn action abstractions in model-free vs
+  model-based settings?
+\item
+  Reward as a function of a subspace of the state space. (this is
+  important for learning abstract representations and actions!?)
+\item
+  What do cts linear heirarchical actions look like!? and their loss
+  surface!?
+\item
+  \href{https://arxiv.org/abs/1612.02757}{HLMDPs}
+\item
+  \href{https://arxiv.org/abs/1812.00025}{Modulated policy heirarchies}
+\item
+  \href{https://arxiv.org/abs/1810.10096}{Model free representations for
+  HRL}
+\item
+  \href{https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/}{Prierarchy:
+  Implicit Hierarchies}
+\item
+  Options
+\item
+  \href{https://openreview.net/forum?id=H1emus0qF7}{Near optimal
+  representation learning for heirarchical RL}
+\end{itemize}
+
+Relation to pretraining / conditioning?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+Why does Heirarchy (sometimes) work so well in reinforcement learning?
+
+The authors claim that the benefits of HRL can be explained by better
+exploration. However, I would interpret their results as saying; ``for
+2D environments with walls, larger steps / actions result in greater
+explration''. But what if the walls were replaced by cliffs? I imagine
+this algorithm would do a lot worse!?
+
+They also seem to misunderstand the main problem with HRL, discovery.
+Once you have discovered a nice set of abstracted actions / a
+representation, then yeah, you get faster reward propagation, better
+exploration, \ldots{} etc.
+
+\hypertarget{dynamic-programming}{%
+\paragraph{Dynamic programming}\label{dynamic-programming}}
+
+What is it? Memoized search. Why should we care?
+
+\hypertarget{model-based-rl}{%
+\subsection{Model-based RL}\label{model-based-rl}}
+
+Pros and cons.
+
+Model-based learning can be bad\ldots{} There may be many irrelevant
+details in the environment that do not need to be modelled. A model-free
+learning naturally ignores these things.
+
+The importance of having an accurate model!
+
+For example, let \(S\in R^n\) and \(A\in [0, 1]^n\). Take a transition
+function that describes how a state-action pair generates a distribution
+over next states \(\tau: S \times A \to \mathcal D(S)\). The reward
+might be invariant to many of the dimensions.
+\(r: X \times A -> \mathbb R\), where \(X \subset S\).
+
+Thus, a model mased learner can have arbitrarily more to learn, by
+attempting to learn the transition function. But a model-free learner
+only focuses on \ldots{}
+
+This leads us to ask, how can we build a representation for model-based
+learning that matches the invariances in the reward function. (does it
+follow that the invariances in reward fn are the invariances in the
+value fn. i dont think so!?)
+
+Take \(S \in R^d\) and let \(\hat S = S \times N, N \in R^k\). Where
+\(N\) the is sampled noise. How much harder is it to learn
+\(f: S \to S\) versus \(\hat f: \hat S \to \hat S\)?
+
+https://arxiv.org/pdf/1903.00374v3.pdf https://arxiv.org/abs/1907.02057
+
+\hypertarget{representation-learning-and-abstraction}{%
+\subsection{Representation learning and
+abstraction}\label{representation-learning-and-abstraction}}
+
+The goal is to find a representation that decomposes knowledge into its
+parts.
+
+Another way to frame this is: trying to find the basis with the right
+properties.
+
+\begin{itemize}
+\tightlist
+\item
+  sparsity,
+\item
+  independence,
+\item
+  multi scale,
+\item
+  locality/connectedness
+\item
+  ???
+\end{itemize}
+
+
+Types of abstraction for RL. Abstraction for efficient;
+
+\begin{itemize}
+\tightlist
+\item
+  exploration, [Learning latent state representation for speeding up exploration](https://arxiv.org/abs/1905.12621)
+\item
+  optimal control,
+\item
+  ???,
+\end{itemize}
+
+
+\subsection{Heirarchical reinforcement learning}
