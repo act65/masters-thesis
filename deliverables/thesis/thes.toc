@@ -47,7 +47,7 @@
 \contentsline {subsubsection}{Motivating example for state and action abstraction: ???}{39}{section*.74}% 
 \contentsline {subsubsection}{Motivating example for state-action abstraction: Symmetric maze}{39}{section*.75}% 
 \contentsline {subsubsection}{Related work}{39}{section*.76}% 
-\contentsline {subsection}{\numberline {3.2.1}Discussion}{41}{subsection.3.2.1}% 
+\contentsline {subsection}{\numberline {3.2.1}Discussion}{39}{subsection.3.2.1}% 
 \contentsline {chapter}{\numberline {4}Symmetry}{43}{chapter.4}% 
 \contentsline {chapter}{\numberline {5}Conclusions}{45}{chapter.5}% 
 \contentsline {chapter}{\numberline {A}Related work}{49}{appendix.A}% 

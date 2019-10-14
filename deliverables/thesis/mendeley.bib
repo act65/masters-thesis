@@ -2,7 +2,7 @@
 abstract = {Finding a generally accepted formal definition of a disentangled representation in the context of an agent behaving in an environment is an important challenge towards the construction of data-efficient autonomous agents. Higgins et al. recently proposed Symmetry-Based Disentangled Representation Learning, a definition based on a characterization of symmetries in the environment using group theory. We build on their work and make observations, theoretical and empirical, that lead us to argue that Symmetry-Based Disentangled Representation Learning cannot only be based on fixed data samples. Agents should interact with the environment to discover its symmetries. Our experiments can be reproduced on Colab: http://bit.do/eKpqv},
 archivePrefix = {arXiv},
 arxivId = {1904.00243},
-author = {Caselles-Dupr{\'{e}}, Hugo and Garcia-Ortiz, Michael and Filliat, David},
+author = {Caselles-Dupre, Hugo and Garcia-Ortiz, Michael and Filliat, David},
 eprint = {1904.00243},
 file = {:home/telfaralex/Downloads/1904.00243.pdf:pdf},
 number = {NeurIPS},
@@ -10,18 +10,6 @@ pages = {1--16},
 title = {{Symmetry-Based Disentangled Representation Learning requires Interaction with Environments}},
 url = {http://arxiv.org/abs/1904.00243},
 year = {2019}
-}
-@article{Scholkopf2001,
-abstract = {Wahba's classical representer theorem states that the solutions of certain risk minimization problems involving an empirical risk term and a quadratic regularizer can be written as expansions in terms of the training examples. We generalize the theorem to a larger class of regularizers and empirical risk terms, and give a self-contained proof utilizing the feature space associated with a kernel. The result shows that a wide range of problems have optimal solutions that live in the finite dimensional span of the training examples mapped into feature space, thus enabling us to carry out kernel algorithms independent of the (potentially infinite) dimensionality of the feature space.},
-author = {Sch{\"{o}}lkopf, Bernhard and Herbrich, Ralf and Smola, Alex J.},
-file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sch{\"{o}}lkopf, Herbrich, Smola - 2001 - A generalized representer theorem.pdf:pdf},
-isbn = {9783540423430},
-issn = {16113349},
-journal = {Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)},
-pages = {416--426},
-title = {{A generalized representer theorem}},
-volume = {2111},
-year = {2001}
 }
 @article{Kim2018,
 abstract = {Reinforcement learning algorithms struggle when the reward signal is very sparse. In these cases, naive random exploration methods essentially rely on a random walk to stumble onto a rewarding state. Recent works utilize intrinsic motivation to guide the exploration via generative models, predictive forward models, or discriminative modeling of novelty. We propose EMI, which is an exploration method that constructs embedding representation of states and actions that does not rely on generative decoding of the full observation but extracts predictive signals that can be used to guide exploration based on forward prediction in the representation space. Our experiments show competitive results on challenging locomotion tasks with continuous control and on image-based exploration tasks with discrete actions on Atari. The source code is available at https://github.com/snu-mllab/EMI .},
@@ -33,16 +21,6 @@ file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downlo
 title = {{EMI: Exploration with Mutual Information}},
 url = {http://arxiv.org/abs/1810.01176},
 year = {2018}
-}
-@article{Sutton1999,
-abstract = {Learning, planning, and representing knowledge at multiple levels of temporal abstraction are key, longstanding challenges in AI. The ways how to address these challenges within the mathematical framework of reinforcement learning and Markov decision processes (MDP) are discussed. A set options defined over an MDP constitutes a semi-MDP (SMDP), and the theory of SMDPs provides the foundation for the theory of options.},
-author = {Sutton, Richard S. and Precup, Doina and Singh, Satinder},
-doi = {10.1016/S0004-3702(99)00052-1},
-file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sutton, Precup, Singh - 1999 - Between MDPs and semi-MDPs A framework for temporal abstraction in reinforcement learning.pdf:pdf},
-issn = {00043702},
-journal = {Artificial Intelligence},
-title = {{Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning}},
-year = {1999}
 }
 @article{Lee2019,
 abstract = {To solve tasks with sparse rewards, reinforcement learning algorithms must be equipped with suitable exploration techniques. However, it is unclear what underlying objective is being optimized by existing exploration algorithms, or how they can be altered to incorporate prior knowledge about the task. Most importantly, it is difficult to use exploration experience from one task to acquire exploration strategies for another task. We address these shortcomings by learning a single exploration policy that can quickly solve a suite of downstream tasks in a multi-task setting, amortizing the cost of learning to explore. We recast exploration as a problem of State Marginal Matching (SMM): we learn a mixture of policies for which the state marginal distribution matches a given target state distribution, which can incorporate prior knowledge about the task. Without any prior knowledge, the SMM objective reduces to maximizing the marginal state entropy. We optimize the objective by reducing it to a two-player, zero-sum game, where we iteratively fit a state density model and then update the policy to visit states with low density under this model. While many previous algorithms for exploration employ a similar procedure, they omit a crucial historical averaging step, without which the iterative procedure does not converge to a Nash equilibria. To parallelize exploration, we extend our algorithm to use mixtures of policies, wherein we discover connections between SMM and previously-proposed skill learning methods based on mutual information. On complex navigation and manipulation tasks, we demonstrate that our algorithm explores faster and adapts more quickly to new tasks.},
@@ -530,4 +508,122 @@ pmid = {10913042},
 title = {{The Option-Critic Architecture}},
 url = {http://arxiv.org/abs/1609.05140},
 year = {2016}
+}
+@article{Wozabal,
+author = {Wozabal, David and Kiszka, Adriana},
+file = {:home/telfaralex/Downloads/5893.pdf:pdf},
+keywords = {scenario,stochastic optimization,wasserstein distance},
+title = {{A Stability Result for Linear Markov Decision Processes}}
+}
+@article{Dvijotham,
+author = {Dvijotham, Krishnamurthy and Todorov, Emanuel},
+file = {:home/telfaralex/Downloads/1202.3715.pdf:pdf},
+title = {{A Unifying Framework for Linearly Solvable Control}}
+}
+@article{Zhonga,
+author = {Zhong, Mingyuan and Todorov, Emanuel},
+file = {:home/telfaralex/Downloads/ZhongIFAC11.pdf:pdf},
+keywords = {markov desicion processs,optimal control,robotics,stochastic control},
+title = {{Aggregation Methods for Lineary-solvable Markov Decision Process ⋆}}
+}
+@article{Zhong,
+author = {Zhong, Mingyuan and Todorov, Emanuel},
+doi = {10.1109/ADPRL.2011.5967383},
+file = {:home/telfaralex/Downloads/05967383.pdf:pdf},
+journal = {2011 IEEE Symposium on Adaptive Dynamic Programming and Reinforcement Learning (ADPRL)},
+pages = {218--225},
+publisher = {IEEE},
+title = {{Moving Least-squares Approximations for Linearly-solvable MDP}}
+}
+@article{Todorov2009,
+abstract = {Optimal choice of actions is a fundamental problem relevant to fields as diverse as neuroscience, psychology, economics, computer science, and control engineering. Despite this broad relevance the abstract setting is similar: we have an agent choosing actions over time, an uncertain dynamical system whose state is affected by those actions, and a performance criterion that the agent seeks to optimize. Solving problems of this kind remains hard, in part, because of overly generic formulations. Here, we propose a more structured formulation that greatly simplifies the construction of optimal control laws in both discrete and continuous domains. An exhaustive search over actions is avoided and the problem becomes linear. This yields algorithms that outperform Dynamic Programming and Reinforcement Learning, and thereby solve traditional problems more efficiently. Our framework also enables computations that were not possible before: composing optimal control laws by mixing primitives, applying deterministic methods to stochastic systems, quantifying the benefits of error tolerance, and inferring goals from behavioral data via convex optimization. Development of a general class of easily solvable problems tends to accelerate progress--as linear systems theory has done, for example. Our framework may have similar impact in fields where optimal choice of actions is relevant.},
+author = {Todorov, Emanuel},
+doi = {10.1073/pnas.0710743106},
+file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Todorov - 2009 - Efficient computation of optimal actions.pdf:pdf},
+isbn = {0710743106},
+issn = {0027-8424},
+journal = {Proceedings of the National Academy of Sciences},
+number = {28},
+pages = {11478--11483},
+pmid = {19574462},
+title = {{Efficient computation of optimal actions}},
+url = {http://www.pnas.org/lookup/doi/10.1073/pnas.0710743106},
+volume = {106},
+year = {2009}
+}
+@article{Todorov2006,
+author = {Todorov, Emanuel},
+file = {:home/telfaralex/Downloads/TodorovNIPS06.pdf:pdf},
+number = {1},
+title = {{Linearly-solvable Markov decision problems}},
+year = {2006}
+}
+@article{Bellemare2019b,
+archivePrefix = {arXiv},
+arxivId = {arXiv:1901.11530v2},
+author = {Bellemare, Marc G and Dabney, Will and Dadashi, Robert and Taiga, Adrien Ali},
+eprint = {arXiv:1901.11530v2},
+file = {:home/telfaralex/Downloads/1901.11530.pdf:pdf},
+pages = {1--27},
+title = {{A Geometric Perspective on Optimal Representations for Reinforcement Learning}},
+year = {2019}
+}
+@article{Saxea,
+archivePrefix = {arXiv},
+arxivId = {arXiv:1612.02757v1},
+author = {Saxe, Andrew M and Earle, Adam and Rosman, Benjamin},
+eprint = {arXiv:1612.02757v1},
+file = {:home/telfaralex/Downloads/1612.02757.pdf:pdf},
+title = {{Solvable Markov Decision Processes}}
+}
+@article{Pashevich,
+archivePrefix = {arXiv},
+arxivId = {arXiv:1812.00025v1},
+author = {Pashevich, Alexander and Davidson, James and Sukthankar, Rahul and Schmid, Cordelia},
+eprint = {arXiv:1812.00025v1},
+file = {:home/telfaralex/Downloads/1812.00025.pdf:pdf},
+title = {{Modulated Policy Hierarchies}}
+}
+@article{Rafati,
+archivePrefix = {arXiv},
+arxivId = {arXiv:1810.10096v3},
+author = {Rafati, Jacob and Noelle, David C},
+eprint = {arXiv:1810.10096v3},
+file = {:home/telfaralex/Downloads/1810.10096.pdf:pdf},
+pages = {1--35},
+title = {{Learning Representations in Model-Free Hierarchical Reinforcement Learning}}
+}
+@article{Nachum2018,
+abstract = {We study the problem of representation learning in goal-conditioned hierarchical reinforcement learning. In such hierarchical structures, a higher-level controller solves tasks by iteratively communicating goals which a lower-level policy is trained to reach. Accordingly, the choice of representation -- the mapping of observation space to goal space -- is crucial. To study this problem, we develop a notion of sub-optimality of a representation, defined in terms of expected reward of the optimal hierarchical policy using this representation. We derive expressions which bound the sub-optimality and show how these expressions can be translated to representation learning objectives which may be optimized in practice. Results on a number of difficult continuous-control tasks show that our approach to representation learning yields qualitatively better representations as well as quantitatively better hierarchical policies, compared to existing methods (see videos at https://sites.google.com/view/representation-hrl).},
+archivePrefix = {arXiv},
+arxivId = {1810.01257},
+author = {Nachum, Ofir and Gu, Shixiang and Lee, Honglak and Levine, Sergey},
+eprint = {1810.01257},
+file = {:home/telfaralex/Downloads/1bb1b57d88a73d614370d0d3fb6cd75e6c5cab0e.pdf:pdf},
+pages = {1--18},
+title = {{Near-Optimal Representation Learning for Hierarchical Reinforcement Learning}},
+url = {http://arxiv.org/abs/1810.01257},
+year = {2018}
+}
+@article{Sutton1999,
+abstract = {Learning, planning, and representing knowledge at multiple levels of temporal abstraction are key, longstanding challenges in AI. The ways how to address these challenges within the mathematical framework of reinforcement learning and Markov decision processes (MDP) are discussed. A set options defined over an MDP constitutes a semi-MDP (SMDP), and the theory of SMDPs provides the foundation for the theory of options.},
+author = {Sutton, Richard S. and Precup, Doina and Singh, Satinder},
+doi = {10.1016/S0004-3702(99)00052-1},
+file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sutton, Precup, Singh - 1999 - Between MDPs and semi-MDPs A framework for temporal abstraction in reinforcement learning.pdf:pdf},
+issn = {00043702},
+journal = {Artificial Intelligence},
+title = {{Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning}},
+year = {1999}
+}
+@article{Scholkopf2001,
+abstract = {Wahba's classical representer theorem states that the solutions of certain risk minimization problems involving an empirical risk term and a quadratic regularizer can be written as expansions in terms of the training examples. We generalize the theorem to a larger class of regularizers and empirical risk terms, and give a self-contained proof utilizing the feature space associated with a kernel. The result shows that a wide range of problems have optimal solutions that live in the finite dimensional span of the training examples mapped into feature space, thus enabling us to carry out kernel algorithms independent of the (potentially infinite) dimensionality of the feature space.},
+author = {Sch{\"{o}}lkopf, Bernhard and Herbrich, Ralf and Smola, Alex J.},
+file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sch{\"{o}}lkopf, Herbrich, Smola - 2001 - A generalized representer theorem.pdf:pdf},
+isbn = {9783540423430},
+issn = {16113349},
+journal = {Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)},
+pages = {416--426},
+title = {{A generalized representer theorem}},
+volume = {2111},
+year = {2001}
 }
