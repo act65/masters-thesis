@@ -1,0 +1,19 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [0][-]{chapter.2}{The front pages}{}% 2
+\BOOKMARK [0][-]{chapter.3}{Library requirements}{}% 3
+\BOOKMARK [1][-]{section.3.1}{Font size}{chapter.3}% 4
+\BOOKMARK [1][-]{section.3.2}{Single or double sided}{chapter.3}% 5
+\BOOKMARK [1][-]{section.3.3}{Line spacing}{chapter.3}% 6
+\BOOKMARK [1][-]{section.3.4}{Margins}{chapter.3}% 7
+\BOOKMARK [1][-]{section.3.5}{Paper size}{chapter.3}% 8
+\BOOKMARK [0][-]{chapter.4}{MDPs}{}% 9
+\BOOKMARK [1][-]{section.4.1}{The value function polytope}{chapter.4}% 10
+\BOOKMARK [2][-]{subsection.4.1.1}{Distribution of policies}{section.4.1}% 11
+\BOOKMARK [2][-]{subsection.4.1.2}{Discounting}{section.4.1}% 12
+\BOOKMARK [1][-]{section.4.2}{Search spaces}{chapter.4}% 13
+\BOOKMARK [2][-]{subsection.4.2.1}{Dynamics and complexity}{section.4.2}% 14
+\BOOKMARK [2][-]{subsection.4.2.2}{Search spaces and gradient descent}{section.4.2}% 15
+\BOOKMARK [0][-]{chapter.5}{Abstraction}{}% 16
+\BOOKMARK [1][-]{subsection.5.0.1}{Solveable representations}{chapter.5}% 17
+\BOOKMARK [2][-]{subsection.5.0.2}{Other properties}{subsection.5.0.1}% 18
+\BOOKMARK [0][-]{chapter.6}{Conclusions}{}% 19

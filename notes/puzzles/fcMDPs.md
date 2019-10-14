@@ -98,20 +98,34 @@ Related to;
 - graphs
 
 
-***
 ### Actions $\to$ Options. And back. Transform
 
-
-Related??
 
 $$
 \mathcal M = \{S, A, r, P, \gamma\} \\
 M_1, M_2 \in \mathcal M \\
 T_k: \mathcal M \to \mathcal M \\
-T_k(M) = \{S_1, A^k, \hat T_k(r), \hat T_k(P)\} \\
+\\
+\{S, A, r, P\} \to \{S, A^k, \hat T_k(r), \hat T_k(P)\} \\
 \hat T_k(r) = \sum_{i=t}^{t+k} r(s_i, a_i) \\
 \hat T_k(P) = \prod_{i=t}^{t+k} P(s_{i+1} | s_i, a_i) \\
+\\
+T_k^{-1}: \mathcal M \to \mathcal M \\
+\{S, A^k, \hat T_k(r), \hat T_k(P)\} \to  \{S, A, r, P\} \\
 $$
 
+Is this transform;
+- invertible?
+- homomorphic (under which ops?)
+- isomorphic
 
-***
+But. Why would we care?
+
+- less variance
+- actions having higher correlation with rewards
+-
+
+$$
+\text{var}(V_M^\pi(s)) \le \text{var}(V_{\hat M}^\pi(s)) \\
+\mathop{\mathbb E}_{R\sim M(s, \pi)}[(R-V_M^\pi(s))^2] \le \mathop{\mathbb E}_{R\sim \hat M(s, \pi)}[(R-V_{\hat M}^\pi(s))^2] 
+$$

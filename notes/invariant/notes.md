@@ -58,10 +58,6 @@ TODOs
 
 ***
 
-Approximate symmetries!!!
-
-***
-
 - How can symmetries be discovered?
 - How well do NNs discover symmetries?
 - How can we add priors into NNs to help them learn quicker?
@@ -112,23 +108,6 @@ They dont discover them, they only see them and remember.
 They dont generalise well...
 Want a regulariser that makes their outputs group like?!?
 
-## How to (efficiently) discover symmetries?
-
-- Does it require meta-learning?
-- priors?
-- ?
-
-A measure of complexity?
-
-***
-
-Two trajectories / policies are similar because a similar amount of risk is taken.
-p(V) = p(V).
-
-$$
-\int \int p(\zeta, f_1)p(\zeta, f_2)R(\zeta, \gamma))d\zeta d\gamma \\
-$$
-
 
 ***
 
@@ -153,7 +132,10 @@ What do we do when;
 If we have a set of invariant units and we compose them together. Is the resulting construction still invariant to the same things?
 
 [Tensor network decompositions in the presence of a global symmetry](https://journals.aps.org/pra/pdf/10.1103/PhysRevA.82.050301)
+
+
 ***
+
 Subgoals.
 Partition the space.
 All within a partition are similar because they are attempting to achieve the same goal.
@@ -171,12 +153,6 @@ Imagine them as a large graph. Different discounts induce different edge weights
 
 ***
 
-Symmetries are about taking the topology / graph of the observed data and reducing it to its quotient.
-
-
-
-***
-
 
 1) symmetry of architectures; 2) symmetry of weights; 3) symmetry of neurons; 4) symmetry of derivatives; 5) symmetry of processing; and 6) symmetry of learning rules
 https://arxiv.org/pdf/1712.08608.pdf
@@ -184,7 +160,8 @@ https://arxiv.org/pdf/1712.08608.pdf
 
 ***
 
-How are symmetries in the value fn related to projecting the value polytope!?
+How are symmetries in the value fn related to projecting the value polytope into some lower dimension?!?
+
 ***
 
 $$
@@ -220,3 +197,19 @@ __WANT__ Some nice ways to visualise.
 ***
 
 RL is a type of supervised learning. So we can hope to achieve disentantlement!??
+
+***
+
+- Pick some policy $\pi_1$.
+- Evaluate the policy. $V_{\pi_1}(s)$
+-
+
+But this will struggle to learn symmetries based on different policies!?
+
+***
+
+Questions!
+
+- Which symmetries are harder to identify than others?!?
+- Do these invariances uniquely define this symmery?!
+-

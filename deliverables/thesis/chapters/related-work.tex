@@ -39,6 +39,16 @@ Reasons to do HRL??? (want to verify these claims - and have refs for them)
 
 Relation to pretraining / conditioning?
 
+***
+
+Why does Heirarchy (sometimes) work so well in reinforcement learning?
+
+The authors claim that the benefits of HRL can be explained by better exploration.
+However, I would interpret their results as saying; "for 2D environments with walls, larger steps / actions result in greater explration".
+But what if the walls were replaced by cliffs? I imagine this algorithm would do a lot worse!?
+
+They also seem to misunderstand the main problem with HRL, discovery. Once you have discovered a nice set of abstracted actions / a representation, then yeah, you get faster reward propagation, better exploration, ... etc.
+
 #### Dynamic programming
 
 What is it? Memoized search.

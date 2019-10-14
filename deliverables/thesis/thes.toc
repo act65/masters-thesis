@@ -1,0 +1,39 @@
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}% 
+\contentsline {chapter}{\numberline {2}The front pages}{3}{chapter.2}% 
+\contentsline {chapter}{\numberline {3}Library requirements}{5}{chapter.3}% 
+\contentsline {section}{\numberline {3.1}Font size}{5}{section.3.1}% 
+\contentsline {section}{\numberline {3.2}Single or double sided}{5}{section.3.2}% 
+\contentsline {section}{\numberline {3.3}Line spacing}{5}{section.3.3}% 
+\contentsline {section}{\numberline {3.4}Margins}{6}{section.3.4}% 
+\contentsline {section}{\numberline {3.5}Paper size}{6}{section.3.5}% 
+\contentsline {chapter}{\numberline {4}MDPs}{7}{chapter.4}% 
+\contentsline {section}{\numberline {4.1}The value function polytope}{7}{section.4.1}% 
+\contentsline {subsection}{\numberline {4.1.1}Distribution of policies}{8}{subsection.4.1.1}% 
+\contentsline {paragraph}{An MDPs Entropy}{9}{section*.5}% 
+\contentsline {subsection}{\numberline {4.1.2}Discounting}{11}{subsection.4.1.2}% 
+\contentsline {section}{\numberline {4.2}Search spaces}{11}{section.4.2}% 
+\contentsline {subsection}{\numberline {4.2.1}Dynamics and complexity}{11}{subsection.4.2.1}% 
+\contentsline {subsection}{\numberline {4.2.2}Search spaces and gradient descent}{14}{subsection.4.2.2}% 
+\contentsline {paragraph}{Value iteration}{15}{section*.8}% 
+\contentsline {paragraph}{Policy iteration}{15}{section*.9}% 
+\contentsline {paragraph}{Model iteration}{15}{section*.10}% 
+\contentsline {subsubsection}{Topology and dynamics}{16}{section*.11}% 
+\contentsline {subsubsection}{Accleration and parameterisation}{17}{section*.12}% 
+\contentsline {subsubsection}{Continuous flow and its discretisation}{19}{section*.13}% 
+\contentsline {chapter}{\numberline {5}Abstraction}{21}{chapter.5}% 
+\contentsline {subsection}{\numberline {5.0.1}Solveable representations}{21}{subsection.5.0.1}% 
+\contentsline {subsubsection}{Why linearity?}{21}{section*.14}% 
+\contentsline {subsubsection}{A closer look at LMDPs}{22}{section*.15}% 
+\contentsline {paragraph}{LMDPs; more formally}{22}{figure.5.1}% 
+\contentsline {paragraph}{A relaxed MDP}{25}{figure.5.2}% 
+\contentsline {subparagraph}{Unconstrained dynamics and state rewards}{26}{section*.28}% 
+\contentsline {paragraph}{Decoding}{26}{figure.5.3}% 
+\contentsline {paragraph}{Optimality of solutions via LMDPs}{28}{section*.30}% 
+\contentsline {paragraph}{Option decoding}{29}{section*.47}% 
+\contentsline {subsubsection}{The complexity of solutions via LMDPs}{29}{section*.48}% 
+\contentsline {subsubsection}{Scaling to more complex problems}{30}{section*.49}% 
+\contentsline {paragraph}{Incremental implementation}{30}{section*.50}% 
+\contentsline {subparagraph}{Model based}{31}{section*.51}% 
+\contentsline {subsubsection}{Distributions over states}{31}{section*.52}% 
+\contentsline {subsection}{\numberline {5.0.2}Other properties}{32}{subsection.5.0.2}% 
+\contentsline {chapter}{\numberline {6}Conclusions}{33}{chapter.6}% 

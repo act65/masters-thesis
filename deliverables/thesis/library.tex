@@ -1,0 +1,50 @@
+\chapter{Library requirements}\label{C:lib}
+
+This Chapter describes some things done to be in accordance with the `Library Requirements for the Deposit of Theses' booklet, which can be obtained from the VUW library.
+
+\section{Font size}
+\textit{12 point font is recommended.} 
+
+Set this yourself with the \verb+12pt+ option to the document class.
+
+\section{Single or double sided}
+\textit{Typing on one side preferred, text on both sides acceptable for longer works.} 
+
+Use the \verb+oneside+ or \verb+twoside+ option to the document class. The \textsf{book} class default is \verb+twoside+.
+
+
+\section{Line spacing}
+\textit{Lines should be double spaced, or at least 1.5 spaces apart.} 
+
+1.5 spacing for 12 point is set using:
+\begin{itemize}
+\item \verb+\renewcommand{\baselinestretch}{1.24}+  
+\end{itemize}
+
+To set anything else use, e.g  \verb+\renewcommand{\baselinestretch}{1.0}+ in the preamble. See p 53 of \cite{GMS94} for more information.
+
+
+\section{Margins}
+\textit{Uniform margins of at least 4cm on binding side, other three sides to have at least 1.5 cm}
+
+\LaTeX\ styles often leave a lot of white space, and \textsf{book} is no exception. We only have to worry about the binding side.
+
+For \verb+twoside+ we use these settings:
+\setlength{\textheight}{19.8cm}
+\setlength{\oddsidemargin}{1.46cm}
+\setlength{\evensidemargin}{0.83cm}
+
+For \verb+oneside+, if we use:
+\begin{verbatim}
+\setlength{\textheight}{19.8cm}
+\setlength{\oddsidemargin}{1.46cm}
+\end{verbatim}
+
+Then \textsf{book} gives a margin of 4cm on the binding side, and about 3.2cm elsewhere.
+
+If you want to change these then use the \textsf{layout} package.
+
+\section{Paper size}
+\textit{High quality A4 paper, all pages of equal size}
+
+Set this yourself with the \verb+a4paper+ option to the document class.
