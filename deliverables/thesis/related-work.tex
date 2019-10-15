@@ -8,65 +8,6 @@ How do the topics considered in this thesis relate to the work done in the wider
 Decision theory (economics and psychology), ...?
 Control theory, ..
 
-\hypertarget{hrl}{%
-\subsection{HRL}\label{hrl}}
-
-Temoral abstractions of actions.(how does this related to a
-decomposition of rewards) Ok, so we wany a multiscale representation?
-Understanding how actions combine (this is necessary knowledge for HRL?)
-
-Reasons to do HRL??? (want to verify these claims - and have refs for
-them)
-
-\begin{itemize}
-\item
-  credit assignment over long time periods (learning faster in one env)
-\item
-  exploration
-\item
-  transfer
-\item
-  To learn action abstractions they must capture info about the model.
-  How much harder is it to learn action abstractions in model-free vs
-  model-based settings?
-\item
-  Reward as a function of a subspace of the state space. (this is
-  important for learning abstract representations and actions!?)
-\item
-  What do cts linear heirarchical actions look like!? and their loss
-  surface!?
-\item
-  HLMDPs \cite{Saxea}
-\item
-  Modulated policy heirarchies \cite{Pashevich}
-\item
-  Model free representations for HRL \cite{Rafati}
-\item
-  \href{https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/}{Prierarchy:
-  Implicit Hierarchies}
-\item
-  Options
-\item
-  Near optimal representation learning for heirarchical RL \cite{Nachum2018}
-\end{itemize}
-
-Relation to pretraining / conditioning?
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Why does Heirarchy (sometimes) work so well in reinforcement learning?
-
-The authors claim that the benefits of HRL can be explained by better
-exploration. However, I would interpret their results as saying; ``for
-2D environments with walls, larger steps / actions result in greater
-explration''. But what if the walls were replaced by cliffs? I imagine
-this algorithm would do a lot worse!?
-
-They also seem to misunderstand the main problem with HRL, discovery.
-Once you have discovered a nice set of abstracted actions / a
-representation, then yeah, you get faster reward propagation, better
-exploration, \ldots{} etc.
-
 \hypertarget{dynamic-programming}{%
 \subsection{Dynamic programming}\label{dynamic-programming}}
 
@@ -142,3 +83,74 @@ Types of abstraction for RL. Abstraction for efficient;
 
 
 \subsection{Heirarchical reinforcement learning}
+
+
+https://arxiv.org/pdf/1804.02808.pdf
+
+Two main approaches. Subgoals and options. To achieve temporal abstraction.
+
+- Does it help?
+- Why does it help?
+- ?
+
+We don't really have a principled approach to HRL?!
+
+- How does the heirarchy help?
+- When can we expect transfer?
+
+
+Temoral abstractions of actions.(how does this related to a
+decomposition of rewards) Ok, so we wany a multiscale representation?
+Understanding how actions combine (this is necessary knowledge for HRL?)
+
+Reasons to do HRL??? (want to verify these claims - and have refs for
+them)
+
+\begin{itemize}
+\item
+  credit assignment over long time periods (learning faster in one env)
+\item
+  exploration
+\item
+  transfer
+\item
+  To learn action abstractions they must capture info about the model.
+  How much harder is it to learn action abstractions in model-free vs
+  model-based settings?
+\item
+  Reward as a function of a subspace of the state space. (this is
+  important for learning abstract representations and actions!?)
+\item
+  What do cts linear heirarchical actions look like!? and their loss
+  surface!?
+\item
+  HLMDPs \cite{Saxea}
+\item
+  Modulated policy heirarchies \cite{Pashevich}
+\item
+  Model free representations for HRL \cite{Rafati}
+\item
+  \href{https://blog.aqnichol.com/2019/04/03/prierarchy-implicit-hierarchies/}{Prierarchy:
+  Implicit Hierarchies}
+\item
+  Options
+\item
+  Near optimal representation learning for heirarchical RL \cite{Nachum2018}
+\end{itemize}
+
+Relation to pretraining / conditioning?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+Why does Heirarchy (sometimes) work so well in reinforcement learning?
+
+The authors claim that the benefits of HRL can be explained by better
+exploration. However, I would interpret their results as saying; ``for
+2D environments with walls, larger steps / actions result in greater
+explration''. But what if the walls were replaced by cliffs? I imagine
+this algorithm would do a lot worse!?
+
+They also seem to misunderstand the main problem with HRL, discovery.
+Once you have discovered a nice set of abstracted actions / a
+representation, then yeah, you get faster reward propagation, better
+exploration, \ldots{} etc.

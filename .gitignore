@@ -1,6 +1,9 @@
 *.aux
 *.log
 *.dvi
+*.out
+*.blg
+*.bbl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
