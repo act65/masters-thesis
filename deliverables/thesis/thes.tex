@@ -10,6 +10,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{hyperref}
+\usepackage{epigraph}
 \usepackage[utf8x]{inputenc}
 \DeclareUnicodeCharacter{2212}{-}
 \providecommand{\tightlist}{%
@@ -66,8 +67,14 @@
 
 \include{thesis-introduction}
 \include{mdps}
-\include{abstraction}
-\include{symmetry}
+
+\chapter{Abstraction}\label{C:bin}
+
+\include{solveable-abstractions}
+\include{near-optimal-abstractions}
+\include{symmetric-abstractions}
+\include{action-abstractions}
+
 \include{thesis-conclusion}
 
 
@@ -79,8 +86,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%\bibliographystyle{ieeetr}
-\bibliographystyle{acm}
+\bibliographystyle{ieeetr}
+% \bibliographystyle{acm}
 \bibliography{mendeley}
 
 \appendix

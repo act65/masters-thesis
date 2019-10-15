@@ -9,52 +9,37 @@
 \contentsline {subsection}{\numberline {2.0.2}MDPs}{5}{subsection.2.0.2}% 
 \contentsline {subsubsection}{The Markov property}{6}{section*.4}% 
 \contentsline {subsubsection}{Optimality}{6}{section*.5}% 
-\contentsline {subsubsection}{How do MDPs relate to RL?}{6}{section*.6}% 
+\contentsline {subsubsection}{How do MDPs relate to RL?}{7}{section*.6}% 
 \contentsline {subsubsection}{A tabular representation of MDPs}{7}{section*.7}% 
 \contentsline {subsubsection}{Learning the (tabular) abstraction}{8}{section*.10}% 
-\contentsline {subsection}{\numberline {2.0.3}MDPs in the real world}{8}{subsection.2.0.3}% 
-\contentsline {section}{\numberline {2.1}The value function polytope}{9}{section.2.1}% 
+\contentsline {section}{\numberline {2.1}The value function polytope}{8}{section.2.1}% 
 \contentsline {subsection}{\numberline {2.1.1}Distribution of policies}{9}{subsection.2.1.1}% 
 \contentsline {paragraph}{An MDPs Entropy}{11}{section*.17}% 
 \contentsline {subsection}{\numberline {2.1.2}Discounting}{13}{subsection.2.1.2}% 
-\contentsline {section}{\numberline {2.2}Search spaces}{13}{section.2.2}% 
-\contentsline {subsection}{\numberline {2.2.1}Dynamics and complexity}{13}{subsection.2.2.1}% 
-\contentsline {subsection}{\numberline {2.2.2}Search spaces and gradient descent}{17}{subsection.2.2.2}% 
+\contentsline {section}{\numberline {2.2}Search spaces}{14}{section.2.2}% 
+\contentsline {subsection}{\numberline {2.2.1}Dynamics and complexity}{14}{subsection.2.2.1}% 
+\contentsline {subsection}{\numberline {2.2.2}Search spaces and gradient descent}{16}{subsection.2.2.2}% 
 \contentsline {paragraph}{Value iteration}{17}{section*.20}% 
 \contentsline {paragraph}{Policy iteration}{17}{section*.21}% 
 \contentsline {paragraph}{Model iteration}{17}{section*.22}% 
-\contentsline {subsubsection}{Topology and dynamics}{19}{section*.23}% 
-\contentsline {subsubsection}{Accleration and parameterisation}{19}{section*.24}% 
-\contentsline {subsubsection}{Continuous flow and its discretisation}{22}{section*.25}% 
+\contentsline {subsubsection}{Topology and dynamics}{20}{section*.23}% 
+\contentsline {subsubsection}{Accleration and parameterisation}{20}{section*.24}% 
+\contentsline {subsubsection}{Continuous flow and its discretisation}{23}{section*.25}% 
 \contentsline {chapter}{\numberline {3}Abstraction}{25}{chapter.3}% 
-\contentsline {section}{\numberline {3.1}Solveable representations}{25}{section.3.1}% 
-\contentsline {subsubsection}{Why linearity?}{25}{section*.26}% 
-\contentsline {subsubsection}{A closer look at LMDPs}{26}{section*.27}% 
-\contentsline {paragraph}{LMDPs; more formally}{26}{figure.3.1}% 
-\contentsline {paragraph}{A relaxed MDP}{27}{figure.3.2}% 
-\contentsline {subparagraph}{Unconstrained dynamics and state rewards}{29}{section*.40}% 
-\contentsline {paragraph}{Decoding}{31}{figure.3.3}% 
-\contentsline {paragraph}{Optimality of solutions via LMDPs}{31}{section*.42}% 
-\contentsline {paragraph}{Option decoding}{33}{section*.59}% 
-\contentsline {subsubsection}{The complexity of solutions via LMDPs}{33}{section*.60}% 
-\contentsline {subsubsection}{Scaling to more complex problems}{34}{section*.61}% 
-\contentsline {paragraph}{Incremental implementation}{34}{section*.62}% 
-\contentsline {subparagraph}{Model based}{34}{section*.63}% 
-\contentsline {subsubsection}{Distributions over states}{35}{section*.64}% 
-\contentsline {subsection}{\numberline {3.1.1}Other properties}{35}{subsection.3.1.1}% 
-\contentsline {section}{\numberline {3.2}Near optimal abstractions}{36}{section.3.2}% 
-\contentsline {paragraph}{Other types of abstraction}{38}{section*.65}% 
-\contentsline {subsubsection}{Motivating example for state and action abstraction: ???}{39}{section*.74}% 
-\contentsline {subsubsection}{Motivating example for state-action abstraction: Symmetric maze}{39}{section*.75}% 
-\contentsline {subsubsection}{Related work}{39}{section*.76}% 
-\contentsline {subsection}{\numberline {3.2.1}Discussion}{39}{subsection.3.2.1}% 
-\contentsline {chapter}{\numberline {4}Symmetry}{43}{chapter.4}% 
-\contentsline {chapter}{\numberline {5}Conclusions}{45}{chapter.5}% 
-\contentsline {chapter}{\numberline {A}Related work}{49}{appendix.A}% 
-\contentsline {section}{\numberline {A.1}Related work}{49}{section.A.1}% 
-\contentsline {paragraph}{MDPs}{49}{section*.78}% 
-\contentsline {subparagraph}{HRL}{49}{section*.79}% 
-\contentsline {paragraph}{Dynamic programming}{51}{section*.80}% 
-\contentsline {subsection}{\numberline {A.1.1}Model-based RL}{51}{subsection.A.1.1}% 
-\contentsline {subsection}{\numberline {A.1.2}Representation learning and abstraction}{52}{subsection.A.1.2}% 
-\contentsline {subsection}{\numberline {A.1.3}Heirarchical reinforcement learning}{52}{subsection.A.1.3}% 
+\contentsline {section}{\numberline {3.1}Near optimal abstractions}{26}{section.3.1}% 
+\contentsline {paragraph}{Other types of abstraction}{28}{section*.26}% 
+\contentsline {subsubsection}{Motivating example for state and action abstraction: ???}{29}{section*.35}% 
+\contentsline {subsubsection}{Motivating example for state-action abstraction: Symmetric maze}{29}{section*.36}% 
+\contentsline {subsubsection}{Related work}{29}{section*.37}% 
+\contentsline {subsection}{\numberline {3.1.1}Discussion}{29}{subsection.3.1.1}% 
+\contentsline {section}{\numberline {3.2}Symmetry}{32}{section.3.2}% 
+\contentsline {subsection}{\numberline {3.2.1}n-dimensional Cart pole}{32}{subsection.3.2.1}% 
+\contentsline {section}{\numberline {3.3}Action abstractions}{34}{section.3.3}% 
+\contentsline {chapter}{\numberline {4}Conclusions}{35}{chapter.4}% 
+\contentsline {chapter}{\numberline {A}Related work}{37}{appendix.A}% 
+\contentsline {section}{\numberline {A.1}Academic literature}{37}{section.A.1}% 
+\contentsline {subsection}{\numberline {A.1.1}HRL}{37}{subsection.A.1.1}% 
+\contentsline {subsection}{\numberline {A.1.2}Dynamic programming}{39}{subsection.A.1.2}% 
+\contentsline {subsection}{\numberline {A.1.3}Model-based RL}{39}{subsection.A.1.3}% 
+\contentsline {subsection}{\numberline {A.1.4}Representation learning and abstraction}{40}{subsection.A.1.4}% 
+\contentsline {subsection}{\numberline {A.1.5}Heirarchical reinforcement learning}{40}{subsection.A.1.5}% 

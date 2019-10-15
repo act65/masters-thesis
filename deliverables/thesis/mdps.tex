@@ -15,6 +15,22 @@ idea\ldots{} example.
 \hypertarget{mdps}{%
 \subsection{MDPs}\label{mdps}}
 
+\begin{itemize}
+\tightlist
+\item
+  Observable
+\item
+  Deterministic
+\item
+  Synchronous
+\item
+  Terminating
+\item
+  Knowledge of the model
+\item
+  Discrete
+\end{itemize}
+
 MDPs are a subset of sequential decision problem. Define MDPs. Give
 example.
 
@@ -26,6 +42,14 @@ a picture of this?) also, is there a more general way to think about it?
 The general feeling of an MDP. - Actions need to be adapted to new
 observations and contexts. - While instantaneous results are good, we
 care about the longer term aggregates.
+
+\begin{align*}
+Q^{\pi}(s_0, a_0) = r(s_0, a_0)
++ \gamma \mathop{\text{max}}_{a_1} \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ r(s_1, a_1) \\
++ \gamma \mathop{\text{max}}_{a_2} \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[r(s_2, a_2)
++ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
+\dots \Big] \bigg] \Bigg]
+\end{align*}
 
 \hypertarget{the-markov-property}{%
 \subsubsection{The Markov property}\label{the-markov-property}}
@@ -47,14 +71,14 @@ time
 \hypertarget{optimality}{%
 \subsubsection{Optimality}\label{optimality}}
 
-And importantly, existing theory tells us that there is a unique optimal
-policy. And that this optimal policy is necessarily deterministic.
+And importantly, existing theory tells us that there is a unique optima to the bellman iterations.
+And that this optimal policy(ies) is(are) necessarily deterministic.
+
 
 (why does this make sense?)
 
 \hypertarget{how-do-mdps-relate-to-rl}{%
-\subsubsection{How do MDPs relate to
-RL?}\label{how-do-mdps-relate-to-rl}}
+\subsubsection{How do MDPs relate to RL?}\label{how-do-mdps-relate-to-rl}}
 
 Reinforcement learning set of solutions to a general type of problem.
 This general, reinforcement learning problem, has the properties;
@@ -73,20 +97,8 @@ MDPs have these properties, so are considered within RL. They are also
 within the fields of Operational Research, Optimal Control, Mathematical
 Optimisation, Stochastic Programming.
 
-Notably, we can weaken the information provided to a learner attempting
-to solve an MDP in a few interesting ways:
-
-\begin{itemize}
-\tightlist
-\item
-  POMDPs
-\item
-  ??? only provided samples from transition an reward.
-\end{itemize}
-
 \hypertarget{a-tabular-representation-of-mdps}{%
-\subsubsection{A tabular representation of
-MDPs}\label{a-tabular-representation-of-mdps}}
+\subsubsection{A tabular representation of MDPs}\label{a-tabular-representation-of-mdps}}
 
 Tabular MDPs with deterministic actions are of little interest to the ML
 community. Not because they are easy, but because they do not involve
@@ -119,8 +131,7 @@ V &= (I-\gamma P_{\pi})^{-1}r_{\pi}\\
 it non-linear?!)
 
 \hypertarget{learning-the-tabular-abstraction}{%
-\subsubsection{Learning the (tabular)
-abstraction}\label{learning-the-tabular-abstraction}}
+\subsubsection{Learning the (tabular) abstraction}\label{learning-the-tabular-abstraction}}
 
 Most recent advances in ML have been by finding clever ways to extend
 supervised learning techniques to unsupervised learning. Similarly, we
@@ -136,41 +147,11 @@ L_{r} &= \text{min} \parallel r_t - \textbf r[\phi(s_t), a_t] \parallel^2_2 \tag
 L_{P} &= \mathop{\text{max}}_{\theta} \textbf P[\phi(s_{t+1}),\phi(s_t), a_t]\tag{max likelihood}\\
 \end{align}
 
-\hypertarget{mdps-in-the-real-world}{%
-\subsection{MDPs in the real world}\label{mdps-in-the-real-world}}
-
-Insert some fun worked examples of MDPs from every day life. - Gwern and
-catnip / mail / \ldots{}
-
-Point out some important applications of MDPs;
-
-\begin{itemize}
-\tightlist
-\item
-  Energy markets. https://www.cem.wi.tum.de/index.php?id=5\&L=1
-\item
-  Medicine (EVI)
-\item
-  OR
-\end{itemize}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Aftrethoughts.
-
 Why is the discount factor a part of the definition of the MDP?
 Initially, it didnt make sense to me. By defining the discount, it
 ensure the MDP has a unique solution.
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Note: I have not considered MDPs in their many varying dimensions.
-Rather than; - pick the state space, or the action space, to be a
-discrete set, we could pick any set we like. - allowing an infinite
-number of steps, we can add terminal states. This allows us to drop the
-need for discounting (as the integral will not necessarily diverge to
-infinity).
-
+% ##############################################################################
 
 \section{The value function polytope}
 
@@ -334,6 +315,7 @@ MDPs and how their polytopes change with changes in discount rate.'}
   set of functions /transformations that the discount can apply?
 \end{itemize}
 
+% ##############################################################################
 
 \section{Search spaces}
 \subsection{Dynamics and complexity}
@@ -434,14 +416,39 @@ Search through possible models, \(\tau, r\), calculate the optimal
 policy \(\pi^{* }_{\tau, r}\) and then update \(\tau, r\) based on
 \(\parallel V_{\tau, r}(\pi^{* }) - V(\pi^{* }) \parallel\).
 
-Search through models while trying to find one that yields similar
-returns to the oracle when playing the same policy.
+Search through models while trying to find one that yields similar returns to the oracle when playing the same policy.
+A supervised problem...
 
-(note this one is different to the others. as we dont assume we know the
-model) Related to Thompson sampling?!?
+\begin{align}
+\theta^{* } = \mathop{\text{argmin}}_{\theta} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\theta} \parallel_2
+\end{align}
+
+Note this solver is different to the others. In the previous optimisations we assumed that we knew the model.
+
+% Related to;
+% - Thompson sampling?!?
+% - invaraint risk minimisation
+% - compressed sensing. each policy is one of our sampling bases!? rather than using the deterministic policies (the pixels), we can use mixtures!?
+
+Once we have the model, we can solve for the optimal policy.
+
+Relation to model based RL. This algol only focuses on relevant features of the state space.
+Where model base learners that attempt to learn by predicting transitions can be made to scale arbitrarily worse.
+Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
+The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
+
+Sample efficient. You only need to collect data for the $m$ policies we are matching under.
+Once that has been done, the optimisation problem is easily solved!?
 
 Model iteration. Model invariant transforms. Pick a policy. Falsify it,
 and this falsify all models that yield the same optimal policy.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
+\caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
+and Red shows the value of policies when evaluated under the learned model at convergence.}
+\end{figure}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -470,18 +477,16 @@ and the possible trajectories.
 &\mathop{\text{max}}_{\varphi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi_{\varphi}}}}}(s) \\
 \end{align}
 
-We can pick the space we optimise in. Why would we want to pick one
-space over another?
+We could pick any space we we like to search with in. But, why would we want to pick one space over another?
 
 \begin{itemize}
+\tightlist
 \item
-  In which spaces can we do gradient descent?
+  In which spaces can we efficiently do gradient descent?
 \item
   In which spaces can we do convex optimisation?
 \item
   In which spaces does momentum work well?
-\item
-  \ldots{}
 \end{itemize}
 
 \subsubsection{Topology and dynamics}
@@ -511,28 +516,27 @@ Here are some examples \ldots{}???
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
-\caption{The optimisation dynamics of value iteration versus
-parameterised value iteration.}
+\caption{The optimisation dynamics of value iteration versus parameterised value iteration.}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom.png}
-\caption{The optimisation dynamics of value iteration versus value
-iteration with momentum.}
+\caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
 \end{figure}
 
-If we overparameterise the search space, then we can move between
-solutions in new ways. We can `tunnel' from A to B, without crossing C.
+If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
+%  insert pic / prove
 
-Intuition: Every point is closer, under some measure of distance?!? But.
-Momentum seems like it might be a bad thing here?
+Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
+% insert pic / prove
 
 
 \subsubsection{Accleration and parameterisation}
 
-Intuition. Something weird happens with momentum in overparameterised
-spaces.
+I think something weird happens with momentum in overparameterised spaces. The intuition is
+
+We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
 
 It is necessary to consider the trajectory to study momentum. It depends
 on what has happened in the past. Can we construct a space of possible
@@ -549,12 +553,9 @@ descent, is not necessrily a linear step in parameter space.
 \includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_001.png}
 \includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_0001.png}
 
-This is consistent with acceleration of gradient descent being a
-phenomena only possible in the discrete time setting.
-\ref{https://arxiv.org/abs/1802.03653}{On symplectic optimization}.
+This is consistent with acceleration of gradient descent being a phenomena only possible in the discrete time setting. (see \cite{Betancourt2018} for a recent exploration)
 
-This phenomena can be explained by the exponential decay of the momentum
-terms.
+This phenomena can be explained by the exponential decay of the momentum terms.
 
 \begin{align}
 m_{t+1} = m_t + \gamma\nabla f(w_t) \\

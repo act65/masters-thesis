@@ -1,25 +1,15 @@
 \chapter{Related work}
 
-How do the topics considered in this thesis relate to the work done in the wider scientific community? Which work uses similar tools, which works build on the same foundations, which works have the same goals?
+How do the topics considered in this thesis relate to the work done in the wider scientific community and to society? Which work uses similar tools, which works build on the same foundations, which works have the same goals? How will this help? What can it be used for?
 
 \hypertarget{related-work}{%
-\section{Related work}\label{related-work}}
+\section{Academic literature}\label{related-work}}
 
-\hypertarget{mdps}{%
-\paragraph{MDPs}\label{mdps}}
-
-Dynamic programming, linear programming, \ldots{}?
-
-\[
-Q^{\pi}(s_0, a_0) = r(s_0, a_0)
-+ \gamma \mathop{\text{max}}_{a_1} \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ r(s_1, a_1)
-+ \gamma \mathop{\text{max}}_{a_2} \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[r(s_2, a_2)
-+ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
-\dots \Big] \bigg] \Bigg]
-\]
+Decision theory (economics and psychology), ...?
+Control theory, ..
 
 \hypertarget{hrl}{%
-\subparagraph{HRL}\label{hrl}}
+\subsection{HRL}\label{hrl}}
 
 Temoral abstractions of actions.(how does this related to a
 decomposition of rewards) Ok, so we wany a multiscale representation?
@@ -78,7 +68,7 @@ representation, then yeah, you get faster reward propagation, better
 exploration, \ldots{} etc.
 
 \hypertarget{dynamic-programming}{%
-\paragraph{Dynamic programming}\label{dynamic-programming}}
+\subsection{Dynamic programming}\label{dynamic-programming}}
 
 What is it? Memoized search. Why should we care?
 
@@ -112,11 +102,10 @@ Take \(S \in R^d\) and let \(\hat S = S \times N, N \in R^k\). Where
 \(N\) the is sampled noise. How much harder is it to learn
 \(f: S \to S\) versus \(\hat f: \hat S \to \hat S\)?
 
-https://arxiv.org/pdf/1903.00374v3.pdf https://arxiv.org/abs/1907.02057
+\cite{Wang2019a,Kaiser2019}
 
 \hypertarget{representation-learning-and-abstraction}{%
-\subsection{Representation learning and
-abstraction}\label{representation-learning-and-abstraction}}
+\subsection{Representation learning and abstraction}\label{representation-learning-and-abstraction}}
 
 The goal is to find a representation that decomposes knowledge into its
 parts.
