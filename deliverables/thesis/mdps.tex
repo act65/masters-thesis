@@ -1,19 +1,22 @@
 \chapter{MDPs}
 
 What is a decision problem?
+Why do we care?
 
 \hypertarget{sequential-decision-problems}{%
 \subsection{Sequential decision
 problems}\label{sequential-decision-problems}}
 
-Define. And give example.
+A MDP is defined as a tuple, \(\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t, s_{t+1}), \gamma\}\)\footnotemark[1]. Where \(s \in \mathcal S\) is the set of possible states (\textit{for example arrangements of chess pieces}), \(a \in \mathcal A\) is the set of actions (\textit{the different possible moves, left, right, diagonal, weird L-shaped thing, ...}),  \(P(s_{t+1} \mid s_t, a_t)\) is the transition function which describes how the environment acts in response to the past (\(s_t\)) and to your actions (\(a_t\)) (\textit{in this case, your opponent's moves, taking one of your pieces, and the results of your actions}), and finally, \(r(s_t, a_t, s_{t+1})\) is the reward function, \textit{whether you won (+1) or lost (-1) the game}) and \(R ={\sum_{t=0}}^T r(s_t, a_t, s_{t+1}) \) is the cumulative reward, or return. The player's goal, is to learn a policy \(\pi\), (which chooses actions, \(a_t = \pi(s_t)\)) that yields the largest return \(\text{max } R\).
+
+\footnotetext[1]{Why is the discount factor a part of the definition of the MDP?
+By defining the discount it ensures the MDP has a unique solution.}
 
 If we wanted we could pick our actions before we make observations,
-reducing the search space to only \(|A| \times T\). But this is a bad
-idea\ldots{} example.
+reducing the search space to only \(|A| \times T\). But this is a bad idea\ldots{} example.
 
 \hypertarget{mdps}{%
-\subsection{MDPs}\label{mdps}}
+\subsection{Related settings}\label{mdps}}
 
 \begin{itemize}
 \tightlist
@@ -34,7 +37,7 @@ idea\ldots{} example.
 MDPs are a subset of sequential decision problem. Define MDPs. Give
 example.
 
-When actions you have taken in the past can bite you in the butt\ldots{}
+When actions you have taken in the past can bite you in the butt \ldots{}
 Maze with pendulums / doors. When moving through the maze, you must
 swing the pendulums. In the future you must avoid being hit. (maybe make
 a picture of this?) also, is there a more general way to think about it?
@@ -80,45 +83,35 @@ And that this optimal policy(ies) is(are) necessarily deterministic.
 \hypertarget{how-do-mdps-relate-to-rl}{%
 \subsubsection{How do MDPs relate to RL?}\label{how-do-mdps-relate-to-rl}}
 
-Reinforcement learning set of solutions to a general type of problem.
-This general, reinforcement learning problem, has the properties;
+Reinforcement learning referces to the set of solutions to a type of problem.
+This general, reinforcement learning, problem, has two main properties;
+"trial-and-error search and delayed rewards" [@Sutton1998ReinforcementLA].
+Unlike supervised learning, which gives the learner feedback (\textit{I think that digit
+is a 5 -> no, it's a 6}), in RL the learner only receives evaluations (\textit{I think
+that digit is a 5 -> wrong}). Ontop of terse teachers, many actions may be taken
+before any evaluation is received, thus requiring credit to be assigned to actions,
+often leaving the learner wondering: "what did I do to deserve this?" (see
+[pigeon superstition](https://www.youtube.com/watch?v=8uPmeWiFTIw) for an amusing
+example of credit assignment gone wrong [@Skinner1948SuperstitionIT]).
 
-\begin{itemize}
-\tightlist
-\item
-  evaluation, not feedback. Learners are never provided information
-  about what makes a good policy, rather they told whether a policy is
-  good or not.
-\item
-  delayed credit assignment.
-\end{itemize}
-
-MDPs have these properties, so are considered within RL. They are also
-within the fields of Operational Research, Optimal Control, Mathematical
+MDPs are also within the fields of Operational Research, Optimal Control, Mathematical
 Optimisation, Stochastic Programming.
 
 \hypertarget{a-tabular-representation-of-mdps}{%
 \subsubsection{A tabular representation of MDPs}\label{a-tabular-representation-of-mdps}}
 
 Tabular MDPs with deterministic actions are of little interest to the ML
-community. Not because they are easy, but because they do not involve
-\ldots{}? They can be solved by planning techniques and dynamic
-programming.
+community. Not because they are easy, but because they can be solved by non-statistical
+methods: dynamic programming and related planning techniques.
 
 The minimally complex MDP that poses an interesting challenge to the ML
 community is when the transition function is non deterministic.
-Alternatives we could add on. Contextua decision problem (transition fn
-changes with t), stochastic reward function, \ldots{}?
 
-Learn a tabular MDP representation of the RL problem.
-
-Why would we want to do this? - Policy evaluation is expensive in the RL
-setting. The policy must be simulated over all possible states-action
-pairs. And scales poorly with variance. (how poorly?) - ?
-
-Just quickly, what does a tabular MDP look like? - discrete states and
+Just quickly, what does a tabular MDP look like? We iscrete states and
 actions - \(r\) and \(P\) are simply look up functions, indexed by the
 current state-action.
+
+A result of this formulation is that we consisely write and solve the Bellman equation.
 
 \begin{align}
 V &= r_{\pi} + \gamma P_{\pi} V \tag{bellman eqn}\\
@@ -127,56 +120,60 @@ V - \gamma P_{\pi} V &= r_{\pi}\\
 V &= (I-\gamma P_{\pi})^{-1}r_{\pi}\\
 \end{align}
 
-(finding the optimal policy is still a non-linear problem. how / why is
-it non-linear?!)
-
-\hypertarget{learning-the-tabular-abstraction}{%
-\subsubsection{Learning the (tabular) abstraction}\label{learning-the-tabular-abstraction}}
-
-Most recent advances in ML have been by finding clever ways to extend
-supervised learning techniques to unsupervised learning. Similarly, we
-can use supervised learning techniques, batch training, cross entropy,
-\ldots{} to train reward and transition approximations.
-
-We are provided with examples \((s_t, a_t, r_t, s_{t+1}, a_{t+1})\). We
-can use these to\ldots{}
-
-\begin{align}
-\textbf  r \in \mathbb R^{n \times m}, &\; \textbf P \in [0,1]^{n \times m \times n} \\
-L_{r} &= \text{min} \parallel r_t - \textbf r[\phi(s_t), a_t] \parallel^2_2 \tag{mean squared error}\\
-L_{P} &= \mathop{\text{max}}_{\theta} \textbf P[\phi(s_{t+1}),\phi(s_t), a_t]\tag{max likelihood}\\
-\end{align}
-
-Why is the discount factor a part of the definition of the MDP?
-Initially, it didnt make sense to me. By defining the discount, it
-ensure the MDP has a unique solution.
-
-% ##############################################################################
-
 \section{The value function polytope}
 
 Why is it a polytope?
+What are the value polytopes properties?
+
+\begin{itemize}
+\tightlist
+\item
+  Positive orthants
+\item
+  Straight sides
+\item
+  Non-convex
+\end{itemize}
 
 Imagine a two state MDP. Following some initial, ill-informed policy,
 the value that you might get starting from each state is
-${v_1}^0, {v_2}^0$. Nn the future we learn something new and alter our
-policy; so the value of (say) the first state is now greater,
-\(v_1^t > v_1^0\). This explains why the edges of the polytope by be
-``aligned with the positive orthant'', they slant upward. An increase in
-the value of state one, can, at worst, do nothing for state two, aka a
-flat line, either horizontal or vertical.
+${v_1}^0, {v_2}^0$.
 
-What are its properties?
+An increase in the value of state one, can, at worst, do nothing for state two, aka a
+flat line, either horizontal or vertical. This explains why the edges of the polytope by be
+aligned with the positive orthant, they slant upward.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-automata.png}
+\caption{Consider the simplest possible MDP, with two states and two actions. (Any simpler setting is uninteresting. A single state means actions do nothing.
+And a single action means all policies are the same...).}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-2-action-simplices.png}
+\caption{Imagine what the geometry of the space of policies in the two state, two action MDP. A policy tells us what actions should be taken when in a given state. Therefore, there will be \(|A| \times |S|\) entries in the policy. However, because the policy returns a distribution over actions, the true dimensionality of the policy is \((|A| -1) \times |S|\). Which in the two state, two action case equals 2D.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/3-state-3-action-simplices.png}
+\caption{Let's \textit{try} to gain some intuition about the space of policies in higher dimensions.
+For each state, we have a distribution (on a simplex), over the possible actions.}
+\end{figure}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 Some simple question to explore;
 
 \begin{itemize}
+\tightlist
 \item
-  How does the distribution of policies on the polytope effect learning?
+  What is the distribution of policies on the polytope?
 \item
-  How does gamma change the shape of the polytope?
+  How does the discount rate change the shape of the polytope?
 \item
   How do the dynamics of GPI partition the policy / value spaces?
 \end{itemize}
@@ -216,20 +213,6 @@ Lighter colour is higher probability'}
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-\textbf{Derivation of derivative}
-
-\begin{align}
-V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \\
-&= (I − \gamma P\cdot \pi)^{−1}r\cdot \pi \\
-\frac{\partial V}{\partial \pi} &= \frac{\partial}{\partial \pi}((I-\gamma P_{\pi})^{-1} r_{\pi}) \\
-&= (I-\gamma \pi P)^{-1} \frac{\partial \pi r}{\partial \pi}+   \frac{\partial (I-\gamma \pi P)^{-1}}{\partial \pi}\pi r\tag{product rule} \\
-&= (I-\gamma \pi P)^{-1} r + -(I-\gamma \pi P)^{-2} \cdot -\gamma P\cdot \pi r\\
-&= \frac{r}{I-\gamma \pi P} + \frac{ \gamma P\cdot \pi r}{(I-\gamma \pi P)^2}\\
-&= \frac{r(I-\gamma \pi P) + \gamma P \pi r}{(I-\gamma \pi P)^2} \\
-& = \frac{r}{(I-\gamma P \pi)^2} \\
-\end{align}
-
 
 \paragraph{An MDPs Entropy}
 

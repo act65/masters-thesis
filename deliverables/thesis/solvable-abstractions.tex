@@ -15,7 +15,7 @@ turn this into a linear problem? What sacrifices need to be made to
 achieve this?
 
 \hypertarget{why-linearity}{%
-\subsubsection{Why linearity?}\label{why-linearity}}
+\subsection{Why linearity?}\label{why-linearity}}
 
 \begin{itemize}
 \tightlist
@@ -28,22 +28,12 @@ achieve this?
 \end{itemize}
 
 Linearity is a nice property that makes optimisation simpler and more
-efficient.
-
-\begin{itemize}
-\tightlist
-\item
-  Linear programming (see appendix: LP)
-\item
-  Linear markov decision processes
-\end{itemize}
-
+efficient: Linear programming (see appendix: LP)
 Solving a system of linear relationships. Has a complexity of ???.
-
 In fact. MDPs can actually be solved via LP. see {[}appendix{]}.
 
 \hypertarget{a-closer-look-at-lmdps}{%
-\subsubsection{A closer look at LMDPs}\label{a-closer-look-at-lmdps}}
+\subsection{A closer look at LMDPs}\label{a-closer-look-at-lmdps}}
 
 (the Todorov ones\ldots{})
 
@@ -56,16 +46,14 @@ The three steps of abstraction - relaxation (transform to a new domain)
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/drawings/abstract-representations-solve.png}
-\caption{''}
+\caption{'Solving the LMDP'}
 \end{figure}
 
-Pick \(a \in A\), versus, pick \(\Delta(S)\). \(f: S\to A\) vs
-\(f:S \to \Delta(S)\).
+Rather than picking action from our action space, we are going to pick actions in
+ the space of possible transitions from the current state to the next state. Note
+ that these transitions are not (yet) constrained to be possible.
 
-In the original Todorov paper, they derive the LMDP equations for
-minimising a cost function. This maximisation derivation just changes a
-few negative signs around. Although there is also a change in the
-interpretation of what the unconstrained dynamics are doing. \ldots{}?
+We can formulate a linearised markov decision process as;
 
 \begin{align}
 V(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} V(s') \tag{1}\\
@@ -84,8 +72,10 @@ uncontrolled dynamics matrix.
 
 (see appendix ?? for a full derivation)
 
+\newpage
+
 \hypertarget{a-relaxed-mdp}{%
-\paragraph{A relaxed MDP}\label{a-relaxed-mdp}}
+\subsection{A relaxed MDP}\label{a-relaxed-mdp}}
 
 \begin{figure}
 \centering
@@ -142,7 +132,7 @@ Alternative views of linearisation.
 \end{itemize}
 
 \hypertarget{unconstrained-dynamics-and-state-rewards}{%
-\subparagraph{Unconstrained dynamics and state
+\subsection{Unconstrained dynamics and state
 rewards}\label{unconstrained-dynamics-and-state-rewards}}
 
 \begin{quote}
@@ -248,6 +238,12 @@ approximate the optimal controls? When our basis set of distributions
 oer future states (aka our actions) have little weight\ldots{}?
 
 Potential solution? Use options.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/figures/LBO_BO.png}
+\caption{'For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the Bellman temporal difference operator points towards the optimal value. But, ther linear temporal difference operator points elsewhere...'}
+\end{figure}
 
 \hypertarget{option-decoding}{%
 \paragraph{Option decoding}\label{option-decoding}}
