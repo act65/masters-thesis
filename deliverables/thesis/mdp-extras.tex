@@ -214,7 +214,137 @@ More Refs
 \end{itemize}
 
 
+\subsection{Other properties of the polytope}
 
+While \cite{Dadashi2018} investigated and explained three interesting properties
+of the value polytope, there are more to be considered.
+
+\begin{itemize}
+\tightlist
+\item
+  What is the distribution of policies on the polytope?
+\item
+  How does the discount rate change the shape of the polytope?
+\item
+  How do the dynamics of GPI partition the policy / value spaces?
+\end{itemize}
+
+\subsubsection{Distribution of policies}
+
+A potentially interesting question to ask about the polytopes is how the
+policies are distributed over the polytope. To calculate this
+analytically, we can use the probability chain rule:
+\(p(f(x)) = \mid \det\frac{\partial f(x)}{\partial x}\mid^{-1}p(x)\).
+Where we set \(f\) to be our value functional and \(p(x)\) to be a
+uniform distribution.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/polytope_densities.png}
+\caption{`2-state 2-action MDPs. We have visualised the likelihood of
+values under a uniform on policies. They are coloured by density.
+Lighter colour is higher probability'}
+\end{figure}
+
+\begin{itemize}
+\item
+  \textbf{Observation} In some polytopes, many of the policies are close
+  to the optimal policy. In other polytopes, many of the policiesare far
+  away from the optimal policy. \textbf{Question} Does this make the MDP
+  harder or easier to solve? \textbf{Intuition} If there is a high
+  density near the optimal policy then we could simply sample policies
+  and evaluate them. This would allow us to find a near optimal policy
+  with relative easy.
+\item
+  \textbf{Observation} The density is always concentrated / centered on
+  an edge.
+\item
+  \textbf{Question} how does the entropy of the distribution change
+  under different gamma/transitions/rewards\ldots{}?
+\end{itemize}
+
+\paragraph{An MDPs Entropy}
+
+(\emph{the goal is to understand what makes some MDPs harder to solve
+than others})
+
+We can visualise polytopes in 2D, but we struggle in higher dimensions.
+However, it is possible to use lower dimensions to gain intuition about
+metrics and carry that intuition into higher dimensions. A potential
+metric of interest here is the entropy of our distribution, (and / or
+the expected distance from the optima) to give intuition about
+unimaginable MDPs.
+
+\begin{align}
+M &\to \{P, r, \gamma\} \tag{a MDP}\\
+H(M) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[-\log p(V(\pi)) \Big]\\
+&= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[-\log(\mid \det\frac{\partial V(\pi)}{\partial \pi}\mid^{-1}p(\pi)) \Big] \\
+&= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[-\log(\mid \det \frac{r}{(I-\gamma P \pi)^2}\mid^{-1}p(\pi)) \Big] \\
+\end{align}
+
+What does this tell us? \textbf{???} A MDP with a low entropy tells us
+that many of the policies are in a corner of the polytope. But the
+`hardness' of the MDP depends on which corner these policies are
+concentrated in. Rather we could use the value of each policy to give
+information about the location of the policy.
+
+\begin{align*}
+\mu(M) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[V(\pi) \Big]\\
+\end{align*}
+
+What does this tell us? The expected value of a policy. Thus, a quantity
+of interest might be the expected suboptimality of a policy,
+\(s = V(\pi^{* })-\mu(M)\). This tells us how far away the optimal
+policy is from the center of mass of the polytope.
+
+\textbf{Conjecture:} If an MDP has suboptimality
+\(s \le \frac{\sigma_{MDP}}{D}\) then it is possible to find a
+\(\epsilon\) optimal policy with \(\mathcal O(n)\) samples. (but
+sampling in high dimensions always scales badly?!)
+
+\textbf{Experiment:} Correlate the properties of \(P, r\) with entropy.
+Or find derivative wrt \(P, r\). What properties of \(P, r\) yield
+easily solvable MDPs?
+
+NOTE:
+
+\begin{itemize}
+\item
+  What about the variance of the MDP? What does that tell us?
+\item
+  How does a uniform distribution on a simplex behave in high
+  dimensions? Does it become more likely to sample from the center? Less
+  likely to sample from vertices??
+\item
+  In most cases, this is unlikely to work. A high dimensional polytope
+  \ldots{} low density everywhere!?
+\end{itemize}
+
+
+\subsubsection{Discounting}
+
+How does the shape of the polytope depend on the discount rate? Given an
+MDP, we can vary the discount rate from \(0\) to \(1\) and explore how
+the shape of the value polytope changes.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/discounts.png}
+\caption{`Here we have shown a few different 2 state, 2 action, MDPs and how their polytopes change with changes in discount rate.'}
+\end{figure}
+
+\begin{itemize}
+\item
+  \textbf{Observation} As \(\gamma \to 1\), all the policies are
+  projected into a 1D space? \textbf{Question} Does this make things
+  easier to learn? \textbf{Intuition} Orderd 1D spaces are easy to
+  search.
+\item
+  \textbf{Observation} The tranformation that changing the discount
+  applies is quite restricted. They are not generally non-linear, but
+  appear `close to linear', but not quite. \textbf{Question} What is the
+  set of functions /transformations that the discount can apply?
+\end{itemize}
 
 \subsection{Derivation of derivative}
 

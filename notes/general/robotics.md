@@ -12,3 +12,6 @@ What are the open theoretical questions?
 
 https://arxiv.org/pdf/1906.03292.pdf
 https://arxiv.org/pdf/1909.12200.pdf
+
+
+- [RoboNet: Large-Scale Multi-Robot Learning](https://arxiv.org/pdf/1910.11215.pdf)

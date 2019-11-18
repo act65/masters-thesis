@@ -31,8 +31,7 @@ Why? Instability, non-convex, hyper parameter searches, subtle design decisions,
 Each of these benchmarking tools is an attempt to remove some of the variations in implementation.
 
 Also. Seed tuning...
-
-
+- [Meta-World: A Benchmark and Evaluation for Multi-Task and Meta Reinforcement Learning](https://arxiv.org/pdf/1910.10897.pdf)
 
 Hyper parameter searches confound the issue.
 Need a test set. To verify.
