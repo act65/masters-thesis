@@ -1,4 +1,4 @@
-\chapter{Search spaces and their complexity}
+\chapter{Search spaces}
 
 MDPs are not very cheap to solve.
 We are interested in exploring the complexity of some different approaches to solving MDPs.
@@ -44,9 +44,9 @@ search, even when there are infinitely more states to search.
 
 \subsection{Value search}
 
-What is going on here? We are searching through values of policies, for a value that is
-stationary under the Bellman optimality operator. Once we have found this value,
-we know how to easily construct the optimal policy.
+Let's search through possible values. But how can we ensure that our search is
+related to the original MDP? We can use Bellman's optimality operator to guide our search.
+
 % (need to explain? why does stationarity mean optimality...?!)
 
 \begin{align}
@@ -68,12 +68,25 @@ Why is this good / bad. What dynamics can / cannot be achieved?
 
 \subsection{Policy search}
 
-Searching through the space of potential policies supports a couple of modes of travel.
-Policy iteration jumps between deterministic policies, guided by ...?
+We can also search through policies. This feels like the most natural search for RL,
+as after all, we are after the optimal policy.
+
+Searching through the space of policies supports a couple of modes of travel:
+policy iteration jumps between deterministic policies, the edges of our polytope
 Policy gradients ...?
 
+\subsubsection{Policy iteration}
+
+guided by ...?
 \begin{align}
-\pi^{* } &= \mathop{\text{argmax}}_{\pi} \mathbb E [V(\pi)] \\
+V(\pi_t) &=  (I - \gamma P_{\pi_t})^{-1} r_{\pi_t} \\
+\pi_{t+1} &= \mathop{\text{argmax}}_\pi \big[r_{\pi} + \gamma P_{\pi}V(\pi_t) \big]
+\end{align}
+
+
+\subsubsection{Policy gradients}
+
+\begin{align}
 \pi_{t+1} &= \pi_t + \eta \nabla \mathbb E [V(\pi)]
 \end{align}
 
@@ -83,28 +96,30 @@ add ref
 
 \subsection{Model search}
 
-Search through possible models, \(\tau, r\), calculate the optimal
-policy \(\pi^{* }_{\tau, r}\) and then update \(\tau, r\) based on
-\(\parallel V_{\tau, r}(\pi^{* }) - V(\pi^{* }) \parallel\).
+Lastly, we can search through possible models, $P, r$. Models that fit the
+observations we make. That is policy $\pi_i$ has a value $V^{pi_i}$.
 
-Search through models while trying to find one that yields similar returns to the oracle when playing the same policy.
-A supervised problem...
+\begin{displayquote}
+  This model predicts that the ??? policy is of high value.
+  However, when I tried this policy, I ended up with ...?
+  My model must be wrong.
+\end{displayquote}
+
+Here the parameters are composed to two independent parts, the transition function
+and the reward function.
 
 \begin{align}
-\theta^{* } = \mathop{\text{argmin}}_{\theta} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\theta} \parallel_2
+\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\tilde P, \tilde r} \parallel_\infty
 \end{align}
 
-Note this solver is different to the others. In the previous optimisations we assumed that we knew the model.
+While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
+solving a MDP is to find the optimal policy. ...!?!?
 
-% Related to;
-% - Thompson sampling?!?
-% - invaraint risk minimisation
-% - compressed sensing. each policy is one of our sampling basis!? rather than using the deterministic policies (the pixels), we can use mixtures!?
+\subsubsection{Relationship to model based RL}
 
-Once we have the model, we can solve for the optimal policy.
+Most model-based learning approaches to RL ... next step prediction (refs!!!)
+This algorithm only focuses on relevant features of the state space.
 
-Relation to model based RL. This algol only focuses on relevant features of the state space.
-Where model base learners that attempt to learn by predicting transitions can be made to scale arbitrarily worse.
 Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
 The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
 
@@ -124,13 +139,19 @@ and Red shows the estimated value of policies when evaluated under the learned m
 
 Related to AWR? https://arxiv.org/pdf/1910.00177.pdf
 
+\subsubsection{Compressed sensing}
+
+words
+
+
+
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\begin{displayquote}
 So there seem to be three different classes of search space: each imbued with special
-structure from the Bellman equation. What are their properties? And which spaces
-support efficient search for the optimal policy?
-\end{displayquote}
+structure from the Bellman equation. Each with different the types of search they
+support. And each with different parameter topologies.
+
+What are their properties? And which spaces support efficient search for the optimal policy?
 
 \begin{itemize}
 \tightlist
@@ -141,13 +162,6 @@ support efficient search for the optimal policy?
 \item
   in the model space we can solve directly for the optimal policy.
 \end{itemize}
-
-For each initial policy, we can solve / optimise it to to find the
-optimal policy (using policy iteration). Here we count how many
-iterations were required to find the optima (from different starting
-points / policies).
-
-For each search space, we need to constrain the solutions to be possible within the original MDP.
 
 \section{Gradient based search}
 
@@ -160,6 +174,8 @@ w_{t+1} = w_t - \eta \nabla f(w_t)
 
 The dynamics of the search are dependent on the topology of a problems loss surface.
 The loss surface is determined by the combination of the search space and the loss function.
+
+\subsection{Parameterised search}
 
 \begin{align}
 &\mathop{\text{max}}_V \mathop{\mathbb E}_{s\sim D} V(s) \\
@@ -175,7 +191,7 @@ Value iteration and related methods like (deep) Q learning. \eqref{eq:deepQ}
 
 Ok. So when $\phi$ are the parameters of a deep neural network, ...? The search space has certain (which) properties.
 Euclidean geometry.
-
+(parameter dimensions are independent! no funny business)
 
 We can pick any space we we like to search with in. But, why would we want to pick one space over another?
 What properties are we looking for?

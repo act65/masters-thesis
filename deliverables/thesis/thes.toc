@@ -9,20 +9,25 @@
 \contentsline {subsection}{\numberline {2.3.2}The value function polytope}{7}{subsection.2.3.2}% 
 \contentsline {subsection}{\numberline {2.3.3}What are the properties of the polytope?}{8}{subsection.2.3.3}% 
 \contentsline {subsection}{\numberline {2.3.4}Policies in high dimensions}{8}{subsection.2.3.4}% 
-\contentsline {chapter}{\numberline {3}Search spaces and their complexity}{11}{chapter.3}% 
+\contentsline {chapter}{\numberline {3}Search spaces}{11}{chapter.3}% 
 \contentsline {section}{\numberline {3.1}Efficient search for RL}{11}{section.3.1}% 
 \contentsline {subsection}{\numberline {3.1.1}Value search}{12}{subsection.3.1.1}% 
 \contentsline {subsection}{\numberline {3.1.2}Policy search}{12}{subsection.3.1.2}% 
+\contentsline {subsubsection}{Policy iteration}{13}{section*.5}% 
+\contentsline {subsubsection}{Policy gradients}{13}{section*.6}% 
 \contentsline {subsection}{\numberline {3.1.3}Model search}{13}{subsection.3.1.3}% 
-\contentsline {section}{\numberline {3.2}Gradient based search}{15}{section.3.2}% 
-\contentsline {subsection}{\numberline {3.2.1}Dynamics and complexity}{16}{subsection.3.2.1}% 
-\contentsline {subsection}{\numberline {3.2.2}Acceleration and parameterisation}{18}{subsection.3.2.2}% 
+\contentsline {subsubsection}{Relationship to model based RL}{14}{section*.7}% 
+\contentsline {subsubsection}{Compressed sensing}{14}{section*.8}% 
+\contentsline {section}{\numberline {3.2}Gradient based search}{14}{section.3.2}% 
+\contentsline {subsection}{\numberline {3.2.1}Parameterised search}{16}{subsection.3.2.1}% 
+\contentsline {subsection}{\numberline {3.2.2}Dynamics and complexity}{17}{subsection.3.2.2}% 
+\contentsline {subsection}{\numberline {3.2.3}Acceleration and parameterisation}{17}{subsection.3.2.3}% 
 \contentsline {section}{\numberline {3.3}Topology and dynamics}{19}{section.3.3}% 
-\contentsline {section}{\numberline {3.4}Continuous flow and its discretisation}{22}{section.3.4}% 
-\contentsline {section}{\numberline {3.5}Notes}{23}{section.3.5}% 
-\contentsline {chapter}{\numberline {4}Related work}{25}{chapter.4}% 
-\contentsline {section}{\numberline {4.1}Search spaces}{25}{section.4.1}% 
-\contentsline {section}{\numberline {4.2}Abstraction}{25}{section.4.2}% 
-\contentsline {subsection}{\numberline {4.2.1}Representation learning and abstraction}{25}{subsection.4.2.1}% 
-\contentsline {subsection}{\numberline {4.2.2}Linear RL}{26}{subsection.4.2.2}% 
-\contentsline {subsection}{\numberline {4.2.3}Heirarchical reinforcement learning}{26}{subsection.4.2.3}% 
+\contentsline {section}{\numberline {3.4}Continuous flow and its discretisation}{20}{section.3.4}% 
+\contentsline {section}{\numberline {3.5}Notes}{22}{section.3.5}% 
+\contentsline {chapter}{\numberline {4}Related work}{23}{chapter.4}% 
+\contentsline {section}{\numberline {4.1}Search spaces}{23}{section.4.1}% 
+\contentsline {section}{\numberline {4.2}Abstraction}{23}{section.4.2}% 
+\contentsline {subsection}{\numberline {4.2.1}Representation learning and abstraction}{23}{subsection.4.2.1}% 
+\contentsline {subsection}{\numberline {4.2.2}Linear RL}{24}{subsection.4.2.2}% 
+\contentsline {subsection}{\numberline {4.2.3}Heirarchical reinforcement learning}{24}{subsection.4.2.3}% 
