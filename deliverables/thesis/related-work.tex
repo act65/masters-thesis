@@ -2,54 +2,25 @@
 
 How do the topics considered in this thesis relate to the work done in the wider scientific community and to society? Which work uses similar tools, which works build on the same foundations, which works have the same goals? How will this help? What can it be used for?
 
-\hypertarget{related-work}{%
-\section{Academic literature}\label{related-work}}
-
 Decision theory (economics and psychology), ...?
-Control theory, ..
+Control theory
 
-\hypertarget{dynamic-programming}{%
-\subsection{Dynamic programming}\label{dynamic-programming}}
+\section{Search spaces}
 
-What is it? Memoized search. Why should we care?
 
-\hypertarget{model-based-rl}{%
-\subsection{Model-based RL}\label{model-based-rl}}
+Recently there has been work investigating the properties of overparameterised search spaces.
+Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yeilds acceleration, however,
+their explanation of the acceleration is not entirely convincing.
 
-Pros and cons.
+\cite{Arora2018}'s proofs ...??
 
-Model-based learning can be bad\ldots{} There may be many irrelevant
-details in the environment that do not need to be modelled. A model-free
-learning naturally ignores these things.
 
-The importance of having an accurate model!
-
-For example, let \(S\in R^n\) and \(A\in [0, 1]^n\). Take a transition
-function that describes how a state-action pair generates a distribution
-over next states \(\tau: S \times A \to \mathcal D(S)\). The reward
-might be invariant to many of the dimensions.
-\(r: X \times A -> \mathbb R\), where \(X \subset S\).
-
-Thus, a model mased learner can have arbitrarily more to learn, by
-attempting to learn the transition function. But a model-free learner
-only focuses on \ldots{}
-
-This leads us to ask, how can we build a representation for model-based
-learning that matches the invariances in the reward function. (does it
-follow that the invariances in reward fn are the invariances in the
-value fn. i dont think so!?)
-
-Take \(S \in R^d\) and let \(\hat S = S \times N, N \in R^k\). Where
-\(N\) the is sampled noise. How much harder is it to learn
-\(f: S \to S\) versus \(\hat f: \hat S \to \hat S\)?
-
-\cite{Wang2019a,Kaiser2019}
+\section{Abstraction}
 
 \hypertarget{representation-learning-and-abstraction}{%
 \subsection{Representation learning and abstraction}\label{representation-learning-and-abstraction}}
 
-The goal is to find a representation that decomposes knowledge into its
-parts.
+The goal is to find a representation that decomposes knowledge into its parts.
 
 Another way to frame this is: trying to find the basis with the right
 properties.
@@ -74,21 +45,38 @@ Types of abstraction for RL. Abstraction for efficient;
 \begin{itemize}
 \tightlist
 \item
-  exploration, [Learning latent state representation for speeding up exploration](https://arxiv.org/abs/1905.12621)
+  exploration, Learning latent state representation for speeding up exploration \cite{Vezzani2019}
 \item
   optimal control,
 \item
   ???,
 \end{itemize}
 
-Unsupervised State Representation Learning in Atari https://arxiv.org/pdf/1906.08226.pdf
-State Aggregation Learning from Markov Transition Data https://arxiv.org/pdf/1811.02619.pdf !!!
+Unsupervised State Representation Learning in Atari  \cite{Anand2019}
+State Aggregation Learning from Markov Transition Data  !!!\cite{Duan2018}
+
+\subsection{Linear RL}
+
+Recently there have been a few other attempts to exploit linearity for RL.
+\cite{Pires2016} factored
+
+\cite{Wang} Reward and transitions are a linear function of features of a state-action pair.
+
+Levine et al. \cite{Levine2019} build a latent representation such that the transition fn (in the latent space) is approximately linear. This allows ...
+
+These attempts all focus on linearity in the transition function...
 
 \subsection{Heirarchical reinforcement learning}
 
-Between MDPs and Semi-MDPs https://www.cs.swarthmore.edu/~meeden/DevelopmentalRobotics/suttonOptions.pdf
-[REINFORCEMENT LEARNING WITH STRUCTURED HIERARCHICAL GRAMMAR REPRESENTATIONS OF ACTIONS](https://arxiv.org/pdf/1910.02876.pdf)  !!! theory for this tho?!
-[Latent Space Policies for Hierarchical Reinforcement Learning](https://arxiv.org/pdf/1804.02808.pdf)
+What is HRL? Really it is just temporal abstraction, using a heirarchy.
+
+As far as I know, there are three main apporaches to HRL.
+Equip an agent with options, learning to generate sub goals, pretrained low level policies, .
+
+
+Between MDPs and Semi-MDPs \cite{RichardS.SuttonaDoinaPrecupb1998}
+Reinforcement learning with structured hierarchical grammar representations of actions  \cite{Christodoulou2019}  !!! theory for this tho?!
+Latent Space Policies for Hierarchical Reinforcement Learning \cite{Haarnoja}
 
 Two main approaches. Subgoals and options. To achieve temporal abstraction.
 
@@ -100,6 +88,12 @@ We don't really have a principled approach to HRL?!
 
 - How does the heirarchy help?
 - When can we expect transfer?
+
+Discovery! And no free lunches!?
+
+\begin{displayquote}
+  The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data. \cite{Konidaris2019}
+\end{displayquote}
 
 
 Temoral abstractions of actions.(how does this related to a
@@ -141,19 +135,11 @@ them)
   Near optimal representation learning for heirarchical RL \cite{Nachum2018}
 \end{itemize}
 
-Relation to pretraining / conditioning?
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Why does Heirarchy (sometimes) work so well in reinforcement learning?
-
-The authors claim that the benefits of HRL can be explained by better
-exploration. However, I would interpret their results as saying; ``for
-2D environments with walls, larger steps / actions result in greater
-explration''. But what if the walls were replaced by cliffs? I imagine
-this algorithm would do a lot worse!?
-
-They also seem to misunderstand the main problem with HRL, discovery.
-Once you have discovered a nice set of abstracted actions / a
-representation, then yeah, you get faster reward propagation, better
-exploration, \ldots{} etc.
+In "Why does Heirarchy (sometimes) work so well in reinforcement learning?" \cite{Dadashi2018}
+authors claim that the benefits of HRL can be explained by better
+exploration. However, I would interpret their results as saying; "for
+2D environments with walls, better exploration (aka larger steps, aka actions that are more temporally abstract), result in greater
+explration". But what if the walls were replaced by cliffs? I imagine
+this algorithm might do a lot worse!? Also, they don't seem to consider the main problem with HRL: discovery.
+Once you have discovered a nice set of abstract actions or states, then yeah,
+you get faster reward propagation, better exploration, \ldots{} etc.

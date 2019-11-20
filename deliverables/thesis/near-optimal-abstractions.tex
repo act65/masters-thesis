@@ -1,13 +1,7 @@
 \hypertarget{near-optimal-abstractions}{%
-\section{Near optimal abstractions}\label{near-optimal-abstractions}}
+\section{Abstractions for RL}\label{near-optimal-abstractions}}
 
-
-We are working with MDPs \((S, A, \tau, r)\), therefore we have a state
-space, \(S\), an action space, \(A\), a transition function
-\(P: S\times A \times S \to [0, 1]\) and a reward function
-\(r: S\times A \to \mathbb R\).
-
-Let's say we have an abstraction, (a road is a road, no real different
+Let's say we have an abstraction, (a road is a road, no real difference
 between them), a natural thing we want to know about the abstraction is:
 is it possible for me to act optimally using this abstraction, if not,
 what's the damage (in this case, of driving 100kph on every road,
@@ -15,30 +9,23 @@ because they are all prety much the same\ldots{})? Or, in other words,
 which policies are approximately representable within this abstracted
 MDP.
 
+%  these are the theoretical tools we can use to analyse an abstraction.
+
 An abstract MDP is defined as;
 
 ???
 
 The metric we are optimising is the representation error of the optimal
-policy. Given an abstraction, we want to know how well the abstraction
+policy. Given an abstraction, we want to know how well (in terms of $\epsilon$) the abstraction
 can represent the optimal policy.
 
 \[
-\forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le 2 \epsilon \eta_f
+\forall_{s\in S_G, a\in A_G} \mid Q_G^{\pi^* }(s, a) - Q_G^{\pi_{GA}^* }(s, a) \mid \le \epsilon
 \]
 
-We could impose properties on a state abstraction using something like
-the following;
+AND. How hard that optimal policy is to find.!!!
 
-
-\begin{align}
-\forall_{s_1, s_2 \in S} \mid f(s_1) - f(s_2)\mid \le \epsilon &\implies \phi (s_1) = \phi(s_2)\\
-\forall_{\cdot} \mid f(\cdot) - f(\cdot)\mid \le \epsilon &\implies g_1(\cdot) = g_2(\cdot)\\
-\end{align}
-
-
-In other words, if there exists an approximate similarity, according to
-\(f\), then build it into our abstraction.
+%  note there are other sub problems within RL that we could try to build abstractions for; exploration,
 
 \begin{itemize}
 \tightlist
@@ -195,6 +182,8 @@ states are not equivalent as the actions are inverted.
 While other learners can still solve this problem. They miss out on
 efficiency gains by abstracting first.
 
+This intuition leads to our work in section ... (symetric abstractions).
+
 \hypertarget{related-work}{%
 \subsubsection{Related work}\label{related-work}}
 
@@ -219,31 +208,3 @@ complexity to solve this! Actually, we are not considering computational
 complexity here only approximation error. For that can we just use
 automatic differentiation!? Want a way to get bounds for all of these
 combinations!
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-How do we know one policy is better than another? How do we know a
-policy is optimal?
-
-\[
-\forall \pi\;\; V^{\pi^* } \ge V^{\pi} \\
-\]
-
-But, this definition of optimality implicitly assumes a uniform
-distribution over states. This is unlikely. Rather, the distribution is
-determined by the policy.
-
-\[
-\mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi^* } \big] \ge \mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi} \big] \\
-D_{\pi}(s) = P(s | \pi) = \sum_{\text{all } \tau \text{ with } s_t = s} P(\tau | \pi)
-\]
-
-Now. How different is this?
-
-I can imagine some degenerate solutions now being possible? Because we
-can control the distribution we are being evaluated on. We could pick a
-policy that oscillates between two states, never leaving the cycle.
-Therefore it would have \(p(s_1) = p(s_2) = 0.5\) and
-\(p(s_{i \neq 1,2}) = 0\).
-
-That doesn't seem so bad?

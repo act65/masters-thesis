@@ -48,10 +48,10 @@ swing the pendulums. In the future you must avoid being hit. (maybe make
 a picture of this?) also, is there a more general way to think about it?
 
 \hypertarget{optimality}{%
-\section{Optimality}\label{optimality}}
+\subsection{Optimality}\label{optimality}}
 
 \begin{displayquote}
-  What does it mean to solve an MDP?
+  \textit{What does it mean to solve an MDP?}
 \end{displayquote}
 
 And importantly, existing theory tells us that there is a unique optima to the bellman iterations.
@@ -59,11 +59,35 @@ And that this optimal policy(ies) is(are) necessarily deterministic.
 
 (why does this make sense?)
 
-\hypertarget{solutions}{%
-\subsection{Solution complexity}\label{solutions}}
+
+How do we know one policy is better than another? How do we know a
+policy is optimal?
+
+\[
+\forall \pi\;\; V^{\pi^* } \ge V^{\pi} \\
+\]
+
+But, this definition of optimality implicitly assumes a uniform
+distribution over states. This is unlikely. Rather, the distribution is
+determined by the policy.
+
+\[
+\mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi^* } \big] \ge \mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi} \big] \\
+D_{\pi}(s) = P(s | \pi) = \sum_{\text{all } \tau \text{ with } s_t = s} P(\tau | \pi)
+\]
+
+Now. How different is this?
+
+I can imagine some degenerate solutions now being possible? Because we
+can control the distribution we are being evaluated on. We could pick a
+policy that oscillates between two states, never leaving the cycle.
+Therefore it would have \(p(s_1) = p(s_2) = 0.5\) and
+\(p(s_{i \neq 1,2}) = 0\).
+
+That doesn't seem so bad?
 
 \begin{displayquote}
-  How hard is it to solve an MDP?
+  \textit{How hard is it to solve an MDP?}
 \end{displayquote}
 
 % Insert lower bound and some intution
@@ -95,53 +119,66 @@ example of credit assignment gone wrong \cite{Box1997}).
 % Your teaher might only give you evaluations for sequences of actions, rather than individual actions.
 % Thus you are left with trying to infer how these sequence evaluations tells you about which actions you should take.
 
-The above definition of reinforcement learning is very general, and there are many
-different dimensions to the various RL settings, for example;
+The above definition of reinforcement learning is quite general. There are many
+different dimensions to problems that have the properties trial-and-error search and
+delayed feedback. For example we could make a RL problem that is;
 
 \begin{itemize}
 \tightlist
 \item
-  Observable versus non-observable
+  Observable or un-observable
 \item
-  Deterministic versus stochastic
+  Deterministic or stochastic
 \item
-  Synchronous versus asynchronous
+  Synchronous or asynchronous
 \item
-  Terminating versus infinite
-\item
-  Knowledge of the model
+  Terminating or infinite
 \item
   Discrete versus continuous
+\item
+  Given knowledge of the underlying model
 \end{itemize}
 
 
-MDPs are also within the fields of Operational Research, Optimal Control, Mathematical
-Optimisation, Stochastic Programming.
+% MDPs are also within the fields of Operational Research, Optimal Control, Mathematical
+% Optimisation, Stochastic Programming.
 
 
+\section{The simplest RL setting}
+
+\begin{displayquote}
+  \textit{What is the minimally complex setting we can consider that still poses an
+  interesting challenge to the ML / RL communities?}
+\end{displayquote}
 
 \hypertarget{a-tabular-representation-of-mdps}{%
 \subsection{A tabular representation of MDPs}\label{a-tabular-representation-of-mdps}}
 
-\begin{displayquote}
-  What is the minimally complex setting we can consider that still poses an
-  interesting challenge to the ML / RL communities?
-\end{displayquote}
+Imagine a tabular MDP, where we can describe the MDP with tables.
+A table of three dimensions can describe the transition probabilities, $P[s_{t+1}, s_t, a_t]$,
+and a table of two dimensions can describe the rewards, $r[s_t, a_t]$: the states and actions
+act as indexes to locations in the tables.
 
-Let start with a tabular MDP. We can describe the MDP with tables, a table for the transition probabilities,
-a table for the rewards. discrete states and
-actions - \(r\) and \(P\) are simply look up functions, indexed by the
-current state-action.
+Consider a tabular MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
+This RL problem can be efficiently solved by non-statistical
+methods: dynamic programming and related planning techniques \cite{Bertsekas1995}.
 
-Consider a tabular MDP with deterministic actions, $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
-It can be efficiently solved by non-statistical
-methods: dynamic programming (ref) and related planning techniques (ref).
+But, a tabular MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
+seems to retain much of the complexity we care about. This setting does not allow
+efficient solutions via dynamic programming. And can be approached with algorithms
+that are used for state-of-the-art DRL such as policy gradients,
 
-But a tabular MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
+Let's more formally define our tabular MDP.
 
+\begin{align}
+\mathcal M &= \{S, A, P, r, \gamma\} \\
+S &= [0:n-1] \\
+A &= [0:m-1] \\
+P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \\
+r &\in \mathbb R^{n\times m}
+\end{align}
 
-
-A result of this formulation is that we consisely write and solve the Bellman equation.
+A result of this formulation is that we consisely write and solve the Bellman equation analytically.
 
 \begin{align}
 V &= r_{\pi} + \gamma P_{\pi} V \tag{the bellman eqn}\\
@@ -150,12 +187,15 @@ V - \gamma P_{\pi} V &= r_{\pi}\\
 V &= (I-\gamma P_{\pi})^{-1}r_{\pi}
 \end{align}
 
-Where $r_{\pi}[s, a] =  \pi[s, a] r[s, a], P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
+The values are written as a vector, $V \in \mathbb R^n$.
+The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.
+And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
 
-\section{The value function polytope}
+
+\subsection{The value function polytope}
 
 The value function polytope \cite{Dadashi2018} is the
-Why is it a polytope?
+
 
 Imagine a two state MDP. Following some initial, ill-informed policy,
 the value that you might get starting from either state state is $v_1, v_2$.
@@ -229,277 +269,3 @@ If $V(s_2)$ increases then $\hat V(s_1)$  either increases or stays the same. As
 \caption{Let's \textit{try} to gain some intuition about the space of policies in higher dimensions.
 For each state, we have a distribution (on a simplex), over the possible actions.}
 \end{figure}
-
-\section{Search spaces}
-
-Overview.
-Mention cts relaxations!?
-Relation to the deep learning puzzle of over parameterisation.
-
-\subsection{Dynamics and complexity}
-
-\textbf{TODO} Complexity. How many iterations!!! Look up from literature
-and do some empirical tests.
-
-(we want to know how much it costs to find the optima)
-
-For each initial policy, we can solve / optimise it to to find the
-optimal policy (using policy iteration). Here we count how many
-iterations were required to find the optima (from different starting
-points / policies).
-
-Policy iteration can be summarised easily as an iteration between
-evaluation and updates, see below.
-
-\begin{verbatim}
-pi = init
-while not converged:
-  value = evaluate(pi)
-  pi = greedy_update(value)
-\end{verbatim}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/gpi-partitions.png}
-\caption{`2-state 2-action MDPs. We have visualised the number of steps
-required for convergence to the optimal policy. The number of steps are
-show by color.'}
-\end{figure}
-
-\begin{itemize}
-\tightlist
-\item
-  What are the best ways to travel through policy space? (lines of
-  shortest distance?!)
-\item
-  How does this scale with \texttt{n\_actions} or \texttt{n\_states}??
-\item
-  Is there a way to use an interior search to give info about the
-  exterior? (dual methods?!)
-\item
-  What if your evaluations are only \(\epsilon\)-accurate? How does that
-  effect things?!?
-\end{itemize}
-
-\subsection{Efficient search}
-
-We want to efficiently find the optimal policy for a given MDP. But where and how should we
-search for this policy? We could search within;
-
-\begin{itemize}
-\tightlist
-\item
-the set of potentially optimal policies, the \(|A|^{|S|}\) discrete policies,
-\item
-the set of possible value functions, \(\mathbb R^{|S|}\),
-\end{itemize}
-or maybe some other space. But which space is best?
-
-% Which space allows us to find the optimal policy in the 'cheapest' manner?
-Naively, we know that smaller search spaces are better. We would rather
-search for our keys in a single room, rather than many. But added
-structure (for example, continuity) can be exploited to yield faster
-search, even when there are infinitely more states to search.
-% want example!?
-
-% Aside. Deep learning - search space. Overparameterisation. \cite{Arora2018}
-
-% need a better seguae into GD?!
-Let's focus on searching with gradient descent.
-
-\begin{align}
-w_{t+1} = w_t - \eta \nabla f(w_t) \\
-\end{align}
-
-The dynamics of the search are dependent on the topology of a problems loss surface.
-The loss surface is determined by the combination of the search space and the loss function.
-
-\begin{align}
-&\mathop{\text{max}}_V \mathop{\mathbb E}_{s\sim D} V(s) \\
-&\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{s\sim D}V^{\pi}(s) \\
-&\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V_{\theta}(s) \\
-&\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta}}}(s) \\
-&\mathop{\text{max}}_{\phi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi}}}}(s) \\
-&\mathop{\text{max}}_{\varphi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi_{\varphi}}}}}(s)
-\end{align}
-
-We can pick any space we we like to search with in. But, why would we want to pick one space over another?
-
-\begin{itemize}
-\tightlist
-\item
-  In which spaces can we (efficiently) calculate gradients?
-\item
-  In which spaces can we do convex optimisation?
-\item
-  In which spaces does momentum work (well)?
-\end{itemize}
-
-
-\subsection{Value search}
-
-Value iteration versus deep value.
-
-In RL it is possible to transform the hard combinatorial problem of
-searching through the \(|A|^{|S|}\) possible discrete policies, into an
-easier (how do we know it is easier?!? PROOF) problem, a search through
-all possible policies \(?!?\).
-
-Intution about why it converges!?
-
-\cite{Bellman1957}
-
-\subsection{Policy search}
-
-\begin{align}
-\pi^{* } = \mathop{\text{argmax}}_{\pi} V(\pi)
-\end{align}
-
-Policy iteration versus PG.
-
-When transforming between two spaces, how does the optimisation space
-change? Does my abstraction make optimisation easier?
-
-add ref
-
-\subsection{Model iteration}
-
-Search through possible models, \(\tau, r\), calculate the optimal
-policy \(\pi^{* }_{\tau, r}\) and then update \(\tau, r\) based on
-\(\parallel V_{\tau, r}(\pi^{* }) - V(\pi^{* }) \parallel\).
-
-Search through models while trying to find one that yields similar returns to the oracle when playing the same policy.
-A supervised problem...
-
-\begin{align}
-\theta^{* } = \mathop{\text{argmin}}_{\theta} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\theta} \parallel_2
-\end{align}
-
-Note this solver is different to the others. In the previous optimisations we assumed that we knew the model.
-
-% Related to;
-% - Thompson sampling?!?
-% - invaraint risk minimisation
-% - compressed sensing. each policy is one of our sampling bases!? rather than using the deterministic policies (the pixels), we can use mixtures!?
-
-Once we have the model, we can solve for the optimal policy.
-
-Relation to model based RL. This algol only focuses on relevant features of the state space.
-Where model base learners that attempt to learn by predicting transitions can be made to scale arbitrarily worse.
-Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
-The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
-
-Sample efficient. You only need to collect data for the $m$ policies we are matching under.
-Once that has been done, the optimisation problem is easily solved!?
-
-Model iteration. Model invariant transforms. Pick a policy. Falsify it,
-and this falsify all models that yield the same optimal policy.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
-\caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
-and Red shows the value of policies when evaluated under the learned model at convergence.}
-\end{figure}
-
-
-Related to AWR? https://arxiv.org/pdf/1910.00177.pdf
-
-\subsection{Topology and dynamics}
-
-Ok, so if we parameterise our search space. We have now changed the
-topology of our search space.
-
-\textbf{Q:} How can we rationally pick the topology of our search space
-to accelerate learning?
-
-\begin{itemize}
-\item
-  A well connected space? For all possible policies, there exists
-  \(\theta_1, \theta_2 \text{ s.t. } \parallel \theta_1- \theta_2\parallel_2\)
-  is small. (but that doesnt necessarily help\ldots{} depends on the
-  landscapce imposed by \(\nabla_{\theta} V\))
-\item
-  ???
-\end{itemize}
-
-See these gradient flows for example;
-
-Pics?!?
-
-Here are some examples \ldots{}???
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
-\caption{The optimisation dynamics of value iteration versus parameterised value iteration.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom.png}
-\caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
-\end{figure}
-
-If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
-%  insert pic / prove
-
-Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
-% insert pic / prove
-
-\subsection{Acceleration and parameterisation}
-
-I think something weird happens with momentum in overparameterised spaces. The intuition is
-
-\cite{Arora2018} shows that overparameterisation yields acceleration. Consider
-the dynamics of the parameter $w$, which we have overparameterised as $w_1 \cdot w_2$.
-
-\begin{align}
-w^{t+1} &= w_1^{t+1} \cdot w_2^{t+1} \\
-&= (w_1^t - \eta \nabla_{w_1} L)\cdot(w_2^t - \eta \nabla_{w_2} L) \\
-&= (w_1^t \cdot w_2^t - \eta w_2^t \nabla_{w_1} L - \eta w_1^t \nabla_{w_2} L - \mathcal O(\eta^2) \\
-&= w^t - ...
-\end{align}
-
-We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
-
-
-\begin{align}
-m_{t+1} &= \gamma m_t + g_t \\
-w_{t+1} &= w_t - \eta \cdot (1-\gamma) \cdot m_t
-\end{align}
-
-It is necessary to consider the trajectory to study momentum. It depends
-on what has happened in the past. Can we construct a space of possible
-trajectories? What properties do trajectories have? They are connected
-by the update fn.
-
-Set $g_t = \rho(t) \nabla_w + \sum_{\tau=0} \mu g_{\tau}$.
-
-\begin{align}
-m_{t+1} &= \gamma m_t + \rho(t) g_t + \sum_{\tau=0} \mu_{\tau, t} g_{\tau} \\
-w_{t+1} &= w_t - \eta \cdot (1-\gamma) \cdot m_t \\
-&= w_t - \eta \cdot (1-\gamma) \cdot \sum_{k=0}^t \gamma^{t-k}\big[ \rho_t g_k + \sum_{\tau=0} \mu_{\tau, k} g_{\tau} \big]
-\end{align}
-
-\subsection{Continuous flow and its discretisation}
-
-A linear step of size, \(\alpha\), in parameter space, ie by gradient
-descent, is not necessrily a linear step in parameter space.
-
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_01.png}
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_001.png}
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_0001.png}
-
-This is consistent with acceleration of gradient descent being a phenomena only possible in the discrete time setting. (see \cite{Betancourt2018} for a recent exploration)
-
-This phenomena can be explained by the exponential decay of the momentum terms.
-
-\begin{align}
-m_{t+1} = m_t + \gamma\nabla f(w_t) \\
-w_{t+1} = w_t - \eta (1-\gamma) m_{t+1} \\
-\end{align}
-
-As \(\eta \to 0\), \((1-\gamma) \cdot m_{t+1} \to \nabla f(w_t)\).
-
-TODO, prove it.

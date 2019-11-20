@@ -1,25 +1,28 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}% 
-\contentsline {section}{\numberline {1.1}Reinforcement learning}{1}{section.1.1}% 
-\contentsline {subsection}{\numberline {1.1.1}Understanding Theoretical Reinforcement learning}{2}{subsection.1.1.1}% 
-\contentsline {subsection}{\numberline {1.1.2}Understanding Markov decision problems}{3}{subsection.1.1.2}% 
-\contentsline {subsection}{\numberline {1.1.3}Abstraction}{3}{subsection.1.1.3}% 
-\contentsline {subsubsection}{Algorithms}{3}{section*.3}% 
-\contentsline {chapter}{\numberline {2}MDPs}{5}{chapter.2}% 
-\contentsline {section}{\numberline {2.1}Sequential decision problems}{5}{section.2.1}% 
-\contentsline {subsection}{\numberline {2.1.1}The Markov property}{6}{subsection.2.1.1}% 
-\contentsline {section}{\numberline {2.2}Optimality}{6}{section.2.2}% 
-\contentsline {subsection}{\numberline {2.2.1}Solution complexity}{6}{subsection.2.2.1}% 
-\contentsline {section}{\numberline {2.3}How do MDPs relate to RL?}{7}{section.2.3}% 
-\contentsline {subsection}{\numberline {2.3.1}A tabular representation of MDPs}{8}{subsection.2.3.1}% 
-\contentsline {section}{\numberline {2.4}The value function polytope}{9}{section.2.4}% 
-\contentsline {subsection}{\numberline {2.4.1}What are the properties of the polytope?}{9}{subsection.2.4.1}% 
-\contentsline {subsection}{\numberline {2.4.2}Policies in high dimensions}{10}{subsection.2.4.2}% 
-\contentsline {section}{\numberline {2.5}Search spaces}{10}{section.2.5}% 
-\contentsline {subsection}{\numberline {2.5.1}Dynamics and complexity}{10}{subsection.2.5.1}% 
-\contentsline {subsection}{\numberline {2.5.2}Efficient search}{13}{subsection.2.5.2}% 
-\contentsline {subsection}{\numberline {2.5.3}Value search}{14}{subsection.2.5.3}% 
-\contentsline {subsection}{\numberline {2.5.4}Policy search}{14}{subsection.2.5.4}% 
-\contentsline {subsection}{\numberline {2.5.5}Model iteration}{14}{subsection.2.5.5}% 
-\contentsline {subsection}{\numberline {2.5.6}Topology and dynamics}{15}{subsection.2.5.6}% 
-\contentsline {subsection}{\numberline {2.5.7}Acceleration and parameterisation}{19}{subsection.2.5.7}% 
-\contentsline {subsection}{\numberline {2.5.8}Continuous flow and its discretisation}{20}{subsection.2.5.8}% 
+\contentsline {chapter}{\numberline {2}MDPs}{3}{chapter.2}% 
+\contentsline {section}{\numberline {2.1}Sequential decision problems}{3}{section.2.1}% 
+\contentsline {subsection}{\numberline {2.1.1}The Markov property}{4}{subsection.2.1.1}% 
+\contentsline {subsection}{\numberline {2.1.2}Optimality}{4}{subsection.2.1.2}% 
+\contentsline {section}{\numberline {2.2}How do MDPs relate to RL?}{5}{section.2.2}% 
+\contentsline {section}{\numberline {2.3}The simplest RL setting}{6}{section.2.3}% 
+\contentsline {subsection}{\numberline {2.3.1}A tabular representation of MDPs}{6}{subsection.2.3.1}% 
+\contentsline {subsection}{\numberline {2.3.2}The value function polytope}{7}{subsection.2.3.2}% 
+\contentsline {subsection}{\numberline {2.3.3}What are the properties of the polytope?}{8}{subsection.2.3.3}% 
+\contentsline {subsection}{\numberline {2.3.4}Policies in high dimensions}{8}{subsection.2.3.4}% 
+\contentsline {chapter}{\numberline {3}Search spaces and their complexity}{11}{chapter.3}% 
+\contentsline {section}{\numberline {3.1}Efficient search for RL}{11}{section.3.1}% 
+\contentsline {subsection}{\numberline {3.1.1}Value search}{12}{subsection.3.1.1}% 
+\contentsline {subsection}{\numberline {3.1.2}Policy search}{12}{subsection.3.1.2}% 
+\contentsline {subsection}{\numberline {3.1.3}Model search}{13}{subsection.3.1.3}% 
+\contentsline {section}{\numberline {3.2}Gradient based search}{15}{section.3.2}% 
+\contentsline {subsection}{\numberline {3.2.1}Dynamics and complexity}{16}{subsection.3.2.1}% 
+\contentsline {subsection}{\numberline {3.2.2}Acceleration and parameterisation}{18}{subsection.3.2.2}% 
+\contentsline {section}{\numberline {3.3}Topology and dynamics}{19}{section.3.3}% 
+\contentsline {section}{\numberline {3.4}Continuous flow and its discretisation}{22}{section.3.4}% 
+\contentsline {section}{\numberline {3.5}Notes}{23}{section.3.5}% 
+\contentsline {chapter}{\numberline {4}Related work}{25}{chapter.4}% 
+\contentsline {section}{\numberline {4.1}Search spaces}{25}{section.4.1}% 
+\contentsline {section}{\numberline {4.2}Abstraction}{25}{section.4.2}% 
+\contentsline {subsection}{\numberline {4.2.1}Representation learning and abstraction}{25}{subsection.4.2.1}% 
+\contentsline {subsection}{\numberline {4.2.2}Linear RL}{26}{subsection.4.2.2}% 
+\contentsline {subsection}{\numberline {4.2.3}Heirarchical reinforcement learning}{26}{subsection.4.2.3}% 

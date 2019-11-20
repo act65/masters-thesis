@@ -67,3 +67,39 @@ But. Does it even make sense?
 How do we test this? [CoinRun](https://arxiv.org/pdf/1812.02341.pdf)
 
 https://bair.berkeley.edu/blog/2019/03/18/rl-generalization/
+
+
+\hypertarget{understanding-theoretical-reinforcement-learning}{%
+\subsection{Understanding Theoretical Reinforcement
+learning}\label{understanding-theoretical-reinforcement-learning}}
+
+What are its goals. Its definitions. It methods?
+
+\begin{itemize}
+\tightlist
+\item
+  Optimality
+\item
+  Model based
+\item
+  Complexity
+\item
+  Abstraction
+\end{itemize}
+
+Recent work has bounded the error of representation learning for RL.
+\href{}{Abel et al.~2017}, \href{}{Abel et al.~2019}
+
+But. It is possible that this representation achieves no compression of
+the state space, making the statement rather vacuous. Further more, it
+consider how easy it is to find the optimal policy in each of the two
+representations. It is possible to learn a representation that makes the
+optimal control problem harder. For example. TODO
+
+Current theory does not take into account the structure within a RL
+problem.
+
+The bounds are typically for the worst case. But these bounds could be
+tighter if we exploited the structure tht exists in natural problems.
+The topology of the transition function; its, sparsity, low rankness,
+locality, The symmetries of the reward function. ??? (what about both?!)

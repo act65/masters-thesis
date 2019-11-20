@@ -1,3 +1,72 @@
+@article{Levine2019,
+abstract = {Many real-world sequential decision-making problems can be formulated as optimal control with high-dimensional observations and unknown dynamics. A promising approach is to embed the high-dimensional observations into a lower-dimensional latent representation space, estimate the latent dynamics model, then utilize this model for control in the latent space. An important open question is how to learn a representation that is amenable to existing control algorithms? In this paper, we focus on learning representations for locally-linear control algorithms, such as iterative LQR (iLQR). By formulating and analyzing the representation learning problem from an optimal control perspective, we establish three underlying principles that the learned representation should comprise: 1) accurate prediction in the observation space, 2) consistency between latent and observation space dynamics, and 3) low curvature in the latent space transitions. These principles naturally correspond to a loss function that consists of three terms: prediction, consistency, and curvature (PCC). Crucially, to make PCC tractable, we derive an amortized variational bound for the PCC loss function. Extensive experiments on benchmark domains demonstrate that the new variational-PCC learning algorithm benefits from significantly more stable and reproducible training, and leads to superior control performance. Further ablation studies give support to the importance of all three PCC components for learning a good latent space for control.},
+archivePrefix = {arXiv},
+arxivId = {1909.01506},
+author = {Levine, Nir and Chow, Yinlam and Shu, Rui and Li, Ang and Ghavamzadeh, Mohammad and Bui, Hung},
+eprint = {1909.01506},
+file = {:home/telfaralex/Downloads/1909.01506.pdf:pdf},
+pages = {1--27},
+title = {{Prediction, Consistency, Curvature: Representation Learning for Locally-Linear Control}},
+url = {http://arxiv.org/abs/1909.01506},
+year = {2019}
+}
+@article{Anand2019,
+abstract = {State representation learning, or the ability to capture latent generative factors of an environment, is crucial for building intelligent agents that can perform a wide variety of tasks. Learning such representations without supervision from rewards is a challenging open problem. We introduce a method that learns state representations by maximizing mutual information across spatially and temporally distinct features of a neural encoder of the observations. We also introduce a new benchmark based on Atari 2600 games where we evaluate representations based on how well they capture the ground truth state variables. We believe this new framework for evaluating representation learning models will be crucial for future representation learning research. Finally, we compare our technique with other state-of-the-art generative and contrastive representation learning methods.},
+archivePrefix = {arXiv},
+arxivId = {1906.08226},
+author = {Anand, Ankesh and Racah, Evan and Ozair, Sherjil and Bengio, Yoshua and C{\^{o}}t{\'{e}}, Marc-Alexandre and Hjelm, R Devon},
+eprint = {1906.08226},
+file = {:home/telfaralex/Downloads/1906.08226.pdf:pdf},
+number = {NeurIPS},
+title = {{Unsupervised State Representation Learning in Atari}},
+url = {http://arxiv.org/abs/1906.08226},
+year = {2019}
+}
+@article{Vezzani2019,
+abstract = {Exploration is an extremely challenging problem in reinforcement learning, especially in high dimensional state and action spaces and when only sparse rewards are available. Effective representations can indicate which components of the state are task relevant and thus reduce the dimensionality of the space to explore. In this work, we take a representation learning viewpoint on exploration, utilizing prior experience to learn effective latent representations, which can subsequently indicate which regions to explore. Prior experience on separate but related tasks help learn representations of the state which are effective at predicting instantaneous rewards. These learned representations can then be used with an entropy-based exploration method to effectively perform exploration in high dimensional spaces by effectively lowering the dimensionality of the search space. We show the benefits of this representation for meta-exploration in a simulated object pushing environment.},
+archivePrefix = {arXiv},
+arxivId = {1905.12621},
+author = {Vezzani, Giulia and Gupta, Abhishek and Natale, Lorenzo and Abbeel, Pieter},
+eprint = {1905.12621},
+file = {:home/telfaralex/Downloads/1905.12621.pdf:pdf},
+title = {{Learning latent state representation for speeding up exploration}},
+url = {http://arxiv.org/abs/1905.12621},
+year = {2019}
+}
+@article{Duan2018,
+abstract = {State aggregation is a model reduction method rooted in control theory and reinforcement learning. It reduces the complexity of engineering systems by mapping the system's states into a small number of meta-states. In this paper, we study the unsupervised estimation of unknown state aggregation structures based on Markov trajectories. We formulate the state aggregation of Markov processes into a nonnegative factorization model, where left and right factor matrices correspond to aggregation and disaggregation distributions respectively. By leveraging techniques developed in the context of topic modeling, we propose an efficient polynomial-time algorithm for computing the estimated state aggregation model. Under some "anchor state" assumption, we show that one can reliably recover the state aggregation structure from sample transitions with high probability. Sharp divergence error bounds are proved for the estimated aggregation and disaggregation distributions, and experiments with Manhattan traffic data are provided.},
+archivePrefix = {arXiv},
+arxivId = {1811.02619},
+author = {Duan, Yaqi and Ke, Zheng Tracy and Wang, Mengdi},
+eprint = {1811.02619},
+file = {:home/telfaralex/Downloads/1811.02619.pdf:pdf},
+keywords = {anchor states,bounds,entry-wise eigenvector analysis,multivariate time series,negative matrix factorization,non-,spectral methods,state representation learning,total variation,unsupervised learning,vertex hunting},
+number = {NeurIPS},
+title = {{State Aggregation Learning from Markov Transition Data}},
+url = {http://arxiv.org/abs/1811.02619},
+year = {2018}
+}
+@article{Christodoulou2019,
+abstract = {From a young age humans learn to use grammatical principles to hierarchically combine words into sentences. Action grammars is the parallel idea, that there is an underlying set of rules (a "grammar") that govern how we hierarchically combine actions to form new, more complex actions. We introduce the Action Grammar Reinforcement Learning (AG-RL) framework which leverages the concept of action grammars to consistently improve the sample efficiency of Reinforcement Learning agents. AG-RL works by using a grammar inference algorithm to infer the "action grammar" of an agent midway through training. The agent's action space is then augmented with macro-actions identified by the grammar. We apply this framework to Double Deep Q-Learning (AG-DDQN) and a discrete action version of Soft Actor-Critic (AG-SAC) and find that it improves performance in 8 out of 8 tested Atari games (median +31{\%}, max +668{\%}) and 19 out of 20 tested Atari games (median +96{\%}, maximum +3,756{\%}) respectively without substantive hyperparameter tuning. We also show that AG-SAC beats the model-free state-of-the-art for sample efficiency in 17 out of the 20 tested Atari games (median +62{\%}, maximum +13,140{\%}), again without substantive hyperparameter tuning.},
+archivePrefix = {arXiv},
+arxivId = {1910.02876},
+author = {Christodoulou, Petros and Lange, Robert Tjarko and Shafti, Ali and Faisal, A. Aldo},
+eprint = {1910.02876},
+file = {:home/telfaralex/Downloads/1910.02876.pdf:pdf},
+title = {{Reinforcement Learning with Structured Hierarchical Grammar Representations of Actions}},
+url = {http://arxiv.org/abs/1910.02876},
+year = {2019}
+}
+@article{Bellman1957,
+author = {Bellman, Richard E.},
+title = {{Dynamic Programming}},
+year = {1957}
+}
+@book{Bertsekas1995,
+author = {Bertsekas, Dimitri},
+title = {{Dynamic programming and optimal control}},
+year = {1995}
+}
 @article{Box1997,
 author = {Box, Skinner},
 file = {:home/telfaralex/Downloads/Knock{\_}Wood.pdf:pdf},
@@ -30,17 +99,6 @@ title = {{The Blessings of Multiple Causes}},
 url = {http://arxiv.org/abs/1805.06826},
 year = {2018}
 }
-@article{Mooij2016,
-abstract = {The gold standard for discovering causal relations is by means of experimentation. Over the last decades, alternative methods have been proposed that can infer causal relations between variables from certain statistical patterns in purely observational data. We introduce Joint Causal Inference (JCI), a novel approach to causal discovery from multiple data sets that elegantly unifies both approaches. JCI is a causal modeling approach rather than a specific algorithm, and it can be used in combination with any causal discovery algorithm that can take into account certain background knowledge. The main idea is to reduce causal discovery from multiple datasets originating from different contexts (e.g., different experimental conditions) to causal discovery from a single pooled dataset by adding auxiliary context variables and incorporating applicable background knowledge on the causal relationships involving the context variables. We propose different flavours of JCI that differ in the amount of background knowledge that is assumed. JCI can deal with several different types of interventions in a unified fashion, does not require knowledge on intervention targets or types in case of interventional data, and allows one to fully exploit all the information in the joint distribution on system and context variables. We explain how some well-known causal discovery algorithms can be seen as implementations of the JCI framework, but we also propose novel implementations that are simple adaptations of existing causal discovery methods for purely observational data to the JCI setting. We evaluate different implementations of the JCI approach on synthetic data and on flow cytometry protein expression data and conclude that JCI implementations can outperform state-of-the-art causal discovery algorithms.},
-archivePrefix = {arXiv},
-arxivId = {1611.10351},
-author = {Mooij, Joris M. and Magliacane, Sara and Claassen, Tom},
-eprint = {1611.10351},
-file = {:home/telfaralex/Downloads/1611.10351.pdf:pdf},
-title = {{Joint Causal Inference from Multiple Contexts}},
-url = {http://arxiv.org/abs/1611.10351},
-year = {2016}
-}
 @article{Alt2019,
 abstract = {Many decision-making problems naturally exhibit pronounced structures inherited from the underlying characteristics of the environment. In a Markov decision process model, for example, two distinct states can have inherently related semantics or encode resembling physical state configurations, often implying locally correlated transition dynamics among the states. In order to complete a certain task, an agent acting in such environments needs to execute a series of temporally and spatially correlated actions. Though there exists a variety of approaches to account for correlations in continuous state-action domains, a principled solution for discrete environments is missing. In this work, we present a Bayesian learning framework based on P$\backslash$'olya-Gamma augmentation that enables an analogous reasoning in such cases. We demonstrate the framework on a number of common decision-making related tasks, such as reinforcement learning, imitation learning and system identification. By explicitly modeling the underlying correlation structures, the proposed approach yields superior predictive performance compared to correlation-agnostic models, even when trained on data sets that are up to an order of magnitude smaller in size.},
 archivePrefix = {arXiv},
@@ -52,6 +110,17 @@ pages = {1--14},
 title = {{Correlation Priors for Reinforcement Learning}},
 url = {http://arxiv.org/abs/1909.05106},
 year = {2019}
+}
+@article{Mooij2016,
+abstract = {The gold standard for discovering causal relations is by means of experimentation. Over the last decades, alternative methods have been proposed that can infer causal relations between variables from certain statistical patterns in purely observational data. We introduce Joint Causal Inference (JCI), a novel approach to causal discovery from multiple data sets that elegantly unifies both approaches. JCI is a causal modeling approach rather than a specific algorithm, and it can be used in combination with any causal discovery algorithm that can take into account certain background knowledge. The main idea is to reduce causal discovery from multiple datasets originating from different contexts (e.g., different experimental conditions) to causal discovery from a single pooled dataset by adding auxiliary context variables and incorporating applicable background knowledge on the causal relationships involving the context variables. We propose different flavours of JCI that differ in the amount of background knowledge that is assumed. JCI can deal with several different types of interventions in a unified fashion, does not require knowledge on intervention targets or types in case of interventional data, and allows one to fully exploit all the information in the joint distribution on system and context variables. We explain how some well-known causal discovery algorithms can be seen as implementations of the JCI framework, but we also propose novel implementations that are simple adaptations of existing causal discovery methods for purely observational data to the JCI setting. We evaluate different implementations of the JCI approach on synthetic data and on flow cytometry protein expression data and conclude that JCI implementations can outperform state-of-the-art causal discovery algorithms.},
+archivePrefix = {arXiv},
+arxivId = {1611.10351},
+author = {Mooij, Joris M. and Magliacane, Sara and Claassen, Tom},
+eprint = {1611.10351},
+file = {:home/telfaralex/Downloads/1611.10351.pdf:pdf},
+title = {{Joint Causal Inference from Multiple Contexts}},
+url = {http://arxiv.org/abs/1611.10351},
+year = {2016}
 }
 @article{Goyal2019,
 abstract = {Learning modular structures which reflect the dynamics of the environment can lead to better generalization and robustness to changes which only affect a few of the underlying causes. We propose Recurrent Independent Mechanisms (RIMs), a new recurrent architecture in which multiple groups of recurrent cells operate with nearly independent transition dynamics, communicate only sparingly through the bottleneck of attention, and are only updated at time steps where they are most relevant. We show that this leads to specialization amongst the RIMs, which in turn allows for dramatically improved generalization on tasks where some factors of variation differ systematically between training and evaluation.},
@@ -180,6 +249,12 @@ url = {http://dx.doi.org/10.1016/j.cie.2015.05.031},
 volume = {87},
 year = {2015}
 }
+@article{Littman,
+author = {Littman, Michael L and Dean, Thomas L and Kaelbling, Leslie Pack},
+file = {:home/telfaralex/Downloads/1302.4971.pdf:pdf},
+pages = {394--402},
+title = {{On the Complexity of Solving Markov Decision Problems}}
+}
 @article{Arora2018,
 archivePrefix = {arXiv},
 arxivId = {arXiv:1802.06509v2},
@@ -188,12 +263,6 @@ eprint = {arXiv:1802.06509v2},
 file = {:home/telfaralex/Downloads/1802.06509.pdf:pdf},
 title = {{On the Optimization of Deep Networks : Implicit Acceleration by Overparameterization}},
 year = {2018}
-}
-@article{Littman,
-author = {Littman, Michael L and Dean, Thomas L and Kaelbling, Leslie Pack},
-file = {:home/telfaralex/Downloads/1302.4971.pdf:pdf},
-pages = {394--402},
-title = {{On the Complexity of Solving Markov Decision Problems}}
 }
 @article{Dadashi2018,
 abstract = {We establish geometric and topological properties of the space of value functions in finite state-action Markov decision processes. Our main contribution is the characterization of the nature of its shape: a general polytope (Aigner et al., 2010). To demonstrate this result, we exhibit several properties of the structural relationship between policies and value functions including the line theorem, which shows that the value functions of policies constrained on all but one state describe a line segment. Finally, we use this novel perspective to introduce visualizations to enhance the understanding of the dynamics of reinforcement learning algorithms.},
@@ -400,6 +469,16 @@ month = {jun},
 title = {{Efficient Exploration via State Marginal Matching}},
 url = {http://arxiv.org/abs/1906.05274},
 year = {2019}
+}
+@techreport{Haarnoja,
+abstract = {We address the problem of learning hierarchical deep neural network policies for reinforcement learning. In contrast to methods that explicitly restrict or cripple lower layers of a hierarchy to force them to use higher-level modulating signals, each layer in our framework is trained to directly solve the task, but acquires a range of diverse strategies via a maximum entropy reinforcement learning objective. Each layer is also augmented with latent random variables, which are sampled from a prior distribution during the training of that layer. The maximum entropy objective causes these latent variables to be incorporated into the layer's policy, and the higher level layer can directly control the behavior of the lower layer through this latent space. Furthermore, by constraining the mapping from latent variables to actions to be invertible, higher layers retain full expressivity: neither the higher layers nor the lower layers are constrained in their behavior. Our experimental evaluation demonstrates that we can improve on the performance of single-layer policies on standard benchmark tasks simply by adding additional layers, and that our method can solve more complex sparse-reward tasks by learning higher-level policies on top of high-entropy skills optimized for simple low-level objectives.},
+archivePrefix = {arXiv},
+arxivId = {1804.02808v2},
+author = {Haarnoja, Tuomas and Hartikainen, Kristian and Abbeel, Pieter and Levine, Sergey},
+eprint = {1804.02808v2},
+file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Haarnoja et al. - Unknown - Latent Space Policies for Hierarchical Reinforcement Learning.pdf:pdf},
+title = {{Latent Space Policies for Hierarchical Reinforcement Learning}},
+url = {https://arxiv.org/pdf/1804.02808.pdf}
 }
 @article{Mazumdar2019,
 abstract = {We show by counterexample that policy-gradient algorithms have no guarantees of even local convergence to Nash equilibria in continuous action and state space multi-agent settings. To do so, we analyze gradient-play in {\$}N{\$}-player general-sum linear quadratic games. In such games the state and action spaces are continuous and the unique global Nash equilibrium can be found be solving coupled Ricatti equations. Further, gradient-play in LQ games is equivalent to multi-agent policy gradient. We first prove that the only critical point of the gradient dynamics in these games is the unique global Nash equilibrium. We then give sufficient conditions under which policy gradient will avoid the Nash equilibrium, and generate a large number of general-sum linear quadratic games that satisfy these conditions. The existence of such games indicates that one of the most popular approaches to solving reinforcement learning problems in the classic reinforcement learning setting has no guarantee of convergence in multi-agent settings. Further, the ease with which we can generate these counterexamples suggests that such situations are not mere edge cases and are in fact quite common.},
@@ -789,6 +868,14 @@ url = {http://www-anw.cs.umass.edu/{~}barto/courses/cs687/Sutton-Precup-Singh-AI
 volume = {1},
 year = {1998}
 }
+@article{Bacon2018,
+author = {Bacon, Pierre-Luc},
+doi = {10.1145/1690388.1690416},
+file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Bacon - 2018 - Temporal Representation Learning.pdf:pdf},
+number = {June},
+title = {{Temporal Representation Learning}},
+year = {2018}
+}
 @article{Bacon2016,
 abstract = {We show that the Bellman operator underlying the options framework leads to a matrix splitting, an approach traditionally used to speed up convergence of iterative solvers for large linear systems of equations. Based on standard comparison theorems for matrix splittings, we then show how the asymptotic rate of convergence varies as a function of the inherent timescales of the options. This new perspective highlights a trade-off between asymptotic performance and the cost of computation associated with building a good set of options.},
 archivePrefix = {arXiv},
@@ -800,14 +887,6 @@ pages = {1--6},
 title = {{A Matrix Splitting Perspective on Planning with Options}},
 url = {http://arxiv.org/abs/1612.00916},
 year = {2016}
-}
-@article{Bacon2018,
-author = {Bacon, Pierre-Luc},
-doi = {10.1145/1690388.1690416},
-file = {:home/telfaralex/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Bacon - 2018 - Temporal Representation Learning.pdf:pdf},
-number = {June},
-title = {{Temporal Representation Learning}},
-year = {2018}
 }
 @article{Fruit2017a,
 author = {Fruit, Ronan and Lazaric, Alessandro and Pirotta, Matteo and Brunskill, Emma},
