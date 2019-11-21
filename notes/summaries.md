@@ -375,6 +375,17 @@ $$
 - As training proceeds, and more symmetries have been observed. There might be very many pairs that are 'similar'. Want to visualise these clusters?!
 - Oh... All we are doing is clustering based on a similarity measure... How does that relate to symmetry and quotients?
 
+##### Is a good representation sufficient for sample efficient reinforcement learning?
+
+Not sure what they mean by lower bounds. In my mind a lower bound says something like;
+for any problem, we require at least n samples to achieve optimal performance.
+Rather, their construction of the lower bound is based on a single, hard to solve problem.
+
+Bc of the structure of their hard problem, all of the complexity comes from the reward function.
+Making their insight that the transition fn doesnt contribute to complexity, no very insightful.
+Their transition fn is constrained to be one of a binary tree?! No loops.
+
+Also. A lower bound really should take into account the ability to find patterns.
 
 ***
 
