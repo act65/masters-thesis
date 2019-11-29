@@ -46,8 +46,10 @@
 \contentsline {subsubsection}{Distributions over states}{38}{section*.55}% 
 \contentsline {subsection}{\numberline {4.2.5}Other properties}{39}{subsection.4.2.5}% 
 \contentsline {section}{\numberline {4.3}Symmetry}{42}{section.4.3}% 
-\contentsline {subsection}{\numberline {4.3.1}n-dimensional Cart pole}{42}{subsection.4.3.1}% 
-\contentsline {section}{\numberline {4.4}Action abstractions}{44}{section.4.4}% 
+\contentsline {subsection}{\numberline {4.3.1}Complexity}{42}{subsection.4.3.1}% 
+\contentsline {subsection}{\numberline {4.3.2}n-dimensional Cart pole}{42}{subsection.4.3.2}% 
+\contentsline {subsection}{\numberline {4.3.3}Related work}{42}{subsection.4.3.3}% 
+\contentsline {section}{\numberline {4.4}Action abstractions}{45}{section.4.4}% 
 \contentsline {chapter}{\numberline {5}Related work}{47}{chapter.5}% 
 \contentsline {section}{\numberline {5.1}Search spaces}{47}{section.5.1}% 
 \contentsline {section}{\numberline {5.2}Abstraction}{48}{section.5.2}% 
