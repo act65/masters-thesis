@@ -1,9 +1,130 @@
 \section{Symmetry}
 
-Define symmetry. Motivate why we care.
+% symmetry is cool
+Symmetry is a concept from pure mathematics, which has found success in physics,
+but not much else where. (why has it found such success in physics? beauty, compression, ... Occam's razor)
+But what do we mean by symmetry?
+
+% example
+
+% formal definition
+It is defined as ...
+
+% occam's razor
+Occam's razor is a core idea behind much of statistics, ML and science. Simple
+hypotheses should be prefered as the are more likely to be right. This intuition
+can be viewed a little more formally through a Bayesian perspective.
+
+% symmetry and occams razor
+How does symmetry relate to simplicity?
+
+% how can symmetry help? more concretely
+But, why do we care about symmetry?
+\begin{displayquote}
+We want the ability to identify symmetries in state-actions-rewards (/values) and use that knowledge to share rewards (/values) between 'similar' state-actions.
+\end{displayquote}
+It gives us a way to find 'simple' hypotheses that fit the data.
+Imagine we knew that a learning problem was symmetry in some sense, for example ...
+How might we explot this knowledge to learner more efficiently?
+Reduce variance, generalise in more 'inteliigent' ways.
+
+% but. discovery
+But.
+
+% relation to abstraction
+???
+
+% related work on complexity / occam's razor
+This ability is currently lacking in the ML tool kit. There has been much work done
+to
+
+
+\subsection{Discovery}
+
+> How might we know that two state-action-reward (/values) are similar?
+
+1. because we have seen it
+2. because it follows a pattern we have observed (for example, we might have seen
+that rotations of $45, 90, 135, 180$, are all similar, therefore our first guess
+is that rotations of $225, 270, 315$ are also similar)
+
+[2.] Is hard. This is about generalising using a symmetric inductive bias.
+
+To be able to share, what do we need to know?
+
+- That $x, y$ are similar. I.e. that $g \in G: y = g\circ x$
+- Just share between all invariant datapoints?! No. This is about generalisation!!
+
+\subsubsection{Inferring symmetries in data}
+
+Pick a simpler setting. No noise. Discrete domain. No action.
+First we need to be able to identify group structures from observations of ???.
+Then, we can generalise to observations of the groups action on another set.
+Then, we can generalise to noisy observations.
+
+
+> Ok, what data do we need to be able to infer a group structure $(Z_2, S_4, A_3, Di_8)$?
+
+- Some vs all elements (if we need all, then isnt really an inference problem...).
+<!-- (although, observing all the group elements might not be so bad, when they act on a large set!?) -->
+- Pairs $c = a \circ s$ vs triples $c = a \circ ?$ (where do the triples come from?)
+
+What information could be provided, or needs to be inferred?
+
+- Number of elements in the group.
+- The $n\times n$ relations.
+- The type of group (cyclic, alternating, Sporadic) [ref](https://en.wikipedia.org/wiki/Classification_of_finite_simple_groups)
+- The identity of subgroups. $Z_2 \times X = \text{Obs}$
+
+Under which constraints?
+
+1. Identity
+2. Inverse
+3. Closure
+4. Commutative / symmetric
+
+***
+
+- Impossible without triples. TODO prove.
+- If we are given triples, then we have the job of matrix completion. That needs to satisfy [1,2,3,4].
+- We can form triples from pairs when if we know that the transformations are linear?!
+- ?
+
+\subsubsection{Cayley completion}
+% Expected to find something on the net about this. matrix completion of cayley tables. Am I thinking about it wrong?
+
+Ok. We guessed a $n$ (or it has been given) and now we have an incomplete cayley matrix: we filled it in with some observations.
+
+> __Q:__ What is our earch space of possible cayley matrices? How large is it?
+How does a new piece of data reduce the number of possible cayley tables?
+
+### How easy is it to solve this inference problem?
+
+Want to have an inductive bias towards simpler symmetries. But, how can we do this without needing to represent all possible symmetries?
+
+
+### Generalisation to ???
+
+If we can solve: infer group structure from missing data.
+Then we can solve:
+
+### Notes
+
+- What about symmetries that are products of subgroups? $S = Z_2 \times Z_3$?
+Are they easier to infer?
+- Within the same $n$. Is there a notion of more or less complex group structures??
+- Need to show that NNs dont have the right symmetric inductive bias. They dont generalise.
+
+Examples
+
+- Knowing that; range $= [0,360)$, and $0, 45, 90, 135, 180$, all are similar. I quess that we are in cyclic group $8$ and therefore $225, 270, 315$ are also similar. Key is that I know that $0, 45, 90, 135, 180$ are related by $0+0, 0+45, 0+45+45, 0+45+45+45, 0+45+45+45+45$.
+- Cart pole. $V^{\pi(s, a)}(s') = V^{\pi(-s, -a)}(-s') \forall s'$.
+
 
 
 \subsection{Complexity}
+
+Uniqueness, ...?
 
 How hard is it to find symmetries?
 First, what do we mean by a symmetry?
@@ -16,17 +137,55 @@ x, y \in X : \exists G \cdot x \cap
 
 \subsection{n-dimensional Cart pole}
 
-So, how can we test a learners ability to detect symmetries and exploit them?
-We propose a simple test, the n-dimensional cart pole.
+\begin{displayquote}
+How can we test a learners ability to detect symmetries and exploit them?
+\end{displayquote}
+
+We propose a simple test, the n-dimensional cart pole: a generalisation of the
+cart pole problem to $n$ dimensions. Rather than receiving observations in
+$\mathbb{R}^4$ (the position, velocity, angle and angular velocity), observations are
+in $\mathbb{R}^{4\times n}$. And the action space is generalised from $\{0,1\}$ (left and right),
+to $\{0,1\}^{n}$.
+
+\cite{Brockman2016,baselines}
+
+
+\subsubsection{How is this problem symmetric?}
+
+Well, the original cart pole problem has a few symmetries in it. But these are
+not central to the ...
 
 Many people realise that this problem can be reduce to $n$, one dimensional cart pole problems.
 But the learner needs to infer that.
 
-\cite{Brockman2016,baselines}
+More formally. How does this problem have symmetry?
+Permutations of the observation-action space perserve the problem.
 
-Why is this problem hard? The more dimensions there are, the more ways there are to fail.
-Especially with respect to how exploration is done. In a single dimension, ...
+\subsubsection{How might a learner exploit this knowledge to learn more effiicently?}
+
+What advantage is provided by this knowledge?
+
+If we knew that the problem can be decomposed into $n$ identical subproblems,
+then that means we are gathering $n$ times the data for each subproblem.
+So, we should see a factor of $n$ speed up in learning.
+
+This is the same argument made here [quotient groups appendix...].
+
+For a learner that doesnt know of the symmetries. How is this problem hard?
+The more dimensions there are, the more ways there are to fail.
+Consider how exploration is done. In a single dimension, a greedy action is
+taken with some chance of explorating instead.
+
 Maybe you correctly balanced the pole in all dimensions except one. To bad, you dont get any reward.
+
+\subsection{Experiments}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/multibinary-nd-cart.png}
+  \caption{PPO2 solving the nd cartpole problem with access to a \textit{MultiBinary} action space that grows with $N$.}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -35,11 +194,9 @@ Maybe you correctly balanced the pole in all dimensions except one. To bad, you 
 \end{figure}
 
 
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/multibinary-nd-cart.png}
-\caption{PPO2 solving the nd cartpole problem with access to a \textit{MultiBinary} action space that grows with $N$.}
-\end{figure}
+\textit{Note: Average mean reward refers to the fact that we have averaged (n=5)
+the mean reward (per episode). Also, this reward is the training performance.
+Generalisation in RL can mean a few things.}
 
 It seems surprising that access to the \textit{MultiBinary} action space provides such an advantage.
 Also, it seems surprising that the an increase of 6 dimensions only results in approximately a ~2 million increase in the data required.
@@ -53,11 +210,28 @@ equipped with a \textit{MultiBinary} action space achieves max performance at ~2
 
 \subsection{Related work}
 
-relationship to disentanglement.
-As recently noted by \cite{Caselles-Dupre2019}, ...
+Relationship to disentanglement. \cite{Higgins2018} which makes a lot of sense because ...
+
+Connection to causal heirarchy. Cite Pearl. Association, intervention, counterfactuals.
+Also recently noted by \cite{Caselles-Dupre2019}, ... where they assume that
+the group actions are the actions of the RL environment.
+This doesnt really make sense. Also, will miss many symmetries like ???
 
 A couple parts. Discovery of symmetries, explotation of the knowledge of symmetries.
 
-Dicovery. Not much success.
+Unsuperivsed dicovery. Not much success yet. Only when using some kind of supervised signal.
 
-Exploitation. Data augmentation, ...?
+
+From the right perspective, it can be seen that there are many existing ideas in
+ ML that exploit the knowledge of symmetries.
+
+- Data augmentation (The D2 group (ref) for images, flips, rotations.)
+- Data sharing (aka duplicate tuples \cite{Ho2019a})
+- Gradient coupling (aka auxiliary loss \cite{Ho2019a})
+- Weight sharing \cite{Ravanbakhsh2017a}
+
+We discuss these equivalences in appendex [].
+
+
+AutoAugment. Finding symmetries?!
+\cite{Ho2019a}
