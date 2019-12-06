@@ -7,6 +7,11 @@ Why do we care?
 \section{Sequential decision
 problems}\label{sequential-decision-problems}}
 
+When actions you have taken in the past can bite you in the butt \ldots{}
+Maze with pendulums / doors. When moving through the maze, you must
+swing the pendulums. In the future you must avoid being hit. (maybe make
+a picture of this?) also, is there a more general way to think about it?
+
 % MDPs are a subset of sequential decision problem. Define MDPs. Give
 % example.
 
@@ -31,7 +36,7 @@ care about the longer term aggregates.
 \end{displayquote}
 
 When we say a decision problem is Markovian, we mean that the transition
-function generates a Markov chain. The next transition step depends only
+function generates a Markov chain (ref). The next transition step depends only
 on the current state and action. It is invariant to any and all histories that do not
 change the current state.
 
@@ -42,11 +47,6 @@ totally described by changes to the \textbf{observable} state.
 % Can easily make a sequence Markovian by adding information. E.g.
 % time
 
-When actions you have taken in the past can bite you in the butt \ldots{}
-Maze with pendulums / doors. When moving through the maze, you must
-swing the pendulums. In the future you must avoid being hit. (maybe make
-a picture of this?) also, is there a more general way to think about it?
-
 \hypertarget{optimality}{%
 \subsection{Optimality}\label{optimality}}
 
@@ -55,7 +55,7 @@ a picture of this?) also, is there a more general way to think about it?
 \end{displayquote}
 
 And importantly, existing theory tells us that there is a unique optima to the bellman iterations.
-And that this optimal policy(ies) is(are) necessarily deterministic.
+And that there is always a deterministic policy that is optimal. (usually, there is a unique optima)
 
 (why does this make sense?)
 

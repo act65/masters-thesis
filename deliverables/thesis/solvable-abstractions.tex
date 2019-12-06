@@ -1,21 +1,26 @@
-\hypertarget{solveble-representations}{%
-\section{Solvable representations}\label{solvable-representations}}
+\section{Solvable representations}
 
-\begin{quote}
-Abstractions with structure that is easily solvable.
-\end{quote}
+\begin{displayquote}
+Abstraction for efficient optimisation.
+\end{displayquote}
 
-While there are other ways to add exploitable structure, here we only
-consider linearity.
-
-The bellman equation is a non-linear optimisation problem. It does have
+% bellman eqn is hard to solve (how hard?)
+The solving the bellman equation is equivalent to solving a non-linear optimisation problem. It does have
 some nice properties, like having a unique optima under the bellman
 operator. But, in general, it isn't very friendly. Is there a way to
-turn this into a linear problem? What sacrifices need to be made to
+turn this into an easier problem to solve?
+
+% maybe we can find an abstraction that allows more powerful solvers?
+
+% what are more powerful sovlers?
+Well, which problems are easy to solve? Convex ones (ref Osband), kernels (ref ??), linear ones, continuous ones, ...
+
+% how can we use these more powerful solvers for RL?
+So, is it possible to convert the
+ linear problem? What sacrifices need to be made to
 achieve this?
 
-\hypertarget{why-linear}{%
-\subsection{Why linear?}\label{why-linear}}
+\subsection{Why linear?}
 
 \begin{itemize}
 \tightlist
@@ -24,58 +29,58 @@ achieve this?
 \item
   we know linear systems can be solved efficiently.
 \item
-  ?
+  MDPs can be solved using linear programming (see appendix: LP)
+  % (if the bellman eqn is non linear then why can we solve it with LP?!)
 \end{itemize}
 
-Linearity is a nice property that makes optimisation simpler and more
-efficient: Linear programming (see appendix: LP)
-Solving a system of linear relationships. Has a complexity of ???.
-In fact. MDPs can actually be solved via LP. see {[}appendix{]}.
+How are we exploiting linearity?
+Linearisation around the optima? Intuition. How to see this? Stephen!?
 
-\hypertarget{a-closer-look-at-lmdps}{%
-\subsection{A closer look at LMDPs}\label{a-closer-look-at-lmdps}}
 
-(the Todorov ones\ldots{})
-
-The three steps of abstraction - relaxation (transform to a new domain)
-- linearisation (and solve) -
-
-\hypertarget{lmdps-more-formally}{%
-\paragraph{LMDPs; more formally}\label{lmdps-more-formally}}
+\subsection{What do we mean by a linear MDP?}
 
 \begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/drawings/abstract-representations-solve.png}
-\caption{'Solving the LMDP'}
+  \centering
+  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/drawings/abstract-representations-solve.png}
+  \caption{'Solving the LMDP'}
 \end{figure}
 
-Rather than picking action from our action space, we are going to pick actions in
- the space of possible transitions from the current state to the next state. Note
- that these transitions are not (yet) constrained to be possible.
+% alternate versions of LMDPs
+It turns out that adding linearity to MDPs is not a new idea.
 
-We can formulate a linearised markov decision process as;
+% pick the todorov ones.
+% (but why?) can be composed!?!?
+Refer to these as !?
+
+\subsection{???}
+
+% intuition
+To build a LMDP that acts similarly to a MDP \cite{Todorov2006} use a few main tricks;
+
+\begin{itemize}
+\tightlist
+  \item
+  they allow the agent to pick actions in the space of possible transitions, rather than the action space.
+  This is where the linearity comes from.
+  \item
+  to ensure that controls are possible under the given transition function, a new reward is added.
+  Controls are rewarded if they are close to the transition function.
+  \item
+  rather than maximizing the cumulative reward, we maximise the cumulative exponentiated rewards
+\end{itemize}
+
+% formal definition
+Putting these together, we can formulate a linear markov decision process;
 
 \begin{align}
 V(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} V(s') \tag{1}\\
-\\
-u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z(s')^{\gamma}} \tag{8}\\
-z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{11}\\
+u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z(s')^{\gamma}} \tag{2}\\
+z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{3}
 \end{align}
 
-By definition, an LMDP is the optimisation problem in (1). (3) Define a
-new variable, \(z(s) = e^{v(s)}\). (5) Define a new variable that will
-be used to normalise \(p(s' | s)z(s')^{\gamma}\). (8) Set the optimal
-policy to minimise the KL distance term. (9) Since we picked the optimal
-control to be the form in (8), the KL divergence term is zero. (11)
-Rewrite the equations for the tabular setting, giving a \(z\) vector,
-uncontrolled dynamics matrix.
+By definition, an LMDP is the optimisation problem in (1).
 
-(see appendix ?? for a full derivation)
-
-\newpage
-
-\hypertarget{a-relaxed-mdp}{%
-\subsection{A relaxed MDP}\label{a-relaxed-mdp}}
+\subsection{Solving a MDP}
 
 \begin{figure}
 \centering
@@ -84,13 +89,11 @@ uncontrolled dynamics matrix.
 \end{figure}
 
 \begin{quote}
-Ok great, we can solve LMDPs. But how does being able to solve an LMDP
-help us solve MDPs?
+Ok great, we can solve LMDPs. But how does being able to solve an LMDP help us solve MDPs?
 \end{quote}
 
 We want a way to transform a MDP into a LMDP, while preserving the
 `structure' of the MDP. But what do we mean by a MDP's structure?
-
 The LMDP, \(\{S, p, q, \gamma\}\) should;
 
 \begin{itemize}
@@ -107,8 +110,8 @@ The LMDP, \(\{S, p, q, \gamma\}\) should;
 \href{}{Optimality})
 
 So, given a reward function, \(r\), and a transition function, \(P\),
-from the MDP, we must translate them into a \(p\) and a \(q\). Thus we
-have built a LMDP with the same `structure'.
+from the MDP, we must translate them into a \(p\) and a \(q\).
+This is the clever part.
 
 \begin{align}
 \forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \\
@@ -119,7 +122,7 @@ r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{2}\\
 Which leads to \(|A|\) linear equations to solve, for each state in the
 MDP.
 
-See appendix {[}{]} for more details.
+See appendix [] for more details.
 
 Alternative views of linearisation.
 
@@ -128,12 +131,10 @@ Alternative views of linearisation.
 \item
   A relaxation of the MDP
 \item
-  Linelihood interpretation
+  Likelihood interpretation (??)
 \end{itemize}
 
-\hypertarget{unconstrained-dynamics-and-state-rewards}{%
-\subsection{Unconstrained dynamics and state
-rewards}\label{unconstrained-dynamics-and-state-rewards}}
+\subsection{Unconstrained dynamics and state rewards}
 
 \begin{quote}
 Let's try and understand this thing we have contructed.
@@ -151,11 +152,10 @@ by the KL divergence between the control and the unconstrained dynamics.
   What do they look like?
 \end{itemize}
 
-Does it make sense to treat the q(s) like rewards?! They reward for bing
-in state s. But cant capture action specific rewards!?
+Does it make sense to treat the q(s) like rewards?! They reward for being
+in state $s$. But cant capture action specific rewards!?
 
-\hypertarget{decoding}{%
-\paragraph{Decoding}\label{decoding}}
+\paragraph{Decoding the optimal LMDP policy}
 
 \begin{figure}
 \centering
@@ -164,16 +164,12 @@ in state s. But cant capture action specific rewards!?
 \end{figure}
 
 Ok, so now we get a glimpse at why LMDPs are an interesting abstraction.
-THe LMDP has disentangled the search for the behaviour (go to this or
-that state) and the search for optimal controls (how to actually achieve
+The LMDP has disentangled the search for the behaviour (\textbf{P1}) (go to this or
+that state) and the search for optimal controls \textbf{P2} (how to actually achieve
 that behaviour). This can be seen in the decoding step. As we know which
 states we want to be in, via the optimal control from solving the LMDP,
 \(u^{* }\), but, we do not know how to implement those controls using
 the actions we have available.
-
-\begin{quote}
-Two `simpler' problems. Easier to solve?
-\end{quote}
 
 \begin{align}
 P_{\pi}(\cdot | s) = \sum_a P(\cdot | s, a) \pi(a | s) \\
@@ -183,6 +179,9 @@ P_{\pi}(\cdot | s) = \sum_a P(\cdot | s, a) \pi(a | s) \\
 Maybe this isnt enough? Do we need to add a reward sensitive part as
 well?!? (but what if the actual path we take to get there has a neg
 rewards?!?)
+
+It turns out that solving \textbf{P2} is asymptotically as hard as solving a MDP.
+So nothing has been gained... (proof?!?)
 
 \hypertarget{optimality-of-solutions-via-lmdps}{%
 \paragraph{Optimality of solutions via
@@ -324,15 +323,13 @@ properties into an architecture that might scale to more complex
 problems: larger state spaces and action spaces, sparse rewards,
 \ldots{}?
 
-\hypertarget{incremental-implementation}{%
-\paragraph{Incremental
-implementation}\label{incremental-implementation}}
+\subsection{Incremental implementation}
 
 Generalise to a more complex problem. We are only given samples. A first
 step to tackling more complex problems.
 
-\hypertarget{model-based}{%
-\subparagraph{Model based}\label{model-based}}
+
+\subsubsection{Model based}
 
 Learn \(p, q\) based on samples.
 
@@ -351,8 +348,7 @@ try to do incremental RL with this linearisation trick? Not sure.
 Alternative perspective. The high value trajectories are the most likely
 ones.
 
-\hypertarget{distributions-over-states}{%
-\subsubsection{Distributions over states}\label{distributions-over-states}}
+\subsubsection{Distributions over states}
 
 What if we wanted to approximate these distributions? Generalise subgoal
 methods to work with distributions? The distribution could be
@@ -381,8 +377,7 @@ Questions
   \(u_{s's} = \sum_a u_a \alpha_a u_a^T\)
 \end{itemize}
 
-\hypertarget{other-properties}{%
-\subsection{Other properties}\label{other-properties}}
+\subsection{Other properties}
 
 LMDPs have the property that if we have already solved two LMDPs, with
 the same state space, action space, unconditioned transition dynamics,
@@ -423,3 +418,15 @@ However, it is not possible to make those transitions as }
 \end{figure}
 
 The point is, it is not entierly clear how to embed an MDP into a LMDP.
+
+
+\subsection{Related work}
+
+Recently there have been a few other attempts to add linearity into MDPs.
+\cite{Pires2016} factored
+
+\cite{Wang} Reward and transitions are a linear function of features of a state-action pair.
+
+Levine et al. \cite{Levine2019} build a latent representation such that the transition fn (in the latent space) is approximately linear. This allows ...
+
+The common theme amongst all these attempts is that they exploit linearity in the transition function to allow ?!?.
