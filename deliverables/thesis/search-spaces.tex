@@ -1,10 +1,54 @@
-\chapter{Search spaces}
+% \chapter{Search spaces}
 
-MDPs are not very cheap to solve.
+\newpage
+
+Before going further with our quest for efficient RL. Let's explore some
+properties of our chosen setting, MDPs.
+
+
+\section{The value function polytope}
+
+The value function polytope \cite{Dadashi2018} provides some great intuition
+about the structure of a MDP and the dynamics of optimisation. Let's take a look.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-automata.png}
+\caption{Consider the simplest possible MDP, with two states and two actions. (Any simpler setting is entierly uninteresting. A single state means actions do nothing.
+And a single action means all policies are the same.).}
+\end{figure}
+
+Consider a two state MDP. The space of possible policies is a 2D space
+consisting of $p^1_{a_1}$ and $p^2_{a_1}$:
+
+\begin{align}
+\pi &=
+\begin{bmatrix}
+  p^1_{a_1} & p^1_{a_2} \\
+  p^2_{a_1} & p^2_{a_2}\\
+\end{bmatrix} \\
+&=
+\begin{bmatrix}
+p^1_{a_1} & 1-p^1_{a_1} \\
+p^2_{a_1} & 1-p^2_{a_1}\\
+\end{bmatrix}
+\end{align}
+
+We can evaluate each each policy in this 2D space. Since there are two states,
+the evaluation returns a 2D vector of values, one for each state. Thus we can
+visualise the value of all policies.
+
+% INSERT PIC of polytope
+
+Great. But why do we care?? What does it tell us?
+
 We are interested in exploring the complexity of some different approaches to solving MDPs.
+% Value iteration requires O()... Policy iteration requires O()???
+
+Curiously, their results lead to a question:
 
 \begin{displayquote}
-How does a search algorithm interact with its search space to yield efficient search?
+  \textit{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
 
 In any optimisation problem, we have a set of potential solutions, also known as the search space,
@@ -16,10 +60,7 @@ What do I mean by a search space? By optimisation dynamics? Why should anyone ca
 % Mention cts relaxations!?
 % Relation to the deep learning puzzle of over parameterisation.
 
-\section{Efficient search for RL}
-
-Using tabular MDPs and the value function polytope as our microscope,
-let explore how different search spaces can er.
+\section{Search spaces for RL}
 
 We want to efficiently find the optimal policy for a given MDP. But where and how should we
 search for this policy? We could search within;
@@ -100,9 +141,9 @@ Lastly, we can search through possible models, $P, r$. Models that fit the
 observations we make. That is policy $\pi_i$ has a value $V^{pi_i}$.
 
 \begin{displayquote}
-  This model predicts that the ??? policy is of high value.
+  \textit{This model predicts that the ??? policy is of high value.
   However, when I tried this policy, I ended up with ...?
-  My model must be wrong.
+  My model must be wrong.}
 \end{displayquote}
 
 Here the parameters are composed to two independent parts, the transition function
@@ -210,7 +251,7 @@ What properties are we looking for?
 \subsection{Dynamics and complexity}
 
 \begin{displayquote}
-So. We want to investigate the properties of gradient based search in different search spaces.
+  \textit{So. We want to investigate the properties of gradient based search in different search spaces.}
 \end{displayquote}
 
 Let start with trying to understand the different dynamics and iteration complexities.
@@ -354,3 +395,17 @@ TODO, prove it.
 
 When transforming between two spaces, how does the optimisation space
 change? Does my abstraction make optimisation easier?
+
+
+\section{Related work}
+
+Recently there has been work investigating the properties of overparameterised search spaces.
+Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yeilds acceleration, however,
+their explanation of the acceleration is not entirely convincing. Bc...
+
+How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
+Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
+How does momentum bias trajectories? To cover more distance? To have more diversity?
+
+Search spaces with alternative geometries.
+Hyperbolic neural networks. https://arxiv.org/pdf/1805.09112.pdf
