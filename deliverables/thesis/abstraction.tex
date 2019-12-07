@@ -53,13 +53,16 @@ History.
   ???,
 \end{itemize}
 
+
+The three steps of abstraction - transform to a new domain
+- solve - apply solution back in original domain.
+
+
 \section{Abstractions for RL}
 
 % types of abstraction we will consider
 There are a few different types of abstraction that can be considered for RL:
-state abstractions (???), action abstractions (a caterpillar might have touble pick
- which of its legs to move, rather that pick a direction to move),
-temporal abstractions (???).
+state abstractions, action abstractions, temporal abstractions (see ??? for same examples).
 
 % uses of these abstractions
 And, there are a couple of main goals of these abstractions; efficient exploration
@@ -84,39 +87,29 @@ optimal policy found using the abstraction.
 \forall_{s\in S, a\in A} \mid Q^{\pi^* }(s, a) - Q^{\pi_{A}^* }(s, a) \mid \le \epsilon
 \end{align}
 
-\cite{Littman2006}
-
-
+\cite{Littman2006, Abel2017}
 
 % definitions
 \begin{displayquote}
 \textit{What do we mean by an abstract(ed) MDP?}
 \end{displayquote}
 
-
-
-% so how does this achieve what we wanted?
-???
-
-% also?
-We would also like to know how hard that optimal policy is to find.!!!
-
-
 \subsection{Classes of abstraction for RL}
 
-\cite{Abel2017} give 5 classes of state abstraction, and show that ...???
-Here is a further generalisation
+When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
+In RL there are a few notions of similarity.
 
-% what are the possible ways to build abstractions for RL?
-Using the above method of imposing properties on an abstraction, what structure should?
+What can be similar? Two states, two actions, two state-actions.
+As measured by? Their similarity under a policy, the reward function, the transition function.
+But we dont just care about whether two states are similar for a single step, rather, if they are asymptotically similar.
 
-How can to things be 'similar' in RL?
+What about $(s, a, r, s, a)$s? Two $(s, a, r, s, a)$s are similar if?
 
 \begin{enumerate}
 \tightlist
 \item
   The policy function:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \pi(\cdot_a) - \pi(\cdot_b) \mid \le \epsilon\)
+  \(\forall_{\cdot_a, \cdot_b \in D^{* }} \mid \pi(\cdot_a) - \pi(\cdot_b) \mid \le \epsilon\)
   is approximately the same.
 \item
   The transition function:
@@ -127,6 +120,8 @@ How can to things be 'similar' in RL?
   \(\forall_{\cdot_a, \cdot_b \in D} \mid r(\cdot_a) - r(\cdot_b) \mid \le \epsilon\)
   is approximately the same.
 \end{enumerate}
+
+A note on the notation used.
 
 Also,
 
@@ -150,6 +145,7 @@ Also,
 
 GVFs
 
+
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \setcounter{enumi}{6}
@@ -168,6 +164,8 @@ GVFs
   is approximately the same.
 \end{enumerate}
 
+For all $\pi \in \Pi$, or just or $\pi^{* }$?
+
 Including any combination of these.
 Do some of these make sense?
 - Discounted future policy? What is this?
@@ -183,17 +181,26 @@ it will not transfer / generalise well.
 \end{quote}
 
 
+\cite{Littman2006} give 5 classes of state abstraction, and show that ...???
+Here is a further generalisation
+
+
+$V(s) - V(s')$ as a similarity measure tells us very little. Because...?
 
 \paragraph{Building an abstraction into a learner}
 
 How might be build knowledge of some kind of similarity into a learner?
 
-\begin{align}
-\phi: S \to X&: \quad \pi(s) \to \pi(\phi(s)) \quad Q(s, a) \to Q(\phi(s), a) \tag{State abstraction} \\
-\psi: A\to Y&: \quad \pi(s) \to \psi^{-1}(\pi(s)) \quad Q(s, a) \to Q(s, \psi(a)) \tag{Action abstraction} \\
-\phi, \psi&: \quad \pi(s) \to \psi^{-1}(\pi(\phi(s))) \quad Q(s, a) \to Q(\phi(s), \psi(a)) \tag{State and action abstraction} \\
-\varphi: S \times A \to Z&: \quad \pi(s)\to \mathop{\text{argmax}}_a V(\varphi(s, a)) \quad\quad Q(s, a) \to V(\varphi(s, a)) \tag{State-action abstraction} \\
-\end{align}
+\begin{align*}
+\phi: S \to X: \quad &\pi(s) \to \pi(\phi(s)) \\
+&Q(s, a) \to Q(\phi(s), a) \tag{State abstraction} \\
+\psi: A\to Y: \quad &\pi(s) \to \psi^{-1}(\pi(s)) \\
+&Q(s, a) \to Q(s, \psi(a)) \tag{Action abstraction} \\
+\phi, \psi: \quad &\pi(s) \to \psi^{-1}(\pi(\phi(s))) \\
+&Q(s, a) \to Q(\phi(s), \psi(a)) \tag{State and action abstraction} \\
+\varphi: S \times A \to Z: \quad &\pi(s)\to \mathop{\text{argmax}}_a V(\varphi(s, a)) \\
+&Q(s, a) \to V(\varphi(s, a)) \tag{State-action abstraction}
+\end{align*}
 
 \begin{quote}
 \textbf{Claim 2:} The state-action abstraction is the most powerful
@@ -205,8 +212,8 @@ prove!)
 \href{http://www.gatsby.ucl.ac.uk/~dayan/papers/d93b.pdf}{Successor
 features}!?)
 
-We constructed the state abstraction by altering what the policy and
-value function were allowed to see. Rather than observing the original
+We constructed these abstractions by altering what the learner (made up of a policy and
+value function) were allowed to see. Rather than observing the original
 state space, we gave them access to an abstracted state space.
 
 There are other ways to alter what the policy and value function sees.
@@ -254,20 +261,13 @@ This intuition leads to our work in section ... (symetric abstractions).
 ???
 
 
-\hypertarget{related-work}{%
-\subsubsection{Related work}\label{related-work}}
+\subsection{Discussion}
 
-Other approaches to abstraction for RL focus on \ldots{}?
+A main issue with this framework for analysing abstraction is that it does not consider
+the sample or computational complexity of finding the optimal policy. Only that, under the abstraction,
+it exists.
 
-Near Optimal Behavior via Approximate State Abstraction \cite{Abel2017}
-A Geometric Perspective on Optimal Representations for Reinforcement Learning \cite{Bellemare2019b}
-successor representation
-
-\hypertarget{discussion}{%
-\subsection{Discussion}\label{discussion}}
-
-But can we guarantee that these abstractions do not make it harder to
-find the optimal policy? Is that even possible?
+Also, we have not discussed the discovery of / how to construct the abstraction.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -280,10 +280,3 @@ automatic differentiation!? Want a way to get bounds for all of these
 combinations!
 
 Requires the evaluation of expensive integrals?!?
-
-
-
-***
-
-The three steps of abstraction - relaxation (transform to a new domain)
-- linearisation (and solve) -

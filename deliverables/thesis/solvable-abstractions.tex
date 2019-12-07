@@ -5,10 +5,11 @@
 \end{displayquote}
 
 % bellman eqn is hard to solve (how hard?)
-The solving the bellman equation is equivalent to solving a non-linear optimisation problem. It does have
-some nice properties, like having a unique optima under the bellman
+Existing solvers of MDPs require solving a non-convex optimisation problem (?!? ref).
+It does have some nice properties, like having a unique optima under the bellman
 operator. But, in general, it isn't very friendly. Is there a way to
 turn this into an easier problem to solve?
+% (lower bound computational complexity?!)
 
 % maybe we can find an abstraction that allows more powerful solvers?
 
@@ -20,24 +21,42 @@ So, is it possible to convert the
  linear problem? What sacrifices need to be made to
 achieve this?
 
-\subsection{Why linear?}
+\subsection{Linear Markov decision problems (LMDPs)}
 
-\begin{itemize}
-\tightlist
-\item
-  it has many mathematical tools for analysis.
-\item
-  we know linear systems can be solved efficiently.
-\item
-  MDPs can be solved using linear programming (see appendix: LP)
-  % (if the bellman eqn is non linear then why can we solve it with LP?!)
-\end{itemize}
+\subsubsection{Why linear?}
 
-How are we exploiting linearity?
-Linearisation around the optima? Intuition. How to see this? Stephen!?
+Imagine if your life were linear, in the sense of effort and achieving goals.
+More work in equals proportionally more rewards. This makes decision making
+a lot more simple. Pick the most rewarding ???, and work hard.
+
+% many mathematical tools for analysis.
+% we know linear systems can be solved efficiently.
 
 
-\subsection{What do we mean by a linear MDP?}
+% Linearity in MDPs
+% Polytope. LPs
+% !!!?!? (if the bellman eqn is non linear / non convex then why can we solve it with LP?!)
+
+
+% How are we exploiting linearity?
+% Linearisation around the optima? Intuition. How to see this? Stephen!?
+Intuition.
+
+\subsubsection{What do we mean by a linear MDP?}
+
+What properties should a LMDP have? Solving for the optimal policy is a linear problem.
+What does this require??
+
+
+% alternate versions of LMDPs
+It turns out that linearising a MDP is not a new idea. \cite{Todorov2006, Wang, Pires2016, Levine2019}
+
+% pick the todorov ones.
+% (but why?) can be composed!?!?
+Refer to these as !?
+
+
+\subsubsection{Constructing a linear MDP}
 
 \begin{figure}
   \centering
@@ -45,17 +64,8 @@ Linearisation around the optima? Intuition. How to see this? Stephen!?
   \caption{'Solving the LMDP'}
 \end{figure}
 
-% alternate versions of LMDPs
-It turns out that adding linearity to MDPs is not a new idea.
-
-% pick the todorov ones.
-% (but why?) can be composed!?!?
-Refer to these as !?
-
-\subsection{???}
-
 % intuition
-To build a LMDP that acts similarly to a MDP \cite{Todorov2006} use a few main tricks;
+To build a LMDP that acts similarly to a MDP Todorov et al. \cite{Todorov2006} use a few main tricks;
 
 \begin{itemize}
 \tightlist
@@ -63,11 +73,15 @@ To build a LMDP that acts similarly to a MDP \cite{Todorov2006} use a few main t
   they allow the agent to pick actions in the space of possible transitions, rather than the action space.
   This is where the linearity comes from.
   \item
-  to ensure that controls are possible under the given transition function, a new reward is added.
-  Controls are rewarded if they are close to the transition function.
+  to ensure that chosen controls are possible under the given transition function, a new reward is added.
+  Controls are rewarded if they are close to the 'unconstrained dynamics', $p(s' | s)$.
   \item
-  rather than maximizing the cumulative reward, we maximise the cumulative exponentiated rewards
+  rather than maximizing the cumulative reward, we maximise the cumulative exponentiated rewards.
 \end{itemize}
+
+Initially, I thought of the unconstrained dynamics as the expected result of using random policy
+$p(s' | s) = \int_a P(s' | s, a)U(a|s)$, a random walk using the transition function.
+However, while this make sense intuitively, it turn out to be wrong. (more details here...)
 
 % formal definition
 Putting these together, we can formulate a linear markov decision process;
@@ -79,6 +93,27 @@ z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{3}
 \end{align}
 
 By definition, an LMDP is the optimisation problem in (1).
+
+\subsubsection{Unconstrained dynamics and state rewards}
+
+\begin{quote}
+Let's try and understand this thing we have contructed.
+\end{quote}
+
+The state rewards are not capable of giving rewards for actions taken.
+Rather, the differences in reward, by taking another action, is captured
+by the KL divergence between the control and the unconstrained dynamics.
+
+\begin{itemize}
+\tightlist
+\item
+  What is their function?
+\item
+  What do they look like?
+\end{itemize}
+
+Does it make sense to treat the q(s) like rewards?! They reward for being
+in state $s$. But cant capture action specific rewards!?
 
 \subsection{Solving a MDP}
 
@@ -134,28 +169,8 @@ Alternative views of linearisation.
   Likelihood interpretation (??)
 \end{itemize}
 
-\subsection{Unconstrained dynamics and state rewards}
 
-\begin{quote}
-Let's try and understand this thing we have contructed.
-\end{quote}
-
-The state rewards are not capable of giving rewards for actions taken.
-Rather, the differences in reward, by taking another action, is captured
-by the KL divergence between the control and the unconstrained dynamics.
-
-\begin{itemize}
-\tightlist
-\item
-  What is their function?
-\item
-  What do they look like?
-\end{itemize}
-
-Does it make sense to treat the q(s) like rewards?! They reward for being
-in state $s$. But cant capture action specific rewards!?
-
-\paragraph{Decoding the optimal LMDP policy}
+\subsubsection{Decoding the optimal LMDP policy}
 
 \begin{figure}
 \centering
@@ -183,9 +198,7 @@ rewards?!?)
 It turns out that solving \textbf{P2} is asymptotically as hard as solving a MDP.
 So nothing has been gained... (proof?!?)
 
-\hypertarget{optimality-of-solutions-via-lmdps}{%
-\paragraph{Optimality of solutions via
-LMDPs}\label{optimality-of-solutions-via-lmdps}}
+\subsubsection{Optimality of solutions via LMDPs}
 
 \begin{quote}
 Do these two paths lead to the same place?
@@ -244,8 +257,7 @@ Potential solution? Use options.
 \caption{'For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the Bellman temporal difference operator points towards the optimal value. But, ther linear temporal difference operator points elsewhere...'}
 \end{figure}
 
-\hypertarget{option-decoding}{%
-\paragraph{Option decoding}\label{option-decoding}}
+\subsubsection{Option decoding}
 
 What about using options to help solve the optimal control decoding?
 Does this actually help?!
@@ -270,9 +282,7 @@ accuracy (and possibly cost).
 This introduces dangers?!? As an option might accumulate unknown rewards
 along the way!??
 
-\hypertarget{the-complexity-of-solutions-via-lmdps}{%
-\subsubsection{The complexity of solutions via
-LMDPs}\label{the-complexity-of-solutions-via-lmdps}}
+\subsubsection{The complexity of solutions via LMDPs}
 
 \begin{quote}
 Is my path actually shorter?
@@ -298,9 +308,7 @@ Giving a total complexity of \ldots{}
 
 Contrasted with the complexity of solving an MDP.
 
-\hypertarget{scaling-to-more-complex-problems}{%
-\subsubsection{Scaling to more complex
-problems}\label{scaling-to-more-complex-problems}}
+\subsection{Scaling to more complex problems}
 
 Now that we have some evidence that this LMDP solution strategy makes
 sense, it efficiently (see \href{}{complexity}) yields high value (see
@@ -323,7 +331,7 @@ properties into an architecture that might scale to more complex
 problems: larger state spaces and action spaces, sparse rewards,
 \ldots{}?
 
-\subsection{Incremental implementation}
+\subsubsection{Incremental implementation}
 
 Generalise to a more complex problem. We are only given samples. A first
 step to tackling more complex problems.
