@@ -53,55 +53,106 @@ History.
   ???,
 \end{itemize}
 
+\begin{displayquote}
+\textit{How can an abstraction be used to find an optimal policy?}
+\end{displayquote}
+insert picture of up down etc.
 
 The three steps of abstraction - transform to a new domain
 - solve - apply solution back in original domain.
 
 
+\begin{displayquote}
+The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data. \cite{Konidaris2019}
+\end{displayquote}
+
 \section{Abstractions for RL}
 
 % types of abstraction we will consider
 There are a few different types of abstraction that can be considered for RL:
-state abstractions, action abstractions, temporal abstractions (see ??? for same examples).
-
-% uses of these abstractions
-And, there are a couple of main goals of these abstractions; efficient exploration
-(sample complexity), efficient optimisation (computational complexity).
+state abstractions \cite{Littman2006,Haarnoja,Cuccu2018,Zhonga,Vezzani2019,Abel2018,Duan2018,Abel2017,Silver2016a},
+action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019}, temporal abstractions \cite{Rafati,Mankowitz2018,Harutyunyan2017,Fruit2017,Riemer2018,Bacon2018,Achiam2018,Pham2019,Konidaris2018,Haarnoja,Sutton1999,Fruit2017a,Bacon2016a,Jinnai2018,Nachum2018}.
+Where there are a couple of main goals of these abstractions; efficient exploration
+(\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
+and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computational_complexity_theory}{computational complexity}).
 
 %  but. how can we analyse them?
 % tools we can use to analyse an abstraction
 Let's say we have a state abstraction, a road is a road: no real difference
-between them, a natural thing we want to know about the abstraction is:
+between them; gravel, winding, motorway, cliffs-on-either-side...
+One of the first things we want to know about the abstraction is:
 is it possible for me to act optimally (with respect to some value function)
 using this abstraction? If not, what's the damage? In this case, driving 100kph on every road --
 because they are all pretty-much-the-same -- might lead to some suboptimal results.
 Or, in other words, we want to whether the optimal policy can be approximately represented within an abstracted MDP.
 
 % formal
-The metric we are optimising is the representation error of the optimal
-policy. Given an abstraction, we want to know how well (in terms of $\epsilon$)
-the abstraction can represent the optimal policy. Where $\pi_{GA}^{* }$ is the
-optimal policy found using the abstraction.
+This notion of suboptimality can be formalised as the representation error of the optimal
+policy. Given an abstraction, we want to know how well
+the abstraction can represent the optimal policy. \cite{Littman2006, Abel2017}
 
 \begin{align}
 \forall_{s\in S, a\in A} \mid Q^{\pi^* }(s, a) - Q^{\pi_{A}^* }(s, a) \mid \le \epsilon
 \end{align}
 
-\cite{Littman2006, Abel2017}
-
-% definitions
-\begin{displayquote}
-\textit{What do we mean by an abstract(ed) MDP?}
-\end{displayquote}
+Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the optimal
+policy found using the abstraction.
 
 \subsection{Classes of abstraction for RL}
 
-When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
-In RL there are a few notions of similarity.
+% \begin{displayquote}
+% \textit{But how might we contruct $Q^{\pi_{A}^* }$?}
+% \end{displayquote}
+%
+% There are many different forms an abstraction might take, and ???
 
-What can be similar? Two states, two actions, two state-actions.
-As measured by? Their similarity under a policy, the reward function, the transition function.
-But we dont just care about whether two states are similar for a single step, rather, if they are asymptotically similar.
+\begin{displayquote}
+\textit{Given an abstraction, how might a learner use it?}
+\end{displayquote}
+
+The abstracted $Q$-function and policy might be constructed on spaces $X, Y$,
+$Q_A: X \times Y \to \mathbb R$, $\pi_A: X \to \Delta(Y)$. We can now construct
+different classes of learners by giving them access to different types of abstraction.
+
+\begin{align*}
+&\phi: S \to X, Y = A \\
+&\pi(\phi(s)),\quad Q(\phi(s), a) \tag{State abstraction} \\
+&\psi: A\to Y, X = S\\
+&\psi^{-1}(\pi(s)),\quad Q(s, \psi(a)) \tag{Action abstraction} \\
+&\phi, \psi\\
+&\psi^{-1}(\pi(\phi(s))),\quad Q(\phi(s), \psi(a)) \tag{State and action abstraction} \\
+&\varphi: S \times A \to Z \\
+&\mathop{\text{argmax}}_a V(\varphi(s, a)),\quad V(\varphi(s, a)) \tag{State-action abstraction} \\
+\end{align*}
+
+As well as other classes of temporal abstraction. But while they are of great
+interest, we do not consider them here.
+
+\begin{displayquote}
+\textit{Which class of abstraction should we use?}
+\end{displayquote}
+
+Possibly, the most interesting question is about the difference in performance between
+the \textit{State and action abstraction} and the \textit{State-action abstraction}.
+
+The state-action abstraction is the most powerful because it allows the compression of the most symmetries. (want to
+prove!) And this is part of the motivation behind the successor features \cite{Barreto2017,Dayan1993}.
+% The abstraction is able to capture patterns in ??? something about the effects of the actions. Temporal difference models
+
+\subsection{Discovery}
+
+% Why is this hard? How hard is it? Existing work? What is the problem?
+
+\subsubsection{Building an abstraction}
+
+When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
+In RL there are a few possible notions of similarity.
+
+What could be similar? Two states, two actions, two state-actions. Why?
+Because they result in the same future rewards? The same future transitions? The same future actions?
+Because they can reach the same set of states.
+
+% Two MDPs might be similar?
 
 What about $(s, a, r, s, a)$s? Two $(s, a, r, s, a)$s are similar if?
 
@@ -187,36 +238,7 @@ Here is a further generalisation
 
 $V(s) - V(s')$ as a similarity measure tells us very little. Because...?
 
-\paragraph{Building an abstraction into a learner}
 
-How might be build knowledge of some kind of similarity into a learner?
-
-\begin{align*}
-\phi: S \to X: \quad &\pi(s) \to \pi(\phi(s)) \\
-&Q(s, a) \to Q(\phi(s), a) \tag{State abstraction} \\
-\psi: A\to Y: \quad &\pi(s) \to \psi^{-1}(\pi(s)) \\
-&Q(s, a) \to Q(s, \psi(a)) \tag{Action abstraction} \\
-\phi, \psi: \quad &\pi(s) \to \psi^{-1}(\pi(\phi(s))) \\
-&Q(s, a) \to Q(\phi(s), \psi(a)) \tag{State and action abstraction} \\
-\varphi: S \times A \to Z: \quad &\pi(s)\to \mathop{\text{argmax}}_a V(\varphi(s, a)) \\
-&Q(s, a) \to V(\varphi(s, a)) \tag{State-action abstraction}
-\end{align*}
-
-\begin{quote}
-\textbf{Claim 2:} The state-action abstraction is the most powerful
-because it allows the compression of the most symmetries. (want to
-prove!)
-\end{quote}
-
-(relationship to
-\href{http://www.gatsby.ucl.ac.uk/~dayan/papers/d93b.pdf}{Successor
-features}!?)
-
-We constructed these abstractions by altering what the learner (made up of a policy and
-value function) were allowed to see. Rather than observing the original
-state space, we gave them access to an abstracted state space.
-
-There are other ways to alter what the policy and value function sees.
 
 \subsection{Examples}
 

@@ -42,14 +42,17 @@ to
 
 \subsection{Discovery}
 
-> How might we know that two state-action-reward (/values) are similar?
+\begin{displayquote}
+\textit{How might we know that two state-action-reward (/values) are similar?}
+\end{displayquote}
 
 1. because we have seen it
 2. because it follows a pattern we have observed (for example, we might have seen
 that rotations of $45, 90, 135, 180$, are all similar, therefore our first guess
 is that rotations of $225, 270, 315$ are also similar)
 
-[2.] Is hard. This is about generalising using a symmetric inductive bias.
+[2.] Is hard. This is about generalising using an inductive bias towards symmetry.
+% need a breif aside here about inductive bias and no free lunch!? no. can do it in the abstraction/discovery section
 
 To be able to share, what do we need to know?
 
@@ -123,7 +126,7 @@ Examples
 
 
 
-\subsection{Complexity}
+\subsubsection{Complexity}
 
 Uniqueness, ...?
 
@@ -135,6 +138,40 @@ x, y \in X : \exists G \cdot x \cap
 \end{align}
 
 
+\subsection{Exploitation}
+
+\begin{displayquote}
+\textit{Once have discovered a symmetry, how might we use it?}
+\end{displayquote}
+
+{\color{red}What simple experiments can I do!?!?!}
+Could test each method of exploitation against each other. What are their advantages / disadvantages?
+
+\subsubsection{Output coupling}
+
+Mahajan et al. propose to use knowledge similarity to share couple outputs.
+\cite{Mahajan2017}
+
+\begin{align*}
+\chi: (S\times A) \times (S\times A) \to [0, 1] \\
+\mathcal L(\theta) = \mathop{\mathbb E}_{\chi} \Big[(Q(s, a, \theta)-Q(s', a', \theta))^2 \Big]
+\end{align*}
+
+Coupling the outputs of similar state-actions. This is nice because, we might know
+that $s, a$ and $s', a'$ are similar. Yet we many not have observed $s', a'$.
+
+% Equivalent to sharing training data?!?
+
+However, how did we know that $s, a$ and $s', a'$ are similar without seeing $s', a'$?
+
+\subsubsection{Data augmentation}
+
+Sharing targets between 'similar' inputs.
+
+\subsubsection{Architecture}
+
+\cite{Ravanbakhsh2017a,Abdolhosseini}
+\cite{Anselmi2019}
 
 \subsection{n-dimensional Cart pole}
 

@@ -70,7 +70,6 @@ The objective when solving a MDP is to find a policy, $\pi(a_t | s_t)$, that max
 A general intuition for what is going on when solving a MDP is; actions need to
 be conditioned on observations to achieve rewards. But, while instantaneous
 rewards are good, we really care about the long term cumulative reward.
-% For example
 
 \hypertarget{the-markov-property}{%
 \subsection{The Markov property}\label{the-markov-property}}
@@ -87,7 +86,9 @@ that effects future transitions.
 
 This is not to say that past actions do not effect the future. Rather,
 it is a special type of dependence on the past. Where the dependence is
-totally described by changes to the \textbf{observable} state, $s\in S$.
+totally described by changes to the observable state, $s\in S$.
+
+{\color{red}For example...}
 
 % Can easily make a sequence Markovian by adding information. E.g.
 % time
@@ -150,24 +151,11 @@ r(s_2, a_2)  &+ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\
 
 Back to constructing a simple RL setting.
 
-Imagine a tabular MDP, where we can describe the MDP with tables. A table of
+Imagine a MDP that can be described with tables (aka arrays). A table of
 three dimensions can describe the transition probabilities, $P[s_{t+1}, s_t, a_t]$,
 and a table of two dimensions can describe the rewards, $r[s_t, a_t]$: the
 states and actions act as indexes to locations in the tables.
-
-Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
-This RL problem can be efficiently solved by non-statistical
-methods: dynamic programming and related planning techniques \cite{Bertsekas1995}.
-
-But, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
-seems to retain much of the complexity we care about. This setting does not allow
-efficient solutions via dynamic programming. And can be approached with algorithms
-that are used for state-of-the-art DRL such as;
-policy gradients\cite{Schulman2015a}, Q-learning \cite{Mnih2015}, ??? (more!?)
-
-\vspace{5mm}
-
-Let's more formally define our tabular MDP.
+Let's formally define our tabular MDP.
 
 \begin{align}
 \mathcal M &= \{S, A, P, r, \gamma\}\; \tag{the MDP}\\
@@ -188,3 +176,17 @@ V &= (I-\gamma P_{\pi})^{-1}r_{\pi} \tag{analytic solution}
 The values are written as a vector, $V \in \mathbb R^n$.
 The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.
 And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
+
+\begin{displayquote}
+\textit{But why is the tabular MDP defined as simple as possibe?}
+\end{displayquote}
+
+Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
+This RL problem can be efficiently solved by non-statistical
+methods: dynamic programming and related planning techniques \cite{Bertsekas1995}.
+
+But, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
+seems to retain much of the complexity we care about. This setting does not allow
+efficient solutions via dynamic programming. And can be approached with algorithms
+that are used for state-of-the-art DRL such as;
+policy gradients\cite{Schulman2015a}, Q-learning \cite{Mnih2015}, ??? (more!?)

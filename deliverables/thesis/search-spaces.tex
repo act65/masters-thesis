@@ -19,7 +19,7 @@ And a single action means all policies are the same.).}
 \end{figure}
 
 Consider a two state MDP. The space of possible policies is a 2D space
-consisting of $p^1_{a_1}$ and $p^2_{a_1}$:
+consisting of action 1 and action 2, each taken with some probability, $p^1_{a_1}$ and $p^2_{a_1}$:
 
 \begin{align}
 \pi &=
@@ -34,13 +34,31 @@ p^2_{a_1} & 1-p^2_{a_1}\\
 \end{bmatrix}
 \end{align}
 
-We can evaluate each each policy in this 2D space. Since there are two states,
-the evaluation returns a 2D vector of values, one for each state. Thus we can
-visualise the value of all policies.
+We can evaluate each each policy in this 2D space (using the analytic solution shown above).
+Since there are two states, the evaluation returns a 2D vector of values, one value for each state.
+Thus we can easily visualise the value of all policies.
 
-% INSERT PIC of polytope
+{\color{red}INSERT PIC of polytope}
 
-Great. But why do we care?? What does it tell us?
+\subsection{Properties of the polytope}
+
+Dadashi et al. explored and explained three interesting properties
+of the value polytope. \cite{Dadashi2018}
+{\color{red}They showed that ...}
+
+In appendix [] you can find further exploration of other properties of the value polytope;
+\begin{itemize}
+\tightlist
+\item
+  What is the distribution of policies on the polytope?
+\item
+  How does the discount rate change the shape of the polytope?
+\item
+  How do the dynamics of GPI partition the policy / value spaces?
+\end{itemize}
+
+
+\subsection{Optimisation dynamics on the polytope}
 
 We are interested in exploring the complexity of some different approaches to solving MDPs.
 % Value iteration requires O()... Policy iteration requires O()???

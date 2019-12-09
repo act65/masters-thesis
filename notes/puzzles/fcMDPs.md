@@ -1,5 +1,7 @@
 An MDP is normally defined as the set $\{S, A, T, r\}$. But consider a 'fully connected MDP' (fcMDP). Defined as an MDP with the extra requirement that: for any pair of states within the MDP, $A, B$, there is an action that allows the agent to transition from $A$ to $B$. That is, $\forall s_i, s_j \in S\;\;\exists a\in A: \tau(s_j | s_i, a)\approx 1$.
 
+<!-- This could be an exploration incentive? For every possible state-state pair, find an action /option that will get you from A to B. Relation to matrix completion!? -->
+
 Intuitively, this makes the problem a lot easier. Rather than having to navigate through a maze, we simply pick the action that takes us to the exit. But, on closer inspection, it isn't that simple...
 
 (problem here? probability = 1?!? unsure)
@@ -18,7 +20,7 @@ So fcMDPs have some nice properties, but how does this help us solve MDPs? Consi
 
 What needs to happen to a MDP for it to become a fcMDP? We need to transform the action space so that it better connect the states.
 
-Firstly, we are going to need more actions. For each state to be reachable by ... we need $|A| = |S|$.
+Firstly, we are going to need more actions. For each state to be reachable by ... we need $|A| \ge |S|$.
 
 $$
 \begin{align}
@@ -28,10 +30,10 @@ s_{t+1} &= T[\omega]s_t \tag{a fully connected MDP}\\
 \end{align}
 $$
 
-Here we have constructed a fully connected MDP from a MDP that isn't connected. This required a change of action space, from the ground actions to a set of temporally abstract options.
+Here we have constructed a fully connected MDP from a MDP that wasn't fully connected. This required a change of action space, from the ground actions to a set of temporally abstract options.
 
 - Want to learn a set of actions / options that can easily traverse the state space.
-- Less connectivity means the value of states are more "entangled"? (as to get to one state, you must go through others)
+- Less connectivity means the value of states are more "entangled"? (as to get to one state, you must go through others) !!!
 
 ***
 
@@ -127,5 +129,5 @@ But. Why would we care?
 
 $$
 \text{var}(V_M^\pi(s)) \le \text{var}(V_{\hat M}^\pi(s)) \\
-\mathop{\mathbb E}_{R\sim M(s, \pi)}[(R-V_M^\pi(s))^2] \le \mathop{\mathbb E}_{R\sim \hat M(s, \pi)}[(R-V_{\hat M}^\pi(s))^2] 
+\mathop{\mathbb E}_{R\sim M(s, \pi)}[(R-V_M^\pi(s))^2] \le \mathop{\mathbb E}_{R\sim \hat M(s, \pi)}[(R-V_{\hat M}^\pi(s))^2]
 $$
