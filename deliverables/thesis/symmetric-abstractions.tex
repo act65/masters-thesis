@@ -40,26 +40,116 @@ This ability is currently lacking in the ML tool kit. There has been much work d
 to
 
 
+
+\subsection{Exploitation}
+
+\begin{displayquote}
+\textit{Once have discovered a symmetry, how might we use it?}
+\end{displayquote}
+
+{\color{red}What simple experiments can I do!?!?!}
+Could test each method of exploitation against each other. What are their advantages / disadvantages?
+
+\subsubsection{Model minimisation}
+
+...
+
+\subsubsection{Output coupling}
+
+Mahajan et al. propose to use knowledge similarity to share couple outputs.
+\cite{Mahajan2017}
+
+\begin{align*}
+\chi: (S\times A) \times (S\times A) \to [0, 1] \\
+\mathcal L(\theta) = \mathop{\mathbb E}_{\chi} \Big[(Q(s, a, \theta)-Q(s', a', \theta))^2 \Big]
+\end{align*}
+
+Coupling the outputs of similar state-actions. This is nice because, we might know
+that $s, a$ and $s', a'$ are similar. Yet we many not have observed $s', a'$.
+
+% Equivalent to sharing training data?!?
+
+However, how did we know that $s, a$ and $s', a'$ are similar without seeing $s', a'$?
+
+\subsubsection{Gradient coupling}
+
+\begin{align*}
+\nabla_{\theta} \ell(s, a, \theta) = \nabla_{\theta} \ell(s', a', \theta) \\
+\chi \cdot \nabla_{\theta} \mathcal L(\theta)
+\end{align*}
+
+If $\chi$ has the structure $\chi((s, a), (s', a')) = \langle \nabla_{\theta}f(s, a, \theta), \nabla_{\theta} f(s', a', \theta) \rangle$ then will couple gradient in a certain way. NTK.
+
+\subsubsection{Data augmentation}
+
+Sharing targets between 'similar' inputs.
+\cite{Ho2019a, Lim2019, Cubuk2018, Cubuk2019}
+Discover which symmetries apply to a given domain, and at what magnitude.
+The optimisation problem becomes one of picking the probability of each op and its magnitude.
+There is a small set of ops (aka symmetries) that are given:
+\textit{Identity, AutoContrast, Equalize, Rotate, Solarize, Color, Posterize, Contrast,
+Brightness, Sharpness, ShearX, ShearY, TranslateX, TranslateY.}
+
+Uses validation error as a reward for learning.
+
+\subsubsection{Architecture}
+
+\cite{Ravanbakhsh2017a,Abdolhosseini}
+\cite{Anselmi2019}
+
+
+\subsection{Comparison}
+
+\begin{displayquote}
+\textit{So which method of incorporating knowledge of symmetries is best?}
+\end{displayquote}
+
+\begin{itemize}
+\tightlist
+  \item Data augementation: flips.
+  \item Gradient coupling: ??? gets complicated?
+  \item Output coupling: regulariser on similar outputs.
+  \item Architecture: mirror weights.
+\end{itemize}
+
+Equivalent?! (in this case, or in general?)
+What other ways are there? Want to construct the space of possible ways to incorporate symmetries into a learner.
+
 \subsection{Discovery}
 
 \begin{displayquote}
 \textit{How might we know that two state-action-reward (/values) are similar?}
 \end{displayquote}
 
-1. because we have seen it
-2. because it follows a pattern we have observed (for example, we might have seen
+There are two possibilities. Because we have seen it (data / evidence / experience).
+Because it follows a pattern we have observed. For example, we might have seen
 that rotations of $45, 90, 135, 180$, are all similar, therefore our first guess
-is that rotations of $225, 270, 315$ are also similar)
+is that rotations of $225, 270, 315$ are also similar. (priors / inductive bias / generalisation)
+{\color{red} TODO make this more readable / engaging}
 
 [2.] Is hard. This is about generalising using an inductive bias towards symmetry.
-% need a breif aside here about inductive bias and no free lunch!? no. can do it in the abstraction/discovery section
+% need a brief aside here about inductive bias and no free lunch!? no. can do it in the abstraction/discovery section
 
 To be able to share, what do we need to know?
 
 - That $x, y$ are similar. I.e. that $g \in G: y = g\circ x$
 - Just share between all invariant datapoints?! No. This is about generalisation!!
 
-\subsubsection{Inferring symmetries in data}
+\subsubsection{Symmetries from experience}
+
+What does this buy us? If have sufficient data to tell us that $x$ and $y$ are
+similar, say that they are mirror images of each other.
+As an unsupervised pretraining step. Then apply and share labels and learn more quickly?
+What else can $x$ tell us about $y$?
+
+\cite{Yang2019}
+
+Or end to end? As we get more certain that x and y are similar, we more strongly
+encourage their symmetry through one of the methods outlined above.
+Is it possible (/easier) to learn that x and y are similar (in terms of their labels) before (accurately) learning their labels.
+
+
+\subsubsection{Inferring symmetries in data with priors}
 
 Pick a simpler setting. No noise. Discrete domain. No action.
 First we need to be able to identify group structures from observations of ???.
@@ -138,40 +228,7 @@ x, y \in X : \exists G \cdot x \cap
 \end{align}
 
 
-\subsection{Exploitation}
 
-\begin{displayquote}
-\textit{Once have discovered a symmetry, how might we use it?}
-\end{displayquote}
-
-{\color{red}What simple experiments can I do!?!?!}
-Could test each method of exploitation against each other. What are their advantages / disadvantages?
-
-\subsubsection{Output coupling}
-
-Mahajan et al. propose to use knowledge similarity to share couple outputs.
-\cite{Mahajan2017}
-
-\begin{align*}
-\chi: (S\times A) \times (S\times A) \to [0, 1] \\
-\mathcal L(\theta) = \mathop{\mathbb E}_{\chi} \Big[(Q(s, a, \theta)-Q(s', a', \theta))^2 \Big]
-\end{align*}
-
-Coupling the outputs of similar state-actions. This is nice because, we might know
-that $s, a$ and $s', a'$ are similar. Yet we many not have observed $s', a'$.
-
-% Equivalent to sharing training data?!?
-
-However, how did we know that $s, a$ and $s', a'$ are similar without seeing $s', a'$?
-
-\subsubsection{Data augmentation}
-
-Sharing targets between 'similar' inputs.
-
-\subsubsection{Architecture}
-
-\cite{Ravanbakhsh2017a,Abdolhosseini}
-\cite{Anselmi2019}
 
 \subsection{n-dimensional Cart pole}
 
