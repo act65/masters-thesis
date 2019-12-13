@@ -39,6 +39,26 @@ But.
 This ability is currently lacking in the ML tool kit. There has been much work done
 to
 
+%  why do we care?
+For sample efficiency!! Inductive bias. Generalise in the right way wthout making observations.
+
+\subsection{Formalism}
+
+\begin{align}
+P(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} P(s''| a, s) \\
+P(f(s')|f(s), g_s(a)) = \sum_{\tilde s'\in [s']_f} \sum_{\tilde a \in [a]_{g_s}} \sum_{\tilde s \in [s]_f} P(\tilde s'| \tilde a, \tilde s) \\
+\end{align}
+
+Need to sum over all possible paths from $[s]$ to $[s']$?
+Is it even possible for paths with different actions to exist?
+
+\subsection{To be done}
+
+\begin{itemize}
+  \item temporal symmetries
+  \item approximate symmetries (algorithm and complexity)
+  \item statistical inference of symmetries (algorithm and complexity)
+\end{itemize}
 
 
 \subsection{Exploitation}
@@ -52,7 +72,7 @@ Could test each method of exploitation against each other. What are their advant
 
 \subsubsection{Model minimisation}
 
-...
+...\cite{NARAYANAMURTHY}
 
 \subsubsection{Output coupling}
 
@@ -94,6 +114,7 @@ Uses validation error as a reward for learning.
 
 \subsubsection{Architecture}
 
+Weight sharing?!? Weight coupling!?
 \cite{Ravanbakhsh2017a,Abdolhosseini}
 \cite{Anselmi2019}
 
@@ -244,6 +265,9 @@ to $\{0,1\}^{n}$.
 
 \cite{Brockman2016,baselines}
 
+% What makes this problem hard??
+
+% Existing envs dont test this because!?!?
 
 \subsubsection{How is this problem symmetric?}
 
@@ -272,6 +296,8 @@ Consider how exploration is done. In a single dimension, a greedy action is
 taken with some chance of explorating instead.
 
 Maybe you correctly balanced the pole in all dimensions except one. To bad, you dont get any reward.
+
+
 
 \subsection{Experiments}
 

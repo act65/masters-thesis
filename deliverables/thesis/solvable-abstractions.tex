@@ -6,6 +6,8 @@
 
 {\color{red}This whole intro section!?!?}
 
+What makes an optimisation problem easy to solve?
+
 % bellman eqn is hard to solve (how hard?)
 Existing solvers of MDPs such as are not efficient: value iteration requires at
 least \href{https://en.wikipedia.org/wiki/EXPTIME}{EXPTIME} iterations,
@@ -29,23 +31,22 @@ achieve this?
 \subsection{Linear Markov decision problems (LMDPs)}
 
 \begin{displayquote}
-Why linear?
+\textit{Why linear?}
 \end{displayquote}
 
 % How are we exploiting linearity?
 % Linearisation around the optima? Intuition. How to see this? Stephen!?
-Intuition.
+% Intuition.
 
-\subsubsection{Existing linear methods}
+% \subsubsection{Existing linear methods}
+%
+% The optimal policy of a MDPs can be found be using linear programming.
+% Traversing through the (value ??) space, ...?
 
 % many mathematical tools for analysis.
 % we know linear systems can be solved efficiently.
 
-% Linearity in MDPs
-% Polytope. LPs
-
-
-\subsubsection{Compositionality}
+Linear systems are easy to solve. (ref). They have $\mathcal O(n^3)$ complexity.
 
 Imagine if your life were linear, in the sense of effort and achieving goals.
 More work in equals proportionally more rewards. This makes decision making
@@ -74,15 +75,15 @@ linearity into MDPs in a few different ways.
 
 \begin{itemize}
   \tightlist
-  \item Jin et al. construct a MDP where the value is a linear function of a state-action representation. \cite{Wang}
-  \item Levine et al. contstruct a learner that assumes there exists a linear transition function. \cite{Levine2019}
-  \item Todorov constructs a linearised MDP that can be solved via a linear equation. \cite{Todorov2006}
+  \item Todorov constructs a linearised MDP is linear in the control. \cite{Todorov2006}
+  \item Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding. \cite{Wang}
+  \item Levine et al. contstruct a learner that assumes a linear transition function, allowing the use of \href{https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator}{LQR} solvers.\cite{Levine2019}
   \item Pires et al. construct a factored linear MDP that allows the TD operator to be applied in a lower dimensional space. \cite{Pires2016}
 \end{itemize}
 
-% pick the todorov ones.
-We explore the LDMPs that are defined in ???. ({\color{red}why?})
-For the rest of this work we will refer to these as LMDPs.
+Todorov's formulation appears to be the most powerful. By having a linear
+relationship between the value and the control, we can easily search for controls that
+are optimal. For the rest of this work we will refer to these as LMDPs.
 
 \subsubsection{Constructing a linear MDP}
 
@@ -92,8 +93,7 @@ For the rest of this work we will refer to these as LMDPs.
   \caption{'Solving the LMDP'}
 \end{figure}
 
-% intuition
-To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a few main tricks;
+To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a few main {\color{red}tricks};
 
 \begin{itemize}
 \tightlist
@@ -107,54 +107,55 @@ To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a 
   $\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{\zeta \sim D(\pi)} e^{R(\zeta)}$ \cite{EricWarrenFox2016}
 \end{itemize}
 
-In esscence, they are turning ...? intuition!!
+The intuition behind these tricks is; we have allowed the learner to pick arbitrary control.
+This simplifies the optimisation problem. But, now the learner might pick controls that are not possible
+under a given transition function. So we incentivise possible controls.
+\textit{"It is reminicent of a linear programming relaxation in integer programming"} \cite{Todorov}.
 
-Why did they need these tricks? Which ones were necessary / sufficient?
+% What is the relationship to other action embedding strategies? {\color{red}!!!!!}
+
+% Why did they need these tricks? Which ones were necessary / sufficient? !!!!!!!
 
 % formal definition
-Putting these together, a linear markov decision process can be formulated as;
-LMDP = $\{S, U, p, q, \gamma\}$. Where $p: S \to S$ is the unconditioned dynamics, and $q \in \mathbb R^{|S|}$ are state rewards.
+Putting these tricks together, a linear markov decision process can be formulated as;
+LMDP = $\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space of possible controls (aka any transition function),
+$p: S \to S$ is the unconditioned dynamics, and $q \in \mathbb R^{|S|}$ is state rewards.
 Our goal is to find the control, $u: S \to S$, that gvies the highest exponentiated cumlative reward $z \in \mathbb R_+^{|S|}$.
 
 \begin{align}
-V(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} V(s') \tag{1}\\
+\log z_{u^{* }}(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \log z_{u^{* }}(s') \tag{1}\\
 u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z_{u^{* }}(s')^{\gamma}} \tag{2}\\
 z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{3}
 \end{align}
 
-By definition, an LMDP is the optimisation problem in (1). After some algebra,
-it can be shown (see appendix [] for a derivation) that the optimal policy has the form in (2).
+By definition, a linearised Bellman equation can be constructed (1). After some algebra,
+it can be shown that the optimal policy has the form in (2).
 And! We can solve for the value of this policy (aka we can find the optimal policy)
-by solving the linear equation in (3).
+by solving the linear equation in (3). (see appendix [] for further explanation and a derivation)
 
 \begin{displayquote}
-\textit{Let's try and understand this thing we have contructed.}
+\textit{Let's try and understand this linear MDP we have constructed.}
 \end{displayquote}
 
-\subsubsection{Unconstrained dynamics and state rewards}
+\subsubsection{\color{red}The unconstrained dynamics and state rewards}
 
-The state rewards are not capable of giving rewards for actions taken.
-Rather, the differences in reward, by taking another action, is captured
-by the KL divergence between the control and the unconstrained dynamics.
+Initially, I thought of the unconstrained dynamics as the expected result of using random policy
+$p(s' | s) = \int_a P(s' | s, a)U(a|s)$, a random walk using the transition function.
+However, while this make sense intuitively, it turns out to be wrong.
 
-\begin{itemize}
-\tightlist
-\item
-  What is their function?
-\item
-  What do they look like?
-\end{itemize}
-
-Does it make sense to treat the q(s) like rewards?! They reward for being
-in state $s$. But cant capture action specific rewards!?
+Rather than state-action rewards $r: S \times A \to \mathbb R$, we have state rewards $q: S \to \mathbb R$.
+How can state rewards direct behaviour? They can't, and they can. State rewards are not capable of giving rewards for actions taken.
+Rather, the action dependent part of the reward is captured by the KL divergence between the control and the unconstrained dynamics.
+So the unconstrained dynamics are responsible for rewarding actions.
+But, states with higher state reward will be perferable.
 
 We will revisit to these questions in section [].
 
-\subsubsection{The optimal policy}
+\subsubsection{\color{red}The optimal policy}
 
 The form of this optimal policy ...
 
-\subsubsection{Solving for the optimal value}
+\subsubsection{\color{red}Solving for the optimal value}
 
 Why is it we can just solve this equenction? Relation to eigen analysis?
 Has nice convergence properties because it is contractive.
@@ -175,7 +176,7 @@ Has nice convergence properties because it is contractive.
 We want a way to transform a MDP into a LMDP, while preserving the
 `structure' of the original MDP. But what do we mean by a MDP's structure?
 The LMDP should; be able to represent the same transition dynamics as the original MDP (1),
-and give the the same rewards was the original MDP (2). \cite{Todorov} (why? / intuition?!)
+and give the the same rewards was the original MDP (2). \cite{Todorov} {\color{red}(why? / intuition?!)}
 
 \begin{align*}
 \forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \\
@@ -183,14 +184,16 @@ P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{1} \\
 r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{2}
 \end{align*}
 
+% "We do not yet have theoretical error bounds but have found the approximation to be very accurate in practice" \cite{Todorov}
+
 So, given a reward function, $r$, and a transition function, $P$,
 from an MDP, we can use (1), (2) to solve for the unconditioned dynamics $p$ and a state reward $q$.
 This transformation, from $P, r \to p, q$ requires $|S| \times |A|$ computations, as for each state in the
-MDP \(|A|\) linear equations to solve. For more details see appendix [].
+MDP \(|A|\) linear equations to solve. (For more explanation and a derivation see appendix [].)
 
-However, there are some conditions that are missing?
-It might make sense to preserve the value of state-actions (3)?
-And it would definitely make sense to preserve the optimal policy (4)?
+However, are there some conditions that are missing?!
+It might make sense to preserve the value of state-actions (3)? {\color{red}Because?}
+And it would definitely make sense to preserve the optimal policy (4)? {\color{red}Because?}
 
 \begin{align*}
 \forall s, s' \in S, \forall a \in A, \forall \pi \in \Pi \\
@@ -200,16 +203,10 @@ P(s'|s, a) \cdot \pi^{* }(a|s) = u^{* }(s'|s) \tag{4}
 
 Where $z_{u_{\pi}}$ is the value (as evaluted by the LMDP) of the control $u_{\pi}(s'|s) = P(s'|s, a) \cdot \pi(a|s)$.
 
-If the optimal policy is not preserved then ...
-
 Todorov hopes that (1), (2), will be sufficient to give (4). But he does not prove it.
-{\color{red}(find a quote from the paper?!?)} A potential problem that we will return to.
+This is problem that we will return to.
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Initially, I thought of the unconstrained dynamics as the expected result of using random policy
-$p(s' | s) = \int_a P(s' | s, a)U(a|s)$, a random walk using the transition function.
-However, while this make sense intuitively, it turns out to be wrong. (more details here...)
+% If the optimal policy is not preserved by the transformation of MDP to LMDP then solving the
 
 \subsection{Decoding the optimal LMDP policy}
 
@@ -219,13 +216,20 @@ However, while this make sense intuitively, it turns out to be wrong. (more deta
 \caption{''}
 \end{figure}
 
-We transformed our MDP into a LMDP, we can solve it. Now, how can we use $u^{* }$
-to construct a policy that is optimal in the original MDP, $\pi_{u^* }$?
+\begin{displayquote}
+\textit{How can we use the optimal control, $u^{* }$, to construct a policy that is optimal in the original MDP, $\pi_{u^* }$?}
+\end{displayquote}
 
 Here we get a glimpse at a potentially interesting abstraction.
 The LMDP has disentangled the search for the optimal controls (solve the LMDP) (go to this or
 that state) and the search for the optimal policy (how to actually
-realise that control). This can be seen the decoding step (currently being considered). We know which
+realise that control).
+
+This decomposition is reminicent of goal conditioned approaches to heirarchical RL.
+Where a higher level agent give goals (go to this or that state) to a lower level
+agent, who must figure out how to achieve that goal. \cite{Vezhnevets2017} {\color{red}more refs?!?}
+
+This decomposition can be seen the optimal control decoding step (currently being considered). We know which
 states we want to be in, the $z^{* }, u^{* }$, from solving the LMDP, but,
 we do not know how to implement those controls in the original MDP.
 We can formulate this decoding problem as trying to match the optimal controls (aka dynamics)
@@ -235,6 +239,8 @@ using the actions we have available.
 P_{\pi}(\cdot | s) = \sum_a P(\cdot | s, a) \pi(a | s) \\
 \pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big)
 \end{align}
+
+{\color{red}TODO}
 
 This optimisation problem has very little structure.
 Maybe a way to add more structure?
@@ -257,16 +263,17 @@ One of the main questions we have not addressed yet is; if we solve the
 MDP directly, or linearise, solve and project, do we end up in the same
 place? This is a question about the completeness of our abstraction. Can
 our abstraction represent (and find) the same solutions that the
-original can?
-
-$\epsilon_{\pi}$ will tell us if the solutions are different. But What we really care about
-is whether the value is different. We might not care if the optimal control yields a policy that is different from the optimal policy, as long as the
- policy via optimal control achieves high performance. We can measure this with $\epsilon_{V}$.
+original can? We can formalise this question as the difference between the optimal values or optimal policies.
 
 \begin{align*}
 \epsilon_{\pi} &= \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big) \\
 \epsilon_{V} &= \parallel V_{\pi^{* }} - V_{\pi_{u^{* }}} \parallel_{\infty}
 \end{align*}
+
+Where $\epsilon_{\pi}$ will tell us if the optimal behaviours are different. But What we really care about
+is whether their value is different. We might not care if the optimal control
+yields a policy that is different from the optimal policy, as long as the
+policy via optimal control achieves high performance. We can measure this with $\epsilon_{V}$.
 
 To evaluate $V_{\pi_{u^{* }}}$, the value of the decoded optimal control, we can
 set $P_{\pi} = u^{* }$. And solve $V = (I - \gamma P_{\pi})^{-1} \cdot r_{\pi}$.
@@ -275,7 +282,7 @@ dependent. We would like to be able to calculate $r_{\pi_{u^{* } }}$, but we don
 explicity know \(\pi_{u^{* }}\). By solving $(I - \gamma P_{\pi^{* }})^{-1} \dot r$
 we get the state-action values, or $Q$ values of the optimal control.
 
-Results...
+Results... Bad.
 
 \begin{figure}
 \centering
@@ -315,11 +322,8 @@ Given that the first step was not passed, optimality. We did not continue this c
 
 \subsection{Scaling to more complex problems}
 
-Now that we have some evidence that this LMDP solution strategy makes
-sense, it efficiently (see \href{}{complexity}) yields high value (see
-\href{}{optimality}) policies. We want to test it out on some real world
-problems. But the real world isn't as nice as the setting we have been
-working in. There are a few added complexities;
+The next step of developing any RL algorithm would be to generalise it to more 'real' settings.
+The real world isn't as nice as the setting we have been working in. There are a few added complexities;
 
 \begin{itemize}
 \tightlist
@@ -348,52 +352,11 @@ Learn \(p, q\) based on samples.
 
 \begin{align}
 \mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, a,} \bigg[ r(s, a) - q_\theta(s) + \text{KL}(p_\phi(\cdot | s) \parallel P(\cdot | s, a)) \bigg]\\
-\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg] \\
+\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg]
 \end{align}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Ok. Lets take a different approach. \textbf{Q:} Why is it a bad idea to
-try to do incremental RL with this linearisation trick? Not sure.
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Alternative perspective. The high value trajectories are the most likely
-ones.
-
-\subsubsection{Distributions over states}
-
-What if we wanted to approximate these distributions? Generalise subgoal
-methods to work with distributions? The distribution could be
-constructed via; parzen window / GMM, neural flow, ?!.
-
-Connections to distributional RL?
-
-Questions
-
-\begin{itemize}
-\tightlist
-\item
-  What is p(s'\textbar{}s)!?!?
-\item
-  Want some examples of MDPs they cannot solve.
-\item
-  What is the relationship to other action embedding strategies?
-\item
-  How does p(s'\textbar{}s) bias the controls found??? I can imagine the
-  unconstrained dynamics acting as a prior and prefering some controls
-  over others.
-\item
-  If we have m states and n actions. Where m
-  \textgreater{}\textgreater{} n. Then \(u(s'|s)\) is much larger than
-  \(\pi(a|s)\). Also, \(u(s'|s)\) should be low rank?!
-  \(u_{s's} = \sum_a u_a \alpha_a u_a^T\)
-\end{itemize}
-
 
 
 Refs \cite{Todorov2006,Todorov2009,Zhong,Zhonga,Dvijotham,Wozabal}
-
 
 
 \begin{figure}
@@ -416,4 +379,30 @@ However, it is not possible to make those transitions as }
 \caption{A chain problem with negative rewards applied to all states}
 \end{figure}
 
-The point is, it is not entierly clear how to embed an MDP into a LMDP.
+The point is, the current formulation of LMDPs do not allow you to reliably embed a MDP in a LMDP.
+Leaves open the question of whether it is still possible given other assumptions!? Does it?
+
+If we consider the weaker apporaches to adding linearity to MDPs
+
+% Linearise around the optimal policy. But how does that tell us how to act when not at the optimal policy?
+
+Need to explain why Todorov's expierments worked. !!!
+
+
+\textbf{Questions}
+
+\begin{itemize}
+\tightlist
+\item
+  What is p(s'\textbar{}s)!?!?
+\item  Want some examples of MDPs they cannot solve.
+\item
+  How does p(s'\textbar{}s) bias the controls found??? I can imagine the
+  unconstrained dynamics acting as a prior and prefering some controls
+  over others.
+\item
+  If we have m states and n actions. Where m
+  \textgreater{}\textgreater{} n. Then \(u(s'|s)\) is much larger than
+  \(\pi(a|s)\). Also, \(u(s'|s)\) should be low rank?!
+  \(u_{s's} = \sum_a u_a \alpha_a u_a^T\)
+\end{itemize}
