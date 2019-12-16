@@ -40,21 +40,35 @@ Thus we can easily visualise the value of all policies.
 
 {\color{red}INSERT PIC of polytope}
 
+Policies in the middle tell you very little? A slight move away from the middle
+(and then compare to the middle) would allow you to detect more better actions.
+But the signal (the change in value) would be small, and you would need more data?!
+
+What info do you get from being in the middle vs at an edge / vertex? More info / less?
+
 \subsection{Properties of the polytope}
 
 Dadashi et al. explored and explained three interesting properties
 of the value polytope. \cite{Dadashi2018}
+They were interested in three aspects of the different algorithms’ learning dynamics:
+
+\begin{itemize}
+\tightlist
+  \item the path taken through the value polytope,
+  \item the speed at which they traverse the polytope,
+  \item and any accumulation points that occur along this path.
+\end{itemize}
+
+How quickly do these learners traverse the polytope? Do algorithms take the shortest path? Where are the accumulation points?
+
 {\color{red}They showed that ...}
 
 In appendix [] you can find further exploration of other properties of the value polytope;
 \begin{itemize}
 \tightlist
-\item
-  What is the distribution of policies on the polytope?
-\item
-  How does the discount rate change the shape of the polytope?
-\item
-  How do the dynamics of GPI partition the policy / value spaces?
+  \item What is the distribution of policies on the polytope?
+  \item How does the discount rate change the shape of the polytope?
+  \item How do the dynamics of GPI partition the policy / value spaces?
 \end{itemize}
 
 
@@ -70,7 +84,7 @@ Curiously, their results lead to a question:
 \end{displayquote}
 
 In any optimisation problem, we have a set of potential solutions, also known as the search space,
-and a way to evaluate these potential solutions, a cost or loss function. For example, we
+and a way to evaluate these potential solutions, a cost or loss function. For example, we {\color{red}example..!??!}
 
 What do I mean by a search space? By optimisation dynamics? Why should anyone care?
 
@@ -85,26 +99,26 @@ search for this policy? We could search within;
 
 \begin{itemize}
 \tightlist
-\item
-the set of potentially optimal policies, the \(|A|^{|S|}\) discrete policies,
-\item
-the set of possible value functions, \(\mathbb R^{|S|}\),
+  \item the set of potentially optimal policies, the $|A|^{|S|}$ discrete policies,
+  \item the set of all possible policies $\pi \in \mathbb R^{|S| \times |A|}: \forall s \int_a \pi(a|s) = 1$
+  \item the set of possible value functions, $\mathbb R^{|S|}$, which we could then use to construct the optimal policy
 \end{itemize}
-or maybe some other space. But which space is best?
+Or maybe some other space. But which space is best?
 
 % Which space allows us to find the optimal policy in the 'cheapest' manner?
 Naively, we know that smaller search spaces are better. We would rather
 search for our keys in a single room, rather than many. But added
 structure (for example, continuity) can be exploited to yield faster
 search, even when there are infinitely more states to search.
-% want example!?
+% want to finish key example!?
 
 % Aside. Deep learning - search space. Overparameterisation. \cite{Arora2018}
 
 \subsection{Value search}
 
-Let's search through possible values. But how can we ensure that our search is
-related to the original MDP? We can use Bellman's optimality operator to guide our search.
+Let's search through possible values. But how can we ensure that our search will
+converge to a value reasliable by the original MDP? We can use Bellman's
+optimality operator to guide the search.
 
 % (need to explain? why does stationarity mean optimality...?!)
 
@@ -197,12 +211,6 @@ and Red shows the estimated value of policies when evaluated under the learned m
 
 
 Related to AWR? https://arxiv.org/pdf/1910.00177.pdf
-
-\subsubsection{Compressed sensing}
-
-words
-
-
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -427,3 +435,18 @@ How does momentum bias trajectories? To cover more distance? To have more divers
 
 Search spaces with alternative geometries.
 Hyperbolic neural networks. https://arxiv.org/pdf/1805.09112.pdf
+
+
+\section{Visualising higher dimensional MDPs}
+
+So this value polytope works well for 2D. And possibly 3D. But,
+"To deal with a 14-dimensional space, visualize a 3-D space and say 'fourteen' to yourself very loudly. Everyone does it." -- Geoff Hinton.
+
+How to construct them?
+
+Properties of the graphs / graph signals?
+
+
+\subsection{Compressed sensing}
+
+Related to !?!

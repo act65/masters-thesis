@@ -389,7 +389,35 @@ Also. A lower bound really should take into account the ability to find patterns
 
 ***
 
+
+
 - [Latent Space Policies for Hierarchical Reinforcement Learning](https://arxiv.org/pdf/1804.02808.pdf)
 - [Learning latent state representation for speeding up exploration](https://arxiv.org/pdf/1905.12621.pdf)
+
+
+### Abstraction Selection in Model-Based Reinforcement Learning
+
+[http://proceedings.mlr.press/v37/jiang15.pdf](http://proceedings.mlr.press/v37/jiang15.pdf)
+
+$$
+Appr(h) = \epsilon^h_R + \frac{\gamma R_{max} \epsilon_T^h}{2(1-\gamma)} \\
+Appr(h) = \epsilon^h_R + \frac{\gamma \epsilon^h_R \epsilon_T^h}{2(1-\gamma)} \\
+$$
+
+Error in the rewards should accumulate into the value estimate? Not be proportional to?!
+
+
+Interesting inductive bias.
+Shouldnt use a fine abstraction at the start, because we do not have enough data to reliably estimate many states. Rather pick a coarse model, and estimate those states with higher n. Then, as needed to improve the approximation error, added complexity.
+
+
+### Notes on state abstractions
+
+[http://nanjiang.cs.illinois.edu/files/cs598/note4.pdf](http://nanjiang.cs.illinois.edu/files/cs598/note4.pdf)
+
+> How should we define an (approximate) equivalence notion among states? Whether they share the same optimal action? Whether they share the same Q? values? Whether they yield the same rewards and next-state distributions? It turns out that, these criteria define a hierarchy of different state abstractions, from lenient to strict. Lenient notions of abstractions yield more generalization benefits, but may not work well with certain algorithms; strict notions of abstractions preserve many properties of the original MDP and hence work with a wider range of algorithms, but the generalization benefits are relatively limited.
+
+So then which algorithms work with which abstractions?
+
 
 </div>

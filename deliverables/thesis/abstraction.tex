@@ -66,6 +66,11 @@ The three steps of abstraction - transform to a new domain
 The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data. \cite{Konidaris2019}
 \end{displayquote}
 
+\begin{displayquote}
+  \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties}
+\end{displayquote} Littman / Walsh.
+
+
 \section{Abstractions for RL}
 
 % types of abstraction we will consider
@@ -152,92 +157,29 @@ What could be similar? Two states, two actions, two state-actions. Why?
 Because they result in the same future rewards? The same future transitions? The same future actions?
 Because they can reach the same set of states.
 
-% Two MDPs might be similar?
+\begin{itemize}
+  \tightlist
+  \item Characterising the future: One step, k-step, expected, reachable, MC rollout / trajectories, etc etc.
+  \item Things we might care about: rewards / fn, actions / fn, states / fn.
+  \item All versus just the optimal.
+\end{itemize}
 
-What about $(s, a, r, s, a)$s? Two $(s, a, r, s, a)$s are similar if?
-
-\begin{enumerate}
-\tightlist
-\item
-  The policy function:
-  \(\forall_{\cdot_a, \cdot_b \in D^{* }} \mid \pi(\cdot_a) - \pi(\cdot_b) \mid \le \epsilon\)
-  is approximately the same.
-\item
-  The transition function:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \tau(\cdot_a) - \tau(\cdot_b)\mid \le \epsilon\)
-  is approximately the same.
-\item
-  The reward function:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid r(\cdot_a) - r(\cdot_b) \mid \le \epsilon\)
-  is approximately the same.
-\end{enumerate}
-
-A note on the notation used.
-
-Also,
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
-\tightlist
-\item
-  The policy trajectory:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \sum_{t=0}^T \parallel \pi(\cdot_a) - \pi(\cdot_b)\parallel_1 \mid \le \epsilon\)
-  is approximately the same.
-\item
-  The transition trajectory:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \sum_{t=0}^T\parallel \tau(\cdot_{a_t}) - \tau(\cdot_{b_t})\parallel_1\mid \le \epsilon\)
-  is approximately the same.
-\item
-  The reward trajectory:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \sum_{t=0}^T \parallel r(\cdot_{a_t}) - r(\cdot_{b_t})\parallel_1 \mid \le \epsilon\)
-  is approximately the same.
-\end{enumerate}
+What about $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$s? $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$ and $(s_t', a_t', r_t', s_{t+1}'', a_{t+1}'')$s are similar if?
 
 GVFs
 
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{6}
-\tightlist
-\item
-  The discounted future policy:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \Pi(\cdot_a) - \Pi(\cdot_b)\mid \le \epsilon\)
-  is approximately the same.
-\item
-  The discounted future transition:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid \Upsilon(\cdot_a) - \Upsilon (\cdot_b)\mid \le \epsilon\)
-  is approximately the same.
-\item
-  The discounted future reward:
-  \(\forall_{\cdot_a, \cdot_b \in D} \mid Q(\cdot_a) - Q(\cdot_b)\mid \le \epsilon\)
-  is approximately the same.
-\end{enumerate}
-
-For all $\pi \in \Pi$, or just or $\pi^{* }$?
-
-Including any combination of these.
-Do some of these make sense?
-- Discounted future policy? What is this?
-- How is the future policy different from the future trajectory?
-- ?
-
-\textbf{Q:} Which is best?
-
-\begin{quote}
-\textbf{Claim 1:} 9.(the value fn) will yield the most compression,
-while performing well. But, it is a task specific representation, thus
-it will not transfer / generalise well.
-\end{quote}
-
-
 \cite{Littman2006} give 5 classes of state abstraction, and show that ...???
-Here is a further generalisation
+\cite{Abel2017} give 4 classes of approximate states abstraction. They show that ...
+Which is best?
 
+Generalise to actions / temporal.
 
 $V(s) - V(s')$ as a similarity measure tells us very little. Because...?
-
+Why doesnt this simple baseline work. Try it out?! Explain.
+On a simple MDP, on atari. How to implement? Need to learn $chi(s, s')$.
+It will learn whether two state are similar under many different policys. As we train it...
+For every state in our replay buffer, is the return similar to other states?
+Just sample a minibatch and compare those states.
 
 
 \subsection{Examples}
@@ -285,11 +227,20 @@ This intuition leads to our work in section ... (symetric abstractions).
 
 \subsection{Discussion}
 
+Learnability!!!
+
 A main issue with this framework for analysing abstraction is that it does not consider
 the sample or computational complexity of finding the optimal policy. Only that, under the abstraction,
 it exists.
 
-Also, we have not discussed the discovery of / how to construct the abstraction.
+\begin{itemize}
+  \item Abstraction with only preserving optimal actions isnt reliable. We have not preserved the values.
+  and therefore, there exist MDPs where the bellman equation is broken, meaning in some cases we cannot learn.
+  \item Abstraction that preserves only the value of the optimal policy. So then the value of other policies might be broken.
+  How can we still use the bellman eqn to do on-policy learning? We cant? Can only use the bellman optimality eqn / off-policy learning?
+  \item When using approximate abstractions, there is some error. This error might accumulate? Needs to be characterised!?
+\end{itemize}
+
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 

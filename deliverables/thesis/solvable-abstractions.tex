@@ -1,3 +1,4 @@
+\newpage
 \section{Solvable representations}
 
 \begin{displayquote}
@@ -31,7 +32,7 @@ achieve this?
 \subsection{Linear Markov decision problems (LMDPs)}
 
 \begin{displayquote}
-\textit{Why linear?}
+\textit{Why linear MDPs?}
 \end{displayquote}
 
 % How are we exploiting linearity?
@@ -75,7 +76,7 @@ linearity into MDPs in a few different ways.
 
 \begin{itemize}
   \tightlist
-  \item Todorov constructs a linearised MDP is linear in the control. \cite{Todorov2006}
+  \item Todorov constructs a linearised MDP is linear in the 'control' (a proxy for the policy). \cite{Todorov2006}
   \item Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding. \cite{Wang}
   \item Levine et al. contstruct a learner that assumes a linear transition function, allowing the use of \href{https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator}{LQR} solvers.\cite{Levine2019}
   \item Pires et al. construct a factored linear MDP that allows the TD operator to be applied in a lower dimensional space. \cite{Pires2016}
@@ -107,9 +108,9 @@ To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a 
   $\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{\zeta \sim D(\pi)} e^{R(\zeta)}$ \cite{EricWarrenFox2016}
 \end{itemize}
 
-The intuition behind these tricks is; we have allowed the learner to pick arbitrary control.
-This simplifies the optimisation problem. But, now the learner might pick controls that are not possible
-under a given transition function. So we incentivise possible controls.
+The intuition behind these tricks seems to be; we have allowed the learner to pick an arbitrary control.
+This simplifies the optimisation problem. But, now the learner might pick a control that is not possible
+under the given transition function. So we incentivise controls that are close to the underlying dynamics.
 \textit{"It is reminicent of a linear programming relaxation in integer programming"} \cite{Todorov}.
 
 % What is the relationship to other action embedding strategies? {\color{red}!!!!!}
@@ -220,19 +221,20 @@ This is problem that we will return to.
 \textit{How can we use the optimal control, $u^{* }$, to construct a policy that is optimal in the original MDP, $\pi_{u^* }$?}
 \end{displayquote}
 
-Here we get a glimpse at a potentially interesting abstraction.
+Here we get a glimpse at the structure of our abstraction.
 The LMDP has disentangled the search for the optimal controls (solve the LMDP) (go to this or
 that state) and the search for the optimal policy (how to actually
 realise that control).
 
 This decomposition is reminicent of goal conditioned approaches to heirarchical RL.
-Where a higher level agent give goals (go to this or that state) to a lower level
+Where a higher level agent gives goals (go to this or that state) to a lower level
 agent, who must figure out how to achieve that goal. \cite{Vezhnevets2017} {\color{red}more refs?!?}
 
-This decomposition can be seen the optimal control decoding step (currently being considered). We know which
-states we want to be in, the $z^{* }, u^{* }$, from solving the LMDP, but,
+This decomposition within the LMDP can be seen the optimal control decoding
+step (currently being considered). We know which
+states we want to be in, the $z^{* } / u^{* }$, from solving the LMDP, but,
 we do not know how to implement those controls in the original MDP.
-We can formulate this decoding problem as trying to match the optimal controls (aka dynamics)
+We can formulate this decoding problem as trying to match the optimal control (aka dynamics)
 using the actions we have available.
 
 \begin{align}
@@ -253,6 +255,8 @@ rewards?!?)
 It turns out that solving \textbf{P2} is asymptotically as hard as solving a MDP.
 So nothing has been gained... (proof?!?)
 
+Great. We have now built a way to solve a MDP with a LMDP. Does it work as hoped?
+
 \subsubsection{Optimality of solutions via LMDPs}
 
 \begin{quote}
@@ -269,6 +273,9 @@ original can? We can formalise this question as the difference between the optim
 \epsilon_{\pi} &= \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big) \\
 \epsilon_{V} &= \parallel V_{\pi^{* }} - V_{\pi_{u^{* }}} \parallel_{\infty}
 \end{align*}
+
+{\color{red}Note!!!: $\epsilon_{\pi}$ isnt reliable. we have not preserved the values.
+and therefore, there exist MDPs where the bellman equation is broken, meaning n some cases we cannot learn.}
 
 Where $\epsilon_{\pi}$ will tell us if the optimal behaviours are different. But What we really care about
 is whether their value is different. We might not care if the optimal control
@@ -296,68 +303,22 @@ Results... Bad.
 \caption{A comparison between the optimal control (LMDP) and the optimal policy (MDP).}
 \end{figure}
 
-\subsubsection{The complexity of solutions via LMDPs}
+{\color{red}also include some numbers of the value error}
 
-\begin{quote}
-Is my path actually shorter?
-\end{quote}
+\subsection{But it does work!?!?}
 
-The whole point of this abstraction was to make the problem easier to
-solve. So has it actually made it any easier?
+How can I be certain my experiments are true. Need to verify / convince the reader.!!!
+Positive controls!
 
-The complexity of solving our abstraction can be broken down into the
-three steps;
+Need to explain why Todorov's experiments worked. !!!
+added extra actions as otherwise the computation of D doesnt work.
+Could test / demomstrate on some of the cts problems!?
 
-\begin{itemize}
-\tightlist
-\item
-  linearisation: \(|S| \times \text{min}(|S|,|A|)^{2.3}\)
-\item
-  solve the LMDP: \(\text{min}(|S|,|A|)^{2.3}\)
-\item
-  project back: \(???\)
-\end{itemize}
+Todorov dont actually do any experiments using their embedding plus analytic solution?!?!? So it is hard to reproduce / verify my experiments.
 
-Given that the first step was not passed, optimality. We did not continue this characterisation.
+They do experiments with z learning. Which is not particularly interesting. It seems to only work when you have access to $q$ which needs to be carefully designed. Then you just act greedily from there...
 
-\subsection{Scaling to more complex problems}
-
-The next step of developing any RL algorithm would be to generalise it to more 'real' settings.
-The real world isn't as nice as the setting we have been working in. There are a few added complexities;
-
-\begin{itemize}
-\tightlist
-\item
-  sample based / incremental
-\item
-  large / cts state spaces
-\item
-  sparse rewards
-\end{itemize}
-
-So now that we have explored LMDPs, how can we extract their nice
-properties into an architecture that might scale to more complex
-problems: larger state spaces and action spaces, sparse rewards,
-\ldots{}?
-
-\subsubsection{Incremental implementation}
-
-Generalise to a more complex problem. We are only given samples. A first
-step to tackling more complex problems.
-
-
-\subsubsection{Model based}
-
-Learn \(p, q\) based on samples.
-
-\begin{align}
-\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, a,} \bigg[ r(s, a) - q_\theta(s) + \text{KL}(p_\phi(\cdot | s) \parallel P(\cdot | s, a)) \bigg]\\
-\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg]
-\end{align}
-
-
-Refs \cite{Todorov2006,Todorov2009,Zhong,Zhonga,Dvijotham,Wozabal}
-
+Very sensitive to the scale of the rewards. Needs to be tuned. For example
 
 \begin{figure}
 \centering
@@ -379,30 +340,33 @@ However, it is not possible to make those transitions as }
 \caption{A chain problem with negative rewards applied to all states}
 \end{figure}
 
+It would be nice to know when LMDP will give sensible answers. When $P, r$ is ?!?
+
+\subsection{Conclusions / Discussion}
+
 The point is, the current formulation of LMDPs do not allow you to reliably embed a MDP in a LMDP.
 Leaves open the question of whether it is still possible given other assumptions!? Does it?
 
 If we consider the weaker apporaches to adding linearity to MDPs
 
+Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding. \cite{Wang}.
+But, to actually optimise this, we are returned to non-linear dynamics as determined by the bellman equation.
+If we just treated the relationship as linear... not every embedding can be reaslised as a policy.
+So without constraining the optimisation in the right way, ...
+It seems that the main advantage gained by adding linearity in this way is the ease of analysis.
+Whether this type of linear abstraction actually reduces the sample or computational complexity has yet to be answered.
+
+
+Refs \cite{Todorov2006,Todorov2009,Zhong,Zhonga,Dvijotham,Wozabal}
 % Linearise around the optimal policy. But how does that tell us how to act when not at the optimal policy?
 
-Need to explain why Todorov's expierments worked. !!!
 
+\begin{displayquote}
+  \textit{This represents the first general class of MDPs where the optimal
+actions can be found analytically given the optimal costs-to-go.}
+\end{displayquote}
 
-\textbf{Questions}
+Our goal is to construct a class of MDPs for which this exhaustive search can
+be replaced with an analytical solution.
 
-\begin{itemize}
-\tightlist
-\item
-  What is p(s'\textbar{}s)!?!?
-\item  Want some examples of MDPs they cannot solve.
-\item
-  How does p(s'\textbar{}s) bias the controls found??? I can imagine the
-  unconstrained dynamics acting as a prior and prefering some controls
-  over others.
-\item
-  If we have m states and n actions. Where m
-  \textgreater{}\textgreater{} n. Then \(u(s'|s)\) is much larger than
-  \(\pi(a|s)\). Also, \(u(s'|s)\) should be low rank?!
-  \(u_{s's} = \sum_a u_a \alpha_a u_a^T\)
-\end{itemize}
+But they never construct that class / give a way to know which problem are in this class, an which are not.

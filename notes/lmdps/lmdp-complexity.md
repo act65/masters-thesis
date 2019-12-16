@@ -42,3 +42,67 @@ P_{\pi}(\cdot | s) &= \sum_a P_k(\cdot | s, a) \pi(a | s) \\
   \end{cases}
 \end{align}
 $$
+
+
+### moved from thesis.
+
+\subsubsection{The complexity of solutions via LMDPs}
+
+\begin{quote}
+Is my path actually shorter?
+\end{quote}
+
+The whole point of this abstraction was to make the problem easier to
+solve. So has it actually made it any easier?
+
+The complexity of solving our abstraction can be broken down into the
+three steps;
+
+\begin{itemize}
+\tightlist
+\item
+  linearisation: \(|S| \times \text{min}(|S|,|A|)^{2.3}\)
+\item
+  solve the LMDP: \(\text{min}(|S|,|A|)^{2.3}\)
+\item
+  project back: \(???\)
+\end{itemize}
+
+Given that the first step was not passed, optimality. We did not continue this characterisation.
+
+\subsection{Scaling to more complex problems}
+
+The next step of developing any RL algorithm would be to generalise it to more 'real' settings.
+The real world isn't as nice as the setting we have been working in. There are a few added complexities;
+
+\begin{itemize}
+\tightlist
+\item
+  sample based / incremental
+\item
+  large / cts state spaces
+\item
+  sparse rewards
+\end{itemize}
+
+So now that we have explored LMDPs, how can we extract their nice
+properties into an architecture that might scale to more complex
+problems: larger state spaces and action spaces, sparse rewards,
+\ldots{}?
+
+\subsubsection{Incremental implementation}
+
+Generalise to a more complex problem. We are only given samples. A first
+step to tackling more complex problems.
+
+
+\subsubsection{Model based}
+
+Learn \(p, q\) based on samples.
+
+$$
+\begin{align}
+\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, a,} \bigg[ r(s, a) - q_\theta(s) + \text{KL}(p_\phi(\cdot | s) \parallel P(\cdot | s, a)) \bigg]\\
+\mathcal L(\theta, \phi) = \mathop{\mathbb E}_{s, r, s'} \bigg[r - q_\theta(s) - p_\phi(s' | s) \log \frac{1}{ p_\phi(s' | s)} \bigg]
+\end{align}
+$$
