@@ -2,20 +2,20 @@
 
 \newpage
 
-Before going further with our quest for efficient RL. Let's explore some
-properties of our chosen setting, MDPs.
+Before going further with our quest for efficient RL. Let's try to understand
+some properties of our setting, MDPs.
 
 
 \section{The value function polytope}
 
 The Value Function Polytope \cite{Dadashi2018} provides some great intuition
-about the structure of a MDP and the dynamics of optimisation. Let's take a look:
+about the structure of a MDP and the dynamics of solvers. Let's take a look:
 consider a two state, two action MDP.
 
-\begin{figure}
+\begin{figure}[hb!]
 \centering
 \includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-automata.png}
-\caption{The simplest possible MDP, with two states and two actions. (Any simpler setting is entirely uninteresting. A single state means actions do nothing.
+\caption{The simplest possible MDP has two states and two actions. (Any simpler setting is entirely uninteresting. A single state means actions do nothing.
 And a single action means all policies are the same.).}
 \end{figure}
 
@@ -35,15 +35,24 @@ p(a=a_1|s=s_2) & 1-p(a=a_1|s=s_2)\\
 \end{bmatrix}
 \end{align}
 
-We can evaluate (calculate the expected return) each each policy in this 2D space (using the \eqref{eq:value-functional}).
-Since there are two states, the evaluation returns a 2D vector of values, one value for each state.
-Thus we can easily visualise the value of each policy.
+Since the policies are a 2D space, we can visualise them. This square of all possible policies is not particularly interesting.
 
-{\color{red}INSERT PIC of polytope}
+Rather, we can evaluate (calculate the expected return) each each policy (using the \eqref{eq:value-functional}).
+Since there are two states, the evaluation returns a 2D vector of values, one value for each state.
+We can easily visualise the value of each policy. And because the policies were a 2D structure, we see a
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/value-polytope.png}
+\caption{For every policy, we can plot a dot where that value of that policy lies in 'value space'.
+The red dots are deterministic policies.}
+\end{figure}
 
 \subsection{Properties of the polytope}
 
-Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope. Sepcifically they focused on its geometry and dynamics.
+Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope. Sepcifically they focused on its geometry and dynamics. \footnotemark[3]
+
+\footnotetext[3]{In \ref{polytope-extras} you can find further exploration of other properties of the value polytope.}
 
 \subsubsection{Geometry of the polytope}
 
@@ -56,13 +65,13 @@ Dadashi et al. remark, the polytope gives a clear illustration of the following 
   \item (Continuity) The space V is connected.
 \end{itemize}
 
-{\color{red} should i explain these?}
+{\color{red} i need to explain these!?}
 
-Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
+% Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
 
 \subsubsection{Dynamics on the polytope}
 
-They were interested in three aspects of the different algorithms’ learning dynamics:
+Furthermore, Dadashi et al. were interested in three aspects of different algorithms’ learning dynamics:
 
 \begin{itemize}
 \tightlist
@@ -71,19 +80,16 @@ They were interested in three aspects of the different algorithms’ learning dy
   \item and any accumulation points that occur along this path.
 \end{itemize}
 
-How quickly do these learners traverse the polytope? Do algorithms take the shortest path? Where are the accumulation points?
+% Why do they care?
+% How quickly do these learners traverse the polytope? Do algorithms take the shortest path? Where are the accumulation points?
 
-{\color{red}They showed that ...}
-
-In appendix [] you can find further exploration of other properties of the value polytope;
-\begin{itemize}
-\tightlist
-  \item What is the distribution of policies on the polytope?
-  \item How does the discount rate change the shape of the polytope?
-\end{itemize}
+They consider value iteration, policy iteration, policy gradients, entropy regularized policy gradients,
+natural policy gradients and the cross entropy method.
 
 Their results are intriguing. They show that different RL algorithms traverse the polytope in vastly different ways.
-Some are not even constrined to the polytope. This leaves us wondering;
+Some are not even constrined to the polytope. This left me wondering;
+
+{\color{red}I feel like this needs more}
 
 \begin{displayquote}
   \textit{How does a search algorithm interact with its search space to yield efficient search?}
@@ -104,11 +110,67 @@ search for this policy? We could search within;
 But, which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?
 
 Naively, we know that smaller search spaces are better. We would rather
-search for our keys in a single room, rather than many. But added
-structure (for example, ordering) can be exploited to yield faster
+search for our keys in a few rooms, rather than many. But added
+structure (for example, an ordering) can be exploited to yield faster
 search, even when there are infinitely more states to search. For example,
-we might be able to retrace steps to the most recent rooms.
-Rather than arbitrarily picks a room to search.
+we might be able to order the rooms based on how recently we visited them.
+This should help us retrace our steps and find our keys, rather than arbitrarily
+picking rooms to search.
+
+\subsection{Policy search}
+
+We can search through policies. In my opinion, this feels like the most 'natural' type of search for RL.
+As, after all, we are searching for the optimal \underline{policy}.
+
+Searching through the space of policies supports a couple of modes of travel:
+policy iteration jumps between deterministic policies (the verticies of our polytope).
+Policy gradients takes small steps in the 'right' direction and often traverses through the center of the polytope.
+
+\subsubsection{Policy iteration}
+
+In our tabular setting, policy iteraction can be written as:
+
+\begin{algorithm}
+\caption{Policy iteration}
+\begin{algorithmic}[1]
+
+\Procedure{PI}{$P, r, \gamma$}
+    \State $\pi = \text{init}()$
+    \While{not converged}
+      \State $V(\pi) =  (I - \gamma P_{\pi})^{-1} r_{\pi}$ \Comment{Evaluate policy}
+      \State $\pi = \mathop{\text{argmax}}_\pi \big[r_{\pi} + \gamma P_{\pi}V(\pi) \big]$ \Comment{Greedy update}
+    \EndWhile
+    \State \algorithmicreturn{ $\pi$}
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\subsubsection{Policy gradients}
+
+\begin{algorithm}
+\caption{Policy gradients}
+\begin{algorithmic}[1]
+
+\Procedure{PG}{$P, r, \gamma, \eta$}
+  \State t = 0
+  \State $\pi_t = \text{init}()$
+  \While{not converged}
+    \State $\pi_{t+1} = \pi_t + \eta \nabla_{\pi} V(\pi)$ \Comment{Gradient update}
+    \State t += 1
+  \EndWhile
+  \State \algorithmicreturn{ $\pi_t$}
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+
+add ref
+
+% Want to include upper / lower bounds!?
 
 \subsection{Value search}
 
@@ -119,10 +181,28 @@ optimality operator to guide the search.
 % (need to explain? why does stationarity mean optimality...?!)
 Intution about why it converges!? Contraction. Banach fixed-point theorem.
 
-\begin{align}
-T(V) &= \mathop{\text{max}}_a \big[r + \gamma PV\big] \\
-V_{t+1} &= V_t + \alpha (T(V_t) - V_t)
-\end{align}
+% \begin{align}
+% T(V) &= \mathop{\text{max}}_a \big[r + \gamma PV\big] \\
+% \end{align}
+
+\begin{algorithm}
+\caption{Value iteration}
+\begin{algorithmic}[1]
+
+\Procedure{VI}{$P, r, \gamma, \eta$}
+  \State t = 0
+  \State $V_t = \text{init}()$
+  \While{not converged}
+    \State $\hat V = r + \gamma PV_t$ \Comment{Evaluate}
+    \State $V_{t+1} = V_t + \eta (\hat V - V_t)$ \Comment{Average}
+    \State t += 1
+  \EndWhile
+  \State $\pi = \mathop{\text{argmax}}_{\pi} r_{\pi} + \gamma P_{\pi}V_t$
+  \State \algorithmicreturn{ $\pi$}
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
 
 
 % Want to include upper / lower bounds!? On complexity. Sample / computational!?
@@ -135,34 +215,6 @@ and thus can go outside of the polytope. \cite{Dadashi2018}
 We are constrained to move around by only using the Bellman optimality operator.
 To move proportionally to value improvement of the best actions ...
 Why is this good / bad. What dynamics can / cannot be achieved?
-
-\subsection{Policy search}
-
-We can also search through policies. In my opinion, this feels like the most 'natural' type of search for RL.
-As, after all, we are searching for the optimal \underline{policy}.
-
-Searching through the space of policies supports a couple of modes of travel:
-policy iteration jumps between deterministic policies, the edges of our polytope
-Policy gradients ...?
-
-\subsubsection{Policy iteration}
-
-guided by ...?
-\begin{align}
-V(\pi_t) &=  (I - \gamma P_{\pi_t})^{-1} r_{\pi_t} \\
-\pi_{t+1} &= \mathop{\text{argmax}}_\pi \big[r_{\pi} + \gamma P_{\pi}V(\pi_t) \big]
-\end{align}
-
-
-\subsubsection{Policy gradients}
-
-\begin{align}
-\pi_{t+1} &= \pi_t + \eta \nabla_{\pi} \mathbb V(\pi)
-\end{align}
-
-add ref
-
-% Want to include upper / lower bounds!?
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 

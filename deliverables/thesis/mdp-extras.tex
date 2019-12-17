@@ -213,8 +213,32 @@ More Refs
   https://www.worldscientific.com/worldscibooks/10.1142/p809
 \end{itemize}
 
+\subsection{Tabular MDPs}\label{vf-neumann}
 
-\subsection{Other properties of the polytope}
+It is possible to derive the value functional in another, possibly more enligtening way. But it takes a little more work. It requires a result from real analysis, the Neuman series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
+
+\begin{align*}
+r &\in (-1, 1) \\
+(1-r)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n r^i \tag{Geometric series}\\
+T &\in \mathbb X^k: \det(T) \in (-1, 1) \\
+(I-T)^-1 &= \lim_{n\to \infty} \sum_{i=0}^n T^i \label{eq:neumann}\tag{Neumann series}
+\end{align*}
+
+We can expand the recursion in the Bellman equation to get an \eqref{eq:inf-series}. We can then use \eqref{eq:neumann} (by setting $T=\gamma P_{\pi}$) to give the nice analytic form of the value functional.
+
+\begin{align*}
+V &= r_{\pi} + \gamma P_{\pi} V \tag{Bellman eqn}\\
+V &= r_{\pi} + \gamma P_{\pi}\big( r_{\pi} + \gamma P_{\pi} V\big) \\
+V &= r_{\pi} + \gamma P_{\pi}\Big(r_{\pi} + \gamma P_{\pi}\big( r_{\pi} + \gamma P_{\pi} V\big)) \\
+&= r_{\pi} + \gamma P_{\pi}r_\pi + \gamma^2 P_{\pi}P_{\pi}r_{\pi} + \gamma^3 P_{\pi}P_{\pi}P_{\pi}V \\
+&= \sum_{t=0}^{\infty} \gamma^tP_{\pi}^tr_{\pi} \label{eq:inf-series}\tag{infinite series} \\
+&= \big( \sum_{t=0}^{\infty} \gamma^tP_{\pi}^t \big) \cdot r_{\pi}\\
+&= (I-\gamma P_{\pi})^{-1} r_{\pi} \tag{value functional}\\
+\end{align*}
+
+This proof is more satisfying because we can more clearly see the nature of the value functional. It is a closed form of the infinite sum of discounted future rewards.
+
+\subsection{Other properties of the polytope} \label{polytope-extras}
 
 
 

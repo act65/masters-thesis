@@ -20,10 +20,10 @@ But what if our operator is ...?
 
 
 
-## Alternative derivation of 
+## Alternative derivation of
 
 $$
-V = (I-gamma P.pi)^{-1}r.pi
+V = (I-\gamma P.\pi)^{-1}r.\pi
 $$
 
 For any exponentially contractive operator, acting on a field.
@@ -55,7 +55,7 @@ If operator norm of T is < 1. Then will converge to $(I-T)^{-1}$?
 
 Problems, in theory
 
-The mean squared bellman error. We can show that the bellman operator converges wrt the infinity norm, but ... 
+The mean squared bellman error. We can show that the bellman operator converges wrt the infinity norm, but ...
 
 
 ***

@@ -9,8 +9,8 @@ is a 5". Teacher: "No, it's a 6"}), in RL the learner only receives evaluations 
 that digit is a 5". Teacher: "No."}). This means the student needs to explore the possible answers via some trial-and-error search.
 (\textit{Student: "Is it a 4?". Teacher: "No." Student: "How about a 0?". Teacher: "No." ... Student: "A 6?". Teacher: "Yes."})
 
-Ontop of terse teachers, many actions may be taken
-before any evaluation is received, thus requiring credit to be assigned to actions,
+Ontop of terse teachers, many actions may be taken before any evaluation is received, thus requiring credit to be assigned to past actions,
+(\textit{Student: "Is it a 4? How about a 0? A 6? Maybe a 7?". ... Teacher: "No".})
 often leaving the learner wondering: "what did I do to deserve this?" (see
 \href{https://www.youtube.com/watch?v=Qv4H81gEGDQ}{pigeon superstition} for an amusing
 example of credit assignment gone wrong \cite{Box1997}).
@@ -21,8 +21,8 @@ example of credit assignment gone wrong \cite{Box1997}).
 \vspace{5mm}
 
 The above definition of reinforcement learning is quite general. There are many
-different dimensions to problems that have the properties trial-and-error search and
-delayed feedback. For example we could make a RL problem that is;
+different dimensions to problems that require trial-and-error search and give
+delayed rewards. For example we could make a RL problem that is;
 
 \begin{itemize}
 \tightlist
@@ -56,9 +56,8 @@ simple setting to anlyse RL.
 
 \section{Sequential decision problems}
 
-A general intuition for what is going on when solving a MDP is; actions are taken
-sequentially (eg.) and
-need to be conditioned on observations (eg.).
+A general intuition for what is going on when solving a sequential decision problem; actions are taken
+sequentially (eg.) and need to be conditioned on observations (eg.).
 The goal is to take actions that achieve rewards (eg.). While instantaneous
 rewards are good, we really care about long term cumulative rewards (eg.).
 
@@ -67,14 +66,14 @@ rewards are good, we really care about long term cumulative rewards (eg.).
 % a picture of this?) also, is there a more general way to think about it?
 
 More formally, a MDP, which is a type of sequential decision problem is defined
-as a tuple, \(\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t, s_{t+1}), \gamma\}\).
+as a tuple, \(\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t), \gamma, d_0\}\).
 Where \(s \in \mathcal S\) is the set of possible states (\textit{for example arrangements of chess pieces}),
 \(a \in \mathcal A\) is the set of actions (\textit{the different possible moves, left,
 right, diagonal, weird L-shaped thing, ...}),  \(P(s_{t+1} \mid s_t, a_t)\)
 is the transition function which describes how the environment acts in response
 to the past (\(s_t\)) and to your actions (\(a_t\)) (\textit{in this case, your
 opponent's moves, taking one of your pieces, and the results of your actions}),
-and finally, \(r(s_t, a_t, s_{t+1})\) is the reward function, \textit{whether you won (+1) or lost (-1) the game }.
+and finally, \(r(s_t, a_t)\) is the reward function, \textit{whether you won (+1) or lost (-1) the game }.
 The objective when solving a MDP is to find a policy, $\pi(a_t | s_t)$,
 that maximises the expected return.
 
@@ -95,7 +94,7 @@ D(\zeta, \pi, \tau, d_0) &= d_0(\zeta[s, 0]) \prod_{t=1}^{H} \pi(\zeta[a, t]|\ze
 % If we wanted we could pick our actions before we make observations,
 % reducing the search space to only \(|A| \times T\). But this is a bad idea\ldots{} example.
 
-You can find more examples in \ref{MDP-examples}.
+You can find some examples in \ref{MDP-examples}.
 
 \hypertarget{the-markov-property}{%
 \subsection{The Markov property}\label{the-markov-property}}
@@ -196,7 +195,7 @@ The values are written as a vector, $V \in \mathbb R^n$.
 The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.
 And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
 
-
+An alternative derivation of the value functional, which is more verbose and more enlightening, can be found in \ref{vf-neumann}
 
 \begin{displayquote}
 \textit{But why is the tabular MDP considered 'simple' enough?}
