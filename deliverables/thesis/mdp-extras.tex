@@ -1,6 +1,6 @@
 \chapter{MDPs}
 
-\subsection{MDP examples}
+\subsection{MDP examples}\label{MDP-examples}
 Examples of MDPs in the wild.
 
 \hypertarget{bus-engine-replacement}{%
@@ -405,3 +405,49 @@ If $V(s_2)$ increases then $\hat V(s_1)$  either increases or stays the same. As
 \caption{Let's \textit{try} to gain some intuition about the space of policies in higher dimensions.
 For each state, we have a distribution (on a simplex), over the possible actions.}
 \end{figure}
+
+
+\section{Model search}
+
+Lastly, we can search through possible models, $P, r$. Models that fit the
+observations we make. That is policy $\pi_i$ has a value $V^{\pi_i}$.
+
+\begin{displayquote}
+  \textit{This model predicts that the ??? policy is of high value.
+  However, when I tried this policy, I ended up with ...?
+  My model must be wrong.}
+\end{displayquote}
+
+Here the parameters are composed to two independent parts, the transition function
+and the reward function.
+
+\begin{align}
+\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\tilde P, \tilde r} \parallel_\infty
+\end{align}
+
+While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
+solving a MDP is to find the optimal policy. ...!?!?
+
+\subsubsection{Relationship to model based RL}
+
+Most model-based learning approaches to RL ... next step prediction (refs!!!)
+This algorithm only focuses on relevant features of the state space.
+
+Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
+The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
+
+Sample efficient. You only need to collect data for the $m$ policies we are matching under.
+Once that has been done, the optimisation problem is easily solved!?
+
+Model iteration. Model invariant transforms. Pick a policy. Falsify it,
+and this falsify all models that yield the same optimal policy.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
+\caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
+and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
+\end{figure}
+
+
+Related to AWR? https://arxiv.org/pdf/1910.00177.pdf

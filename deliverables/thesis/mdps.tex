@@ -1,4 +1,4 @@
-\chapter{MDPs}
+\chapter{Markov Decision Problems}
 
 Reinforcement learning refers to the set of solutions to a type of problem.
 This general, reinforcement learning, problem, has two main properties;
@@ -40,12 +40,11 @@ delayed feedback. For example we could make a RL problem that is;
   Given knowledge of the underlying model
 \end{itemize}
 
+{\color{red} want refs for each of these!?}
+
 \begin{displayquote}
   \textit{But, which setting should we study?}
 \end{displayquote}
-
-% MDPs are also within the fields of Operational Research, Optimal Control, Mathematical
-% Optimisation, Stochastic Programming.
 
 \begin{displayquote}
   A better question might be: \textit{What is the simplest setting we can
@@ -57,19 +56,46 @@ simple setting to anlyse RL.
 
 \section{Sequential decision problems}
 
+A general intuition for what is going on when solving a MDP is; actions are taken
+sequentially (eg.) and
+need to be conditioned on observations (eg.).
+The goal is to take actions that achieve rewards (eg.). While instantaneous
+rewards are good, we really care about long term cumulative rewards (eg.).
+
 % Maze with pendulums / doors. When moving through the maze, you must
 % swing the pendulums. In the future you must avoid being hit. (maybe make
 % a picture of this?) also, is there a more general way to think about it?
 
-A MDP is defined as a tuple, \(\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t, s_{t+1}), \gamma\}\). Where \(s \in \mathcal S\) is the set of possible states (\textit{for example arrangements of chess pieces}), \(a \in \mathcal A\) is the set of actions (\textit{the different possible moves, left, right, diagonal, weird L-shaped thing, ...}),  \(P(s_{t+1} \mid s_t, a_t)\) is the transition function which describes how the environment acts in response to the past (\(s_t\)) and to your actions (\(a_t\)) (\textit{in this case, your opponent's moves, taking one of your pieces, and the results of your actions}), and finally, \(r(s_t, a_t, s_{t+1})\) is the reward function, \textit{whether you won (+1) or lost (-1) the game }.
-The objective when solving a MDP is to find a policy, $\pi(a_t | s_t)$, that maximises the discounted cumulative reward, \(R =\sum_{t=0}^T \gamma^t r(s_t, a_t, s_{t+1}) \).
+More formally, a MDP, which is a type of sequential decision problem is defined
+as a tuple, \(\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t, s_{t+1}), \gamma\}\).
+Where \(s \in \mathcal S\) is the set of possible states (\textit{for example arrangements of chess pieces}),
+\(a \in \mathcal A\) is the set of actions (\textit{the different possible moves, left,
+right, diagonal, weird L-shaped thing, ...}),  \(P(s_{t+1} \mid s_t, a_t)\)
+is the transition function which describes how the environment acts in response
+to the past (\(s_t\)) and to your actions (\(a_t\)) (\textit{in this case, your
+opponent's moves, taking one of your pieces, and the results of your actions}),
+and finally, \(r(s_t, a_t, s_{t+1})\) is the reward function, \textit{whether you won (+1) or lost (-1) the game }.
+The objective when solving a MDP is to find a policy, $\pi(a_t | s_t)$,
+that maximises the expected return.
+
+\begin{align*}
+V(\pi) = \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)]
+\end{align*}
+
+
+Where, $d_0$ is the initial state distribution, $\zeta$ collects the $(s_t, a_t, r_t)$ triples of a game (aka trajectory or rollout),
+$R(\zeta)$ is the sum of discounted rewards, and $D$ is the probability of a trajectory under the given policy and MDP.
+
+\begin{align}
+\zeta &= \{(s_t, a_t, r_t) : t \in [0, H]\} \tag{trajectory} \\
+R(\zeta) &=\sum_{t=0}^H \gamma^t \zeta[r, t] \tag{Return} \\
+D(\zeta, \pi, \tau, d_0) &= d_0(\zeta[s, 0]) \prod_{t=1}^{H} \pi(\zeta[a, t]|\zeta[a, t]) \tau(\zeta[s, t+1]|\zeta[s, t], \zeta[a, t]) \tag{p(traj)}
+\end{align}
 
 % If we wanted we could pick our actions before we make observations,
 % reducing the search space to only \(|A| \times T\). But this is a bad idea\ldots{} example.
 
-A general intuition for what is going on when solving a MDP is; actions need to
-be conditioned on observations to achieve rewards. But, while instantaneous
-rewards are good, we really care about the long term cumulative reward.
+You can find more examples in \ref{MDP-examples}.
 
 \hypertarget{the-markov-property}{%
 \subsection{The Markov property}\label{the-markov-property}}
@@ -96,8 +122,6 @@ totally described by changes to the observable state, $s\in S$.
 \hypertarget{optimality}{%
 \subsection{\color{red}Optimality}\label{optimality}}
 
-
-
 \begin{displayquote}
   \textit{What does it mean to solve an MDP?}
 \end{displayquote}
@@ -107,38 +131,31 @@ And that there is always a deterministic policy that is optimal. (usually, there
 
 (why does this make sense?)
 
+The Bellman equation (ref) ...
 
-How do we know one policy is better than another? How do we know a
-policy is optimal?
+\begin{align*}
+Q^{\pi}(s, a) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
+V^{\pi}(s) = \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
+\end{align*}
 
-\[
+Can be used to tell us: How do we know one policy is better than another? How do we know a
+policy is optimal? The optimal policy has the property;
+
+\begin{align*}
 \forall \pi\;\; V^{\pi^* } \ge V^{\pi} \\
-\]
+\end{align*}
 
-But, this definition of optimality implicitly assumes a uniform
-distribution over states. This is unlikely. Rather, the distribution is
-determined by the policy.
-
-\[
-\mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi^* } \big] \ge \mathop{{\mathbb E}}_{s\sim D_{\pi}} \big[ V^{\pi} \big] \\
-D_{\pi}(s) = P(s | \pi) = \sum_{\text{all } \tau \text{ with } s_t = s} P(\tau | \pi)
-\]
-
-Now. How different is this?
-
-I can imagine some degenerate solutions now being possible? Because we
-can control the distribution we are being evaluated on. We could pick a
-policy that oscillates between two states, never leaving the cycle.
-Therefore it would have \(p(s_1) = p(s_2) = 0.5\) and
-\(p(s_{i \neq 1,2}) = 0\).
-
-That doesn't seem so bad?
 
 \begin{displayquote}
   \textit{How hard is it to solve an MDP?}
 \end{displayquote}
 
 % Insert lower bound and some intution
+
+The complexity of estimating the value of a state-action under the optimal policy, ie solving the Bellman optimality
+equation, can be glimpsed if we unroll its recursive definition.
+Here we can see a series of nested maximisation problems, where the former
+maximisation problems are conditional on the results of the latter maximisation problems.
 
 \begin{align*}
 Q^{\pi}(s_0, a_0) = r(s_0, a_0) &+ \gamma \mathop{\text{max}}_{a_1} \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ \\
@@ -165,20 +182,24 @@ P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \tag
 r &\in \mathbb R^{n\times m} \tag{the reward fn}
 \end{align}
 
-A result of this formulation is that we consisely write and solve the Bellman equation analytically.
+A result of this formulation is that we consisely write and solve the \eqref{eq:bellman-eqn} analytically. \footnotemark[1]
+
+\footnotetext{Note that the ability to solve the Bellman equation analytically does not allow
+us to solve for the optimal policy analytically.}
 
 \begin{align}
-V^{\pi}(s) = \mathop{\mathbb E}_{a\sim \pi(\cdot | s)} r(s, a) &+ \gamma\mathop{\mathbb E}_{s' \sim \int_a P(\cdot | s, a)\pi(a | s)} V^{\pi}(s') \tag{the bellman eqn}\\
-V &= r_{\pi} + \gamma P_{\pi} V \tag{the tabular bellman eqn}\\
-V &= (I-\gamma P_{\pi})^{-1}r_{\pi} \tag{analytic solution}
+V &= r_{\pi} + \gamma P_{\pi} V \tag{tabular Bellman eqn}\\
+V &= (I-\gamma P_{\pi})^{-1}r_{\pi}  \label{eq:value-functional}\tag{Value functional}
 \end{align}
 
 The values are written as a vector, $V \in \mathbb R^n$.
 The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.
 And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
 
+
+
 \begin{displayquote}
-\textit{But why is the tabular MDP defined as simple as possibe?}
+\textit{But why is the tabular MDP considered 'simple' enough?}
 \end{displayquote}
 
 Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.

@@ -320,6 +320,14 @@ They do experiments with z learning. Which is not particularly interesting. It s
 
 Very sensitive to the scale of the rewards. Needs to be tuned. For example
 
+There is a chance I have implemented LMDPs incorrectly. But it is hard to know.
+Todorov doesnt actually demonstrate LMDPs being used to solve a MDP, only Z-iteration, given a $p, q$.
+If those $p, q$ came from a MDP that could count. But it appears as though they
+have been had designed for the task, and he hasnt given sufficient details to allow me to repproduce the experiments.
+
+% Why doesnt Z-iteration count?
+% make a comment about my tests?
+
 \begin{figure}
 \centering
 \includegraphics[width=1\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-zero-rewards.png}

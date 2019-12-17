@@ -8,48 +8,60 @@ properties of our chosen setting, MDPs.
 
 \section{The value function polytope}
 
-The value function polytope \cite{Dadashi2018} provides some great intuition
-about the structure of a MDP and the dynamics of optimisation. Let's take a look.
+The Value Function Polytope \cite{Dadashi2018} provides some great intuition
+about the structure of a MDP and the dynamics of optimisation. Let's take a look:
+consider a two state, two action MDP.
 
 \begin{figure}
 \centering
 \includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-automata.png}
-\caption{Consider the simplest possible MDP, with two states and two actions. (Any simpler setting is entirely uninteresting. A single state means actions do nothing.
+\caption{The simplest possible MDP, with two states and two actions. (Any simpler setting is entirely uninteresting. A single state means actions do nothing.
 And a single action means all policies are the same.).}
 \end{figure}
 
-Consider a two state MDP. The space of possible policies is a 2D space
-consisting of action 1 and action 2, each taken with some probability, $p^1_{a_1}$ and $p^2_{a_1}$:
+The space of possible policies is a 2D surface in a 4D space. For each state, we
+can pick action 1 or action 2, with some probability, $p$.
 
 \begin{align}
 \pi &=
 \begin{bmatrix}
-  p^1_{a_1} & p^1_{a_2} \\
-  p^2_{a_1} & p^2_{a_2}\\
+  p(a=a_1|s=s_1) & p(a=a_2|s=s_1) \\
+  p(a=a_1|s=s_2) & p(a=a_2|s=s_2)\\
 \end{bmatrix} \\
 &=
 \begin{bmatrix}
-p^1_{a_1} & 1-p^1_{a_1} \\
-p^2_{a_1} & 1-p^2_{a_1}\\
+p(a=a_1|s=s_1) & 1-p(a=a_1|s=s_1) \\
+p(a=a_1|s=s_2) & 1-p(a=a_1|s=s_2)\\
 \end{bmatrix}
 \end{align}
 
-We can evaluate each each policy in this 2D space (using the analytic solution shown above).
+We can evaluate (calculate the expected return) each each policy in this 2D space (using the \eqref{eq:value-functional}).
 Since there are two states, the evaluation returns a 2D vector of values, one value for each state.
-Thus we can easily visualise the value of all policies.
+Thus we can easily visualise the value of each policy.
 
 {\color{red}INSERT PIC of polytope}
 
-Policies in the middle tell you very little? A slight move away from the middle
-(and then compare to the middle) would allow you to detect more better actions.
-But the signal (the change in value) would be small, and you would need more data?!
-
-What info do you get from being in the middle vs at an edge / vertex? More info / less?
-
 \subsection{Properties of the polytope}
 
-Dadashi et al. explored and explained three interesting properties
-of the value polytope. \cite{Dadashi2018}
+Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope. Sepcifically they focused on its geometry and dynamics.
+
+\subsubsection{Geometry of the polytope}
+
+Dadashi et al. remark, the polytope gives a clear illustration of the following classic results regarding MDPs \cite{Bertsekas1996}.
+
+\begin{itemize}
+\tightlist
+  \item (Dominance of $V^*$) The optimal value function $V^*$ is the unique dominating vertex of $V$;
+  \item (Monotonicity) The edges of V are oriented with the positive orthant;
+  \item (Continuity) The space V is connected.
+\end{itemize}
+
+{\color{red} should i explain these?}
+
+Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
+
+\subsubsection{Dynamics on the polytope}
+
 They were interested in three aspects of the different algorithms’ learning dynamics:
 
 \begin{itemize}
@@ -68,29 +80,14 @@ In appendix [] you can find further exploration of other properties of the value
 \tightlist
   \item What is the distribution of policies on the polytope?
   \item How does the discount rate change the shape of the polytope?
-  \item How do the dynamics of GPI partition the policy / value spaces?
 \end{itemize}
 
-
-\subsection{Optimisation dynamics on the polytope}
-
-We are interested in exploring the complexity of some different approaches to solving MDPs.
-% Value iteration requires O()... Policy iteration requires O()???
-
-Curiously, their results lead to a question:
+Their results are intriguing. They show that different RL algorithms traverse the polytope in vastly different ways.
+Some are not even constrined to the polytope. This leaves us wondering;
 
 \begin{displayquote}
   \textit{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
-
-In any optimisation problem, we have a set of potential solutions, also known as the search space,
-and a way to evaluate these potential solutions, a cost or loss function. For example, we {\color{red}example..!??!}
-
-What do I mean by a search space? By optimisation dynamics? Why should anyone care?
-
-% Overview.
-% Mention cts relaxations!?
-% Relation to the deep learning puzzle of over parameterisation.
 
 \section{Search spaces for RL}
 
@@ -101,18 +98,17 @@ search for this policy? We could search within;
 \tightlist
   \item the set of potentially optimal policies, the $|A|^{|S|}$ discrete policies,
   \item the set of all possible policies $\pi \in \mathbb R^{|S| \times |A|}: \forall s \int_a \pi(a|s) = 1$
-  \item the set of possible value functions, $\mathbb R^{|S|}$, which we could then use to construct the optimal policy
+  \item the set of possible value functions, $\mathbb R^{|S|}$, which we could then use to construct the optimal policy,
+  \item Or maybe some other space.
 \end{itemize}
-Or maybe some other space. But which space is best?
+But, which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?
 
-% Which space allows us to find the optimal policy in the 'cheapest' manner?
 Naively, we know that smaller search spaces are better. We would rather
 search for our keys in a single room, rather than many. But added
-structure (for example, continuity) can be exploited to yield faster
-search, even when there are infinitely more states to search.
-% want to finish key example!?
-
-% Aside. Deep learning - search space. Overparameterisation. \cite{Arora2018}
+structure (for example, ordering) can be exploited to yield faster
+search, even when there are infinitely more states to search. For example,
+we might be able to retrace steps to the most recent rooms.
+Rather than arbitrarily picks a room to search.
 
 \subsection{Value search}
 
@@ -121,19 +117,20 @@ converge to a value reasliable by the original MDP? We can use Bellman's
 optimality operator to guide the search.
 
 % (need to explain? why does stationarity mean optimality...?!)
+Intution about why it converges!? Contraction. Banach fixed-point theorem.
 
 \begin{align}
 T(V) &= \mathop{\text{max}}_a \big[r + \gamma PV\big] \\
 V_{t+1} &= V_t + \alpha (T(V_t) - V_t)
 \end{align}
 
-Intution about why it converges!?
 
-% Want to include upper / lower bounds!?
+% Want to include upper / lower bounds!? On complexity. Sample / computational!?
 
 Observe that the value iterations are not constrained to refer to any policy,
 and thus can go outside of the polytope. \cite{Dadashi2018}
-% Important. Also, why does it go outside?!
+
+{\color{red}mportant. Also, why does it go outside?!?}
 
 We are constrained to move around by only using the Bellman optimality operator.
 To move proportionally to value improvement of the best actions ...
@@ -141,8 +138,8 @@ Why is this good / bad. What dynamics can / cannot be achieved?
 
 \subsection{Policy search}
 
-We can also search through policies. This feels like the most natural search for RL,
-as after all, we are after the optimal policy.
+We can also search through policies. In my opinion, this feels like the most 'natural' type of search for RL.
+As, after all, we are searching for the optimal \underline{policy}.
 
 Searching through the space of policies supports a couple of modes of travel:
 policy iteration jumps between deterministic policies, the edges of our polytope
@@ -160,79 +157,24 @@ V(\pi_t) &=  (I - \gamma P_{\pi_t})^{-1} r_{\pi_t} \\
 \subsubsection{Policy gradients}
 
 \begin{align}
-\pi_{t+1} &= \pi_t + \eta \nabla \mathbb E [V(\pi)]
+\pi_{t+1} &= \pi_t + \eta \nabla_{\pi} \mathbb V(\pi)
 \end{align}
 
 add ref
 
 % Want to include upper / lower bounds!?
 
-\subsection{Model search}
-
-Lastly, we can search through possible models, $P, r$. Models that fit the
-observations we make. That is policy $\pi_i$ has a value $V^{pi_i}$.
-
-\begin{displayquote}
-  \textit{This model predicts that the ??? policy is of high value.
-  However, when I tried this policy, I ended up with ...?
-  My model must be wrong.}
-\end{displayquote}
-
-Here the parameters are composed to two independent parts, the transition function
-and the reward function.
-
-\begin{align}
-\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\tilde P, \tilde r} \parallel_\infty
-\end{align}
-
-While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
-solving a MDP is to find the optimal policy. ...!?!?
-
-\subsubsection{Relationship to model based RL}
-
-Most model-based learning approaches to RL ... next step prediction (refs!!!)
-This algorithm only focuses on relevant features of the state space.
-
-Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
-The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
-
-Sample efficient. You only need to collect data for the $m$ policies we are matching under.
-Once that has been done, the optimisation problem is easily solved!?
-
-Model iteration. Model invariant transforms. Pick a policy. Falsify it,
-and this falsify all models that yield the same optimal policy.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
-\caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
-and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
-\end{figure}
-
-
-Related to AWR? https://arxiv.org/pdf/1910.00177.pdf
-
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-So there seem to be three different classes of search space: each imbued with special
-structure from the Bellman equation. Each with different the types of search they
+So there are different classes of search space: each imbued with special
+structure from the Bellman equation or expected return. Each with different types of search they
 support. And each with different parameter topologies.
 
-What are their properties? And which spaces support efficient search for the optimal policy?
-
-\begin{itemize}
-\tightlist
-\item
-  In the value space we can use the temporal difference operator,
-\item
-  in the policy space we can estimate policy gradients,
-\item
-  in the model space we can solve directly for the optimal policy.
-\end{itemize}
+Which spaces support efficient search for the optimal policy? Can we characterise the properties of each space?
 
 \section{Gradient based search}
 
-% need a better seguae into GD?!
+{\color{red}need a better seguae into GD?!}
 Let's focus on searching with gradient descent.
 
 \begin{align}
@@ -243,6 +185,8 @@ The dynamics of the search are dependent on the topology of a problems loss surf
 The loss surface is determined by the combination of the search space and the loss function.
 
 \subsection{Parameterised search}
+
+Overparam. DL. \cite{Arora2018}
 
 \begin{align}
 &\mathop{\text{max}}_V \mathop{\mathbb E}_{s\sim D} V(s) \\
@@ -265,14 +209,10 @@ What properties are we looking for?
 
 \begin{itemize}
 \tightlist
-\item
-  In which spaces can we (efficiently) calculate gradients?
-\item
-  In which spaces can we do convex optimisation?
-\item
-  In which spaces does momentum work (well)?
+\item In which spaces can we (efficiently) calculate gradients?
+\item In which spaces can we do convex optimisation?
+\item In which spaces does momentum work (well)?
 \end{itemize}
-
 
 \subsection{Dynamics and complexity}
 
@@ -324,17 +264,14 @@ then ...? We need a term that caputures the position / oscillation dynamics!?
 
 \subsection{Acceleration and parameterisation}
 
-I think something weird happens with momentum in overparameterised spaces. The intuition is
+{\color{red}insert iteration complexity figures of different lrs with parameterisation.}
 
 \cite{Arora2018} shows that overparameterisation yields acceleration. Consider
 the dynamics of the parameter $w$, which we have overparameterised as $w_1 \cdot w_2$.
 
-\begin{align}
-w^{t+1} &= w_1^{t+1} \cdot w_2^{t+1} \\
-&= (w_1^t - \eta \nabla_{w_1} L)\cdot(w_2^t - \eta \nabla_{w_2} L) \\
-&= (w_1^t \cdot w_2^t - \eta w_2^t \nabla_{w_1} L - \eta w_1^t \nabla_{w_2} L - \mathcal O(\eta^2) \\
-&= w^t - ...
-\end{align}
+
+% Does it even make sense to do a first order approx when trying to reason about momentum?
+% Momentum get interesting when considering non-first order factors?!?
 
 We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
 
@@ -348,7 +285,6 @@ It is necessary to consider the trajectory to study momentum. It depends
 on what has happened in the past. Can we construct a space of possible
 trajectories? What properties do trajectories have? They are connected
 by the update fn.
-
 
 \section{Topology and dynamics}
 
@@ -394,29 +330,6 @@ If we overparameterise the search space, then we can move between solutions in n
 Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
 % insert pic / prove
 
-
-\section{Continuous flow and its discretisation}
-
-A linear step of size, \(\alpha\), in parameter space, ie by gradient
-descent, is not necessrily a linear step in parameter space.
-
-\includegraphics[width=0.3\textwidth,height=0.25\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_0001.png}
-\includegraphics[width=0.3\textwidth,height=0.25\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_001.png}
-\includegraphics[width=0.3\textwidth,height=0.25\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_01.png}
-
-This is consistent with acceleration of gradient descent being a phenomena only possible in the discrete time setting. (see \cite{Betancourt2018} for a recent exploration)
-
-This phenomena can be explained by the exponential decay of the momentum terms.
-
-\begin{align}
-m_{t+1} = m_t + \gamma\nabla f(w_t) \\
-w_{t+1} = w_t - \eta (1-\gamma) m_{t+1} \\
-\end{align}
-
-As \(\eta \to 0\), \((1-\gamma) \cdot m_{t+1} \to \nabla f(w_t)\).
-
-TODO, prove it.
-
 \section{Notes}
 
 When transforming between two spaces, how does the optimisation space
@@ -450,3 +363,17 @@ Properties of the graphs / graph signals?
 \subsection{Compressed sensing}
 
 Related to !?!
+
+
+\section{Conslusion}
+
+So, we have seen, from our brief exploration of some properties of MDPs, that
+there are some mysteries of interest to the ML community: the optimisation dynamics and generalisation of
+parameterised function approximators.
+There are unexplored types of solution strategy (???): model iteration. Which might be of interest to
+
+So, while MDPs may be simple, we have yet to fully understand them or explore their ???.
+
+Havent characterised their complexity?!? Sparse, ...
+
+Hopefully we are now prepared to consider how abstraction can be used to improve the efficiency of RL for solving MDPs.
