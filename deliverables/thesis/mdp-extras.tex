@@ -1,6 +1,6 @@
 \chapter{MDPs}
 
-\subsection{MDP examples}\label{MDP-examples}
+\section{MDP examples}\label{MDP-examples}
 Examples of MDPs in the wild.
 
 \hypertarget{bus-engine-replacement}{%
@@ -213,7 +213,7 @@ More Refs
   https://www.worldscientific.com/worldscibooks/10.1142/p809
 \end{itemize}
 
-\subsection{Tabular MDPs}\label{vf-neumann}
+\section{Tabular MDPs}\label{vf-neumann}
 
 It is possible to derive the value functional in another, possibly more enligtening way. But it takes a little more work. It requires a result from real analysis, the Neuman series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
 
@@ -238,48 +238,60 @@ V &= r_{\pi} + \gamma P_{\pi}\Big(r_{\pi} + \gamma P_{\pi}\big( r_{\pi} + \gamma
 
 This proof is more satisfying because we can more clearly see the nature of the value functional. It is a closed form of the infinite sum of discounted future rewards.
 
-\subsection{Other properties of the polytope} \label{polytope-extras}
+
+\section{Policies in high dimensions}\label{high-D-policies}
+
+Let's \textit{try} to gain some intuition about the space of policies in higher dimensions.
+For each state, we have a distribution (on a simplex), over the possible actions.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth,height=0.20\textheight]{../../pictures/drawings/2-state-2-action-simplices.png}
+\caption{Imagine what the geometry of the space of policies in the two state, two action MDP. A policy tells us what actions should be taken when in a given state. Therefore, there will be \(|A| \times |S|\) entries in the policy. However, because the policy returns a distribution over actions, the true dimensionality of the policy is \((|A| -1) \times |S|\). Which in the two state, two action case equals 2D.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/3-state-3-action-simplices.png}
+\caption{}
+\end{figure}
 
 
 
-\subsubsection{Distribution of policies}
+\section{Other properties of the polytope} \label{polytope-extras}
 
-A potentially interesting question to ask about the polytopes is how the
-policies are distributed over the polytope. To calculate this
+
+
+\subsection{Distribution of policies}
+
+A potentially interesting question to ask about the value polytope is how the
+values (of the policies) are distributed. To calculate this
 analytically, we can use the probability chain rule:
 \(p(f(x)) = \mid \det\frac{\partial f(x)}{\partial x}\mid^{-1}p(x)\).
 Where we set \(f\) to be our value functional and \(p(x)\) to be a
-uniform distribution.
+uniform distribution over policies. Thus we have;
+
+\begin{align}
+p(V(\pi)) = |\det \frac{\partial V(\pi)}{\partial \pi}|^{-1} \cdot p(\pi) \tag{density}
+\end{align}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/polytope_densities.png}
-\caption{`2-state 2-action MDPs. We have visualised the likelihood of
-values under a uniform on policies. They are coloured by density.
-Lighter colour is higher probability'}
+\includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/polytope_densities.png}
+\caption{2-state 2-action MDPs. We have visualised the likelihood of
+values under a uniform distribution over policies. They are coloured by density.
+Lighter colour is higher probability.}
+\label{fig:density}
 \end{figure}
 
-\begin{itemize}
-\item
-  \textbf{Observation} In some polytopes, many of the policies are close
-  to the optimal policy. In other polytopes, many of the policiesare far
-  away from the optimal policy. \textbf{Question} Does this make the MDP
-  harder or easier to solve? \textbf{Intuition} If there is a high
-  density near the optimal policy then we could simply sample policies
-  and evaluate them. This would allow us to find a near optimal policy
-  with relative easy.
-\item
-  \textbf{Observation} The density is always concentrated / centered on
-  an edge.
-\item
-  \textbf{Question} how does the entropy of the distribution change
-  under different gamma/transitions/rewards\ldots{}?
-\end{itemize}
+We can see in \ref{fig:density}, that in some polytopes, many of the policies are close
+to the optimal policy. In other polytopes, many of the policies are far
+away from the optimal policy. Does having many policies that have close to
+optimal value make the MDP easier to solve?
 
-\paragraph{An MDPs Entropy}
+\subsubsection{An MDPs Entropy}
 
-(\emph{the goal is to understand what makes some MDPs harder to solve
-than others})
+{\color{red}not sure where this is going...}
 
 We can visualise polytopes in 2D, but we struggle in higher dimensions.
 However, it is possible to use lower dimensions to gain intuition about
@@ -319,31 +331,19 @@ sampling in high dimensions always scales badly?!)
 Or find derivative wrt \(P, r\). What properties of \(P, r\) yield
 easily solvable MDPs?
 
-NOTE:
+\subsection{Discounting}
 
-\begin{itemize}
-\item
-  What about the variance of the MDP? What does that tell us?
-\item
-  How does a uniform distribution on a simplex behave in high
-  dimensions? Does it become more likely to sample from the center? Less
-  likely to sample from vertices??
-\item
-  In most cases, this is unlikely to work. A high dimensional polytope
-  \ldots{} low density everywhere!?
-\end{itemize}
-
-
-\subsubsection{Discounting}
-
-How does the shape of the polytope depend on the discount rate? Given an
-MDP, we can vary the discount rate from \(0\) to \(1\) and explore how
-the shape of the value polytope changes.
+Another question you may have is: \textit{how does the shape of the polytope depend on the discount rate?}
+Given an MDP, we can vary the discount rate from \(0\) to \(1\) and visualise
+the shape of the value polytope. Seen in \ref{fig:polytope-discounts}.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/discounts.png}
-\caption{`Here we have shown a few different 2 state, 2 action, MDPs and how their polytopes change with changes in discount rate.'}
+\includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/discounts.png}
+\caption{Here we have shown a few different 2 state, 2 action, MDPs and how
+their polytopes change with changes in discount rate, ranging from 0 (left), to 1 (right).
+The color map is represents the density of policies, as in \ref{fig:density}.}
+\label{fig:polytope-discounts}
 \end{figure}
 
 \begin{itemize}
@@ -361,74 +361,19 @@ the shape of the value polytope changes.
 
 \subsection{Derivation of derivative}
 
-\begin{align}
-V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \\
+\begin{align*}
+V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \tag{value functional}\\
 &= (I − \gamma P\cdot \pi)^{−1}r\cdot \pi \\
 \frac{\partial V}{\partial \pi} &= \frac{\partial}{\partial \pi}((I-\gamma P_{\pi})^{-1} r_{\pi}) \\
 &= (I-\gamma \pi P)^{-1} \frac{\partial \pi r}{\partial \pi}+   \frac{\partial (I-\gamma \pi P)^{-1}}{\partial \pi}\pi r\tag{product rule} \\
 &= (I-\gamma \pi P)^{-1} r + -(I-\gamma \pi P)^{-2} \cdot -\gamma P\cdot \pi r\\
-&= \frac{r}{I-\gamma \pi P} + \frac{ \gamma P\cdot \pi r}{(I-\gamma \pi P)^2}\\
-&= \frac{r(I-\gamma \pi P) + \gamma P \pi r}{(I-\gamma \pi P)^2} \\
-& = \frac{r}{(I-\gamma P \pi)^2} \\
-\end{align}
+&= \frac{r}{I-\gamma \pi P} + \frac{ \gamma P\cdot \pi r}{(I-\gamma \pi P)^2} \tag{rewrite as fractions}\\
+&= \frac{r(I-\gamma \pi P) + \gamma P \pi r}{(I-\gamma \pi P)^2} \tag{common demoninator}\\
+& = \frac{r}{(I-\gamma P \pi)^2} \tag{cancel}
+\end{align*}
 
 TODO. Annotate. Add numbers and explain.
 
-
-
-\section{What are the properties of the polytope?}
-
-\begin{displayquote}
-  \textit{How is the structure of the RL problem reflected in geometry?}
-\end{displayquote}
-
-How is the shape of the polytope determined by the Bellman equation?
-If we look at the polytope, we see that;
-\begin{itemize}
-\tightlist
-\item
-  All the edges have positive gradients
-\item
-  All the edges are linear
-\item
-  Non-convex
-\end{itemize}
-
-
-% An increase in the value of state one, can, at worst, do nothing for state two, aka a
-% flat line, either horizontal or vertical. But if the value of the other state
-% increases and there is a non zero chance of transitioning to that state, from your current state,
-% then that will increase the value of your current state.
-% This explains why the edges of the polytope by be aligned with the positive orthant, they slant upward.
-
-\begin{align}
-\hat V(s_1) = V(s_1)P(s_1|s_1, a)\pi(a|s_1) + V(s_2)P(s_2|s_1, a)\pi(a|s_1)
-\end{align}
-
-\begin{itemize}
-\tightlist
-\item
-If $V(s_1)$ increases then $\hat V(s_1)$ must increase...
-\item
-If $V(s_2)$ increases then $\hat V(s_1)$  either increases or stays the same. As $P(s_2|s_1, a)\pi(a|s_1) \ge 0$
-\end{itemize}
-
-\section{Policies in high dimensions}
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-2-action-simplices.png}
-\caption{Imagine what the geometry of the space of policies in the two state, two action MDP. A policy tells us what actions should be taken when in a given state. Therefore, there will be \(|A| \times |S|\) entries in the policy. However, because the policy returns a distribution over actions, the true dimensionality of the policy is \((|A| -1) \times |S|\). Which in the two state, two action case equals 2D.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/3-state-3-action-simplices.png}
-\caption{Let's \textit{try} to gain some intuition about the space of policies in higher dimensions.
-For each state, we have a distribution (on a simplex), over the possible actions.}
-\end{figure}
 
 
 \section{Model search}
@@ -452,7 +397,7 @@ and the reward function.
 While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
 solving a MDP is to find the optimal policy. ...!?!?
 
-\subsubsection{Relationship to model based RL}
+\subsection{Relationship to model based RL}
 
 Most model-based learning approaches to RL ... next step prediction (refs!!!)
 This algorithm only focuses on relevant features of the state space.

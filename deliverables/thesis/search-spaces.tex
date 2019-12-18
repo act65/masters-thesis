@@ -20,7 +20,8 @@ And a single action means all policies are the same.).}
 \end{figure}
 
 The space of possible policies is a 2D surface in a 4D space. For each state, we
-can pick action 1 or action 2, with some probability, $p$.
+can pick action 1 or action 2, with some probability, $p$. For some intuition
+about this policy space see \ref{high-D-policies}.
 
 \begin{align}
 \pi &=
@@ -69,6 +70,28 @@ Dadashi et al. remark, the polytope gives a clear illustration of the following 
 
 % Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
 
+
+
+% An increase in the value of state one, can, at worst, do nothing for state two, aka a
+% flat line, either horizontal or vertical. But if the value of the other state
+% increases and there is a non zero chance of transitioning to that state, from your current state,
+% then that will increase the value of your current state.
+% This explains why the edges of the polytope by be aligned with the positive orthant, they slant upward.
+
+
+\begin{align}
+\hat V(s_1) = V(s_1)P(s_1|s_1, a)\pi(a|s_1) + V(s_2)P(s_2|s_1, a)\pi(a|s_1)
+\end{align}
+
+\begin{itemize}
+\tightlist
+\item
+If $V(s_1)$ increases then $\hat V(s_1)$ must increase...
+\item
+If $V(s_2)$ increases then $\hat V(s_1)$  either increases or stays the same. As $P(s_2|s_1, a)\pi(a|s_1) \ge 0$
+\end{itemize}
+
+
 \subsubsection{Dynamics on the polytope}
 
 Furthermore, Dadashi et al. were interested in three aspects of different algorithms’ learning dynamics:
@@ -95,7 +118,7 @@ Some are not even constrined to the polytope. This left me wondering;
   \textit{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
 
-\section{Search spaces for RL}
+\section{Search spaces for MDPs}
 
 We want to efficiently find the optimal policy for a given MDP. But where and how should we
 search for this policy? We could search within;
