@@ -56,17 +56,17 @@ simple setting to anlyse RL.
 
 \section{Sequential decision problems}
 
-A general intuition for what is going on when solving a sequential decision problem; actions are taken
-sequentially (eg.) and need to be conditioned on observations (eg.).
-The goal is to take actions that achieve rewards (eg.). While instantaneous
-rewards are good, we really care about long term cumulative rewards (eg.).
+A general intuition for what is going on when solving a sequential decision problem; decisions (aka actions) are made
+sequentially (\textit{eg.}) and need to be conditioned on observations (\textit{eg.}).
+The goal is to take actions that achieve higher rewards (\textit{eg.}). While instantaneous
+rewards are good, we really care about long term cumulative rewards (\textit{eg.}).
 
 % Maze with pendulums / doors. When moving through the maze, you must
 % swing the pendulums. In the future you must avoid being hit. (maybe make
 % a picture of this?) also, is there a more general way to think about it?
 
-More formally, a MDP, which is a type of sequential decision problem is defined
-as a tuple, \(\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t), \gamma, d_0\}\).
+More formally, a MDP, which is a type of sequential decision problem, is defined
+as a tuple, $\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t), \gamma, d_0\}$.
 Where \(s \in \mathcal S\) is the set of possible states (\textit{for example arrangements of chess pieces}),
 \(a \in \mathcal A\) is the set of actions (\textit{the different possible moves, left,
 right, diagonal, weird L-shaped thing, ...}),  \(P(s_{t+1} \mid s_t, a_t)\)
@@ -75,7 +75,7 @@ to the past (\(s_t\)) and to your actions (\(a_t\)) (\textit{in this case, your
 opponent's moves, taking one of your pieces, and the results of your actions}),
 and finally, \(r(s_t, a_t)\) is the reward function, \textit{whether you won (+1) or lost (-1) the game }.
 The objective when solving a MDP is to find a policy, $\pi(a_t | s_t)$,
-that maximises the expected return.
+that maximises the expected return (aka the value). {\color{red}needs more explanation}
 
 \begin{align*}
 V(\pi) = \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)]
@@ -83,7 +83,7 @@ V(\pi) = \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)]
 
 
 Where, $d_0$ is the initial state distribution, $\zeta$ collects the $(s_t, a_t, r_t)$ triples of a game (aka trajectory or rollout),
-$R(\zeta)$ is the sum of discounted rewards, and $D$ is the probability of a trajectory under the given policy and MDP.
+$R(\zeta)$ is the sum of discounted rewards, and $D$ is the probability of a trajectory under the chosen policy and MDP.
 
 \begin{align}
 \zeta &= \{(s_t, a_t, r_t) : t \in [0, H]\} \tag{trajectory} \\
@@ -94,10 +94,9 @@ D(\zeta, \pi, \tau, d_0) &= d_0(\zeta[s, 0]) \prod_{t=1}^{H} \pi(\zeta[a, t]|\ze
 % If we wanted we could pick our actions before we make observations,
 % reducing the search space to only \(|A| \times T\). But this is a bad idea\ldots{} example.
 
-You can find some examples in \ref{MDP-examples}.
+You can find examples of some simple MDPs in \ref{MDP-examples}.
 
-\hypertarget{the-markov-property}{%
-\subsection{The Markov property}\label{the-markov-property}}
+\subsection{The Markov property}
 
 \begin{displayquote}
   \textit{What does the M in MDP really mean?}
@@ -118,39 +117,55 @@ totally described by changes to the observable state, $s\in S$.
 % Can easily make a sequence Markovian by adding information. E.g.
 % time
 
-\hypertarget{optimality}{%
-\subsection{\color{red}Optimality}\label{optimality}}
+\section{Solving a MDP}
 
 \begin{displayquote}
   \textit{What does it mean to solve an MDP?}
 \end{displayquote}
 
-And importantly, existing theory tells us that there is a unique optima to the bellman iterations.
-And that there is always a deterministic policy that is optimal. (usually, there is a unique optima)
+\subsection{Optimality}
 
-(why does this make sense?)
+A MDP is considered solved when we have found the 'optimal' policy. The 'optimal'
+policy is the policy that gives the highest
+expected return (value). More formally, the optimal policy, $\pi^{* }$ is defined as
 
-The Bellman equation (ref) ...
+\begin{align*}
+\pi^{*} : \;\; V^{\pi^* }(s) \ge V^{\pi}(s) \quad \forall \pi\in \Pi \;\;\forall s\in S\\
+\end{align*}
+
+Before we start searching for the optimal policy, it would be nice to know some of its properties.
+
+\begin{itemize}
+\tightlist
+  \item Does it always exist?
+  \item It is unique, or are there many optimal policies?
+  \item Does it necessarily have any specific properties?
+\end{itemize}
+
+{\color{red} And explanation, examples and refs}
+
+\subsection{The Bellman Equations}
+
+{\color{red}how to intro / motivate bellman and TD??}
+
+An alternative, recusrive, definition of the expected return
+
+% DP!
+% The Bellman equation (ref) ...
 
 \begin{align*}
 Q^{\pi}(s, a) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
 V^{\pi}(s) = \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
 \end{align*}
 
-Can be used to tell us: How do we know one policy is better than another? How do we know a
-policy is optimal? The optimal policy has the property;
 
-\begin{align*}
-\forall \pi\;\; V^{\pi^* } \ge V^{\pi} \\
-\end{align*}
-
+\subsection{Complexity}
 
 \begin{displayquote}
-  \textit{How hard is it to solve an MDP?}
+  \textit{How hard is it to find the optimal policy?}
 \end{displayquote}
 
 % Insert lower bound and some intution
-
 The complexity of estimating the value of a state-action under the optimal policy, ie solving the Bellman optimality
 equation, can be glimpsed if we unroll its recursive definition.
 Here we can see a series of nested maximisation problems, where the former
@@ -163,7 +178,10 @@ r(s_2, a_2)  &+ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\
 \dots \Big] \bigg] \Bigg]
 \end{align*}
 
-\subsection{A tabular representation of MDPs}
+
+
+
+\section{A tabular representation of MDPs}
 
 Back to constructing a simple RL setting.
 
@@ -210,3 +228,8 @@ seems to retain much of the complexity we care about. This setting does not allo
 efficient solutions via dynamic programming. And can be approached with algorithms
 that are used for state-of-the-art DRL such as;
 policy gradients\cite{Schulman2015a}, Q-learning \cite{Mnih2015}, ??? (more!?)
+
+{\color{red}!!!}
+Finally, it should be noted that this tabular MDP setting ignores a crucial
+aspects of RL: exploration, estimation error, . It is hoped that we can study
+optimisation dynamics,  abstraction,

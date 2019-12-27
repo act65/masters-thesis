@@ -5,70 +5,81 @@
 % programming?
 % ???
 
-What do I mean by abstraction?
+\begin{displayquote}
+ \textit{What is an abstraction?}
+\end{displayquote}
+
+Imgine we have X.
+
 Capturing the 'essence' of the problem. Without unimportant details.
-
-Related. Representation learning.
-
-What is it?
-- Single elements are more complex, but tailored to specific tasks?!
-- An idealisation, that ignores unimportant details.
--
+This essence and these unimportant details will depend on what you want to do with the abstraction.
 
 Throw away the unimportant details. But how do you know which ones are unimportant?
 Example.
 
-Why do we care?
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-By throwing away details, we can compute more efficiently, less data.
-We can learn more efficiently (less noise).
-Throwing away unimportant factors of variation will reduce the variance of our
-observations and thus allow quicker learning (ref).
+Close connections to a \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism}, a 'structure preserving' map.
 
-- How can we find an abstraction?
-- How can we exploit an abstraction?
+\begin{align*}
+f(x \diamond_G y) = f(x) \diamond_A f(y)
+\end{align*}
 
+Where $f: X\to Y$ is the abstraction. And $\diamond$ is the preserved structure.
+Common examples are addition, multiplication. But we might want to preserve the topology of anoperation such as the Bellman operator.
 
-Toy examples?
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-- ?
-- ?
-- ?
-
-History.
-
-- Mathematics, category theory
-- Physics?
-- Comp sci, programming languages
-
-
-
-\begin{itemize}
-\tightlist
-\item
-  exploration, Learning latent state representation for speeding up exploration \cite{Vezzani2019}
-\item
-  optimal control,
-\item
-  ???,
-\end{itemize}
-
-\begin{displayquote}
-\textit{How can an abstraction be used to find an optimal policy?}
-\end{displayquote}
-insert picture of up down etc.
-
-The three steps of abstraction - transform to a new domain
-- solve - apply solution back in original domain.
-
-
-\begin{displayquote}
-The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data. \cite{Konidaris2019}
-\end{displayquote}
-
+{\color{red}quotes!!}
 \begin{displayquote}
   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties}
 \end{displayquote} Littman / Walsh.
+
+\begin{displayquote}
+ \textit{Why do we care?}
+\end{displayquote}
+
+Why do we care? The reasons to care come back to computational and sample complexity.
+By throwing away inessential details, there is less to compute.
+By throwing away unimportant factors of variation, we have reduced the variance of our observations and thus allow quicker learning (ref).
+
+How can we find an abstraction? One that actually gives an advantage.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+Related. Representation learning.
+
+
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+% History.
+%
+% - Mathematics, category theory
+% - Physics?
+% - Comp sci, programming languages
+
+In general, there are three steps to using abstraction to help solve a problem:
+
+\begin{itemize}
+\tightlist
+  \item Transform the problem to the 'abstract' domain
+  \item Solve the problem
+  \item Lift the solution back to the original domain
+\end{itemize}
+insert picture of up down etc.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+Discovery.
+A complex problem. Versus the cost of discovery plus a simpler problem.
+Need to offset the cost of discovering the abstraction.
+
+% \begin{displayquote}
+% \textit{The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.} \cite{Konidaris2019}
+% \end{displayquote}
+
+
 
 
 \section{Abstractions for RL}
@@ -76,31 +87,35 @@ The challenge in the single-task case is overcoming the additional cost of disco
 % types of abstraction we will consider
 There are a few different types of abstraction that can be considered for RL:
 state abstractions \cite{Littman2006,Haarnoja,Cuccu2018,Zhonga,Vezzani2019,Abel2018,Duan2018,Abel2017,Silver2016a},
-action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019}, temporal abstractions \cite{Rafati,Mankowitz2018,Harutyunyan2017,Fruit2017,Riemer2018,Bacon2018,Achiam2018,Pham2019,Konidaris2018,Haarnoja,Sutton1999,Fruit2017a,Bacon2016a,Jinnai2018,Nachum2018}.
-Where there are a couple of main goals of these abstractions; efficient exploration
+action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019,Nagabandi2019}, state-action abstractions \cite{Dayan1993,Barreto2017}, temporal abstractions \cite{Rafati,Mankowitz2018,Harutyunyan2017,Fruit2017,Riemer2018,Bacon2018,Achiam2018,Pham2019,Konidaris2018,Haarnoja,Sutton1999,Fruit2017a,Bacon2016a,Jinnai2018,Nachum2018}.
+These abstractions are often built for two goals; efficient exploration
 (\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
 and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computational_complexity_theory}{computational complexity}).
 
 %  but. how can we analyse them?
 % tools we can use to analyse an abstraction
-Let's say we have a state abstraction, a road is a road: no real difference
+Imagine we have a state abstraction, a road is a road: no real difference
 between them; gravel, winding, motorway, cliffs-on-either-side...
 One of the first things we want to know about the abstraction is:
-is it possible for me to act optimally (with respect to some value function)
-using this abstraction? If not, what's the damage? In this case, driving 100kph on every road --
-because they are all pretty-much-the-same -- might lead to some suboptimal results.
+is it possible for me to act optimally
+using this abstraction? If not, what's the damage? In this case, does driving 100kph on every road --
+because they are all pretty-much-the-same -- lead to suboptimal results? Probably.
 More precisely, we want know to whether the optimal policy can be approximately represented within an abstracted MDP.
 
 % formal
 This notion of suboptimality can be formalised as the representation error of the optimal
 policy. Given an abstraction, we want to know how well
-the abstraction can represent the optimal policy. \cite{Littman2006, Abel2017}
+the abstraction can represent the optimal policy. \cite{Littman2006, Abel2017} \footnotemark[6]
+
+\footnotetext[6]{A main issue with this framework for analysing abstraction is that it does not consider
+the sample or computational complexity of finding the optimal policy.
+Only whether optimal behaviour can be approximately represented.}
 
 \begin{align}
 \forall_{s\in S, a\in A} \mid Q^{\pi^* }(s, a) - Q^{\pi_{A}^* }(s, a) \mid \le \epsilon
 \end{align}
 
-Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the optimal
+Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the lifted optimal
 policy found using the abstraction.
 
 \subsection{Classes of abstraction for RL}
@@ -119,19 +134,22 @@ The abstracted $Q$-function and policy might be constructed on spaces $X, Y$,
 $Q_A: X \times Y \to \mathbb R$, $\pi_A: X \to \Delta(Y)$. We can now construct
 different classes of learners by giving them access to different types of abstraction.
 
-\begin{align*}
-&\phi: S \to X, Y = A \\
-&\pi(\phi(s)),\quad Q(\phi(s), a) \tag{State abstraction} \\
-&\psi: A\to Y, X = S\\
-&\psi^{-1}(\pi(s)),\quad Q(s, \psi(a)) \tag{Action abstraction} \\
-&\phi, \psi\\
-&\psi^{-1}(\pi(\phi(s))),\quad Q(\phi(s), \psi(a)) \tag{State and action abstraction} \\
-&\varphi: S \times A \to Z \\
-&\mathop{\text{argmax}}_a V(\varphi(s, a)),\quad V(\varphi(s, a)) \tag{State-action abstraction} \\
-\end{align*}
+\begin{center}
+  \begin{tabular}{ c || c | c | c | c }
+    Abstraction & \textbf{X} & \textbf{Y} & \textbf{Value fn} & \textbf{Policy} \\ \hline \hline
+    State & $\phi: S \to X$ & $A$ & $Q(\phi(s), a)$ & $\pi(a| \phi(s))$ \\ \hline
+    Action & $S$ & $\psi: A \to Y$ & $Q(s, \psi(a))$ & $\pi(\psi^{-1}(y) | s)$\\ \hline
+    State and action \footnotemark[5] & $\phi: S \to X$ & $\psi: A \to Y$ & $Q(\phi(s), \psi(a))$ & $\pi(\psi^{-1}(y) | \phi(s))$ \\ \hline
+    State-action & \multicolumn{2}{c|}{$\varphi: S\times A \to X\times Y$} & $Q(\varphi(s, a))$ & $\mathop{\text{argmax}}_a Q(\varphi(s, a))$ \\ \hline
+    Temporal (goal like) & $S$ & $f: S \to Y$ & $Q(s, f(s))$ &   \\ \hline
+    Temporal (option like) & $S$ & $g: \Omega \to Y$ & $Q(s, g(\omega))$ & $\pi(g^{-1}(y) | s)$ \\ \hline
+  \end{tabular}
+\end{center}
 
-As well as other classes of temporal abstraction. But while they are of great
-interest, we do not consider them here.
+Where $\Omega$ is $A^k$.
+
+\footnotetext[5]{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
+then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
 
 \begin{displayquote}
 \textit{Which class of abstraction should we use?}
@@ -139,48 +157,11 @@ interest, we do not consider them here.
 
 Possibly, the most interesting question is about the difference in performance between
 the \textit{State and action abstraction} and the \textit{State-action abstraction}.
+Or \textit{goal like} and \textit{option like} temporal abstractions.
 
 The state-action abstraction is the most powerful because it allows the compression of the most symmetries. (want to
-prove!) And this is part of the motivation behind the successor features \cite{Barreto2017,Dayan1993}.
+prove!)
 % The abstraction is able to capture patterns in ??? something about the effects of the actions. Temporal difference models
-
-\subsection{Discovery}
-
-% Why is this hard? How hard is it? Existing work? What is the problem?
-
-\subsubsection{Building an abstraction}
-
-When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
-In RL there are a few possible notions of similarity.
-
-What could be similar? Two states, two actions, two state-actions. Why?
-Because they result in the same future rewards? The same future transitions? The same future actions?
-Because they can reach the same set of states.
-
-\begin{itemize}
-  \tightlist
-  \item Characterising the future: One step, k-step, expected, reachable, MC rollout / trajectories, etc etc.
-  \item Things we might care about: rewards / fn, actions / fn, states / fn.
-  \item All versus just the optimal.
-\end{itemize}
-
-What about $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$s? $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$ and $(s_t', a_t', r_t', s_{t+1}'', a_{t+1}'')$s are similar if?
-
-GVFs
-
-\cite{Littman2006} give 5 classes of state abstraction, and show that ...???
-\cite{Abel2017} give 4 classes of approximate states abstraction. They show that ...
-Which is best?
-
-Generalise to actions / temporal.
-
-$V(s) - V(s')$ as a similarity measure tells us very little. Because...?
-Why doesnt this simple baseline work. Try it out?! Explain.
-On a simple MDP, on atari. How to implement? Need to learn $chi(s, s')$.
-It will learn whether two state are similar under many different policys. As we train it...
-For every state in our replay buffer, is the return similar to other states?
-Just sample a minibatch and compare those states.
-
 
 \subsection{Examples}
 
@@ -189,13 +170,26 @@ Just sample a minibatch and compare those states.
 State abstraction groups together states that are similar. For example,
 sprinting 100m is equivalent regardless of which track lane you are in.
 
+
+
 \subsubsection{Action abstraction}
 
 Action abstraction groups together actions that are similar. For
-example, X and Y both yeild the state change in state, \textgreater{}
-Approximation perspective: we have a set of options and we want to use
-them to approximate the optimal policy. A good set of options can
-efficiently achieve an accurate approximation.
+example, both action $i$ and action $j$ might yeild the same rewards and change in state,
+in which case, we can just relabel them as the same action.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth,height=0.25\textheight]{../../pictures/drawings/hungry-caterpillar.png}
+\caption{Consider a hungry caterpillar. It wants to move towards the leaf. But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th lag slignly forward, etc...}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth,height=0.25\textheight]{../../pictures/drawings/full-caterpillar.png}
+\caption{But, what if it could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs.}
+\end{figure}
 
 \subsubsection{State-action abstraction}
 
@@ -204,7 +198,7 @@ efficiently achieve an accurate approximation.
 Imagine you are in a mirror symmetric maze. It should not matter to you
 which side of mirror you are on.
 
-\begin{figure}
+\begin{figure}[hb!]
 \centering
 \includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/drawings/maze.png}
 \caption{maze.png}
@@ -225,13 +219,67 @@ This intuition leads to our work in section ... (symetric abstractions).
 ???
 
 
+\subsection{Building an abstraction}
+
+% Why is this hard? How hard is it? Existing work? What is the problem?
+
+When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
+In RL there are a few possible notions of similarity.
+
+What could be similar? Two states, two actions, two state-actions. Why?
+Because they result in the same future rewards? The same future transitions? The same future actions?
+Because they can reach the same set of states.
+
+\begin{itemize}
+  \tightlist
+  \item Characterising the future: One step, k-step, expected, reachable, MC rollout / trajectories, etc etc.
+  \item Things we might care about: rewards / fn, actions / fn, states / fn.
+  \item All versus just the optimal.
+\end{itemize}
+
+If two states have the same value under all possible policies, does this mean
+they have the same rewards and transition probabilities?!?
+
+What about $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$s? $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$ and $(s_t', a_t', r_t', s_{t+1}'', a_{t+1}'')$s are similar if?
+
+GVFs
+
+\cite{Littman2006} give 5 classes of state abstraction, and show that ...???
+\cite{Abel2017} give 4 classes of approximate states abstraction. They show that ...
+Which is best?
+
+Generalise to actions / temporal.
+
+$V(s) - V(s')$ as a similarity measure tells us very little. Because...?
+Why doesnt this simple baseline work. Try it out?! Explain.
+On a simple MDP, on atari. How to implement? Need to learn $\chi(s, s')$.
+It will learn whether two state are similar under many different policys. As we train it...
+For every state in our replay buffer, is the return similar to other states?
+Just sample a minibatch and compare those states.
+
+Does this allow us to build more general abstractions?
+
+\begin{itemize}
+\tightlist
+  \item Preserving the ordering of policies. Rather than the absolute value.
+  \item Perserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
+  \item Preserving the neighborhoods of policies and their values.
+  \item ?
+\end{itemize}
+
+Want to remove unimportant structure, while keeping the structure that allows us
+to exploit the bellman equation (and thus more efficient search).
+
+\subsubsection{Pairing abstractions with similarity measures}
+
+Different abstraction spaces support different similarity measures.
+State similarity based on value fails in rather simple settings.
+But works with state-action abstractions!?
+
+
 \subsection{Discussion}
 
-Learnability!!!
 
-A main issue with this framework for analysing abstraction is that it does not consider
-the sample or computational complexity of finding the optimal policy. Only that, under the abstraction,
-it exists.
 
 \begin{itemize}
   \item Abstraction with only preserving optimal actions isnt reliable. We have not preserved the values.
@@ -253,3 +301,21 @@ automatic differentiation!? Want a way to get bounds for all of these
 combinations!
 
 Requires the evaluation of expensive integrals?!?
+
+\subsection{Related work}
+
+Existing methods can build abstractions for RL that make solving the problem more computationally efficient.
+These methods work when the model is known, and it can be abstracted...
+When the model is unknown. We might have some belief about likely MDPs. Existing methods do not work on these yet. Too expensive?
+Also. To learn the model with high confidence takes alot of data.
+
+Want symmetry for efficient exploration / sample efficiency.
+Rather than picking actions; randomly, to minimise uncertainty, to ...?
+We want to pick actions to help us identify symmetries in the MDP.
+How does this help us increase the sample efficiency?
+
+Could build this into uncertainty estimates. Where model complexity also factors into the uncertainty estimate (rather than only data).
+Could build this in using ???
+
+If we are using something like neural counts. How does it generalise it density estimates!?
+Want symmetries!!!

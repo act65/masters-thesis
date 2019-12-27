@@ -9,8 +9,8 @@ some properties of our setting, MDPs.
 \section{The value function polytope}
 
 The Value Function Polytope \cite{Dadashi2018} provides some great intuition
-about the structure of a MDP and the dynamics of solvers. Let's take a look:
-consider a two state, two action MDP.
+about the structure of a MDP and the dynamics and complexity of solvers.
+Let's take a look: consider a two state, two action MDP.
 
 \begin{figure}[hb!]
 \centering
@@ -20,7 +20,7 @@ And a single action means all policies are the same.).}
 \end{figure}
 
 The space of possible policies is a 2D surface in a 4D space. For each state, we
-can pick action 1 or action 2, with some probability, $p$. For some intuition
+can pick $\text{action1}$ or $\text{action2}$, with some probability, $p$. For some intuition
 about this policy space see \ref{high-D-policies}.
 
 \begin{align}
@@ -40,8 +40,7 @@ Since the policies are a 2D space, we can visualise them. This square of all pos
 
 Rather, we can evaluate (calculate the expected return) each each policy (using the \eqref{eq:value-functional}).
 Since there are two states, the evaluation returns a 2D vector of values, one value for each state.
-We can easily visualise the value of each policy. And because the policies were a 2D structure, we see a
-
+Therefore, we can visualise the value of each policy.
 \begin{figure}[!hb]
 \centering
 \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/value-polytope.png}
@@ -49,52 +48,40 @@ We can easily visualise the value of each policy. And because the policies were 
 The red dots are deterministic policies.}
 \end{figure}
 
-\subsection{Properties of the polytope}
-
-Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope. Sepcifically they focused on its geometry and dynamics. \footnotemark[3]
-
-\footnotetext[3]{In \ref{polytope-extras} you can find further exploration of other properties of the value polytope.}
+Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope.
+Sepcifically they focused on its geometry and dynamics. And, in
+\ref{polytope-extras} you can find further exploration of other properties of the value polytope.
 
 \subsubsection{Geometry of the polytope}
 
 Dadashi et al. remark, the polytope gives a clear illustration of the following classic results regarding MDPs \cite{Bertsekas1996}.
 
-\begin{itemize}
+\begin{enumerate}
 \tightlist
   \item (Dominance of $V^*$) The optimal value function $V^*$ is the unique dominating vertex of $V$;
   \item (Monotonicity) The edges of V are oriented with the positive orthant;
   \item (Continuity) The space V is connected.
-\end{itemize}
+\end{enumerate}
 
-{\color{red} i need to explain these!?}
+\textbf{1)} As explained in ref. There is a unique optimal policy, which ...
+
+\textbf{2)} A change in $\pi(a_1|s_1)$ which increases the value of state $1$, can, at worst, do nothing for
+state two, aka we would see a flat line. But the value of state $2$
+increases and there is a non zero chance of transitioning to that state, from your current state,
+then that will increase the value of your current state.
+This explains why the edges of the polytope by be aligned with the positive orthant, why they slant upward. $\hat V(s_1) = V(s_1)P(s_1|s_1, a)\pi(a|s_1) + V(s_2)P(s_2|s_1, a)\pi(a|s_1)$
+
+
+\textbf{3)} ???
+
 
 % Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
 
 
 
-% An increase in the value of state one, can, at worst, do nothing for state two, aka a
-% flat line, either horizontal or vertical. But if the value of the other state
-% increases and there is a non zero chance of transitioning to that state, from your current state,
-% then that will increase the value of your current state.
-% This explains why the edges of the polytope by be aligned with the positive orthant, they slant upward.
-
-
-\begin{align}
-\hat V(s_1) = V(s_1)P(s_1|s_1, a)\pi(a|s_1) + V(s_2)P(s_2|s_1, a)\pi(a|s_1)
-\end{align}
-
-\begin{itemize}
-\tightlist
-\item
-If $V(s_1)$ increases then $\hat V(s_1)$ must increase...
-\item
-If $V(s_2)$ increases then $\hat V(s_1)$  either increases or stays the same. As $P(s_2|s_1, a)\pi(a|s_1) \ge 0$
-\end{itemize}
-
-
 \subsubsection{Dynamics on the polytope}
 
-Furthermore, Dadashi et al. were interested in three aspects of different algorithms’ learning dynamics:
+Furthermore, Dadashi et al. \cite{Dadashi2018} were interested in three aspects of different algorithms’ learning dynamics:
 
 \begin{itemize}
 \tightlist
@@ -112,13 +99,13 @@ natural policy gradients and the cross entropy method.
 Their results are intriguing. They show that different RL algorithms traverse the polytope in vastly different ways.
 Some are not even constrined to the polytope. This left me wondering;
 
-{\color{red}I feel like this needs more}
+{\color{red}I feel like this needs more???}
 
 \begin{displayquote}
   \textit{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
 
-\section{Search spaces for MDPs}
+\section{Search spaces for MDPs}\label{search-spaces-mdps}
 
 We want to efficiently find the optimal policy for a given MDP. But where and how should we
 search for this policy? We could search within;
@@ -127,12 +114,16 @@ search for this policy? We could search within;
 \tightlist
   \item the set of potentially optimal policies, the $|A|^{|S|}$ discrete policies,
   \item the set of all possible policies $\pi \in \mathbb R^{|S| \times |A|}: \forall s \int_a \pi(a|s) = 1$
-  \item the set of possible value functions, $\mathbb R^{|S|}$, which we could then use to construct the optimal policy,
+  \item the set of possible state-action value functions, $\mathbb R^{|S|\times|S|}$,
+  which we could then use to construct the optimal policy,
   \item Or maybe some other space.
 \end{itemize}
-But, which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?
 
-Naively, we know that smaller search spaces are better. We would rather
+\begin{displayquote}
+  \textit{Which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?}
+\end{displayquote}
+
+Naively, we think smaller search spaces are better. We would rather
 search for our keys in a few rooms, rather than many. But added
 structure (for example, an ordering) can be exploited to yield faster
 search, even when there are infinitely more states to search. For example,
@@ -146,8 +137,7 @@ We can search through policies. In my opinion, this feels like the most 'natural
 As, after all, we are searching for the optimal \underline{policy}.
 
 Searching through the space of policies supports a couple of modes of travel:
-policy iteration jumps between deterministic policies (the verticies of our polytope).
-Policy gradients takes small steps in the 'right' direction and often traverses through the center of the polytope.
+policy iteration and policy gradients
 
 \subsubsection{Policy iteration}
 
@@ -158,7 +148,7 @@ In our tabular setting, policy iteraction can be written as:
 \begin{algorithmic}[1]
 
 \Procedure{PI}{$P, r, \gamma$}
-    \State $\pi = \text{init}()$
+    \State $\pi \leftarrow \text{rnd init}$
     \While{not converged}
       \State $V(\pi) =  (I - \gamma P_{\pi})^{-1} r_{\pi}$ \Comment{Evaluate policy}
       \State $\pi = \mathop{\text{argmax}}_\pi \big[r_{\pi} + \gamma P_{\pi}V(\pi) \big]$ \Comment{Greedy update}
@@ -169,7 +159,10 @@ In our tabular setting, policy iteraction can be written as:
 \end{algorithmic}
 \end{algorithm}
 
+As can be seen below PI jumps between deterministic policies (the verticies of our polytope).
 
+{\color{red}figures}
+{\color{red}ref for PI.}
 
 \subsubsection{Policy gradients}
 
@@ -190,15 +183,18 @@ In our tabular setting, policy iteraction can be written as:
 \end{algorithmic}
 \end{algorithm}
 
-
+takes small steps in the 'right' direction
+and {\color{red}often traverses through the center of the polytope}.
 add ref
+
+{\color{red}figures}
 
 % Want to include upper / lower bounds!?
 
 \subsection{Value search}
 
-Let's search through possible values. But how can we ensure that our search will
-converge to a value reasliable by the original MDP? We can use Bellman's
+Alternatively, we can search through possible values. But how can we ensure that our search will
+converge to a value that corresponds to a realisable policy? We can use Bellman's
 optimality operator to guide the search.
 
 % (need to explain? why does stationarity mean optimality...?!)
@@ -227,6 +223,7 @@ Intution about why it converges!? Contraction. Banach fixed-point theorem.
 \end{algorithmic}
 \end{algorithm}
 
+{\color{red}figures}
 
 % Want to include upper / lower bounds!? On complexity. Sample / computational!?
 
@@ -243,9 +240,11 @@ Why is this good / bad. What dynamics can / cannot be achieved?
 
 So there are different classes of search space: each imbued with special
 structure from the Bellman equation or expected return. Each with different types of search they
-support. And each with different parameter topologies.
+support.
 
-Which spaces support efficient search for the optimal policy? Can we characterise the properties of each space?
+\begin{displayquote}
+\textit{Which spaces support efficient search for the optimal policy? Can we characterise the properties of each space?}
+\end{displayquote}
 
 \section{Gradient based search}
 
@@ -258,6 +257,10 @@ w_{t+1} = w_t - \eta \nabla f(w_t)
 
 The dynamics of the search are dependent on the topology of a problems loss surface.
 The loss surface is determined by the combination of the search space and the loss function.
+
+% In which spaces can we get the most information? (e.g. low variance gradients)
+% In which spaces to we have access to reliable guidance (e.g. large magnitude gradients)?
+% SNR
 
 \subsection{Parameterised search}
 
@@ -405,26 +408,6 @@ If we overparameterise the search space, then we can move between solutions in n
 Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
 % insert pic / prove
 
-\section{Notes}
-
-When transforming between two spaces, how does the optimisation space
-change? Does my abstraction make optimisation easier?
-
-
-\section{Related work}
-
-Recently there has been work investigating the properties of overparameterised search spaces.
-Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yeilds acceleration, however,
-their explanation of the acceleration is not entirely convincing. Bc...
-
-How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
-Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
-How does momentum bias trajectories? To cover more distance? To have more diversity?
-
-Search spaces with alternative geometries.
-Hyperbolic neural networks. https://arxiv.org/pdf/1805.09112.pdf
-
-
 \section{Visualising higher dimensional MDPs}
 
 So this value polytope works well for 2D. And possibly 3D. But,
@@ -433,11 +416,6 @@ So this value polytope works well for 2D. And possibly 3D. But,
 How to construct them?
 
 Properties of the graphs / graph signals?
-
-
-\subsection{Compressed sensing}
-
-Related to !?!
 
 
 \section{Conslusion}
@@ -452,3 +430,16 @@ So, while MDPs may be simple, we have yet to fully understand them or explore th
 Havent characterised their complexity?!? Sparse, ...
 
 Hopefully we are now prepared to consider how abstraction can be used to improve the efficiency of RL for solving MDPs.
+
+
+
+Recently there has been work investigating the properties of overparameterised search spaces.
+Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yeilds acceleration, however,
+their explanation of the acceleration is not entirely convincing. Bc...
+
+How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
+Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
+How does momentum bias trajectories? To cover more distance? To have more diversity?
+
+Search spaces with alternative geometries.
+Hyperbolic neural networks. https://arxiv.org/pdf/1805.09112.pdf
