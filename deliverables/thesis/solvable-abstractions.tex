@@ -88,9 +88,9 @@ are optimal. For the rest of this work we will refer to these as LMDPs.
 
 \subsubsection{Constructing a linear MDP}
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
-  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/drawings/abstract-representations-solve.png}
+  \includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/abstract-representations-solve.png}
   \caption{'Solving the LMDP'}
 \end{figure}
 
@@ -111,7 +111,7 @@ To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a 
 The intuition behind these tricks seems to be; we have allowed the learner to pick an arbitrary control.
 This simplifies the optimisation problem. But, now the learner might pick a control that is not possible
 under the given transition function. So we incentivise controls that are close to the underlying dynamics.
-\textit{"It is reminicent of a linear programming relaxation in integer programming"} \cite{Todorov}.
+\textit{"It is reminicent of a linear programming relaxation in integer programming"} \cite{Todorov2009}.
 
 % What is the relationship to other action embedding strategies? {\color{red}!!!!!}
 
@@ -164,9 +164,9 @@ Has nice convergence properties because it is contractive.
 
 \subsection{Solving a MDP}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
-\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/drawings/abstract-representations-linear.png}
+\includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/abstract-representations-linear.png}
 \caption{''}
 \end{figure}
 
@@ -211,9 +211,9 @@ This is problem that we will return to.
 
 \subsection{Decoding the optimal LMDP policy}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
-\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/drawings/abstract-representations-project.png}
+\includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/abstract-representations-project.png}
 \caption{''}
 \end{figure}
 

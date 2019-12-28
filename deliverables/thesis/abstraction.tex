@@ -28,6 +28,14 @@ f(x \diamond_G y) = f(x) \diamond_A f(y)
 Where $f: X\to Y$ is the abstraction. And $\diamond$ is the preserved structure.
 Common examples are addition, multiplication. But we might want to preserve the topology of anoperation such as the Bellman operator.
 
+\begin{align*}
+f(T(x) - x) = T(f(x)) - f(x)
+\end{align*}
+
+As illustrated in the search space experiments. We want to use the bellman eqn to aid in our search.
+So the abstraction should preserve ...!?
+
+
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 {\color{red}quotes!!}
@@ -86,8 +94,8 @@ Need to offset the cost of discovering the abstraction.
 
 % types of abstraction we will consider
 There are a few different types of abstraction that can be considered for RL:
-state abstractions \cite{Littman2006,Haarnoja,Cuccu2018,Zhonga,Vezzani2019,Abel2018,Duan2018,Abel2017,Silver2016a},
-action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019,Nagabandi2019}, state-action abstractions \cite{Dayan1993,Barreto2017}, temporal abstractions \cite{Rafati,Mankowitz2018,Harutyunyan2017,Fruit2017,Riemer2018,Bacon2018,Achiam2018,Pham2019,Konidaris2018,Haarnoja,Sutton1999,Fruit2017a,Bacon2016a,Jinnai2018,Nachum2018}.
+state abstractions \cite{Anand2019, Littman2006,Haarnoja,Cuccu2018,Zhonga,Vezzani2019,Abel2018,Duan2018,Abel2017,Silver2016a},
+action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019,Nagabandi2019}, state-action abstractions \cite{Dayan1993,Barreto2017}, temporal abstractions \cite{Christodoulou2019, Rafati,Mankowitz2018,Harutyunyan2017,Fruit2017,Riemer2018,Bacon2018,Achiam2018,Pham2019,Konidaris2018,Haarnoja,Sutton1999,Fruit2017a,Bacon2016a,Jinnai2018,Nachum2018}.
 These abstractions are often built for two goals; efficient exploration
 (\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
 and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computational_complexity_theory}{computational complexity}).

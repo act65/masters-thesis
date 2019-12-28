@@ -420,4 +420,14 @@ Shouldnt use a fine abstraction at the start, because we do not have enough data
 So then which algorithms work with which abstractions?
 
 
+
+In "Why does Heirarchy (sometimes) work so well in reinforcement learning?" \cite{Dadashi2018}
+authors claim that the benefits of HRL can be explained by better
+exploration. However, I would interpret their results as saying; "for
+2D environments with walls, better exploration (aka larger steps, aka actions that are more temporally abstract), result in greater
+explration". But what if the walls were replaced by cliffs? I imagine
+this algorithm might do a lot worse!? Also, they don't seem to consider the main problem with HRL: discovery.
+Once you have discovered a nice set of abstract actions or states, then yeah,
+you get faster reward propagation, better exploration, \ldots{} etc.
+
 </div>
