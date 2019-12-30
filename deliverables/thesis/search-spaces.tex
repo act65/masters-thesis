@@ -164,7 +164,16 @@ As can be seen below PI jumps between deterministic policies (the verticies of o
 {\color{red}figures}
 {\color{red}ref for PI.}
 
+Actually has some connections to the simplex method. ref
+
 \subsubsection{Policy gradients}
+
+This search is most related to the deep learning / end-to-end paradigm.
+Simply write down what you want (the loss function -- to maximise the expected return),
+estimate its derivative and apply gradient descent. (ref)
+
+% However, has problems with sparse rewards / exploration (not considered in this setting).
+% (but dont they all have problems with sparse rewards!?)
 
 \begin{algorithm}
 \caption{Policy gradients}
@@ -191,7 +200,12 @@ add ref
 
 % Want to include upper / lower bounds!?
 
+Converges at a rate of $\frac{1}{t}$. As can be seen by ...
+\cite{Agarwal2019a}.
+
 \subsection{Value search}
+
+This search is guided by the temporal different operator. !?!?
 
 Alternatively, we can search through possible values. But how can we ensure that our search will
 converge to a value that corresponds to a realisable policy? We can use Bellman's
@@ -246,200 +260,5 @@ support.
 \textit{Which spaces support efficient search for the optimal policy? Can we characterise the properties of each space?}
 \end{displayquote}
 
-\section{Gradient based search}
-
-{\color{red}need a better seguae into GD?!}
-Let's focus on searching with gradient descent.
-
-\begin{align}
-w_{t+1} = w_t - \eta \nabla f(w_t)
-\end{align}
-
-The dynamics of the search are dependent on the topology of a problems loss surface.
-The loss surface is determined by the combination of the search space and the loss function.
-
-% In which spaces can we get the most information? (e.g. low variance gradients)
-% In which spaces to we have access to reliable guidance (e.g. large magnitude gradients)?
-% SNR
-
-\subsection{Parameterised search}
-
-Overparam. DL. \cite{Arora2018}
-
-\begin{align}
-&\mathop{\text{max}}_V \mathop{\mathbb E}_{s\sim D} V(s) \\
-&\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{s\sim D}V^{\pi}(s) \\
-&\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V_{\theta}(s)\label{eq:deepQ}\\
-&\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta}}}(s) \\
-&\mathop{\text{max}}_{\theta} \mathop{\mathbb E}_{s\sim D} V_{\theta}^{\pi_{_{\phi}}}(s)\label{eq:actorcritic} \\
-&\mathop{\text{max}}_{\phi} \mathop{\mathbb E}_{s\sim D} V^{\pi_{_{\theta_{\phi}}}}(s)
-\end{align}
-
-Value iteration and related methods like (deep) Q learning. \eqref{eq:deepQ}
-\eqref{eq:actorcritic}
-
-Ok. So when $\phi$ are the parameters of a deep neural network, ...? The search space has certain (which) properties.
-Euclidean geometry.
-(parameter dimensions are independent! no funny business)
-
-We can pick any space we we like to search with in. But, why would we want to pick one space over another?
-What properties are we looking for?
-
-\begin{itemize}
-\tightlist
-\item In which spaces can we (efficiently) calculate gradients?
-\item In which spaces can we do convex optimisation?
-\item In which spaces does momentum work (well)?
-\end{itemize}
-
-\subsection{Dynamics and complexity}
-
-\begin{displayquote}
-  \textit{So. We want to investigate the properties of gradient based search in different search spaces.}
-\end{displayquote}
-
-Let start with trying to understand the different dynamics and iteration complexities.
-
-How can you quantify a trajectory?
-
-What about the vector fields?
-Do some spaces have gradients that most globally point in approximately the right direction?
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/mvi-iterations.png}
-\caption{Above you see: various MDPs where the value of each policy is colored
-by the number of iterations it took to converge to the optimum policy. Yellow is many iterations, purple is few iterations.}
-\end{figure}
-
-\begin{itemize}
-\tightlist
-\item
-  What are the best ways to travel through policy space? (lines of
-  shortest distance?!)
-\item
-  How does this scale with \texttt{n\_actions} or \texttt{n\_states}??
-\item
-  Is there a way to use an interior search to give info about the
-  exterior? (dual methods?!)
-\item
-  What if your evaluations are only \(\epsilon\)-accurate? How does that
-  effect things?!?
-\item
-  how can we pick the topology for better dynamics!?
-\end{itemize}
-
-
-
-%  include iteration plots
-
-The momentum polts tell us that if we want to bound the iteration complexity of GD plus momentum
-then ...? We need a term that caputures the position / oscillation dynamics!?
-% TODO want a better picture of the difference between these trajectories.
-
-
-\subsection{Acceleration and parameterisation}
-
-{\color{red}insert iteration complexity figures of different lrs with parameterisation.}
-
-\cite{Arora2018} shows that overparameterisation yields acceleration. Consider
-the dynamics of the parameter $w$, which we have overparameterised as $w_1 \cdot w_2$.
-
-
-% Does it even make sense to do a first order approx when trying to reason about momentum?
-% Momentum get interesting when considering non-first order factors?!?
-
-We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
-
-
-\begin{align}
-m_{t+1} &= \gamma m_t + g_t \\
-w_{t+1} &= w_t - \eta \cdot (1-\gamma) \cdot m_t
-\end{align}
-
-It is necessary to consider the trajectory to study momentum. It depends
-on what has happened in the past. Can we construct a space of possible
-trajectories? What properties do trajectories have? They are connected
-by the update fn.
-
-\section{Topology and dynamics}
-
-What kinds of query and movement does our search space support?
-
-If we parameterise our search space. We my have changed the topology of our search space.
-Is it possible to arbitrarily change the topology? (probably?!?)
-
-\textbf{Q:} How can we rationally pick the topology of our search space
-to accelerate learning?
-
-\begin{itemize}
-\item
-  A well connected space? For all possible policies, there exists
-  \(\theta_1, \theta_2 \text{ s.t. } \parallel \theta_1- \theta_2\parallel_2\)
-  is small. (but that doesnt necessarily help\ldots{} depends on the
-  landscapce imposed by \(\nabla_{\theta} V\))
-\item
-  ???
-\end{itemize}
-
-See these gradient flows for example;
-
-Pics?!?
-
-Here are some examples \ldots{}???
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
-\caption{The optimisation dynamics of value iteration versus parameterised value iteration.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom.png}
-\caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
-\end{figure}
-
-If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
-%  insert pic / prove
-
-Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
-% insert pic / prove
-
-\section{Visualising higher dimensional MDPs}
-
-So this value polytope works well for 2D. And possibly 3D. But,
-"To deal with a 14-dimensional space, visualize a 3-D space and say 'fourteen' to yourself very loudly. Everyone does it." -- Geoff Hinton.
-
-How to construct them?
-
-Properties of the graphs / graph signals?
-
-
-\section{Conslusion}
-
-So, we have seen, from our brief exploration of some properties of MDPs, that
-there are some mysteries of interest to the ML community: the optimisation dynamics and generalisation of
-parameterised function approximators.
-There are unexplored types of solution strategy (???): model iteration. Which might be of interest to
-
-So, while MDPs may be simple, we have yet to fully understand them or explore their ???.
-
-Havent characterised their complexity?!? Sparse, ...
-
-Hopefully we are now prepared to consider how abstraction can be used to improve the efficiency of RL for solving MDPs.
-
-
-
-Recently there has been work investigating the properties of overparameterised search spaces.
-Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yeilds acceleration, however,
-their explanation of the acceleration is not entirely convincing. Bc...
-
-How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
-Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
-How does momentum bias trajectories? To cover more distance? To have more diversity?
-
-Search spaces with alternative geometries.
-Hyperbolic neural networks. https://arxiv.org/pdf/1805.09112.pdf
+See appendix for an experiment exploration of the iteration complexity and dynamics of these different alforithms.
+{\color{red}want to include in main section. but needs more work. not really sure what i am trying to say...}

@@ -27,20 +27,18 @@ delayed rewards. For example we could make a RL problem that is;
 \begin{itemize}
 \tightlist
 \item
-  Observable or un-observable
+  Observable or un-observable \cite{Kaelbling1998}
 \item
-  Deterministic or stochastic
+  Deterministic or stochastic \cite{Putterman2015}
 \item
-  Synchronous or asynchronous
+  Synchronous or asynchronous \cite{Bertsekas1995}
 \item
-  Terminating or infinite
+  Terminating or infinite \cite{Putterman2015}
 \item
-  Discrete versus continuous
+  Discrete versus continuous \cite{Bertsekas1995}
 \item
-  Given knowledge of the underlying model
+  Given knowledge of the underlying model \cite{Sutton1991}
 \end{itemize}
-
-{\color{red} want refs for each of these!?}
 
 \begin{displayquote}
   \textit{But, which setting should we study?}
@@ -177,9 +175,6 @@ r(s_1, a_1)  &+ \gamma \mathop{\text{max}}_{a_2} \mathop{\mathbb E}_{s_2\sim p(\
 r(s_2, a_2)  &+ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
 \dots \Big] \bigg] \Bigg]
 \end{align*}
-
-
-
 
 \section{A tabular representation of MDPs}
 

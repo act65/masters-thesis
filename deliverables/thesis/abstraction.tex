@@ -9,17 +9,34 @@
  \textit{What is an abstraction?}
 \end{displayquote}
 
-Imgine we have X.
+A recipie is an abstraction. For example, pumpkin soup:
 
-Capturing the 'essence' of the problem. Without unimportant details.
-This essence and these unimportant details will depend on what you want to do with the abstraction.
+\begin{enumerate}
+\tightlist
+\item Boil stock (6 cups), garlic (1 clove), thyme (0.5 tsp) and pumpkin (4 cups) in a pot for 30 mins.
+\item Puree the mixture.
+\item Simmer for 30 minutes and then add cream (0.5 cups).
+\end{enumerate}
 
-Throw away the unimportant details. But how do you know which ones are unimportant?
-Example.
+This is an abstraction because it captures the essential details: from this recipie, you could make a pumpkin soup.
+While it ignores inessential details: the recipe doesn't tell you; where or what to cook in, where to get the
+ingredients, how to do the many actions needed to actually puree something, etc...
+It also doesn't mandate; the time of day to perform this recipie, what clothes to wear (if any),
+which music should be playing, ...
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+Note that the essential / inessential details will depend on what you want to do with the abstraction.
+If we were going to do Y, then it would be important to know ... .
 
-Close connections to a \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism}, a 'structure preserving' map.
+\vspace{5mm}
+
+There exists a mathematical formalism, a  \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism},
+that allows us to more precisely reason about this transformation from
+details to essence. Consider a ground space, $X$, (\textit{the reality of what
+needs to be done. all the details.}), and an abstract space $Y$ (\textit{our recipie}).
+We are looking for a transformation between $X$ and $Y$ to preserves only the essential
+structure in $X$.
+
+% Another way to think about it, a 'structure preserving' map.
 
 \begin{align*}
 f(x \diamond_G y) = f(x) \diamond_A f(y)
@@ -28,38 +45,27 @@ f(x \diamond_G y) = f(x) \diamond_A f(y)
 Where $f: X\to Y$ is the abstraction. And $\diamond$ is the preserved structure.
 Common examples are addition, multiplication. But we might want to preserve the topology of anoperation such as the Bellman operator.
 
-\begin{align*}
-f(T(x) - x) = T(f(x)) - f(x)
-\end{align*}
+In general, there are three steps to using abstraction to help solve a problem:
 
-As illustrated in the search space experiments. We want to use the bellman eqn to aid in our search.
-So the abstraction should preserve ...!?
+\begin{enumerate}
+\tightlist
+  \item Transform the problem to the 'abstract' domain. $f: X\to Y$
+  \item Solve the problem $\mathcal S: Y \to Z$
+  \item Lift the solution back to the original domain  $g:Z \to X$
+\end{enumerate}
 
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-{\color{red}quotes!!}
-\begin{displayquote}
-  \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties}
-\end{displayquote} Littman / Walsh.
+for example.
+insert picture of up down etc.
 
 \begin{displayquote}
  \textit{Why do we care?}
 \end{displayquote}
 
-Why do we care? The reasons to care come back to computational and sample complexity.
+The reasons we might care come back to wanting more efficient algorithms.
 By throwing away inessential details, there is less to compute.
-By throwing away unimportant factors of variation, we have reduced the variance of our observations and thus allow quicker learning (ref).
-
-How can we find an abstraction? One that actually gives an advantage.
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Related. Representation learning.
-
-
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+By throwing away unimportant factors, we have reduced the variance of our
+observations and thus allow quicker learning \cite{Allen-Zhu2016a,Johnson2013a}.
+% these refs actually show faster convergence now faster learning!?
 
 % History.
 %
@@ -67,30 +73,15 @@ Related. Representation learning.
 % - Physics?
 % - Comp sci, programming languages
 
-In general, there are three steps to using abstraction to help solve a problem:
-
-\begin{itemize}
-\tightlist
-  \item Transform the problem to the 'abstract' domain
-  \item Solve the problem
-  \item Lift the solution back to the original domain
-\end{itemize}
-insert picture of up down etc.
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Discovery.
-A complex problem. Versus the cost of discovery plus a simpler problem.
-Need to offset the cost of discovering the abstraction.
-
+% footnote?
+{\color{red}Related. Representation learning.}
 % \begin{displayquote}
-% \textit{The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.} \cite{Konidaris2019}
+%   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties} (Littman / Walsh.)
 % \end{displayquote}
 
-
-
-
 \section{Abstractions for RL}
+
+% homomorphisms dont segue into this very well...
 
 % types of abstraction we will consider
 There are a few different types of abstraction that can be considered for RL:
@@ -99,32 +90,6 @@ action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019,Nagabandi2019},
 These abstractions are often built for two goals; efficient exploration
 (\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
 and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computational_complexity_theory}{computational complexity}).
-
-%  but. how can we analyse them?
-% tools we can use to analyse an abstraction
-Imagine we have a state abstraction, a road is a road: no real difference
-between them; gravel, winding, motorway, cliffs-on-either-side...
-One of the first things we want to know about the abstraction is:
-is it possible for me to act optimally
-using this abstraction? If not, what's the damage? In this case, does driving 100kph on every road --
-because they are all pretty-much-the-same -- lead to suboptimal results? Probably.
-More precisely, we want know to whether the optimal policy can be approximately represented within an abstracted MDP.
-
-% formal
-This notion of suboptimality can be formalised as the representation error of the optimal
-policy. Given an abstraction, we want to know how well
-the abstraction can represent the optimal policy. \cite{Littman2006, Abel2017} \footnotemark[6]
-
-\footnotetext[6]{A main issue with this framework for analysing abstraction is that it does not consider
-the sample or computational complexity of finding the optimal policy.
-Only whether optimal behaviour can be approximately represented.}
-
-\begin{align}
-\forall_{s\in S, a\in A} \mid Q^{\pi^* }(s, a) - Q^{\pi_{A}^* }(s, a) \mid \le \epsilon
-\end{align}
-
-Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the lifted optimal
-policy found using the abstraction.
 
 \subsection{Classes of abstraction for RL}
 
@@ -178,6 +143,7 @@ prove!)
 State abstraction groups together states that are similar. For example,
 sprinting 100m is equivalent regardless of which track lane you are in.
 
+If in the forrest, then travel east. If in plains travel south. If at lake, travel east.
 
 
 \subsubsection{Action abstraction}
@@ -201,16 +167,19 @@ in which case, we can just relabel them as the same action.
 
 \subsubsection{State-action abstraction}
 
-\emph{(Some intuition behind claim 2.)}
+Group together state-actions that achieve similar changes in state and / or changes in future reward.
 
-Imagine you are in a mirror symmetric maze. It should not matter to you
-which side of mirror you are on.
+Imagine you are in a mirror symmetric maze.
 
-\begin{figure}[hb!]
+\begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/drawings/maze.png}
-\caption{maze.png}
+\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/drawings/maze.png}
+\caption{A symmetric maze, the goal is shown in red.
+Consider two different, but the 'same' positions. Shown in blue and green.
+In what sense are these two positions the same?}
 \end{figure}
+
+
 
 This reduces the state-action space by half!
 \(\frac{1}{2}\mid S \mid \times \mid A \mid\). Note: just using state
@@ -227,9 +196,23 @@ This intuition leads to our work in section ... (symetric abstractions).
 ???
 
 
-\subsection{Building an abstraction}
+
+\subsection{Building an abstraction for RL}
+
+What (structure) do we want to preserve?
 
 % Why is this hard? How hard is it? Existing work? What is the problem?
+% How can we find an abstraction? One that actually gives an advantage.
+% the cost!!!
+
+% Discovery.
+% A complex problem. Versus the cost of discovery plus a simpler problem.
+% Need to offset the cost of discovering the abstraction.
+
+% \begin{displayquote}
+% \textit{The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.} \cite{Konidaris2019}
+% \end{displayquote}
+
 
 When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
 In RL there are a few possible notions of similarity.
@@ -278,6 +261,20 @@ Does this allow us to build more general abstractions?
 Want to remove unimportant structure, while keeping the structure that allows us
 to exploit the bellman equation (and thus more efficient search).
 
+\subsection{Representation learning}
+
+Examples for representation learning.
+
+Representations that attempt to preserve
+\begin{itemize}
+\tightlist
+  \item the mutual information between ? and ??.
+  \item knowledge required to predict the next state
+  \item ... geometric bellamere
+  \item ?!?
+\end{itemize}
+
+
 \subsubsection{Pairing abstractions with similarity measures}
 
 Different abstraction spaces support different similarity measures.
@@ -285,8 +282,47 @@ State similarity based on value fails in rather simple settings.
 But works with state-action abstractions!?
 
 
-\subsection{Discussion}
 
+\subsection{Analysing abstractions}
+
+\begin{displayquote}
+\textit{How might we determine which of these abstractions is better or worse?}
+\end{displayquote}
+
+%  but. how can we analyse them?
+% tools we can use to analyse an abstraction
+Imagine we have a state abstraction, a road is a road: no real difference
+between them; gravel, winding, motorway, cliffs-on-either-side...
+One of the first things we want to know about the abstraction is:
+is it possible for me to act optimally
+using this abstraction? If not, what's the damage? In this case, does driving 100kph on every road --
+because they are all pretty-much-the-same -- lead to suboptimal results? Probably.
+More precisely, we want know to whether the optimal policy can be approximately represented within an abstracted MDP.
+
+% formal
+This notion of suboptimality can be formalised as the representation error of the optimal
+policy. Given an abstraction, we want to know how well
+the abstraction can represent the optimal policy.
+
+\begin{align}
+\forall_{s\in S, a\in A} \mid Q^{\pi^* }(s, a) - Q^{\pi_{A}^* }(s, a) \mid \le \epsilon
+\end{align}
+
+Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the lifted optimal
+policy found using the abstraction.
+
+While this framework \cite{Littman2006, Abel2017} for analysing
+abstraction can tell us that that state abstraction with the preservation of value for all policies
+ ...
+I does not consider the sample or computational complexity of finding the optimal policy.
+Only whether optimal behaviour can be approximately represented.
+
+So the real question we care about has not been answered. Does the abstraction help??
+
+% We need to show that the cost of discovering the abstraction...
+% how does this relate to theory on fn approximators?!
+
+\subsection{Discussion}
 
 
 \begin{itemize}
@@ -297,33 +333,20 @@ But works with state-action abstractions!?
   \item When using approximate abstractions, there is some error. This error might accumulate? Needs to be characterised!?
 \end{itemize}
 
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Want a general way (a function) to take an abstraction of an MDP
-(defined by certain propreties) and return the difference between its
-optimal policy and the true optimal policy. Want automated computational
-complexity to solve this! Actually, we are not considering computational
-complexity here only approximation error. For that can we just use
-automatic differentiation!? Want a way to get bounds for all of these
-combinations!
-
-Requires the evaluation of expensive integrals?!?
-
-\subsection{Related work}
-
-Existing methods can build abstractions for RL that make solving the problem more computationally efficient.
-These methods work when the model is known, and it can be abstracted...
-When the model is unknown. We might have some belief about likely MDPs. Existing methods do not work on these yet. Too expensive?
-Also. To learn the model with high confidence takes alot of data.
-
-Want symmetry for efficient exploration / sample efficiency.
-Rather than picking actions; randomly, to minimise uncertainty, to ...?
-We want to pick actions to help us identify symmetries in the MDP.
-How does this help us increase the sample efficiency?
-
-Could build this into uncertainty estimates. Where model complexity also factors into the uncertainty estimate (rather than only data).
-Could build this in using ???
-
-If we are using something like neural counts. How does it generalise it density estimates!?
-Want symmetries!!!
+% \subsection{Related work}
+%
+% Existing methods can build abstractions for RL that make solving the problem more computationally efficient.
+% These methods work when the model is known, and it can be abstracted...
+% When the model is unknown. We might have some belief about likely MDPs. Existing methods do not work on these yet. Too expensive?
+% Also. To learn the model with high confidence takes alot of data.
+%
+% Want symmetry for efficient exploration / sample efficiency.
+% Rather than picking actions; randomly, to minimise uncertainty, to ...?
+% We want to pick actions to help us identify symmetries in the MDP.
+% How does this help us increase the sample efficiency?
+%
+% Could build this into uncertainty estimates. Where model complexity also factors into the uncertainty estimate (rather than only data).
+% Could build this in using ???
+%
+% If we are using something like neural counts. How does it generalise it density estimates!?
+% Want symmetries!!!
