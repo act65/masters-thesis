@@ -5,30 +5,21 @@
   \textit{Abstraction for efficient optimisation.}
 \end{displayquote}
 
-{\color{red}This whole intro section!?!?}
-
-What makes an optimisation problem easy to solve?
+In optimisation for supervised learning we know that;
+linear models can be solved analytically,
+convex problems converge quickly.
+What makes an RL problem easy to solve? Is there linearity or convexity
+within RL problems that we can use to find solutions more efficiently?
 
 % bellman eqn is hard to solve (how hard?)
-Existing solvers of MDPs such as are not efficient: value iteration requires at
-least \href{https://en.wikipedia.org/wiki/EXPTIME}{EXPTIME} iterations,
-policy iteration requires ???, or policy gradients,
-require a ??? amount of computation.
-Yet, recent work \cite{} has shown that MDPs require at least $\Omega(|S|^2|A|).$
+% Existing solvers of MDPs such as are not efficient: value iteration requires at
+% least \href{https://en.wikipedia.org/wiki/EXPTIME}{EXPTIME} iterations,
+% policy iteration requires ???, or policy gradients,
+% require a ??? amount of computation.
+% Yet, recent work \cite{} has shown that MDPs require at least $\Omega(|S|^2|A|).$
 
-% (lower bound computational complexity?!)
-Is there a way to turn this into an easier problem to solve?
-
-% maybe we can find an abstraction that allows more powerful solvers?
-
-% what are more powerful sovlers?
-Well, which problems are easy to solve? Convex ones, linear ones, continuous ones, ...
-\cite{ODonoghue2012a, Barratt2019}
-
-% how can we use these more powerful solvers for RL?
-So, is it possible to convert the
- linear problem? What sacrifices need to be made to
-achieve this?
+While some interesting work has been done exploring convex RL \cite{ODonoghue2012a, Barratt2019},
+we chose to look into linear RL.
 
 \subsection{Linear Markov decision problems (LMDPs)}
 
@@ -306,76 +297,73 @@ Results... Bad.
 
 {\color{red}also include some numbers of the value error}
 
-\subsection{But it does work!?!?}
+\subsection{Discussion}
 
-How can I be certain my experiments are true. Need to verify / convince the reader.!!!
-Positive controls!
+\subsubsection{Validation}
 
-Need to explain why Todorov's experiments worked. !!!
-added extra actions as otherwise the computation of D doesnt work.
-Could test / demomstrate on some of the cts problems!?
+Unfortunately, Todorov \cite{Todorov2006,Todorov2009} never actually produced
+any experiments that use the linear bellman equation to solve an MDP.
+His experiments were with $Z$-learning, the linearised counterpart to $Q$-learning:
 
-Todorov dont actually do any experiments using their embedding plus analytic solution?!?!? So it is hard to reproduce / verify my experiments.
+\begin{align*}
+\tilde z(s) = e^{q(s)}z(s{'})^{\gamma} \tag{linearised bellman eqn}\\
+z_{t+1}(s_i) = (1- \eta)z_{t}(s_i) + \eta\tilde z(s_i) \tag{$Z$ iteration}\\
+\end{align*}
 
-They do experiments with z learning. Which is not particularly interesting. It seems to only work when you have access to $q$ which needs to be carefully designed. Then you just act greedily from there...
-
-Very sensitive to the scale of the rewards. Needs to be tuned. For example
-
-There is a chance I have implemented LMDPs incorrectly. But it is hard to know.
-Todorov doesnt actually demonstrate LMDPs being used to solve a MDP, only Z-iteration, given a $p, q$.
-If those $p, q$ came from a MDP that could count. But it appears as though they
-have been had designed for the task, and he hasnt given sufficient details to allow me to repproduce the experiments.
-
-% Why doesnt Z-iteration count?
-% make a comment about my tests?
+They make this work by hand picking $q$ so that the optimisation will converge to the optimal value.
+Then they evaluate the accuacy of the value estimates.
+They do not give a general way of constructing $q$ from a MDP.
+Nor do they give an efficient way to map an optimal control to an optimal policy.
+To understand the importance of these see the figures below.
 
 \begin{figure}
 \centering
-\includegraphics[width=1\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-zero-rewards.png}
-\caption{A chain problem with zero reward on all states except the last two.
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-zero-rewards.png}
+\caption{A chain problem with zero reward on all states except the last two. A small negative reward, then a large positive one.
 The optimal control to this problem is not sensible: in every state, jump to the state with positive reward.
-However, it is not possible to make those transitions as }
+It is not possible to make those transitions.}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=1\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
-\caption{A chain problem with positive rewards applied to all states.}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
+\caption{A chain problem with positive rewards applied to all states.
+Now the structure of the transition function has made it into the optimal control!
+The LMDP's control can be decoded into a policy.}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-neg-rewards.png}
-\caption{A chain problem with negative rewards applied to all states}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=1\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-neg-rewards.png}
+% \caption{A chain problem with negative rewards applied to all states.
+% Again, the structure of the transition function is missing.}
+% \end{figure}
 
-It would be nice to know when LMDP will give sensible answers. When $P, r$ is ?!?
+Because, there are no benchmarks that we can validate our implementation on,
+there is some doubt about whether I implemented the LMDP correctly. While the
+LDMP solution strategy, does occasionally pick the correct optimal policy, more often than not,
+it gets it wrong.
 
-\subsection{Conclusions / Discussion}
+\newpage
 
-The point is, the current formulation of LMDPs do not allow you to reliably embed a MDP in a LMDP.
-Leaves open the question of whether it is still possible given other assumptions!? Does it?
+\subsubsection{Linearity in MDPs}
 
-If we consider the weaker apporaches to adding linearity to MDPs
+Todorov's formulation of LMDPs do not seem to allow you to reliably embed a MDP in a LMDP.
+Despite this, it might still be possible to construct a linear MDP given different assumptions.
 
-Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding. \cite{Wang}.
-But, to actually optimise this, we are returned to non-linear dynamics as determined by the bellman equation.
-If we just treated the relationship as linear... not every embedding can be reaslised as a policy.
-So without constraining the optimisation in the right way, ...
-It seems that the main advantage gained by adding linearity in this way is the ease of analysis.
-Whether this type of linear abstraction actually reduces the sample or computational complexity has yet to be answered.
+Let's reconsider Jin et al.'s approach \cite{Wang}. Construct a MDP where the value is a
+linear function of a state-action representation and of a policy embedding.
+To actually optimise this, we are required to use the bellman equation.
+Not every (policy) embedding can be realised as a policy, so to constrain the search dynamics properly
+we must use the bellman equation.
+
+And this captures the essence of the problem. The Bellman equation is not linear.
+We can linearise a MDP, but we will lose the ability to use the Bellman equation
+to guide the search for the optimal policy.
+
+% It seems that the main advantage gained by adding linearity in this way \cite{Wang} is the ease of analysis.
+% Whether this type of linear abstraction actually reduces the sample or computational complexity has yet to be proved.
 
 
-Refs \cite{Todorov2006,Todorov2009,Zhong,Zhonga,Dvijotham,Wozabal}
+% Refs \cite{Todorov2006,Todorov2009,Zhong,Zhonga,Dvijotham,Wozabal}
 % Linearise around the optimal policy. But how does that tell us how to act when not at the optimal policy?
-
-
-\begin{displayquote}
-  \textit{This represents the first general class of MDPs where the optimal
-actions can be found analytically given the optimal costs-to-go.}
-\end{displayquote}
-
-Our goal is to construct a class of MDPs for which this exhaustive search can
-be replaced with an analytical solution.
-
-But they never construct that class / give a way to know which problem are in this class, an which are not.

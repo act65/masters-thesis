@@ -67,6 +67,10 @@ By throwing away unimportant factors, we have reduced the variance of our
 observations and thus allow quicker learning \cite{Allen-Zhu2016a,Johnson2013a}.
 % these refs actually show faster convergence now faster learning!?
 
+% Just because the abstraction can efficiently solve a problem ...
+% We care about the complexity of abstracting, solving and lifting.
+% So we can actually apply the abstraction to a problem of interest.
+
 % History.
 %
 % - Mathematics, category theory
@@ -119,7 +123,7 @@ different classes of learners by giving them access to different types of abstra
   \end{tabular}
 \end{center}
 
-Where $\Omega$ is $A^k$.
+Where $\omega \in \Omega \subseteq A^k$.
 
 \footnotetext[5]{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
 then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
@@ -131,10 +135,6 @@ then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
 Possibly, the most interesting question is about the difference in performance between
 the \textit{State and action abstraction} and the \textit{State-action abstraction}.
 Or \textit{goal like} and \textit{option like} temporal abstractions.
-
-The state-action abstraction is the most powerful because it allows the compression of the most symmetries. (want to
-prove!)
-% The abstraction is able to capture patterns in ??? something about the effects of the actions. Temporal difference models
 
 \subsection{Examples}
 
@@ -154,46 +154,87 @@ in which case, we can just relabel them as the same action.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\textwidth,height=0.25\textheight]{../../pictures/drawings/hungry-caterpillar.png}
+\includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/hungry-caterpillar.png}
 \caption{Consider a hungry caterpillar. It wants to move towards the leaf. But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th lag slignly forward, etc...}
 \end{figure}
 
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\textwidth,height=0.25\textheight]{../../pictures/drawings/full-caterpillar.png}
+\includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/full-caterpillar.png}
 \caption{But, what if it could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs.}
 \end{figure}
 
 \subsubsection{State-action abstraction}
 
-Group together state-actions that achieve similar changes in state and / or changes in future reward.
-
-Imagine you are in a mirror symmetric maze.
+Group together state-actions that achieve similar results. This class of abstraction
+should be more powerful than state and action abstraction. Consider a mirror symmetric maze.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/drawings/maze.png}
 \caption{A symmetric maze, the goal is shown in red.
-Consider two different, but the 'same' positions. Shown in blue and green.
-In what sense are these two positions the same?}
+Consider two different, but 'similar' positions, shown in blue and green.}
 \end{figure}
 
+In this maze, we set the state to be centered around the mirror plane.
+So the blue player is at location $(-3, 9)$ and the green player is at location
+$(3, 9)$. And we equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).
+Given this setup, we have $Q^{\pi}(s, a) = Q^{-\pi}(-s, -a), \forall \pi$. Where the negative
+ operator only effects the x axis, and $-\pi = \pi(-a|-s)$.
 
+State abstraction would not be able to group together the blue and green positions.
+As moving left from blue is not equivalent to moving left from green.
 
-This reduces the state-action space by half!
-\(\frac{1}{2}\mid S \mid \times \mid A \mid\). Note: just using state
-abstraction it is not possible to achieve this reduction. Mirrored
-states are not equivalent as the actions are inverted.
-
-While other learners can still solve this problem. They miss out on
-efficiency gains by abstracting first.
-
-This intuition leads to our work in section ... (symetric abstractions).
+This insight motivates our work on symetric abstractions \ref{symmstric-abstractions}.
 
 \subsubsection{Temporal abstraction}
 
-???
+Group together ???
+
+\subsection{Discovery}
+
+Rather than engineering an abstraction for a specific problem.
+We hope to build learners capable of discovering
+an abstraction to help them efficiently solve the problems they are given.
+But, the efficiency gains of an abstraction must offset the cost of discovering the abstraction! \cite{Konidaris2019}
+
+For example, in model-based RL. The agent attempts to learn (/ discover) the
+transition and reward functions. Once discovered, they can be used to find the optimal policy, without requiring data!
+But, to learn the transition and reward function, a lot of data might have been needed.
+
+In this case, the cost of discovery, the cost to learn the transition functions can be offset
+by the ability for the agent to easily generalise to new tasks (aka new reward functions).
+As it does not need to relearn the transition function.
+
+But there do exist learning problems where the transition function has many
+factors of variance, while the value can be easily predicted from observations.
+Thus ...
+
+The no free lunch theorem.
+
+This is why it is important to consider the computational and sample complexity when analysing abstractions.
+It is entirely possible that what we gain in computational efficiency, we lose in sample efficiency.
+
+% we are missing tools an analyse the methods of discovery
+% methods of discovery = !?!?
+
+% Discovery.
+% A complex problem. Versus the cost of discovery plus a simpler problem.
+% Need to offset the cost of discovering the abstraction.
+
+\subsection{Representation learning}
+
+Examples for representation learning.
+
+Representations that attempt to preserve
+\begin{itemize}
+\tightlist
+  \item the mutual information between ? and ??.
+  \item knowledge required to predict the next state
+  \item ... geometric bellamere
+  \item ?!?
+\end{itemize}
 
 
 
@@ -205,13 +246,7 @@ What (structure) do we want to preserve?
 % How can we find an abstraction? One that actually gives an advantage.
 % the cost!!!
 
-% Discovery.
-% A complex problem. Versus the cost of discovery plus a simpler problem.
-% Need to offset the cost of discovering the abstraction.
 
-% \begin{displayquote}
-% \textit{The challenge in the single-task case is overcoming the additional cost of discovering the options; this results in a narrow opportunity for performance improvements, but a well-defined objective. In the skill transfer case, the key challenge is predicting the usefulness of a particular option to future tasks, given limited data.} \cite{Konidaris2019}
-% \end{displayquote}
 
 
 When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
@@ -261,18 +296,6 @@ Does this allow us to build more general abstractions?
 Want to remove unimportant structure, while keeping the structure that allows us
 to exploit the bellman equation (and thus more efficient search).
 
-\subsection{Representation learning}
-
-Examples for representation learning.
-
-Representations that attempt to preserve
-\begin{itemize}
-\tightlist
-  \item the mutual information between ? and ??.
-  \item knowledge required to predict the next state
-  \item ... geometric bellamere
-  \item ?!?
-\end{itemize}
 
 
 \subsubsection{Pairing abstractions with similarity measures}

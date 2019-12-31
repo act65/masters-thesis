@@ -63,21 +63,25 @@ Dadashi et al. remark, the polytope gives a clear illustration of the following 
   \item (Continuity) The space V is connected.
 \end{enumerate}
 
-\textbf{1)} As explained in ref. There is a unique optimal policy, which ...
+\textbf{1)} {\color{red} that isnt correct!?}
 
-\textbf{2)} A change in $\pi(a_1|s_1)$ which increases the value of state $1$, can, at worst, do nothing for
-state two, aka we would see a flat line. But the value of state $2$
-increases and there is a non zero chance of transitioning to that state, from your current state,
-then that will increase the value of your current state.
-This explains why the edges of the polytope by be aligned with the positive orthant, why they slant upward. $\hat V(s_1) = V(s_1)P(s_1|s_1, a)\pi(a|s_1) + V(s_2)P(s_2|s_1, a)\pi(a|s_1)$
+\textbf{2)} If $V(s_2)$ increases then $V(s_1)$ must either increase or stay the same.
+This can be seen in the last equation below;
 
+\begin{align*}
+V(s_1) &= \mathop{\mathbb E}_{a \sim\pi(\cdot|s_1)} r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \sum_a P(\cdot|s, a)\pi(\cdot|s)} V(s')\\
+&= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_{s'}\sum_a P(s'|s_1, a)\pi(a|s) V(s') \\
+&= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_a P(s_1|s_1, a)\pi(a|s) V(s_1) + \gamma\sum_a P(s_2|s_1, a)\pi(a|s) V(s_2)
+\end{align*}
 
-\textbf{3)} ???
+If $\sum_a P(s_2|s_1, a)\pi(a|s) = 0$ then $V(s_1)$ stays the same, yielding a constant vertical line on the polytope.
+If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ then $V(s_1)$ increases with $V(s_2)$, yielding a positive orthant.
+$\sum_a P(s_2|s_1, a)\pi(a|s) < 0$ is not possible.
 
+\textbf{3)} The policy space is connected, and the value function is continuious.
+Therefore the value space, the polytope, is connected. {\color{red}should give more details?!}
 
 % Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
-
-
 
 \subsubsection{Dynamics on the polytope}
 
@@ -141,17 +145,19 @@ policy iteration and policy gradients
 
 \subsubsection{Policy iteration}
 
-In our tabular setting, policy iteraction can be written as:
+In policy iteration, we search for the optimal policy by evaluating our current
+policy and then acting greedily. In our tabular setting, policy iteraction can be written as:
 
 \begin{algorithm}
 \caption{Policy iteration}
 \begin{algorithmic}[1]
 
 \Procedure{PI}{$P, r, \gamma$}
-    \State $\pi \leftarrow \text{rnd init}$
+    \State $\pi_t \sim \mathcal U(\Pi)$
     \While{not converged}
-      \State $V(\pi) =  (I - \gamma P_{\pi})^{-1} r_{\pi}$ \Comment{Evaluate policy}
-      \State $\pi = \mathop{\text{argmax}}_\pi \big[r_{\pi} + \gamma P_{\pi}V(\pi) \big]$ \Comment{Greedy update}
+      \State $V_t = (I-\gamma P_{\pi_t})^{-1} r_{\pi_t}$ \Comment{Evaluate policy}
+      \State $Q_t =  r + \gamma P\cdot_{s'} V_t$ \Comment{Bellman operator}
+      \State $\pi = \text{greedy}(Q_t) $ \Comment{Greedy update}
     \EndWhile
     \State \algorithmicreturn{ $\pi$}
 \EndProcedure
@@ -159,18 +165,42 @@ In our tabular setting, policy iteraction can be written as:
 \end{algorithmic}
 \end{algorithm}
 
-As can be seen below PI jumps between deterministic policies (the verticies of our polytope).
+The greedy operator picks the actions that give the highest state-action return,
+and sets their probability to be $1$.
+$\text{greedy}(Q) = \text{onehot}(\text{argmax}_a Q[s, a], |A|)$.
 
-{\color{red}figures}
+This iteration converges because the state-action values capture counterfactuals.
+\textit{What would the return be if I took an action, $a$, not necessesarily chosen by
+the current policy, but then followed the current policy afterward. $Q^{\pi}(s, a)$}
+If there exists an action that achieves higher return than the current policies choice,
+then (because of the greedy step) PI will update the policy so it chooses that action.
+
+\footnotemark[7]
+
+\footnotetext[7]{Actually has connections to the simplex method. ref}
+
 {\color{red}ref for PI.}
 
-Actually has some connections to the simplex method. ref
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pi-polytope.png}
+\caption{PI jumps between the deterministic policies (the verticies of our polytope).
+This is because of the greedy step taken.}
+\end{figure}
+
+\newpage
 
 \subsubsection{Policy gradients}
 
-This search is most related to the deep learning / end-to-end paradigm.
-Simply write down what you want (the loss function -- to maximise the expected return),
-estimate its derivative and apply gradient descent. (ref)
+This search is closely related to the deep learning / end-to-end paradigm.
+\textit{Simply write down what you want (the loss function),
+estimate its derivative and apply gradient descent.}
+
+In our case, the loss function is the value. And, we can estimate the derivative
+by differentiating the value functional \ref{eq:value-functional} with respect to the policy.
+
+To ensure the optimisation problem is constrained properly, we pick $\theta$ as our parameters and
+construct the policy using $\pi = \sigma(\theta)$, where $\sigma$ is the softmax function.
 
 % However, has problems with sparse rewards / exploration (not considered in this setting).
 % (but dont they all have problems with sparse rewards!?)
@@ -180,36 +210,42 @@ estimate its derivative and apply gradient descent. (ref)
 \begin{algorithmic}[1]
 
 \Procedure{PG}{$P, r, \gamma, \eta$}
-  \State t = 0
-  \State $\pi_t = \text{init}()$
+  \State $t=0, \quad\quad \theta_t = \log(\pi) \quad\quad \pi \sim \mathcal U(\Pi)$ \Comment{Init}
   \While{not converged}
-    \State $\pi_{t+1} = \pi_t + \eta \nabla_{\pi} V(\pi)$ \Comment{Gradient update}
+    \State $\theta_{t+1} = \pi_t + \eta \nabla_{\theta} V(\sigma(\theta_t))$ \Comment{Gradient update}
     \State t += 1
   \EndWhile
-  \State \algorithmicreturn{ $\pi_t$}
+  \State \algorithmicreturn{ $\sigma(\theta_t)$}
 \EndProcedure
 
 \end{algorithmic}
 \end{algorithm}
 
-takes small steps in the 'right' direction
-and {\color{red}often traverses through the center of the polytope}.
-add ref
+Note that to mitigate stability issues, we also added weak regularisation
+attempting to maximise the entropy of the policy. This forces the policies away
+from the edges of the polytope, where the gradients are not defined ($\log(0) = \text{NaN}$).
 
-{\color{red}figures}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pg-polytope.png}
+\caption{An example of ... . Note that the majority of }
+\end{figure}
 
 % Want to include upper / lower bounds!?
-
-Converges at a rate of $\frac{1}{t}$. As can be seen by ...
+{\color{red}??? Converges at a rate of $\frac{1}{t}$. As can be seen by ...}
 \cite{Agarwal2019a}.
 
-\subsection{Value search}
+\newpage
 
-This search is guided by the temporal different operator. !?!?
+\subsection{Value search}
 
 Alternatively, we can search through possible values. But how can we ensure that our search will
 converge to a value that corresponds to a realisable policy? We can use Bellman's
 optimality operator to guide the search.
+
+(For similar reasons to why policy iteration converges) The greedy step using the
+state-action values will find actions with higher value.
+
 
 % (need to explain? why does stationarity mean optimality...?!)
 Intution about why it converges!? Contraction. Banach fixed-point theorem.
@@ -224,9 +260,11 @@ Intution about why it converges!? Contraction. Banach fixed-point theorem.
 
 \Procedure{VI}{$P, r, \gamma, \eta$}
   \State t = 0
-  \State $V_t = \text{init}()$
+  \State $V_t = V(\pi) ; \;\; \pi \sim \mathcal U(\Pi)$ \Comment{Init}
   \While{not converged}
-    \State $\hat V = r + \gamma PV_t$ \Comment{Evaluate}
+    % \State $V = r + \gamma PV_t$ \Comment{Evaluate}
+    \State $Q = r + \gamma PV_t$ \Comment{Bellman operator}
+    \State $\hat V = \text{max}_a Q(s, a)$
     \State $V_{t+1} = V_t + \eta (\hat V - V_t)$ \Comment{Average}
     \State t += 1
   \EndWhile
@@ -237,18 +275,18 @@ Intution about why it converges!? Contraction. Banach fixed-point theorem.
 \end{algorithmic}
 \end{algorithm}
 
-{\color{red}figures}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/vi-polytope.png}
+\caption{Observe that the value iterations are not constrained to map to a policy
+(they can go out side of the polytope), but they do converge to a realisable policy,
+the optimal one.}
+\end{figure}
 
+{\color{red}important. Also, why does it go outside?!?}
 % Want to include upper / lower bounds!? On complexity. Sample / computational!?
 
-Observe that the value iterations are not constrained to refer to any policy,
-and thus can go outside of the polytope. \cite{Dadashi2018}
-
-{\color{red}mportant. Also, why does it go outside?!?}
-
-We are constrained to move around by only using the Bellman optimality operator.
-To move proportionally to value improvement of the best actions ...
-Why is this good / bad. What dynamics can / cannot be achieved?
+\newpage
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
