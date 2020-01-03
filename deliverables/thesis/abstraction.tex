@@ -121,12 +121,14 @@ different classes of learners by giving them access to different types of abstra
   \end{tabular}
 \end{center}
 
+\footnotetext[5]{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
+then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
+
 \footnotetext[10]{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states. Recent work has shown that goal-conditioned RL can work when you pick a certain return as the goal. This allows cool stuff - ref - ref.}
 
 Where $\omega \in \Omega \subseteq A^k$.
 
-\footnotetext[5]{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
-then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
+
 
 \begin{displayquote}
 \textit{Which class of abstraction should we use?}
@@ -155,14 +157,16 @@ in which case, we can just relabel them as the same action.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/hungry-caterpillar.png}
-\caption{Consider a hungry caterpillar. It wants to move towards the leaf. But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th lag slignly forward, etc...}
+\caption{Consider a hungry caterpillar. It wants to move towards the leaf. But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th leg slightly forward, etc...}
 \end{figure}
 
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/full-caterpillar.png}
-\caption{But, what if it could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs.}
+\caption{But, what if the caterpillar could specify actions in another way?
+Rather than specifying leg movements, it could pick a direction to move,
+which would specify the movement of multiple legs.}
 \end{figure}
 
 \paragraph{State-action abstraction}
@@ -173,19 +177,21 @@ should be more powerful than state and action abstraction. Consider a mirror sym
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/drawings/maze.png}
-\caption{A symmetric maze, the goal is shown in red.
+\caption{A symmetric maze, the goal(s) are shown in red.
 Consider two different, but 'similar' positions, shown in blue and green.}
 \end{figure}
 
-In this maze, we set the state to be centered around the mirror plane.
+Given this setting, we can construct a representation of the state \footnotemark[11] where,
+we have $Q^{\pi}(s, a) = Q^{-\pi}(-_xs, -a), \forall \pi$.
+Where the negative operator $-_x$ only effects the horizontal ($x$) axis $s = (x, y), -_xs = (-x, y)$.
+And $-\pi := \pi(-a|-_xs)$.
+
+\footnotetext[11]{To contruct this representation, we set the state to be centered around the mirror plane.
 So the blue player is at location $(-3, 9)$ and the green player is at location
-$(3, 9)$. And we equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).
-Given this setup, we have $Q^{\pi}(s, a) = Q^{-\pi}(-s, -a), \forall \pi$. Where the negative
- operator only effects the x axis, and $-\pi = \pi(-a|-s)$.
+$(3, 9)$. And we equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).}
 
 State abstraction would not be able to group together the blue and green positions.
 As moving left from blue is not equivalent to moving left from green.
-
 This insight motivates our work on symetric abstractions \ref{symmstric-abstractions}.
 
 \paragraph{Temporal abstraction}
@@ -279,26 +285,34 @@ It must also allow you to represent near optimal solutions and it must allow you
 
 \subsubsection{Coarse abstractions}
 
-Coarseness (as opposed to fineness) is a term from topology. It describes !?!?
+Coarse (as opposed to fine) is a term from topology.
+A (more) coarse abstraction describes
+... (it captures notions such as a 'high level' abstraction or a general abstraction).
 
 \textit{We say $\phi_1$ is finer (less coarse) than $\phi_2$, denoted $\phi_1 \ge \phi_2$,
 iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_1(s_1) = \phi_1(s_2)$.} \ref{Littman2006}\footnotemark[8]
 
-\footnotetext[8]{This notion can be generalised to ... by doing !?!?.}
+\footnotetext[8]{This notion can be generalised to state-actions, or options by doing !?!? or ref.}
 
 So the most coarse abstraction would be where everything is mapped to the same abstract state.
 $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.
 
 \begin{displayquote}
-\textit{Why is coarseness desireable?}
+\textit{Why are coarse abstractions desireable?}
 \end{displayquote}
 
-As mentioned in ??? (ref) the intro to this section. Efficient exploration and control.
+Efficient exploration and control.
 
 Give formal proof of abstraction leading to reduced variance in section ref.
 In this case, fewer states. Since complexity of solving MDPs is $\mathcal O(|S| ???)$, this is great.
 
 % want more formal version of these arguments!?
+
+% reduce variance in estimates
+  % take size of smallest partition to be X. use this to say: reduces variances by at least a factor of X.
+% spend less time exploring unimportant states / actions
+  % in the ?? abstraction case.
+% less states / actions to attempt to design a control for
 
 \subsubsection{Near optimal abstractions}
 
@@ -345,7 +359,7 @@ What gives efficient exploration. what needds to be preserved to ensure we keep 
 
 % Which is best?
 
-So, now that we have a notion of better / worse abstractions. Let's consider the ones
+So, now that we have a notion of better / worse abstractions. Let's consider the abstractions
 that Li et al. \cite{Littman2006} define.
 
 They show that $\phi_G \le \phi_{\text{model}} \le \phi_{Q_{\pi}} \le \phi_{Q^{* }} \le \phi_a^{* } \le \phi_{\pi^{* }}$
