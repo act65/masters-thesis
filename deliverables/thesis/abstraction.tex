@@ -20,21 +20,21 @@ A recipie is an abstraction. For example, pumpkin soup:
 
 This is an abstraction because it captures the essential details: from this recipie, you could make pumpkin soup.
 While it ignores inessential details: the recipe doesn't tell you; where or what to cook in, where to get the
-ingredients, how to do the many actions needed to actually puree something, etc...
+ingredients, which species of pumkin to use, how to do the many actions needed to actually puree something, etc...
 It also doesn't mandate; the time of day to perform this recipie, what clothes to wear (if any),
-which music should be playing, ...
+which music should be playing, ... etc.
 
 Note that the essential / inessential details will depend on what you want to do with the abstraction.
-If we were going to do Y, then it would be important to know ... .
+If we were bringing pumpkin soup to a friend, then the time of day would be important.
 
 \vspace{5mm}
 
 There exists a mathematical formalism, a  \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism},
 that allows us to more precisely reason about this transformation from
 details to essence. Consider a ground space, $X$, (\textit{the reality of what
-needs to be done. all the details.}), and an abstract space $Y$ (\textit{our recipie}).
+needs to be done. all the details}), and an abstract space $Y$ (\textit{our recipie}).
 We are looking for a transformation between $X$ and $Y$ to preserves only the essential
-structure in $X$.
+structure in $X$. This can be written as $f: X\to Y$ such that;
 
 % Another way to think about it, a 'structure preserving' map.
 
@@ -42,8 +42,10 @@ structure in $X$.
 f(x \diamond_G y) = f(x) \diamond_A f(y)
 \end{align*}
 
-Where $f: X\to Y$ is the abstraction. And $\diamond$ is the preserved structure.
-Common examples are addition, multiplication. But we might want to preserve the topology of anoperation such as the Bellman operator.
+Where the $\diamond$ is the preserved structure.
+Common examples are addition, multiplication.
+But we might want to preserve the topology of anoperation such as the Bellman operator.
+{\color{red}need more explanation here. maybe introduce this later!?}
 
 In general, there are three steps to using abstraction to help solve a problem:
 
@@ -54,8 +56,7 @@ In general, there are three steps to using abstraction to help solve a problem:
   \item Lift the solution back to the original domain  $g:Z \to X$
 \end{enumerate}
 
-for example.
-insert picture of up down etc.
+{\color{red}for example. and insert picture of up down etc.}
 
 \begin{displayquote}
  \textit{Why do we care?}
@@ -64,22 +65,15 @@ insert picture of up down etc.
 The reasons we might care come back to wanting more efficient algorithms.
 By throwing away inessential details, there is less to compute.
 By throwing away unimportant factors, we have reduced the variance of our
-observations and thus allow quicker learning \cite{Allen-Zhu2016a,Johnson2013a}.
+observations and thus allow quicker learning. \footnotemark[12]
 % these refs actually show faster convergence now faster learning!?
-
-% Just because the abstraction can efficiently solve a problem ...
-% We care about the complexity of abstracting, solving and lifting.
-% So we can actually apply the abstraction to a problem of interest.
+\footnotetext[12]{We prove these in section ref{???}}
 
 % History.
 %
 % - Mathematics, category theory
 % - Physics?
 % - Comp sci, programming languages
-
-% \begin{displayquote}
-%   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties} (Littman / Walsh.)
-% \end{displayquote}
 
 \section{Abstractions for RL}
 
@@ -234,7 +228,7 @@ And which ones lead to efficient learning?
 \vspace{5mm}
 
 For example, state abstraction: Li et al. \cite{Littman2006} give five classes of
-state abstraction in which they group states based on their ability to preserve similarities;
+state abstraction in which they group states based on their ability to preserve various similarities;
 \textit{intuitively,
 $\phi_{\text{model}}$ preserves the one step model,
 $\phi_{Q_{\pi}}$ preserves the state-action value fuction for all policies,
@@ -249,14 +243,14 @@ In general, there seem to be a few different dimensions to designing similarity 
 
 \begin{itemize}
   \tightlist
-  \item What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them.
+  \item What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them,
   \item How will we characterise these obects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
   \item Should these similarities hold for all policies or just a subset (such as just the optimal policy)? (OR?!?)
 \end{itemize}
 
 \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
 
-{\color{red}How does on/off policy come into this!? Is this complete?!}
+{\color{red}How does on/off policy come into this!? Is this family complete?!}
 
 More formally. Let $X \in {S, A, R}^{* }$. $P \subset \Pi$
 
@@ -276,39 +270,50 @@ It would be nice to show that all abstractions of interest live in this happy fa
 \textit{But which type of abstraction should we pick?}
 \end{displayquote}
 
-Ideally we would pick the most coarse abstraction, as a coarse abstraction means we have grouped together many objects.
+Ideally we would pick the most coarse abstraction, as a coarse abstraction means we have grouped together many objects. (ref)
 Thus it has potential for the greatest increases in computational and sample efficiency.
 But. Coarseness is not the only property of an abstraction we care about.
-It must also allow you to represent near optimal solutions and it must allow you to find those near optimal solutions efficiently.
+It must also allow you to represent near optimal policies and it must allow you
+to efficiently find those near optimal policies.
 
 % Need to be able to easily evaluate them.
 
 \subsubsection{Coarse abstractions}
 
 Coarse (as opposed to fine) is a term from topology.
-A (more) coarse abstraction describes
-... (it captures notions such as a 'high level' abstraction or a general abstraction).
+A (more) coarse abstraction describes an abstraction that has a looser notion of similarity.
+Thus more things are considered similar.
+(Coarseness captures looser concepts such as a 'high level' abstraction or a 'general' abstraction).
 
 \textit{We say $\phi_1$ is finer (less coarse) than $\phi_2$, denoted $\phi_1 \ge \phi_2$,
-iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_1(s_1) = \phi_1(s_2)$.} \ref{Littman2006}\footnotemark[8]
+iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$.} \ref{Littman2006}
 
-\footnotetext[8]{This notion can be generalised to state-actions, or options by doing !?!? or ref.}
+Anytime $s_1$ and $s_2$ are considered similar in an abstraction, then a coarser
+abstraction will also consider them to be similar, and there might also be other similar states.
 
 So the most coarse abstraction would be where everything is mapped to the same abstract state.
 $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.
+
+% The comparison of topologies constructed using varios k length optiions.
+% With increaseing k, the topology of the abstraction is always coarser??
 
 \begin{displayquote}
 \textit{Why are coarse abstractions desireable?}
 \end{displayquote}
 
-Efficient exploration and control.
+By throwing away inessential details;
+\begin{enumerate}
+  \tightlist
+  \item we have reduced the variance of our observations and thus allow quicker learning.
+  \item we will not waste time exploring them.
+  \item there is less to compute.
+\end{enumerate}
 
-Give formal proof of abstraction leading to reduced variance in section ref.
-In this case, fewer states. Since complexity of solving MDPs is $\mathcal O(|S| ???)$, this is great.
+% In this case, fewer states. Since complexity of solving MDPs is $\mathcal O(|S| ???)$, this is great.
 
-% want more formal version of these arguments!?
+{\color{red}TODO Want formal version of 1-3!!!}
 
-% reduce variance in estimates
+% reduce variance in estimates   \cite{Allen-Zhu2016a,Johnson2013a}
   % take size of smallest partition to be X. use this to say: reduces variances by at least a factor of X.
 % spend less time exploring unimportant states / actions
   % in the ?? abstraction case.
@@ -328,24 +333,35 @@ More precisely, we want know to whether the optimal policy can be approximately 
 
 % formal
 This notion of suboptimality can be formalised as the representation error of the optimal
-policy. Given an abstraction, we want to know how well
-the abstraction can represent the optimal policy.
+policy. \cite{Abel2017} Given an abstraction, we want to know how well the abstraction can represent the optimal policy.
 
 \begin{align}
-\forall_{s\in S, a\in A} \mid Q^{\pi^* }(s, a) - Q^{\pi_{A}^* }(s, a) \mid \le \epsilon
+\forall_{s\in S} \mid V^{\pi^* }(s) - V^{\pi_{A}^* }(s) \mid \le \epsilon
 \end{align}
 
 Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the lifted optimal
 policy found using the abstraction.
 
-{\color{red}!!! alternative versions of this notion can be genrealised to temporal. see nacim?! near optimal...}
+This notion can be genrealised to other types of abstraction, for example
+Nachum et al. 2018 \cite{Nachum2018} extend this concept of near optimal
+represention of the optimal policy to goal-like temporal abstraction. \footnotemark[13]
 
+\footnotetext[13]{To do this, Nachum et al. 2018 \cite{Nachum2018} quantify
+how many of the possible low level behaviours can be produced by different choices of goal.
+This is roughly a measure of the invertibility of the 'low level' policy from
+state-goals to temporally extended actions.
+This allows them to reason about which behaviours are representable using goals,
+and thus whether a 'high level' policy choosing these goals can approximate the optimal policy.}
 
-\subsubsection{Easily solveable abstractions}
+\subsubsection{Efficiently solveable abstractions}
+
+% this is about preserving the bellman eqn.
+% and whatever is needed for efficient exploration!?!?
 
 % we are missing tools an analyse the methods of discovery
 % methods of discovery = !?!?
 
+{\color{red}TODO...}
 Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find. We might require large amounts of data or computation.
 
 Fortunately, if we have preserved the state-action values, we have preserved the Bellman equation and can use it to guide the search. {\color{red}(ref / proof!!)}
@@ -356,30 +372,24 @@ What gives efficient exploration. what needds to be preserved to ensure we keep 
 {\color{red}no good tools for this. (should be able to make a nice seguae into LMDPs from here!?)}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-% Which is best?
-
-So, now that we have a notion of better / worse abstractions. Let's consider the abstractions
-that Li et al. \cite{Littman2006} define.
-
-They show that $\phi_G \le \phi_{\text{model}} \le \phi_{Q_{\pi}} \le \phi_{Q^{* }} \le \phi_a^{* } \le \phi_{\pi^{* }}$
-Where $A \le B$ indicates that A is a finer abstraction than B.
-So we should pick $\phi_{\pi^{* }}$? But.
-
-\begin{enumerate}
-  \tightlist
-  \item There exist examples where the optimal policy found using $\phi_{\pi^{* }}$ is not optimal in the ground MDP. \cite{Jong2005}
-  \item When using $\phi_a^{* }$ the value of non-optimal actions has not been preserved,
-  therefore we cannot use the Bellman operator to guide optimisation. ({\color{red}TODO} see experiments in \ref{})
-  \item $\phi_{Q^{* }}$ has not preserved the state-action values for all policies,
-  therefore we cannot use on policy learning ({\color{red}TODO} see experiments in \ref{})
-\end{enumerate}
-
-% \cite{Abel2017} give 4 classes of approximate states abstraction. They show that ...
-
+  {\color{red}Are these properties necessecary and / or sufficient for good performance of an abstraction?}
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-Generalise this kind of analysis to actions / state-action / temporal.
+So, now that we have a notion of better / worse abstractions. Let's consider the abstractions
+that Li et al. \cite{Littman2006} defined.
+
+Li et al. \cite{Littman2006} show that $\phi_G \le \phi_{\text{model}} \le \phi_{Q_{\pi}} \le \phi_{Q^{* }} \le \phi_a^{* } \le \phi_{\pi^{* }}$
+
+So we should prefer $\phi_{\pi^{* }}$? But. There exist examples where the
+optimal policy found using $\phi_{\pi^{* }}$ is not optimal in the ground MDP \cite{Jong2005}.
+% above. which of the three issues i outlined above does this fall into?!
+
+Then our next preference is $\phi_a^{* }$. But. When using $\phi_a^{* }$ the value of non-optimal actions has not been preserved,
+therefore we cannot use the Bellman operator to guide optimisation. ({\color{red}TODO} see experiments / proof in ref).
+
+Again, our next preference is $\phi_{Q^{* }}$ .
+But. $\phi_{Q^{* }}$ has not preserved the state-action values for all policies,
+therefore we cannot use on policy learning ({\color{red}TODO} see experiments / proof in ref).
 
 
 % TODO
@@ -394,24 +404,6 @@ Generalise this kind of analysis to actions / state-action / temporal.
 % Just sample a minibatch and compare those states.
 % Does this allow us to build more general abstractions?
 
-\subsubsection{Pairing abstractions with similarity measures}
-
-Want to remove unimportant structure, while keeping the structure that allows us
-to exploit the bellman equation (and thus more efficient search).
-
-Different abstraction spaces support different similarity measures.
-State similarity based on value fails in rather simple settings.
-But works with state-action abstractions!?
-
-Weaker notions of similarity.
-\begin{itemize}
-\tightlist
-  \item Preserving the ordering of policies. Rather than their absolute value.
-  \item Perserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
-  \item Preserving the neighborhoods of policies and their values.
-  \item ?
-\end{itemize}
-
 \subsubsection{Complexity of finding an abstraction}
 
 We hope to build learners capable of discovering an abstraction to help them efficiently solve the problems they are given.
@@ -423,6 +415,8 @@ discovering that abstraction! Else, why did we bother...?
 this results in a narrow opportunity for performance improvements, but a well-defined objective.
 In the ... transfer case, the key challenge is predicting the usefulness of a particular [abstraction] to future tasks, given limited data.}\cite{Konidaris2019}
 \end{displayquote}
+
+{\color{red}TODO}
 
 \paragraph{Single task case}
 
@@ -450,16 +444,21 @@ heirarchies do worse than ???. ref.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-{\color{red}TODO}
-Ok. So what does this mean / prescribe?
-We need to analyse the complexity of all three steps, and compare them against the
-original problem/solution.
-Related work doing this / trying to. !!!
+To evaluate an abstraction for the single task case, we need to analyse the
+complexity of all three steps (abstract, solve, lift), and compare them against
+solvers that do not abstract.
 
-\subsection{Related work: Representation learning}
+In the tansfer case, we need to construct a set of task. And count the
+complexity of discovering the abstraction, and then the cost of solving
+and lifting it for each new task.
 
-More recently...
-Examples for representation learning.
+\subsection{Related work: Representation learning for RL}
+
+% \begin{displayquote}
+%   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties} (Littman / Walsh.)
+% \end{displayquote}
+
+{\color{red}There is a lot to talk about here...}
 
 Representations that attempt to preserve
 \begin{itemize}
@@ -467,5 +466,9 @@ Representations that attempt to preserve
   \item the mutual information between ? and ??.
   \item knowledge required to predict the next state
   \item ... geometric bellamere
-  \item ?!?
+  \item \cite{Nachum2018}
+  \item autoencoders...
+  \item next step prediction.
 \end{itemize}
+
+But with what guarantees?

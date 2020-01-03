@@ -1,5 +1,28 @@
 \chapter{Abstraction}
 
+\section{Similarity}
+
+\subsection{Pairing abstractions with similarity measures}
+
+% we have a similarity measure and a way to allow the learner to use it. now ...
+
+Want to remove unimportant structure, while keeping the structure that allows us
+to exploit the bellman equation (and thus more efficient search).
+
+Different abstraction spaces support different similarity measures.
+State similarity based on value fails in rather simple settings.
+But works with state-action abstractions!?
+
+Weaker notions of similarity.
+\begin{itemize}
+\tightlist
+  \item Preserving the ordering of policies. Rather than their absolute value.
+  \item Perserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
+  \item Preserving the neighborhoods of policies and their values.
+  \item ?
+\end{itemize}
+
+
 \section{LMDPs}
 
 \subsection{Derivation}
