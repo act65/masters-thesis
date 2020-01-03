@@ -18,7 +18,7 @@ A recipie is an abstraction. For example, pumpkin soup:
 \item Simmer for 30 minutes and then add cream (0.5 cups).
 \end{enumerate}
 
-This is an abstraction because it captures the essential details: from this recipie, you could make a pumpkin soup.
+This is an abstraction because it captures the essential details: from this recipie, you could make pumpkin soup.
 While it ignores inessential details: the recipe doesn't tell you; where or what to cook in, where to get the
 ingredients, how to do the many actions needed to actually puree something, etc...
 It also doesn't mandate; the time of day to perform this recipie, what clothes to wear (if any),
@@ -77,8 +77,6 @@ observations and thus allow quicker learning \cite{Allen-Zhu2016a,Johnson2013a}.
 % - Physics?
 % - Comp sci, programming languages
 
-% footnote?
-{\color{red}Related. Representation learning.}
 % \begin{displayquote}
 %   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties} (Littman / Walsh.)
 % \end{displayquote}
@@ -119,9 +117,11 @@ different classes of learners by giving them access to different types of abstra
     State and action \footnotemark[5] & $\phi: S \to X$ & $\psi: A \to Y$ & $Q(\phi(s), \psi(a))$ & $\pi(\psi^{-1}(y) | \phi(s))$ \\ \hline
     State-action & \multicolumn{2}{c|}{$\varphi: S\times A \to X\times Y$} & $Q(\varphi(s, a))$ & $\mathop{\text{argmax}}_a Q(\varphi(s, a))$ \\ \hline
     Temporal (goal like) & $S$ & $f: S \to Y$ & $Q(s, f(s))$ &   \\ \hline
-    Temporal (option like) & $S$ & $g: \Omega \to Y$ & $Q(s, g(\omega))$ & $\pi(g^{-1}(y) | s)$ \\ \hline
+    Temporal (option like)\footnotemark[10] & $S$ & $g: \Omega \to Y$ & $Q(s, g(\omega))$ & $\pi(g^{-1}(y) | s)$ \\ \hline
   \end{tabular}
 \end{center}
+
+\footnotetext[10]{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states. Recent work has shown that goal-conditioned RL can work when you pick a certain return as the goal. This allows cool stuff - ref - ref.}
 
 Where $\omega \in \Omega \subseteq A^k$.
 
@@ -136,9 +136,9 @@ Possibly, the most interesting question is about the difference in performance b
 the \textit{State and action abstraction} and the \textit{State-action abstraction}.
 Or \textit{goal like} and \textit{option like} temporal abstractions.
 
-\subsection{Examples}
+\subsubsection{Examples}
 
-\subsubsection{State abstraction}
+\paragraph{State abstraction}
 
 State abstraction groups together states that are similar. For example,
 sprinting 100m is equivalent regardless of which track lane you are in.
@@ -146,7 +146,7 @@ sprinting 100m is equivalent regardless of which track lane you are in.
 If in the forrest, then travel east. If in plains travel south. If at lake, travel east.
 
 
-\subsubsection{Action abstraction}
+\paragraph{Action abstraction}
 
 Action abstraction groups together actions that are similar. For
 example, both action $i$ and action $j$ might yeild the same rewards and change in state,
@@ -165,7 +165,7 @@ in which case, we can just relabel them as the same action.
 \caption{But, what if it could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs.}
 \end{figure}
 
-\subsubsection{State-action abstraction}
+\paragraph{State-action abstraction}
 
 Group together state-actions that achieve similar results. This class of abstraction
 should be more powerful than state and action abstraction. Consider a mirror symmetric maze.
@@ -188,133 +188,123 @@ As moving left from blue is not equivalent to moving left from green.
 
 This insight motivates our work on symetric abstractions \ref{symmstric-abstractions}.
 
-\subsubsection{Temporal abstraction}
+\paragraph{Temporal abstraction}
 
-Group together ???
+Goal-like and option-like temporal abstractions have differing sets of examples
+but have a similar intuitions behind them. The intuition is that
+a temporal abstraction breaks down a sequential decision problem into a set of
+shorter, easier to solve, parts.
+
+Something like two lefts equals two rights. Or have some work experience is approximately the same has a good equcation.
+
+Let's consider an example of option-like temporal abstration. Group together ???
+
 
 \subsection{Discovery}
 
-Rather than engineering an abstraction for a specific problem.
-We hope to build learners capable of discovering
-an abstraction to help them efficiently solve the problems they are given.
-But, the efficiency gains of an abstraction must offset the cost of discovering the abstraction! \cite{Konidaris2019}
+\begin{displayquote}
+  \textit{Where do abstractions come from?}
+\end{displayquote}
 
-For example, in model-based RL. The agent attempts to learn (/ discover) the
-transition and reward functions. Once discovered, they can be used to find the optimal policy, without requiring data!
-But, to learn the transition and reward function, a lot of data might have been needed.
+In the eariler sections we considered how an agent might use a given abstraction.
+But where did that abstraction come from? Did someone construct it for the given task?
+Or can the abstraction be automatically discovered?
 
-In this case, the cost of discovery, the cost to learn the transition functions can be offset
-by the ability for the agent to easily generalise to new tasks (aka new reward functions).
-As it does not need to relearn the transition function.
-
-But there do exist learning problems where the transition function has many
-factors of variance, while the value can be easily predicted from observations.
-Thus ...
-
-The no free lunch theorem.
-
-This is why it is important to consider the computational and sample complexity when analysing abstractions.
-It is entirely possible that what we gain in computational efficiency, we lose in sample efficiency.
-
-% we are missing tools an analyse the methods of discovery
-% methods of discovery = !?!?
-
-% Discovery.
-% A complex problem. Versus the cost of discovery plus a simpler problem.
-% Need to offset the cost of discovering the abstraction.
-
-\subsection{Representation learning}
-
-Examples for representation learning.
-
-Representations that attempt to preserve
-\begin{itemize}
-\tightlist
-  \item the mutual information between ? and ??.
-  \item knowledge required to predict the next state
-  \item ... geometric bellamere
-  \item ?!?
-\end{itemize}
+% \vspace{5mm}
 
 
-
-\subsection{Building an abstraction for RL}
-
-What (structure) do we want to preserve?
+% What (structure) do we want to preserve?
 
 % Why is this hard? How hard is it? Existing work? What is the problem?
 % How can we find an abstraction? One that actually gives an advantage.
 % the cost!!!
 
+To build an abstraction, you need some notion of how two objects can be similar. (ref?!)
+% (need a ref for this?!)
+This allows you to group the 'similar' objects together, thus building an abstraction.
+In RL there are many possible notions of similarity. But which ones are sensible?
+And which ones lead to efficient learning?
 
+\vspace{5mm}
 
+For example, state abstraction: Li et al. \cite{Littman2006} give five classes of
+state abstraction in which they group states based on their ability to preserve similarities;
+\textit{intuitively,
+$\phi_{\text{model}}$ preserves the one step model,
+$\phi_{Q_{\pi}}$ preserves the state-action value fuction for all policies,
+$\phi_{Q^{* }}$ preserves the optimal state-action value,
+$\phi_a^{* }$ preserves the optimal action and its value,
+$\phi_{\pi^{* }}$ preserves the optimal action.}
 
-When building an abstraction, you need some notion of how two objects can be similar. (need a ref for this?!)
-In RL there are a few possible notions of similarity.
+{\color{red}havent mentioned what these abstractions are being used for?!?}
+i.e. constructing a new MDP with $\{\tilde S, A, \tilde P, \tilde r, \gamma\}$
 
-What could be similar? Two states, two actions, two state-actions. Why?
-Because they result in the same future rewards? The same future transitions? The same future actions?
-Because they can reach the same set of states.
+In general, there seem to be a few different dimensions to designing similarity measures for RL.
 
 \begin{itemize}
   \tightlist
-  \item Characterising the future: One step, k-step, expected, reachable, MC rollout / trajectories, etc etc.
-  \item Things we might care about: rewards / fn, actions / fn, states / fn.
-  \item All versus just the optimal.
+  \item What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them.
+  \item How will we characterise these obects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
+  \item Should these similarities hold for all policies or just a subset (such as just the optimal policy)? (OR?!?)
 \end{itemize}
 
-If two states have the same value under all possible policies, does this mean
-they have the same rewards and transition probabilities?!?
+\footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
 
-What about $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$s? $(s_t, a_t, r_t, s_{t+1}, a_{t+1})$ and $(s_t', a_t', r_t', s_{t+1}'', a_{t+1}'')$s are similar if?
+{\color{red}How does on/off policy come into this!? Is this complete?!}
 
-GVFs
+More formally. Let $X \in {S, A, R}^{* }$. $P \subset \Pi$
 
-\cite{Littman2006} give 5 classes of state abstraction, and show that ...???
-\cite{Abel2017} give 4 classes of approximate states abstraction. They show that ...
-Which is best?
+\begin{align*}
+c(x) = \mathop{\mathbb E}_{\hat x \sim E(x, \pi)} [\gamma^t \hat x(t)] \\
+\chi(x, x'; \gamma) = \int_{\pi \in \mathcal P} D(c(x, \pi, \gamma), c(x, \pi, \gamma))
+\end{align*}
 
-Generalise to actions / temporal.
+{\color{red}Work in progress...}
 
-$V(s) - V(s')$ as a similarity measure tells us very little. Because...?
-Why doesnt this simple baseline work. Try it out?! Explain.
-On a simple MDP, on atari. How to implement? Need to learn $\chi(s, s')$.
-It will learn whether two state are similar under many different policys. As we train it...
-For every state in our replay buffer, is the return similar to other states?
-Just sample a minibatch and compare those states.
-
-Does this allow us to build more general abstractions?
-
-\begin{itemize}
-\tightlist
-  \item Preserving the ordering of policies. Rather than the absolute value.
-  \item Perserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
-  \item Preserving the neighborhoods of policies and their values.
-  \item ?
-\end{itemize}
-
-Want to remove unimportant structure, while keeping the structure that allows us
-to exploit the bellman equation (and thus more efficient search).
+It would be nice to show that all abstractions of interest live in this happy family. (!!)
 
 
-
-\subsubsection{Pairing abstractions with similarity measures}
-
-Different abstraction spaces support different similarity measures.
-State similarity based on value fails in rather simple settings.
-But works with state-action abstractions!?
-
-
-
-\subsection{Analysing abstractions}
+\subsection{Evaluating abstractions}
 
 \begin{displayquote}
-\textit{How might we determine which of these abstractions is better or worse?}
+\textit{But which type of abstraction should we pick?}
 \end{displayquote}
+
+Ideally we would pick the most coarse abstraction, as a coarse abstraction means we have grouped together many objects.
+Thus it has potential for the greatest increases in computational and sample efficiency.
+But. Coarseness is not the only property of an abstraction we care about.
+It must also allow you to represent near optimal solutions and it must allow you to find those near optimal solutions efficiently.
+
+% Need to be able to easily evaluate them.
+
+\subsubsection{Coarse abstractions}
+
+Coarseness (as opposed to fineness) is a term from topology. It describes !?!?
+
+\textit{We say $\phi_1$ is finer (less coarse) than $\phi_2$, denoted $\phi_1 \ge \phi_2$,
+iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_1(s_1) = \phi_1(s_2)$.} \ref{Littman2006}\footnotemark[8]
+
+\footnotetext[8]{This notion can be generalised to ... by doing !?!?.}
+
+So the most coarse abstraction would be where everything is mapped to the same abstract state.
+$\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.
+
+\begin{displayquote}
+\textit{Why is coarseness desireable?}
+\end{displayquote}
+
+As mentioned in ??? (ref) the intro to this section. Efficient exploration and control.
+
+Give formal proof of abstraction leading to reduced variance in section ref.
+In this case, fewer states. Since complexity of solving MDPs is $\mathcal O(|S| ???)$, this is great.
+
+% want more formal version of these arguments!?
+
+\subsubsection{Near optimal abstractions}
 
 %  but. how can we analyse them?
 % tools we can use to analyse an abstraction
-Imagine we have a state abstraction, a road is a road: no real difference
+Imagine we have a state abstraction, a road is a road, there is no real difference
 between them; gravel, winding, motorway, cliffs-on-either-side...
 One of the first things we want to know about the abstraction is:
 is it possible for me to act optimally
@@ -334,42 +324,134 @@ the abstraction can represent the optimal policy.
 Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the lifted optimal
 policy found using the abstraction.
 
-While this framework \cite{Littman2006, Abel2017} for analysing
-abstraction can tell us that that state abstraction with the preservation of value for all policies
- ...
-I does not consider the sample or computational complexity of finding the optimal policy.
-Only whether optimal behaviour can be approximately represented.
-
-So the real question we care about has not been answered. Does the abstraction help??
-
-% We need to show that the cost of discovering the abstraction...
-% how does this relate to theory on fn approximators?!
-
-\subsection{Discussion}
+{\color{red}!!! alternative versions of this notion can be genrealised to temporal. see nacim?! near optimal...}
 
 
+\subsubsection{Easily solveable abstractions}
+
+% we are missing tools an analyse the methods of discovery
+% methods of discovery = !?!?
+
+Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find. We might require large amounts of data or computation.
+
+Fortunately, if we have preserved the state-action values, we have preserved the Bellman equation and can use it to guide the search. {\color{red}(ref / proof!!)}
+
+{\color{red}what about exploration}!?
+What gives efficient exploration. what needds to be preserved to ensure we keep this?
+
+{\color{red}no good tools for this. (should be able to make a nice seguae into LMDPs from here!?)}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+% Which is best?
+
+So, now that we have a notion of better / worse abstractions. Let's consider the ones
+that Li et al. \cite{Littman2006} define.
+
+They show that $\phi_G \le \phi_{\text{model}} \le \phi_{Q_{\pi}} \le \phi_{Q^{* }} \le \phi_a^{* } \le \phi_{\pi^{* }}$
+Where $A \le B$ indicates that A is a finer abstraction than B.
+So we should pick $\phi_{\pi^{* }}$? But.
+
+\begin{enumerate}
+  \tightlist
+  \item There exist examples where the optimal policy found using $\phi_{\pi^{* }}$ is not optimal in the ground MDP. \cite{Jong2005}
+  \item When using $\phi_a^{* }$ the value of non-optimal actions has not been preserved,
+  therefore we cannot use the Bellman operator to guide optimisation. ({\color{red}TODO} see experiments in \ref{})
+  \item $\phi_{Q^{* }}$ has not preserved the state-action values for all policies,
+  therefore we cannot use on policy learning ({\color{red}TODO} see experiments in \ref{})
+\end{enumerate}
+
+% \cite{Abel2017} give 4 classes of approximate states abstraction. They show that ...
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+Generalise this kind of analysis to actions / state-action / temporal.
+
+
+% TODO
+% If two states have the same value under all possible policies, does this mean
+% they have the same rewards and transition probabilities?!?
+
+% $V(s) - V(s')$ as a similarity measure tells us very little. Because...? Many collsions?! But if over all policies then is ok!?
+% Why doesnt this simple baseline work. Try it out?! Explain.
+% On a simple MDP, on atari. How to implement? Need to learn $\chi(s, s')$.
+% It will learn whether two state are similar under many different policys. As we train it...
+% For every state in our replay buffer, is the return similar to other states?
+% Just sample a minibatch and compare those states.
+% Does this allow us to build more general abstractions?
+
+\subsubsection{Pairing abstractions with similarity measures}
+
+Want to remove unimportant structure, while keeping the structure that allows us
+to exploit the bellman equation (and thus more efficient search).
+
+Different abstraction spaces support different similarity measures.
+State similarity based on value fails in rather simple settings.
+But works with state-action abstractions!?
+
+Weaker notions of similarity.
 \begin{itemize}
-  \item Abstraction with only preserving optimal actions isnt reliable. We have not preserved the values.
-  and therefore, there exist MDPs where the bellman equation is broken, meaning in some cases we cannot learn.
-  \item Abstraction that preserves only the value of the optimal policy. So then the value of other policies might be broken.
-  How can we still use the bellman eqn to do on-policy learning? We cant? Can only use the bellman optimality eqn / off-policy learning?
-  \item When using approximate abstractions, there is some error. This error might accumulate? Needs to be characterised!?
+\tightlist
+  \item Preserving the ordering of policies. Rather than their absolute value.
+  \item Perserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
+  \item Preserving the neighborhoods of policies and their values.
+  \item ?
 \end{itemize}
 
-% \subsection{Related work}
-%
-% Existing methods can build abstractions for RL that make solving the problem more computationally efficient.
-% These methods work when the model is known, and it can be abstracted...
-% When the model is unknown. We might have some belief about likely MDPs. Existing methods do not work on these yet. Too expensive?
-% Also. To learn the model with high confidence takes alot of data.
-%
-% Want symmetry for efficient exploration / sample efficiency.
-% Rather than picking actions; randomly, to minimise uncertainty, to ...?
-% We want to pick actions to help us identify symmetries in the MDP.
-% How does this help us increase the sample efficiency?
-%
-% Could build this into uncertainty estimates. Where model complexity also factors into the uncertainty estimate (rather than only data).
-% Could build this in using ???
-%
-% If we are using something like neural counts. How does it generalise it density estimates!?
-% Want symmetries!!!
+\subsubsection{Complexity of finding an abstraction}
+
+We hope to build learners capable of discovering an abstraction to help them efficiently solve the problems they are given.
+But, the efficiency gains of using an abstraction \underline{must} offset the cost of
+discovering that abstraction! Else, why did we bother...?
+
+\begin{displayquote}
+\textit{The challenge in the single-task case is overcoming the additional cost of discovering [an abstraction];
+this results in a narrow opportunity for performance improvements, but a well-defined objective.
+In the ... transfer case, the key challenge is predicting the usefulness of a particular [abstraction] to future tasks, given limited data.}\cite{Konidaris2019}
+\end{displayquote}
+
+\paragraph{Single task case}
+
+For example, in model-based RL. The agent attempts to learn (/ discover) the
+transition and reward functions. Once discovered, they can be used to find the optimal policy, without requiring data!
+But, to learn the transition and reward function, a lot of data might have been needed.
+
+In this case, the cost of discovery, the cost to learn the transition functions can be offset
+by the ability for the agent to easily generalise to new tasks (aka new reward functions).
+As it does not need to relearn the transition function.
+
+But, there do exist learning problems where the transition function has many
+factors of variance, while the value can be easily predicted from observations.
+Thus ...
+{\color{red}not the best example for talking about abstraction!?}
+
+\paragraph{Transfer case}
+
+Without biases, there is no hope in general. The no free lunch theorem.
+As often as we guess right about the "usefulness of a particular [abstraction] to future tasks",
+there will be another set of future tasks where we are wrong.
+
+An abstraction (say heirarchical) is not always the answer. There are problems in which
+heirarchies do worse than ???. ref.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+{\color{red}TODO}
+Ok. So what does this mean / prescribe?
+We need to analyse the complexity of all three steps, and compare them against the
+original problem/solution.
+Related work doing this / trying to. !!!
+
+\subsection{Related work: Representation learning}
+
+More recently...
+Examples for representation learning.
+
+Representations that attempt to preserve
+\begin{itemize}
+\tightlist
+  \item the mutual information between ? and ??.
+  \item knowledge required to predict the next state
+  \item ... geometric bellamere
+  \item ?!?
+\end{itemize}

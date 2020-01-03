@@ -221,10 +221,10 @@ It is possible to derive the value functional in another, possibly more enligten
 r &\in (-1, 1) \\
 (1-r)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n r^i \tag{Geometric series}\\
 T &\in \mathbb X^k: \det(T) \in (-1, 1) \\
-(I-T)^-1 &= \lim_{n\to \infty} \sum_{i=0}^n T^i \label{eq:neumann}\tag{Neumann series}
+(I-T)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n T^i \label{eq:neumann}\tag{Neumann series}
 \end{align*}
 
-We can expand the recursion in the Bellman equation to get an \eqref{eq:inf-series}. We can then use \eqref{eq:neumann} (by setting $T=\gamma P_{\pi}$) to give the nice analytic form of the value functional.
+We can expand the recursion in the Bellman equation to get an \eqref{eq:inf-series}. We can then use the \eqref{eq:neumann} (by setting $T=\gamma P_{\pi}$) to give the nice analytic form of the value functional.
 
 \begin{align*}
 V &= r_{\pi} + \gamma P_{\pi} V \tag{Bellman eqn}\\
@@ -440,7 +440,7 @@ Properties of the graphs / graph signals?
 
 
 
-\section{Deep policy gradients}
+\section{Deep policy gradients}\label{ss-extras}
 
 Currently, the most successful RL solvers are a variant of policy gradient methods \cite{Mnih2016,Schulmanb}.
 And are being combined with deep parameterised models. (refs)

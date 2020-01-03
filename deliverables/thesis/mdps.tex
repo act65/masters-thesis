@@ -52,18 +52,7 @@ delayed rewards. For example we could make a RL problem that is;
 Markov decision problems (MDPs) seem like a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
 simple setting to anlyse RL.
 
-\section{Sequential decision problems}
-
-A general intuition for what is going on when solving a sequential decision problem; decisions (aka actions) are made
-sequentially (\textit{eg.}) and need to be conditioned on observations (\textit{eg.}).
-The goal is to take actions that achieve higher rewards (\textit{eg.}). While instantaneous
-rewards are good, we really care about long term cumulative rewards (\textit{eg.}).
-
-% Maze with pendulums / doors. When moving through the maze, you must
-% swing the pendulums. In the future you must avoid being hit. (maybe make
-% a picture of this?) also, is there a more general way to think about it?
-
-More formally, a MDP, which is a type of sequential decision problem, is defined
+Formally, a MDP, which is a type of sequential decision problem, is defined
 as a tuple, $\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t), \gamma, d_0\}$.
 Where \(s \in \mathcal S\) is the set of possible states (\textit{for example arrangements of chess pieces}),
 \(a \in \mathcal A\) is the set of actions (\textit{the different possible moves, left,
@@ -94,7 +83,16 @@ D(\zeta, \pi, \tau, d_0) &= d_0(\zeta[s, 0]) \prod_{t=1}^{H} \pi(\zeta[a, t]|\ze
 
 You can find examples of some simple MDPs in \ref{MDP-examples}.
 
-\subsection{The Markov property}
+\section{Sequential decision problems}
+
+A general intuition for what is going on when solving a sequential decision problem is: decisions (aka actions) are made
+sequentially (\textit{eg.}) and need to be conditioned on observations (\textit{eg.}).
+The goal is to take actions that achieve higher rewards (\textit{eg.}). While instantaneous
+rewards are good, we really care about long term cumulative rewards (\textit{eg.}).
+
+% Maze with pendulums / doors. When moving through the maze, you must
+% swing the pendulums. In the future you must avoid being hit. (maybe make
+% a picture of this?) also, is there a more general way to think about it?
 
 \begin{displayquote}
   \textit{What does the M in MDP really mean?}
