@@ -22,97 +22,97 @@
 \contentsline {subsubsection}{Examples}{24}{section*.29}% 
 \contentsline {paragraph}{State abstraction}{24}{section*.30}% 
 \contentsline {paragraph}{Action abstraction}{24}{section*.31}% 
-\contentsline {paragraph}{State-action abstraction}{24}{section*.32}% 
+\contentsline {paragraph}{State-action abstraction}{25}{section*.32}% 
 \contentsline {paragraph}{Temporal abstraction}{26}{section*.33}% 
-\contentsline {subsection}{\numberline {3.1.2}Discovery}{26}{subsection.3.1.2}% 
-\contentsline {subsection}{\numberline {3.1.3}Evaluating abstractions}{27}{subsection.3.1.3}% 
+\contentsline {subsection}{\numberline {3.1.2}Discovery}{27}{subsection.3.1.2}% 
+\contentsline {subsection}{\numberline {3.1.3}Evaluating abstractions}{28}{subsection.3.1.3}% 
 \contentsline {subsubsection}{Coarse abstractions}{28}{section*.34}% 
 \contentsline {subsubsection}{Near optimal abstractions}{29}{section*.35}% 
-\contentsline {subsubsection}{Efficiently solveable abstractions}{29}{section*.36}% 
-\contentsline {subsubsection}{Complexity of finding an abstraction}{30}{section*.37}% 
+\contentsline {subsubsection}{Efficiently solveable abstractions}{30}{section*.36}% 
+\contentsline {subsubsection}{Complexity of finding an abstraction}{31}{section*.37}% 
 \contentsline {paragraph}{Single task case}{31}{section*.38}% 
-\contentsline {paragraph}{Transfer case}{31}{section*.39}% 
+\contentsline {paragraph}{Transfer case}{32}{section*.39}% 
 \contentsline {subsection}{\numberline {3.1.4}Related work: Representation learning for RL}{32}{subsection.3.1.4}% 
-\contentsline {section}{\numberline {3.2}Solvable representations}{33}{section.3.2}% 
-\contentsline {subsection}{\numberline {3.2.1}Linear Markov decision problems (LMDPs)}{33}{subsection.3.2.1}% 
-\contentsline {subsubsection}{What do we mean by a linear MDP?}{33}{section*.40}% 
-\contentsline {subsubsection}{Constructing a linear MDP}{34}{section*.41}% 
-\contentsline {subsubsection}{\color {red}The unconstrained dynamics and state rewards}{36}{section*.48}% 
-\contentsline {subsubsection}{\color {red}The optimal policy}{36}{section*.49}% 
-\contentsline {subsubsection}{\color {red}Solving for the optimal value}{36}{section*.50}% 
-\contentsline {subsection}{\numberline {3.2.2}Solving a MDP}{36}{subsection.3.2.2}% 
-\contentsline {subsection}{\numberline {3.2.3}Decoding the optimal LMDP policy}{38}{subsection.3.2.3}% 
-\contentsline {subsubsection}{Optimality of solutions via LMDPs}{39}{section*.59}% 
-\contentsline {subsection}{\numberline {3.2.4}Discussion}{40}{subsection.3.2.4}% 
-\contentsline {subsubsection}{Validation}{40}{section*.60}% 
-\contentsline {subsubsection}{Linearity in MDPs}{44}{section*.65}% 
-\contentsline {section}{\numberline {3.3}Symmetric abstractions}{45}{section.3.3}% 
-\contentsline {subsection}{\numberline {3.3.1}Existing formalism}{45}{subsection.3.3.1}% 
-\contentsline {subsection}{\numberline {3.3.2}Exploitation}{46}{subsection.3.3.2}% 
-\contentsline {subsubsection}{Model minimisation}{46}{section*.66}% 
-\contentsline {subsubsection}{Output coupling}{46}{section*.67}% 
-\contentsline {subsubsection}{Gradient coupling}{47}{section*.68}% 
-\contentsline {subsubsection}{Data augmentation}{47}{section*.69}% 
-\contentsline {subsubsection}{Architecture}{47}{section*.70}% 
-\contentsline {subsection}{\numberline {3.3.3}Comparison}{48}{subsection.3.3.3}% 
-\contentsline {subsection}{\numberline {3.3.4}Discovery}{48}{subsection.3.3.4}% 
-\contentsline {subsubsection}{Symmetries from experience}{48}{section*.71}% 
-\contentsline {subsubsection}{Inferring symmetries in data with priors}{49}{section*.72}% 
-\contentsline {subsubsection}{Cayley completion}{50}{section*.73}% 
-\contentsline {subsubsection}{How easy is it to solve this inference problem?}{50}{section*.74}% 
-\contentsline {subsubsection}{Generalisation to ???}{50}{section*.75}% 
-\contentsline {subsubsection}{Notes}{50}{section*.76}% 
-\contentsline {subsubsection}{Complexity}{50}{section*.77}% 
-\contentsline {subsection}{\numberline {3.3.5}n-dimensional Cart pole}{51}{subsection.3.3.5}% 
-\contentsline {subsubsection}{How is this problem symmetric?}{51}{section*.78}% 
-\contentsline {subsubsection}{How might a learner exploit this knowledge to learn more effiicently?}{51}{section*.79}% 
-\contentsline {subsection}{\numberline {3.3.6}Experiments}{52}{subsection.3.3.6}% 
-\contentsline {subsection}{\numberline {3.3.7}No free lunches}{52}{subsection.3.3.7}% 
-\contentsline {subsection}{\numberline {3.3.8}Related work}{55}{subsection.3.3.8}% 
-\contentsline {subsection}{\numberline {3.3.9}Future work}{55}{subsection.3.3.9}% 
-\contentsline {subsection}{\numberline {3.3.10}Characterising symmetries for RL}{55}{subsection.3.3.10}% 
-\contentsline {chapter}{\numberline {4}Conclusions}{57}{chapter.4}% 
-\contentsline {chapter}{\numberline {A}MDPs}{69}{appendix.A}% 
-\contentsline {section}{\numberline {A.1}MDP examples}{69}{section.A.1}% 
-\contentsline {paragraph}{Bus engine replacement}{69}{section*.81}% 
-\contentsline {paragraph}{The ALOHA protocol}{69}{section*.82}% 
-\contentsline {paragraph}{Mate desertion in Cooper's Hawks}{70}{section*.83}% 
-\contentsline {paragraph}{But who's counting?}{70}{section*.84}% 
-\contentsline {paragraph}{Diagnosing catnip immunity}{71}{section*.85}% 
-\contentsline {paragraph}{Ad targeting}{71}{section*.86}% 
-\contentsline {paragraph}{Youtube recommendation}{72}{section*.87}% 
-\contentsline {paragraph}{Salamon harvesting}{72}{section*.88}% 
-\contentsline {paragraph}{Fire engine allocation}{72}{section*.89}% 
-\contentsline {section}{\numberline {A.2}Tabular MDPs}{73}{section.A.2}% 
-\contentsline {section}{\numberline {A.3}Policies in high dimensions}{74}{section.A.3}% 
-\contentsline {section}{\numberline {A.4}Other properties of the polytope}{75}{section.A.4}% 
-\contentsline {subsection}{\numberline {A.4.1}Distribution of policies}{75}{subsection.A.4.1}% 
-\contentsline {subsubsection}{An MDPs Entropy}{77}{section*.102}% 
-\contentsline {subsection}{\numberline {A.4.2}Discounting}{78}{subsection.A.4.2}% 
-\contentsline {subsection}{\numberline {A.4.3}Derivation of derivative}{80}{subsection.A.4.3}% 
-\contentsline {section}{\numberline {A.5}Model search}{80}{section.A.5}% 
-\contentsline {subsection}{\numberline {A.5.1}Relationship to model based RL}{81}{subsection.A.5.1}% 
-\contentsline {section}{\numberline {A.6}Visualising higher dimensional MDPs}{81}{section.A.6}% 
-\contentsline {section}{\numberline {A.7}Deep policy gradients}{81}{section.A.7}% 
-\contentsline {section}{\numberline {A.8}Topology and dynamics}{83}{section.A.8}% 
-\contentsline {subsection}{\numberline {A.8.1}Acceleration and parameterisation}{85}{subsection.A.8.1}% 
-\contentsline {section}{\numberline {A.9}Conclusion}{88}{section.A.9}% 
-\contentsline {chapter}{\numberline {B}Abstraction}{89}{appendix.B}% 
-\contentsline {section}{\numberline {B.1}Similarity}{89}{section.B.1}% 
-\contentsline {subsection}{\numberline {B.1.1}Pairing abstractions with similarity measures}{89}{subsection.B.1.1}% 
-\contentsline {section}{\numberline {B.2}LMDPs}{90}{section.B.2}% 
-\contentsline {subsection}{\numberline {B.2.1}Derivation}{90}{subsection.B.2.1}% 
-\contentsline {subsubsection}{LMDP solutions}{90}{section*.115}% 
-\contentsline {subsubsection}{MDP Linearisation}{92}{section*.138}% 
-\contentsline {section}{\numberline {B.3}Symmetry}{94}{section.B.3}% 
-\contentsline {paragraph}{Mirror symmetry}{94}{figure.B.1}% 
-\contentsline {paragraph}{Translational symmetry}{95}{figure.B.2}% 
-\contentsline {subsubsection}{Local symmetry}{96}{section*.167}% 
-\contentsline {subsubsection}{Future translational symmetry}{96}{section*.168}% 
-\contentsline {paragraph}{Temporal mirror symmetry}{97}{section*.169}% 
-\contentsline {paragraph}{Temporal symmetry}{97}{figure.B.6}% 
-\contentsline {subsubsection}{Pong}{97}{section*.171}% 
-\contentsline {paragraph}{Mirror symmetry (vertical)}{97}{figure.B.7}% 
-\contentsline {paragraph}{Mirror symmetry (horizontal)}{99}{figure.B.8}% 
-\contentsline {paragraph}{Translational symmetry}{100}{figure.B.9}% 
-\contentsline {paragraph}{Temporal symmetries}{100}{figure.B.10}% 
+\contentsline {section}{\numberline {3.2}Solvable representations}{34}{section.3.2}% 
+\contentsline {subsection}{\numberline {3.2.1}Linear Markov decision problems (LMDPs)}{34}{subsection.3.2.1}% 
+\contentsline {subsubsection}{What do we mean by a linear MDP?}{34}{section*.40}% 
+\contentsline {subsubsection}{Constructing a linear MDP}{35}{section*.41}% 
+\contentsline {subsubsection}{\color {red}The unconstrained dynamics and state rewards}{37}{section*.48}% 
+\contentsline {subsubsection}{The optimal policy}{37}{section*.49}% 
+\contentsline {subsubsection}{Solving for the optimal value}{37}{section*.50}% 
+\contentsline {subsection}{\numberline {3.2.2}Solving a MDP}{38}{subsection.3.2.2}% 
+\contentsline {subsection}{\numberline {3.2.3}Decoding the optimal LMDP policy}{39}{subsection.3.2.3}% 
+\contentsline {subsubsection}{Optimality of solutions via LMDPs}{41}{section*.59}% 
+\contentsline {subsection}{\numberline {3.2.4}Discussion}{44}{subsection.3.2.4}% 
+\contentsline {subsubsection}{Validation}{44}{section*.60}% 
+\contentsline {subsubsection}{Linearity in MDPs}{46}{section*.65}% 
+\contentsline {section}{\numberline {3.3}Symmetric abstractions}{47}{section.3.3}% 
+\contentsline {subsection}{\numberline {3.3.1}Existing formalism}{47}{subsection.3.3.1}% 
+\contentsline {subsection}{\numberline {3.3.2}Exploitation}{48}{subsection.3.3.2}% 
+\contentsline {subsubsection}{Model minimisation}{48}{section*.66}% 
+\contentsline {subsubsection}{Output coupling}{48}{section*.67}% 
+\contentsline {subsubsection}{Gradient coupling}{49}{section*.68}% 
+\contentsline {subsubsection}{Data augmentation}{49}{section*.69}% 
+\contentsline {subsubsection}{Architecture}{49}{section*.70}% 
+\contentsline {subsection}{\numberline {3.3.3}Comparison}{50}{subsection.3.3.3}% 
+\contentsline {subsection}{\numberline {3.3.4}Discovery}{50}{subsection.3.3.4}% 
+\contentsline {subsubsection}{Symmetries from experience}{50}{section*.71}% 
+\contentsline {subsubsection}{Inferring symmetries in data with priors}{51}{section*.72}% 
+\contentsline {subsubsection}{Cayley completion}{52}{section*.73}% 
+\contentsline {subsubsection}{How easy is it to solve this inference problem?}{52}{section*.74}% 
+\contentsline {subsubsection}{Generalisation to ???}{52}{section*.75}% 
+\contentsline {subsubsection}{Notes}{52}{section*.76}% 
+\contentsline {subsubsection}{Complexity}{52}{section*.77}% 
+\contentsline {subsection}{\numberline {3.3.5}n-dimensional Cart pole}{53}{subsection.3.3.5}% 
+\contentsline {subsubsection}{How is this problem symmetric?}{53}{section*.78}% 
+\contentsline {subsubsection}{How might a learner exploit this knowledge to learn more effiicently?}{53}{section*.79}% 
+\contentsline {subsection}{\numberline {3.3.6}Experiments}{54}{subsection.3.3.6}% 
+\contentsline {subsection}{\numberline {3.3.7}No free lunches}{54}{subsection.3.3.7}% 
+\contentsline {subsection}{\numberline {3.3.8}Related work}{57}{subsection.3.3.8}% 
+\contentsline {subsection}{\numberline {3.3.9}Future work}{57}{subsection.3.3.9}% 
+\contentsline {subsection}{\numberline {3.3.10}Characterising symmetries for RL}{57}{subsection.3.3.10}% 
+\contentsline {chapter}{\numberline {4}Conclusions}{59}{chapter.4}% 
+\contentsline {chapter}{\numberline {A}MDPs}{71}{appendix.A}% 
+\contentsline {section}{\numberline {A.1}MDP examples}{71}{section.A.1}% 
+\contentsline {paragraph}{Bus engine replacement}{71}{section*.81}% 
+\contentsline {paragraph}{The ALOHA protocol}{71}{section*.82}% 
+\contentsline {paragraph}{Mate desertion in Cooper's Hawks}{72}{section*.83}% 
+\contentsline {paragraph}{But who's counting?}{72}{section*.84}% 
+\contentsline {paragraph}{Diagnosing catnip immunity}{73}{section*.85}% 
+\contentsline {paragraph}{Ad targeting}{73}{section*.86}% 
+\contentsline {paragraph}{Youtube recommendation}{74}{section*.87}% 
+\contentsline {paragraph}{Salamon harvesting}{74}{section*.88}% 
+\contentsline {paragraph}{Fire engine allocation}{74}{section*.89}% 
+\contentsline {section}{\numberline {A.2}Tabular MDPs}{75}{section.A.2}% 
+\contentsline {section}{\numberline {A.3}Policies in high dimensions}{76}{section.A.3}% 
+\contentsline {section}{\numberline {A.4}Other properties of the polytope}{77}{section.A.4}% 
+\contentsline {subsection}{\numberline {A.4.1}Distribution of policies}{77}{subsection.A.4.1}% 
+\contentsline {subsubsection}{An MDPs Entropy}{79}{section*.102}% 
+\contentsline {subsection}{\numberline {A.4.2}Discounting}{80}{subsection.A.4.2}% 
+\contentsline {subsection}{\numberline {A.4.3}Derivation of derivative}{82}{subsection.A.4.3}% 
+\contentsline {section}{\numberline {A.5}Model search}{82}{section.A.5}% 
+\contentsline {subsection}{\numberline {A.5.1}Relationship to model based RL}{83}{subsection.A.5.1}% 
+\contentsline {section}{\numberline {A.6}Visualising higher dimensional MDPs}{84}{section.A.6}% 
+\contentsline {section}{\numberline {A.7}Deep policy gradients}{84}{section.A.7}% 
+\contentsline {section}{\numberline {A.8}Topology and dynamics}{86}{section.A.8}% 
+\contentsline {subsection}{\numberline {A.8.1}Acceleration and parameterisation}{87}{subsection.A.8.1}% 
+\contentsline {section}{\numberline {A.9}Conclusion}{87}{section.A.9}% 
+\contentsline {chapter}{\numberline {B}Abstraction}{93}{appendix.B}% 
+\contentsline {section}{\numberline {B.1}Similarity}{93}{section.B.1}% 
+\contentsline {subsection}{\numberline {B.1.1}Pairing abstractions with similarity measures}{93}{subsection.B.1.1}% 
+\contentsline {section}{\numberline {B.2}LMDPs}{94}{section.B.2}% 
+\contentsline {subsection}{\numberline {B.2.1}Derivation}{94}{subsection.B.2.1}% 
+\contentsline {subsubsection}{LMDP solutions}{94}{section*.115}% 
+\contentsline {subsubsection}{MDP Linearisation}{96}{section*.138}% 
+\contentsline {section}{\numberline {B.3}Symmetry}{98}{section.B.3}% 
+\contentsline {paragraph}{Mirror symmetry}{98}{figure.B.1}% 
+\contentsline {paragraph}{Translational symmetry}{99}{figure.B.2}% 
+\contentsline {subsubsection}{Local symmetry}{100}{section*.167}% 
+\contentsline {subsubsection}{Future translational symmetry}{100}{section*.168}% 
+\contentsline {paragraph}{Temporal mirror symmetry}{101}{section*.169}% 
+\contentsline {paragraph}{Temporal symmetry}{101}{figure.B.6}% 
+\contentsline {subsubsection}{Pong}{101}{section*.171}% 
+\contentsline {paragraph}{Mirror symmetry (vertical)}{101}{figure.B.7}% 
+\contentsline {paragraph}{Mirror symmetry (horizontal)}{103}{figure.B.8}% 
+\contentsline {paragraph}{Translational symmetry}{104}{figure.B.9}% 
+\contentsline {paragraph}{Temporal symmetries}{104}{figure.B.10}% 

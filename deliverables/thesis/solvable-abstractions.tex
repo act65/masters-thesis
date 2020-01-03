@@ -142,17 +142,43 @@ Rather, the action dependent part of the reward is captured by the KL divergence
 So the unconstrained dynamics are responsible for rewarding actions.
 But, states with higher state reward will be perferable.
 
-We will revisit to these questions in section [].
+\subsubsection{The optimal policy}
 
-\subsubsection{\color{red}The optimal policy}
+What should we make of the form of the optimal control?
 
-The form of this optimal policy ...
+\begin{align*}
+u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z_{u^{* }}(s')^{\gamma}}
+\end{align*}
 
-\subsubsection{\color{red}Solving for the optimal value}
+So the optimal control is the one that transitions to a new state with a
+probability proportional to the discounted exponentiated value of that state.
+That seems sensible, and is closely realted to a common way (refs...) of constructing a policy from $Q$ values.
 
-Why is it we can just solve this equenction? Relation to eigen analysis?
+\begin{align*}
+\pi(\cdot|s) = \sigma(\tilde Q(s, \cdot))
+\end{align*}
+
+Where $\tilde Q$ is an estimate of the state action values, maybe from SARSA or Q-learning.
+And $\sigma$ is the softmax operator.
+
+\subsubsection{Solving for the optimal value}
+
+What should we make of the form of the value estimate?
+
+\begin{align*}
+z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma}
+\end{align*}
+
+In the undiscounted case (aka first exit case), where $\gamma=1$, this turns
+into an eigen value problem $z = QPz = Az$.
+$A$ is positive semi definite bc ...
+
 Has nice convergence properties because it is contractive.
-???
+
+Converges to the eigenvector of QP, with eigen value being prop to...
+Amount $QP$ expands and amount $/gamma$ contracts.
+
+{\color{red}TODO. although, how necessary is this!?}
 
 \subsection{Solving a MDP}
 

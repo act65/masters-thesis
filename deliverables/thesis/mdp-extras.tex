@@ -422,9 +422,9 @@ Once that has been done, the optimisation problem is easily solved!?
 Model iteration. Model invariant transforms. Pick a policy. Falsify it,
 and this falsify all models that yield the same optimal policy.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
+\includegraphics[width=0.35\textwidth,height=0.35\textheight]{../../pictures/figures/model_iteration.png}
 \caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
 and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
 \end{figure}
@@ -436,13 +436,41 @@ Related to AWR? https://arxiv.org/pdf/1910.00177.pdf
 
 \section{Visualising higher dimensional MDPs}\label{graph-vis}
 
-So this value polytope works well for 2D. And possibly 3D. But,
-"To deal with a 14-dimensional space, visualize a 3-D space and say 'fourteen' to yourself very loudly. Everyone does it." -- Geoff Hinton.
+So this value polytope works well for 2D. And could be extended to 3D. But, what about higher dimensions?
 
-How to construct them?
+\begin{displayquote}
+  \textit{"To deal with a 14-dimensional space, visualize a 3-D space and say 'fourteen' to yourself very loudly. Everyone does it."} Geoff Hinton
+\end{displayquote}
+
+Is there intuition we might gain from visualising optimisation on MDPs with the
+number of states and / or actions being greater than 3?
+
+How to construct them? Decompose the value of a policy as a convex combination
+of the values of the deterministic policies.
+
+\begin{align*}
+  \alpha(\pi) = \mathop{\text{argmin}}_{\alpha \in \Delta^n} \parallel  V(\pi) - \sum_i (V(\pi_i) \cdot \alpha_i ) \parallel_2^2 + H(\alpha)
+\end{align*}
+
+The entropy term ensures we prefer convex combinations with lower entropy, (in this case, aka higher sparsity).
 
 Properties of the graphs / graph signals?
 
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.5\textwidth,height=0.3\textheight]{../../pictures/figures/discrete-graph.png}
+\caption{Policy iteration bounces between the nodes of the graph. As each node is a deterministic policy.
+Thus policy iteration is equivalent to finding the shortest path on a XX connected policy graph. }
+\end{figure}
+
+{\color{red} wanta better picture}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.5\textwidth,height=0.3\textheight]{../../pictures/figures/interior-graph.png}
+\caption{Policy gradient traverses through non-deterministic policies, thus we can visualise how
+close the current policy is to deterministic ones.}
+\end{figure}
 
 
 \section{Deep policy gradients}\label{ss-extras}
@@ -464,7 +492,7 @@ Euclidean geometry.
 We can pick any space we we like to search with in. But, why would we want to pick one space over another?
 What properties are we looking for?
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/mvi-iterations.png}
 \caption{Above you see: various MDPs where the value of each policy is colored

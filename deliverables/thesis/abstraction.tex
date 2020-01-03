@@ -136,15 +136,29 @@ Or \textit{goal like} and \textit{option like} temporal abstractions.
 
 \paragraph{State abstraction}
 
-State abstraction groups together states that are similar. For example,
-sprinting 100m is equivalent regardless of which track lane you are in.
+groups together states that are similar. For example, a 20 NZD note.
+There are many different 20 NDZ notes that, for all actions, intents and purposes, are the same.
+Someone may have written a note on the note, the note may have fold marks through it,
+there might be different codes on the
+bottom left corner or right hand side, it might be an older version, ....
 
-If in the forrest, then travel east. If in plains travel south. If at lake, travel east.
+Rather than describing these inessential details, we can abstract away from them.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\textwidth,height=0.2\textheight]{../../pictures/images/nz20.png}
+\caption{A 20 NZD note.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\textwidth,height=0.2\textheight]{../../pictures/drawings/my-nz20.png}
+\caption{An artist's abstract rendering.}
+\end{figure}
 
 \paragraph{Action abstraction}
 
-Action abstraction groups together actions that are similar. For
+groups together actions that are similar. For
 example, both action $i$ and action $j$ might yeild the same rewards and change in state,
 in which case, we can just relabel them as the same action.
 
@@ -165,7 +179,7 @@ which would specify the movement of multiple legs.}
 
 \paragraph{State-action abstraction}
 
-Group together state-actions that achieve similar results. This class of abstraction
+Groups together state-actions that achieve similar results. This class of abstraction
 should be more powerful than state and action abstraction. Consider a mirror symmetric maze.
 
 \begin{figure}[h!]
@@ -190,15 +204,13 @@ This insight motivates our work on symetric abstractions \ref{symmstric-abstract
 
 \paragraph{Temporal abstraction}
 
-Goal-like and option-like temporal abstractions have differing sets of examples
-but have a similar intuitions behind them. The intuition is that
-a temporal abstraction breaks down a sequential decision problem into a set of
-shorter, easier to solve, parts.
+We can group together goals / options that achieve 'similar' results.
+For example, the pumpkin recipie above: for the many ways there are to boil broth
+(in pot, in a jug, over a wood fire, in the oven, ...), group them together.
+For the many ways to puree some pumpkin (with a rolling pin and some vigor, with a blender, ...), group them together.
 
-Something like two lefts equals two rights. Or have some work experience is approximately the same has a good equcation.
-
-Let's consider an example of option-like temporal abstration. Group together ???
-
+The intuition behind both goal-like and option-like temporal abstractions is that
+we can decompose a sequential decision problem into a set of shorter, easier to solve, parts.
 
 \subsection{Discovery}
 
