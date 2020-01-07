@@ -61,10 +61,10 @@ Hawks}\label{mate-desertion-in-coopers-hawks}}
   \textbf{Actions:} Stay, hunt, desert.
 \item
   \textbf{Transition fn:} The four developmental stages, early nestling,
-  late netling, early feldgling, late feldgling. From one developmental
+  late nestling, early fledgling, late fledgling. From one developmental
   stage to the next, the energy levels of the mother and brood are
   determined by the initial energy reserves, the actions taken and the
-  availability of food. (this was estimated from data data gatherd by
+  availability of food. (this was estimated from data gathered by
   \ldots{})
 \item
   \textbf{Reward fn:}
@@ -100,13 +100,13 @@ immunity}\label{diagnosing-catnip-immunity}}
 \begin{itemize}
 \tightlist
 \item
-  \textbf{States:} The truth values for immuity to an of the 4 drugs (
+  \textbf{States:} The truth values for immunity to an of the 4 drugs (
   Catnip / Valerian / Silvervine / Honeysuckle )
 \item
   \textbf{Actions:} Choose which drug to test.
 \item
   \textbf{Transition fn:} Updates the truth values with some probability
-  of returning a true postive or false negative.
+  of returning a true positive or false negative.
 \item
   \textbf{Reward fn:} Minimize the cost to find a working drug.
   Catnip=\$8.96, Valerian=\$7.00, Silverine=\$17.77, Honeysuckle=\$7.99.
@@ -151,15 +151,15 @@ make it possible to intelligently guess which tests should be performed.
 \begin{itemize}
 \tightlist
 \item
-  \textbf{States:} The size of the salamon population.
+  \textbf{States:} The size of the salmon population.
 \item
   \textbf{Actions:} The size of the salamon population to be left to
   spawn.
 \item
   \textbf{Transition fn:} Given the number left to spawn, it returns the
-  size of the salamon population in the next season.
+  size of the salmon population in the next season.
 \item
-  \textbf{Reward fn:} The size of salamon population harvested.
+  \textbf{Reward fn:} The size of salmon population harvested.
 \end{itemize}
 
 YOu might call this MDP a one dimensional MDP, as there is only a single
@@ -215,7 +215,7 @@ More Refs
 
 \section{Tabular MDPs}\label{vf-neumann}
 
-It is possible to derive the value functional in another, possibly more enligtening way. But it takes a little more work. It requires a result from real analysis, the Neuman series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
+It is possible to derive the value functional in another, possibly more enligtening way. But it takes a little more work. It requires a result from real analysis, the Neumann series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
 
 \begin{align*}
 r &\in (-1, 1) \\
@@ -266,8 +266,8 @@ For each state, we must specify a distribution over actions.}
 \subsection{Distribution of policies}
 
 A potentially interesting question to ask about the value polytope is how the
-values (of the policies) are distributed. To calculate this
-analytically, we can use the probability chain rule:
+values (of the policies) are distributed. we can calculate this
+density analytically by using the probability chain rule:
 \(p(f(x)) = \mid \det\frac{\partial f(x)}{\partial x}\mid^{-1}p(x)\).
 Where we set \(f\) to be our value functional and \(p(x)\) to be a
 uniform distribution over policies. Thus we have;
@@ -276,7 +276,7 @@ uniform distribution over policies. Thus we have;
 p(V(\pi)) = |\det \frac{\partial V(\pi)}{\partial \pi}|^{-1} \cdot p(\pi) \tag{density}
 \end{align}
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/polytope_densities.png}
 \caption{2-state 2-action MDPs. We have visualised the likelihood of
@@ -285,61 +285,43 @@ Lighter colour is higher probability.}
 \label{fig:density}
 \end{figure}
 
-We can see in \ref{fig:density}, that in some polytopes, many of the policies are close
-to the optimal policy. In other polytopes, many of the policies are far
-away from the optimal policy. Does having many policies that have close to
-optimal value make the MDP easier to solve?
+As we can see in \ref{fig:density}: for some polytopes, there is high density around the optimal policy.
+In other polytopes, many of the policies are far away from the optimal policy.
 
-{\color{red}Finish this off!? Would be good to show that a there exist 'easily solvable'
- MDPs. But your chance of getting one is effectively zero}
-
-\subsubsection{An MDPs Entropy}
-
-{\color{red}not sure where this is going...}
-
-We can visualise polytopes in 2D, but we struggle in higher dimensions.
-However, it is possible to use lower dimensions to gain intuition about
-metrics and carry that intuition into higher dimensions. A potential
-metric of interest here is the entropy of our distribution, (and / or
-the expected distance from the optima) to give intuition about
-unimaginable MDPs.
-
-\begin{align}
-M &\to \{P, r, \gamma\} \tag{a MDP}\\
-H(M) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[-\log p(V(\pi)) \Big]\\
-&= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[-\log(\mid \det\frac{\partial V(\pi)}{\partial \pi}\mid^{-1}p(\pi)) \Big] \\
-&= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[-\log(\mid \det \frac{r}{(I-\gamma P \pi)^2}\mid^{-1}p(\pi)) \Big] \\
-\end{align}
-
-What does this tell us? \textbf{???} A MDP with a low entropy tells us
-that many of the policies are in a corner of the polytope. But the
-`hardness' of the MDP depends on which corner these policies are
-concentrated in. Rather we could use the value of each policy to give
-information about the location of the policy.
+Consider the expected suboptimality of our MDP, which tells us how far away the
+optimal policy is from the 'center of value' of the polytope.
 
 \begin{align*}
-\mu(M) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[V(\pi) \Big]\\
+\mu(M) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[V_M^{\pi} \Big]\\
+\epsilon^{* }(M) &= \mathop{\text{max}}_s V_M^{\pi^{* }}(s) - \mu(M)(s)
 \end{align*}
 
-What does this tell us? The expected value of a policy. Thus, a quantity
-of interest might be the expected suboptimality of a policy,
-\(s = V(\pi^{* })-\mu(M)\). This tells us how far away the optimal
-policy is from the center of mass of the polytope.
+This suggests that MDPs with low expected suboptimality, $\epsilon^{* }(M)$, are easier to solve than other MDPs.
+This is because we can simply sample a random policy which is likely to be close to the optimal policy
+(or we could sample many policies and pick the best, which would, with high probability, be close(r) to the optimal policy).
 
-\textbf{Conjecture:} If an MDP has suboptimality
-\(s \le \frac{\sigma_{MDP}}{D}\) then it is possible to find a
-\(\epsilon\) optimal policy with \(\mathcal O(n)\) samples. (but
-sampling in high dimensions always scales badly?!)
+\vspace{5mm}
 
-\textbf{Experiment:} Correlate the properties of \(P, r\) with entropy.
-Or find derivative wrt \(P, r\). What properties of \(P, r\) yield
-easily solvable MDPs?
+\textbf{Open problem:} If an MDP has sub-optimality,  $\epsilon^{* }(M)$,
+then it is possible to find a $\epsilon$ optimal policy with $\{\}$ samples.
+
+Where $\epsilon = \mathop{\text{max}}_s V^{\pi^{* }}(s) - V(s)$.
+
+\vspace{5mm}
+
+However, this strategy will not scale to higher dimensions.
+As we increase the state size or action size, the chance that there is high
+density near the optimal policy (or a randomly sampled MDP) decreases with rate proprtional to $|A|^{|S|}$.
+
+% \textbf{Experiment:} Correlate the properties of \(P, r\) with entropy.
+% Or find derivative wrt \(P, r\). What properties of \(P, r\) yield
+% easily solvable MDPs?
 
 \subsection{Discounting}
 
 Another question you may have is: \textit{how does the shape of the polytope depend on the discount rate?}
 Given an MDP, we can vary the discount rate from \(0\) to \(1\) and visualise
-the shape of the value polytope. Seen in \ref{fig:polytope-discounts}.
+the shape of the value polytope.
 
 \begin{figure}
 \centering
@@ -350,22 +332,13 @@ The color map is represents the density of policies, as in \ref{fig:density}.}
 \label{fig:polytope-discounts}
 \end{figure}
 
-\begin{itemize}
-\item
-  \textbf{Observation} As \(\gamma \to 1\), all the policies are
-  projected into a 1D space? \textbf{Question} Does this make things
-  easier to learn? \textbf{Intuition} Orderd 1D spaces are easy to
-  search.
-\item
-  \textbf{Observation} The tranformation that changing the discount
-  applies is quite restricted. They are not generally non-linear, but
-  appear `close to linear', but not quite. \textbf{Question} What is the
-  set of functions /transformations that the discount can apply?
-\end{itemize}
 
-{\color{red}Finish this off!? Would be good to show that as discount tends to 1 then polytope collapses to a line?!?}
+As we can see in Seen in \ref{fig:polytope-discounts}. As the discount rate tends to $1$,
+all the policies are projected into a 1D space. (is this 1D for 2D problems. is it always 1D?)
 
 \subsection{Derivation of derivative}
+
+We want to derive the derivative of the value functional. Here we go.
 
 \begin{align*}
 V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \tag{value functional}\\
@@ -378,61 +351,43 @@ V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \tag{value functional}\\
 & = \frac{r}{(I-\gamma P \pi)^2} \tag{cancel}
 \end{align*}
 
-TODO. Annotate. Add numbers and explain.
-
-
-
 \section{Model search} \label{model-iteration}
 
 As noted in \ref{search-spaces-mdps}, we can search through policy space or value
-space when trying to solve a MDP. There is a third search space ...???
+space, each with their own structre.
+There is a third search space we could consider, the model parameters.
 
+However, this problem is not a control problem like the search for values or policies.
+This is an inference problem, for which we hope to apply control later on.
+This is also known as model based RL.
 
-
-Lastly, we can search through possible models, $P, r$. Models that fit the
-observations we make. That is policy $\pi_i$ has a value $V^{\pi_i}$.
-
-\begin{displayquote}
-  \textit{This model predicts that the ??? policy is of high value.
-  However, when I tried this policy, I ended up with ...?
-  My model must be wrong.}
-\end{displayquote}
-
-Here the parameters are composed to two independent parts, the transition function
-and the reward function.
+We could search through models using supervision from next step prediction.
+This is a common approach to model-based RL.
 
 \begin{align}
 \tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\tilde P, \tilde r} \parallel_\infty
 \end{align}
 
+This algorithm only focuses on relevant features of the state space.
+Lastly, we can search through possible models, $P, r$. Models that fit the
+observations we make. That is policy $\pi_i$ has a value $V^{\pi_i}$.
+
 While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
 solving a MDP is to find the optimal policy. ...!?!?
 
-\subsection{Relationship to model based RL}
-
-Most model-based learning approaches to RL ... next step prediction (refs!!!)
-This algorithm only focuses on relevant features of the state space.
-
-Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
-The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
-
-Sample efficient. You only need to collect data for the $m$ policies we are matching under.
-Once that has been done, the optimisation problem is easily solved!?
-
-Model iteration. Model invariant transforms. Pick a policy. Falsify it,
-and this falsify all models that yield the same optimal policy.
-
-\begin{figure}[!h]
+\begin{figure}
 \centering
 \includegraphics[width=0.35\textwidth,height=0.35\textheight]{../../pictures/figures/model_iteration.png}
 \caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
 and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
 \end{figure}
 
+Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
+The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
+{\color{red} TODO make picture ofthis example. and add to separate appendix?!}
 
-Related to AWR? https://arxiv.org/pdf/1910.00177.pdf
-
-
+But. Integrating over all policies. However, there is redundancy.
+Can be made more efficient if you only use $m$ random policies.
 
 \section{Visualising higher dimensional MDPs}\label{graph-vis}
 
@@ -463,7 +418,7 @@ Properties of the graphs / graph signals?
 Thus policy iteration is equivalent to finding the shortest path on a XX connected policy graph. }
 \end{figure}
 
-{\color{red} wanta better picture}
+{\color{red} want a better picture}
 
 \begin{figure}[!h]
 \centering
@@ -546,7 +501,7 @@ Aka how can we pick function classes (function approximators) that support the b
   A well connected space? For all possible policies, there exists
   \(\theta_1, \theta_2 \text{ s.t. } \parallel \theta_1- \theta_2\parallel_2\)
   is small. (but that doesnt necessarily help\ldots{} depends on the
-  landscapce imposed by \(\nabla_{\theta} V\))
+  landscape imposed by \(\nabla_{\theta} V\))
 \item
   ???
 \end{itemize}
@@ -617,7 +572,7 @@ Hopefully we are now prepared to consider how abstraction can be used to improve
 
 
 Recently there has been work investigating the properties of overparameterised search spaces.
-Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yeilds acceleration, however,
+Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yields acceleration, however,
 their explanation of the acceleration is not entirely convincing. Bc...
 
 How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)

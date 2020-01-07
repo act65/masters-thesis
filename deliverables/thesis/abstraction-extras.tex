@@ -17,8 +17,8 @@ Weaker notions of similarity.
 \begin{itemize}
 \tightlist
   \item Preserving the ordering of policies. Rather than their absolute value.
-  \item Perserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
-  \item Preserving the neighborhoods of policies and their values.
+  \item Preserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
+  \item Preserving the neighbourhoods of policies and their values.
   \item ?
 \end{itemize}
 
@@ -87,42 +87,6 @@ Therefore we have $|A|$ linear relationships, for each $s\in S$.
 \section{Symmetry}
 
 
-\hypertarget{mirror-symmetry}{%
-\paragraph{Mirror symmetry}\label{mirror-symmetry}}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
-\caption{???}
-\end{figure}
-
-\begin{align}
-\Delta_{\tau}(s, a) = \mathop{\mathbb E}_{s' \sim p(\cdot| s, a)} (s' - s) \\
-\Delta_{\tau}(s_1, a_1) = - \Delta_{\tau}(s_2, a_2) \\
-\end{align}
-
-(\emph{this assumes we have a `nice' state representation where
-differenes make sense})
-
-\begin{align}
-\Delta_{T}(s, a) = (T \circ Q)(s,a) - Q(s,a)\\
-\Delta_{T}(s_1, a_1) = \Delta_{T}(s_2, a_2) \\
-\end{align}
-
-The expected value is conserved between the pair (assuming we have a
-policy with mirror symmetry).
-
-\begin{align}
-\text{ set}\;\;\pi(a | s) = \pi(-a| -s) \\
-Q_\pi(s_1, a_1) = Q_\pi(s_2, a_2) \\
-Q_\pi(s_1, a_2) = Q_\pi(s_2, a_1) \\
-\end{align}
-
-The (discounted) reachable rewards are conserved between the pair. (!!!)
-
-\begin{align}
-\{r(s, a, s'): \forall s \in \mathcal R(s_1, a_1)\} = \{r(s, a, s'): \forall s \in \mathcal R(s_2, a_2)\}
-\end{align}
 
 
 \hypertarget{translational-symmetry}{%

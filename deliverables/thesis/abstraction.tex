@@ -18,10 +18,10 @@ A recipie is an abstraction. For example, pumpkin soup:
 \item Simmer for 30 minutes and then add cream (0.5 cups).
 \end{enumerate}
 
-This is an abstraction because it captures the essential details: from this recipie, you could make pumpkin soup.
+This is an abstraction because it captures the essential details: from this recipe, you could make pumpkin soup.
 While it ignores inessential details: the recipe doesn't tell you; where or what to cook in, where to get the
-ingredients, which species of pumkin to use, how to do the many actions needed to actually puree something, etc...
-It also doesn't mandate; the time of day to perform this recipie, what clothes to wear (if any),
+ingredients, which species of pumpkin to use, how to do the many actions needed to actually puree something, etc...
+It also doesn't mandate; the time of day to perform this recipe, what clothes to wear (if any),
 which music should be playing, ... etc.
 
 Note that the essential / inessential details will depend on what you want to do with the abstraction.
@@ -32,7 +32,7 @@ If we were bringing pumpkin soup to a friend, then the time of day would be impo
 There exists a mathematical formalism, a  \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism},
 that allows us to more precisely reason about this transformation from
 details to essence. Consider a ground space, $X$, (\textit{the reality of what
-needs to be done. all the details}), and an abstract space $Y$ (\textit{our recipie}).
+needs to be done. all the details}), and an abstract space $Y$ (\textit{our recipe}).
 We are looking for a transformation between $X$ and $Y$ to preserves only the essential
 structure in $X$. This can be written as $f: X\to Y$ such that;
 
@@ -44,7 +44,7 @@ f(x \diamond_G y) = f(x) \diamond_A f(y)
 
 Where the $\diamond$ is the preserved structure.
 Common examples are addition, multiplication.
-But we might want to preserve the topology of anoperation such as the Bellman operator.
+But we might want to preserve the topology of an operation such as the Bellman operator.
 {\color{red}need more explanation here. maybe introduce this later!?}
 
 In general, there are three steps to using abstraction to help solve a problem:
@@ -159,7 +159,7 @@ Rather than describing these inessential details, we can abstract away from them
 \paragraph{Action abstraction}
 
 groups together actions that are similar. For
-example, both action $i$ and action $j$ might yeild the same rewards and change in state,
+example, both action $i$ and action $j$ might yield the same rewards and change in state,
 in which case, we can just relabel them as the same action.
 
 \begin{figure}[h!]
@@ -194,18 +194,18 @@ we have $Q^{\pi}(s, a) = Q^{-\pi}(-_xs, -a), \forall \pi$.
 Where the negative operator $-_x$ only effects the horizontal ($x$) axis $s = (x, y), -_xs = (-x, y)$.
 And $-\pi := \pi(-a|-_xs)$.
 
-\footnotetext[11]{To contruct this representation, we set the state to be centered around the mirror plane.
+\footnotetext[11]{To construct this representation, we set the state to be centered around the mirror plane.
 So the blue player is at location $(-3, 9)$ and the green player is at location
 $(3, 9)$. And we equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).}
 
 State abstraction would not be able to group together the blue and green positions.
 As moving left from blue is not equivalent to moving left from green.
-This insight motivates our work on symetric abstractions \ref{symmstric-abstractions}.
+This insight motivates our work on symmetric abstractions \ref{symmstric-abstractions}.
 
 \paragraph{Temporal abstraction}
 
 We can group together goals / options that achieve 'similar' results.
-For example, the pumpkin recipie above: for the many ways there are to boil broth
+For example, the pumpkin recipe above: for the many ways there are to boil broth
 (in pot, in a jug, over a wood fire, in the oven, ...), group them together.
 For the many ways to puree some pumpkin (with a rolling pin and some vigor, with a blender, ...), group them together.
 
@@ -218,7 +218,7 @@ we can decompose a sequential decision problem into a set of shorter, easier to 
   \textit{Where do abstractions come from?}
 \end{displayquote}
 
-In the eariler sections we considered how an agent might use a given abstraction.
+In the earlier sections we considered how an agent might use a given abstraction.
 But where did that abstraction come from? Did someone construct it for the given task?
 Or can the abstraction be automatically discovered?
 
@@ -230,6 +230,16 @@ Or can the abstraction be automatically discovered?
 % Why is this hard? How hard is it? Existing work? What is the problem?
 % How can we find an abstraction? One that actually gives an advantage.
 % the cost!!!
+
+\begin{displayquote}
+	\textit{How might we know that two state-action-reward (/values) are similar?}
+\end{displayquote}
+
+There are two possibilities. Because we have seen it (data / evidence / experience).
+Because it follows a pattern we have inferred. For example, we might have seen
+that rotations of $45, 90, 135, 180$, are all similar, therefore our first guess
+is that rotations of $225, 270, 315$ are also similar. (priors / inductive bias / generalisation)
+{\color{red} TODO make this more readable / engaging}
 
 To build an abstraction, you need some notion of how two objects can be similar. (ref?!)
 % (need a ref for this?!)
@@ -243,12 +253,12 @@ For example, state abstraction: Li et al. \cite{Littman2006} give five classes o
 state abstraction in which they group states based on their ability to preserve various similarities;
 \textit{intuitively,
 $\phi_{\text{model}}$ preserves the one step model,
-$\phi_{Q_{\pi}}$ preserves the state-action value fuction for all policies,
+$\phi_{Q_{\pi}}$ preserves the state-action value function for all policies,
 $\phi_{Q^{* }}$ preserves the optimal state-action value,
 $\phi_a^{* }$ preserves the optimal action and its value,
 $\phi_{\pi^{* }}$ preserves the optimal action.}
 
-{\color{red}havent mentioned what these abstractions are being used for?!?}
+{\color{red}haven't mentioned what these abstractions are being used for?!?}
 i.e. constructing a new MDP with $\{\tilde S, A, \tilde P, \tilde r, \gamma\}$
 
 In general, there seem to be a few different dimensions to designing similarity measures for RL.
@@ -256,7 +266,7 @@ In general, there seem to be a few different dimensions to designing similarity 
 \begin{itemize}
   \tightlist
   \item What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them,
-  \item How will we characterise these obects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
+  \item How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
   \item Should these similarities hold for all policies or just a subset (such as just the optimal policy)? (OR?!?)
 \end{itemize}
 
@@ -310,14 +320,14 @@ $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.
 % With increaseing k, the topology of the abstraction is always coarser??
 
 \begin{displayquote}
-\textit{Why are coarse abstractions desireable?}
+\textit{Why are coarse abstractions desirable?}
 \end{displayquote}
 
 By throwing away inessential details;
 \begin{enumerate}
   \tightlist
   \item we have reduced the variance of our observations and thus allow quicker learning.
-  \item we have implicity included an inductive bias towards 'simple' MDPs. (generalisation!)
+%  \item we have implicitly included an inductive bias towards 'simple' MDPs. (generalisation!) No.
   \item we will not waste time exploring them.
   \item there is less to compute.
 \end{enumerate}
@@ -346,7 +356,7 @@ because they are all pretty-much-the-same -- lead to suboptimal results? Probabl
 More precisely, we want know to whether the optimal policy can be approximately represented within an abstracted MDP.
 
 % formal
-This notion of suboptimality can be formalised as the representation error of the optimal
+This notion of sub-optimality can be formalised as the representation error of the optimal
 policy. \cite{Abel2017} Given an abstraction, we want to know how well the abstraction can represent the optimal policy.
 
 \begin{align}
@@ -356,37 +366,65 @@ policy. \cite{Abel2017} Given an abstraction, we want to know how well the abstr
 Where $\pi^{* }$ is the optimal policy, and $\pi_{A}^{* }$ is the lifted optimal
 policy found using the abstraction.
 
-This notion can be genrealised to other types of abstraction, for example
+This notion can be generalised to other types of abstraction, for example
 Nachum et al. 2018 \cite{Nachum2018} extend this concept of near optimal
-represention of the optimal policy to goal-like temporal abstraction. \footnotemark[13]
+representation of the optimal policy to goal-like temporal abstraction. \footnotemark[13]
 
 \footnotetext[13]{To do this, Nachum et al. 2018 \cite{Nachum2018} quantify
 how many of the possible low level behaviours can be produced by different choices of goal.
-This is roughly a measure of the invertibility of the 'low level' policy from
+This is roughly a measure of the invertability of the 'low level' policy from
 state-goals to temporally extended actions.
 This allows them to reason about which behaviours are representable using goals,
 and thus whether a 'high level' policy choosing these goals can approximate the optimal policy.}
 
-\subsubsection{Efficiently solveable abstractions}
+\subsubsection{Efficiently solvable abstractions}
+
+Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find. 
+We might require large amounts of data or computation.
+
+
+\paragraph{Efficient exploration}
+% What is needed for efficient exploration. And when is 'it' preserved? !!!
+
+For $Q$-learning, Jin el at. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$\footnotemark[13]) can be 
+achieved with a UCB-Bernstein type exploration bonus, compared to the inefficient exploration ($\mathcal O(\sqrt{H^4SAT})$),
+achieved by the UCB-Hoeffding type exploration bonus. To achieve this, the UCB-Bernstein type exploration bonus needed to incorporate an 
+estimate the variance of the values, while the Hoeffding exploration bonus relied only on visitation counts.
+
+\footnotetext[13]{$\mathcal O(\sqrt{H^3SAT})$ tells us that the expected regret scales, in the worst case, as a function of $\sqrt{H^3SAT}$.
+Where $H$ is the planning horizon, S is the size of the state space, $A$ is the size of the action space and $T=KH$, where $K$ is the total number of episodes played.}
+
+This tells us that, if we want to preserve our ability to efficiently explore (in the above sense) we need to preserve the value for all policies.
+Because ....
+If the value under the abstraction of even a single state is wrong, it could arbitrarily change the variance estimates 
+(well, that isnt true...?!? depends on the value of the other states we might share with)
+
+Is this true in general, or specific to Q-learning with exploration bonuses? Future work.
+
+\paragraph{Efficient control}
 
 % this is about preserving the bellman eqn.
-% and whatever is needed for efficient exploration!?!?
-
-% we are missing tools an analyse the methods of discovery
-% methods of discovery = !?!?
-
-{\color{red}TODO...}
-Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find. We might require large amounts of data or computation.
-
 Fortunately, if we have preserved the state-action values, we have preserved the Bellman equation and can use it to guide the search. {\color{red}(ref / proof!!)}
 
-{\color{red}what about exploration}!?
-What gives efficient exploration. what needds to be preserved to ensure we keep this?
+\begin{align*}
+\Delta Q(s, a) &= \alpha \big(T(Q)(s, a) - Q(s, a) \big) \\
+T(Q)(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \tau(\cdot|s, a)} \mathop{\mathbb E}_{a'\sim \pi(\cdot|s)} Q(s', a') \tag{SARSA} \\
+T(Q)(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \tau(\cdot|s, a)} \mathop{\text{max}}_{a'} Q(s', a') \tag{Q-learning} 
+\end{align*}
 
-{\color{red}no good tools for this. (should be able to make a nice seguae into LMDPs from here!?)}
+We can see that if the optimal policy's state-action value, $Q^{* }(s, a)$, is preserved, then ...???
+
+\paragraph{Efficient inference}
+% What is needed for efficient inference (in RL). And when is 'it' preserved? !!!
+
+What are we inferring? Values, models, ???
+
+% Efficient inference and RL dont really go together...!?
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-  {\color{red}Are these properties necessecary and / or sufficient for good performance of an abstraction?}
+  {\color{red}Are these properties necessary and / or sufficient for good performance of an abstraction?}
+  % we are missing tools an analyse the methods of discovery
+  % methods of discovery = !?!?
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 So, now that we have a notion of better / worse abstractions. Let's consider the abstractions
@@ -453,8 +491,8 @@ Without biases, there is no hope in general. The no free lunch theorem.
 As often as we guess right about the "usefulness of a particular [abstraction] to future tasks",
 there will be another set of future tasks where we are wrong.
 
-An abstraction (say heirarchical) is not always the answer. There are problems in which
-heirarchies do worse than ???. ref.
+An abstraction (say hierarchical) is not always the answer. There are problems in which
+hierarchies do worse than ???. ref.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 

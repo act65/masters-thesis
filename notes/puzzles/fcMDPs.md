@@ -117,6 +117,7 @@ T_k^{-1}: \mathcal M \to \mathcal M \\
 $$
 
 Is this transform;
+
 - invertible?
 - homomorphic (under which ops?)
 - isomorphic

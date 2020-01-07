@@ -50,7 +50,7 @@ delayed rewards. For example we could make a RL problem that is;
 \end{displayquote}
 
 Markov decision problems (MDPs) seem like a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
-simple setting to anlyse RL.
+simple setting to analyse RL.
 
 Formally, a MDP, which is a type of sequential decision problem, is defined
 as a tuple, $\{\mathcal S, \mathcal A, P(s_{t+1} \mid s_t, a_t),R(s_t, a_t), \gamma, d_0\}$.
@@ -144,7 +144,7 @@ Before we start searching for the optimal policy, it would be nice to know some 
 
 {\color{red}how to intro / motivate bellman and TD??}
 
-An alternative, recusrive, definition of the expected return
+An alternative, recursive, definition of the expected return
 
 % DP!
 % The Bellman equation (ref) ...
@@ -192,7 +192,7 @@ P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \tag
 r &\in \mathbb R^{n\times m} \tag{the reward fn}
 \end{align}
 
-A result of this formulation is that we consisely write and solve the \eqref{eq:bellman-eqn}. \footnotemark[0]
+A result of this formulation is that we concisely write and solve the \eqref{eq:bellman-eqn}. \footnotemark[0]
 
 \footnotetext[0]{Note that the ability to solve the Bellman equation analytically does not allow
 us to solve for the optimal policy analytically.}
