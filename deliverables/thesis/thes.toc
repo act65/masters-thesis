@@ -86,14 +86,17 @@
 \contentsline {section}{\numberline {A.3}Policies in high dimensions}{78}{section.A.3}% 
 \contentsline {section}{\numberline {A.4}Other properties of the polytope}{79}{section.A.4}% 
 \contentsline {subsection}{\numberline {A.4.1}Distribution of policies}{79}{subsection.A.4.1}% 
-\contentsline {subsection}{\numberline {A.4.2}Discounting}{80}{subsection.A.4.2}% 
-\contentsline {subsection}{\numberline {A.4.3}Derivation of derivative}{80}{subsection.A.4.3}% 
-\contentsline {section}{\numberline {A.5}Model search}{81}{section.A.5}% 
-\contentsline {section}{\numberline {A.6}Visualising higher dimensional MDPs}{82}{section.A.6}% 
-\contentsline {section}{\numberline {A.7}Deep policy gradients}{83}{section.A.7}% 
-\contentsline {section}{\numberline {A.8}Topology and dynamics}{83}{section.A.8}% 
-\contentsline {subsection}{\numberline {A.8.1}Acceleration and parameterisation}{84}{subsection.A.8.1}% 
-\contentsline {section}{\numberline {A.9}Conclusion}{85}{section.A.9}% 
+\contentsline {subsection}{\numberline {A.4.2}Discounting}{81}{subsection.A.4.2}% 
+\contentsline {subsection}{\numberline {A.4.3}Derivation of derivative}{81}{subsection.A.4.3}% 
+\contentsline {section}{\numberline {A.5}Model search}{84}{section.A.5}% 
+\contentsline {subsection}{\numberline {A.5.1}Compressed sensing}{84}{subsection.A.5.1}% 
+\contentsline {subsection}{\numberline {A.5.2}Off policy value estimation}{86}{subsection.A.5.2}% 
+\contentsline {subsection}{\numberline {A.5.3}Failure of next step prediction supervision}{86}{subsection.A.5.3}% 
+\contentsline {section}{\numberline {A.6}Visualising higher dimensional MDPs}{87}{section.A.6}% 
+\contentsline {section}{\numberline {A.7}Deep policy gradients}{88}{section.A.7}% 
+\contentsline {section}{\numberline {A.8}Topology and dynamics}{89}{section.A.8}% 
+\contentsline {subsection}{\numberline {A.8.1}Acceleration and parameterisation}{90}{subsection.A.8.1}% 
+\contentsline {section}{\numberline {A.9}Conclusion}{91}{section.A.9}% 
 \contentsline {chapter}{\numberline {B}Abstraction}{95}{appendix.B}% 
 \contentsline {section}{\numberline {B.1}Similarity}{95}{section.B.1}% 
 \contentsline {subsection}{\numberline {B.1.1}Pairing abstractions with similarity measures}{95}{subsection.B.1.1}% 

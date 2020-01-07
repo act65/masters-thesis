@@ -276,7 +276,7 @@ uniform distribution over policies. Thus we have;
 p(V(\pi)) = |\det \frac{\partial V(\pi)}{\partial \pi}|^{-1} \cdot p(\pi) \tag{density}
 \end{align}
 
-\begin{figure}[!h]
+\begin{figure}
 \centering
 \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/polytope_densities.png}
 \caption{2-state 2-action MDPs. We have visualised the likelihood of
@@ -292,7 +292,7 @@ Consider the expected suboptimality of our MDP, which tells us how far away the
 optimal policy is from the 'center of value' of the polytope.
 
 \begin{align*}
-\mu(M) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[V_M^{\pi} \Big]\\
+\mu_M(s) &:= \mathop{\mathbb E}_{\pi\sim\Pi}\Big[V_M^{\pi}(s) \Big]\\
 \epsilon^{* }(M) &= \mathop{\text{max}}_s V_M^{\pi^{* }}(s) - \mu(M)(s)
 \end{align*}
 
@@ -302,8 +302,10 @@ This is because we can simply sample a random policy which is likely to be close
 
 \vspace{5mm}
 
-\textbf{Open problem:} If an MDP has sub-optimality,  $\epsilon^{* }(M)$,
+\textbf{Open problem}\footnotemark[15]: If an MDP has sub-optimality,  $\epsilon^{* }(M)$,
 then it is possible to find a $\epsilon$ optimal policy with $\{\}$ samples.
+
+\footnotetext[15]{Open problem* of dubious interest.}
 
 Where $\epsilon = \mathop{\text{max}}_s V^{\pi^{* }}(s) - V(s)$.
 
@@ -351,6 +353,7 @@ V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \tag{value functional}\\
 & = \frac{r}{(I-\gamma P \pi)^2} \tag{cancel}
 \end{align*}
 
+\newpage
 \section{Model search} \label{model-iteration}
 
 As noted in \ref{search-spaces-mdps}, we can search through policy space or value
@@ -358,37 +361,59 @@ space, each with their own structre.
 There is a third search space we could consider, the model parameters.
 
 However, this problem is not a control problem like the search for values or policies.
-This is an inference problem, for which we hope to apply control later on.
-This is also known as model based RL.
+This is an inference problem, we are trying to infer the model parameters.
+Once we know these parameters, we can apply control.
+In general, this is known as model-based RL.
 
 We could search through models using supervision from next step prediction.
-This is a common approach to model-based RL.
+This is a common approach to model-based RL. Rather, we consider using the value estimation error
+to guide the search for model parameters. {\color{red}refs!!}
 
 \begin{align}
-\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V^{\pi}_{P, r} -V^{\pi}_{\tilde P, \tilde r} \parallel_\infty
+\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V_{P, r}(\pi)-V_{\tilde P, \tilde r}(\pi) \parallel_\infty
 \end{align}
-
-This algorithm only focuses on relevant features of the state space.
-Lastly, we can search through possible models, $P, r$. Models that fit the
-observations we make. That is policy $\pi_i$ has a value $V^{\pi_i}$.
-
-While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
-solving a MDP is to find the optimal policy. ...!?!?
 
 \begin{figure}
 \centering
-\includegraphics[width=0.35\textwidth,height=0.35\textheight]{../../pictures/figures/model_iteration.png}
+\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
 \caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
 and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
 \end{figure}
+
+\begin{itemize}
+  \item We recieve $V_{P, r}(\pi)$ from the environment. But we want to minimise the number of these calls to the environment.
+  As it can be expensive to evaluate a policy with high accuracy.
+  \item For each $\tilde P_t, \tilde r_t$, we need to estimate the value of many policies, $V_{\tilde P_t, \tilde r_t}(\pi)$. Lots of compute...
+\end{itemize}
+
+Can reduce the required number of policies. So we dont need to sample or solve as many.
+Can estimate the value of some policies based on off policy???
+
+\subsection{Compressed sensing}
+
+But. Integrating over all policies. However, there is redundancy.
+Can be made more efficient if you only use $m$ random policies.
+
+\subsection{Off policy value estimation}
+
+?!?!
+
+\subsection{Failure of next step prediction supervision}
+
+Model iteration via value prediction error only focuses on 'relevant' parameters of the model.
+Relevant in the sense that they are useful for acting and achieving high return.
 
 Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
 The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
 {\color{red} TODO make picture ofthis example. and add to separate appendix?!}
 
-But. Integrating over all policies. However, there is redundancy.
-Can be made more efficient if you only use $m$ random policies.
 
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
+solving a MDP is to find the optimal policy. ...!?!?
+
+\newpage
 \section{Visualising higher dimensional MDPs}\label{graph-vis}
 
 So this value polytope works well for 2D. And could be extended to 3D. But, what about higher dimensions?
@@ -427,7 +452,7 @@ Thus policy iteration is equivalent to finding the shortest path on a XX connect
 close the current policy is to deterministic ones.}
 \end{figure}
 
-
+\newpage
 \section{Deep policy gradients}\label{ss-extras}
 
 Currently, the most successful RL solvers are a variant of policy gradient methods \cite{Mnih2016,Schulmanb}.
