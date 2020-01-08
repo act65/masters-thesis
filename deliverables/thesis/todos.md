@@ -8,6 +8,7 @@ TODOs
 * [ ] Abstraction Complexity. Summary
 * [ ] Construct family of abstractions
 * [ ] Sort out footnote ordering
+* [ ] Make sure i introduce the TD operator. esp notation $T(Q)$
 
 Done
 

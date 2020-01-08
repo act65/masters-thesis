@@ -12,8 +12,6 @@ But what do we mean by symmetry?
 
 % example
 
-% formal definition
-It is defined as ...
 
 % occam's razor
 Occam's razor is a core idea behind much of statistics, ML and science. Simple
@@ -46,22 +44,39 @@ to
 %  why do we care?
 For sample efficiency!! Inductive bias. Generalise in the right way without making observations.
 
-\subsection{Characterising symmetries for RL}
+\subsubsection{Definition}
 
-% What do we mean by symmetries?
-% How do they apply to RL?
-% Examples.
+?!?!
+The most useful starting point. Finite groups.
 
-Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
-What are the interesting invariants of MDPs? And how do they ???
+A group is a set, $G$, together with an operation $\circ$ (called the group law
+of $G$) that combines any two elements $a$ and $b$ to form another element.
+To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four requirements known as the group axioms:
 
 \begin{itemize}
 	\tightlist
-	\item We have n different 'symmetries'. But are they really different?
-	\item Which symmetries share some invariants?
-	\item Which invariants uniquely characterise this symmetry?
+	\item \textbf{Closure:} For all $a, b \in G$, the result of the operation $a \circ b$ is also in $G$.
+	\item \textbf{Associativity:} For all $a,b,c \in G$, $(a\circ b) \circ c = a\circ (b\circ c)$.
+	\item \textbf{Identity element:} There exists and element $e\in G$ such that, for every element $a\in G$, the equation $e\circ a = a\circ e = a$ holds.
+	\item \textbf{Inverse element:} For each $a \in G$, there exists an element $b \in G$, commonly denoted $a^{−1}$, such that $a \circ b = b \circ a = e$.
 \end{itemize}
 
+\subsection{Symmetries for RL}
+
+Which types of symmetry can exist in RL problems?
+% How hard is it to find these symmetries?
+% Are some harder than others?
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
+	\caption{Two mirror symmetric states of a cart pole.}
+\end{figure}
+
+% Need to show this is actually a symmetry, isomorphic to $S_2$?!?
+
+These two objects are symmetric about a mirror plane (Need to draw).
+Symmetric because there exists $f$ such that ...
 
 % Want symmetry for efficient exploration / sample efficiency. !!!!
 % Rather than picking actions; randomly, to minimise uncertainty, to ...?
@@ -71,57 +86,22 @@ What are the interesting invariants of MDPs? And how do they ???
 % If we are using something like neural counts. How does it generalise it density estimates!?
 % Want symmetries!!!
 
+\vspace{5mm}
 
-Which types of symmetry can exist in RL?
-How hard is it to find these symmetries?
-Are some harder than others?
+As pointed out in \ref{abstraction}, the notion of an abstraction is captured by a homomorphism.
+So, what would it look like if we had a MDP homomorphism?
 
-\subsubsection{Example: Mirror symmetry}
-
-These two objects are symmetric about a mirror plane (Need to draw).
-Symmetric because there exists $f$ such that ...
-But, what does this symmetry imply about other quantities of interest for RL?
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
-	\caption{Two mirror symmetric states of a cart pole.}
-\end{figure}
-
-\begin{align*}
- \mathop{\mathbb E}_{s' \sim P(\cdot| s_1, a)} (s' - s_1) = -  \mathop{\mathbb E}_{s' \sim P(\cdot| s_2, -a)} (s' - s_2) \tag{change in state}\\
-\forall \pi_1, \exists \pi_2: V^{\pi_1}(s_1) = V^{\pi_2}(s_2) \label{reachability}\tag{reachability}\\
-\end{align*}
-\footnotemark[14]
-
-The rewards (/ value) reachable from $s_1$ are also reachable from $s_2$ (which also implies the converse).
-\footnotetext[14]{Note, this assumes we have a 'nice' state representation where differences make sense}
-
-\begin{align}
-\Delta_{T}(s, a) = (T \circ Q)(s,a) - Q(s,a)\\
-\Delta_{T}(s_1, a_1) = \Delta_{T}(s_2, a_2) \\
-\end{align}
-
-The expected value is conserved between the pair (assuming we have a
-policy with mirror symmetry).
-
-\begin{align}
-\text{ set}\;\;\pi(a | s) = \pi(-a| -s) \\
-Q_\pi(s_1, a_1) = Q_\pi(s_2, a_2) \\
-Q_\pi(s_1, a_2) = Q_\pi(s_2, a_1) \\
-\end{align}
-
-\subsubsection{Existing formalism}
+What does it preserve?!?!
 
 \cite{Ravindran2002}
 
+$\mathcal H: \mathcal M\to \mathcal M$.
+
 \begin{align}
 P(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} P(s''| a, s) \\
-P(f(s')|f(s), g_s(a)) = \sum_{\tilde s'\in [s']_f} \sum_{\tilde a \in [a]_{g_s}} \sum_{\tilde s \in [s]_f} P(\tilde s'| \tilde a, \tilde s) \\
+r(f(s), g_s(a)) = r(s, a)
 \end{align}
 
-Need to sum over all possible paths from $[s]$ to $[s']$?
-Is it even possible for paths with different actions to exist?
 
 To be done.
 
@@ -149,64 +129,12 @@ Model minimisation. (are there any alternatives?)
 
 \subsubsection{Exploiting symmetry for efficient inference}
 
-\paragraph{Output coupling}
-
-Mahajan et al. propose to use knowledge similarity to share couple outputs.
-\cite{Mahajan2017}
-
-\begin{align*}
-\chi: (S\times A) \times (S\times A) \to [0, 1] \\
-\mathcal L(\theta) = \mathop{\mathbb E}_{\chi} \Big[(Q(s, a, \theta)-Q(s', a', \theta))^2 \Big]
-\end{align*}
-
-Coupling the outputs of similar state-actions. This is nice because, we might know
-that $s, a$ and $s', a'$ are similar. Yet we many not have observed $s', a'$.
-
-% Equivalent to sharing training data?!?
-
-However, how did we know that $s, a$ and $s', a'$ are similar without seeing $s', a'$?
-
-- Data sharing (aka duplicate tuples \cite{Ho2019a})
-
-\paragraph{Gradient coupling}
-
-\begin{align*}
-\nabla_{\theta} \ell(s, a, \theta) = \nabla_{\theta} \ell(s', a', \theta) \\
-\chi \cdot \nabla_{\theta} \mathcal L(\theta)
-\end{align*}
-
-If $\chi$ has the structure $\chi((s, a), (s', a')) = \langle \nabla_{\theta}f(s, a, \theta), \nabla_{\theta} f(s', a', \theta) \rangle$ then will couple gradient in a certain way. NTK.
-
-\cite{Ho2019a}
-
-\paragraph{Data augmentation}
-
-Sharing targets between 'similar' inputs.
-
-\paragraph{Architecture}
-
-Weight sharing?!? Weight coupling!?
-\cite{Ravanbakhsh2017a,Abdolhosseini}
-\cite{Anselmi2019}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-\begin{displayquote}
-\textit{Which method of incorporating knowledge of symmetries is best?}
-\end{displayquote}
-
-\begin{itemize}
-\tightlist
-  \item Data augmentation: flips.
-  \item Gradient coupling: ??? gets complicated?
-  \item Output coupling: regulariser on similar outputs.
-  \item Architecture: mirror weights.
-\end{itemize}
-
-Equivalent?! (in this case, or in general?)
-What other ways are there? Want to construct the space of possible ways to incorporate symmetries into a learner.
+\cite{Chen2019}
+\ref{symmetry-inference}
 
 \subsubsection{Exploiting symmetry for efficient exploration}
+
+\cite{Holtzen2019}
 
 Want to demonstrate this.
 {\color{red}TODO max ent + abstraction experiments}
@@ -272,6 +200,46 @@ A solution rejection sampling??
 % - Cart pole. $V^{\pi(s, a)}(s') = V^{\pi(-s, -a)}(-s') \forall s'$.
 
 
+\subsubsection{Invariants}
+
+Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
+What are the interesting invariants of MDPs? And how do they ???
+But, what does this symmetry imply about other quantities of interest for RL?
+
+Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
+
+In general we want to know;
+
+\begin{itemize}
+	\tightlist
+	\item We have $n$ different 'symmetries'. But are they really different?
+	\item Which symmetries share some invariants?
+	\item Which invariants uniquely characterise this symmetry?
+\end{itemize}
+
+With this knowledge, we could identify symmetries via their invariants!?!
+We can observe invariant properties. (not clear to me how you observe a symmetry!?)
+
+We briefly explore this in \ref{game-invariants}.
+
+
+\subsubsection{Inductive bias towards seeing symmetry}
+
+% WANT GENERALISATION!
+
+The problem is the cost of inferring symmetry
+
+Guess that things are symmetrc, despite observing they are not.
+
+\begin{align}
+P(\tau, r| \theta)
+\end{align}
+
+Clip to nearest symmetric abstraction.
+
+Have a prior belief that MDPs are sampled from $M \sim ???$.
+
+
 \subsection{Thompson sampling} \label{thompson-sampling}
 
 {\color{red}TODO need to introduce this framework}
@@ -315,6 +283,7 @@ Sample an abstraction then lift it to the original MDP?!
 
 Thompson sampling from estimates of similarity / symmetry.
 \begin{enumerate}
+	\tightlist
 	\item Keep estimate of similarity. $\chi(x_i, x_j)_{t+1} = \chi(x_i, x_j)_t + ?$
 	\item Construct distribution over likely abstractions $P(x_i = x_j) \propto e^{\chi(x_i, x_j)_t}$. $\mathcal F = P(f|\chi_t)$
 	\item Sample an abstraction. $f\sim \mathcal F$
@@ -324,3 +293,6 @@ Thompson sampling from estimates of similarity / symmetry.
 
 For now just assume we have an accurate estimate of the model.
 What does acting optimally wrt the reduced model mean for exploration and convergence??
+
+
+% How to reason about the tradeoff between symmetry and fitting the data!?.
