@@ -223,7 +223,7 @@ We can observe invariant properties. (not clear to me how you observe a symmetry
 We briefly explore this in \ref{game-invariants}.
 
 
-\subsubsection{Inductive bias towards seeing symmetry}
+\subsection{Inductive bias towards seeing symmetry}
 
 % WANT GENERALISATION!
 
@@ -239,8 +239,28 @@ Clip to nearest symmetric abstraction.
 
 Have a prior belief that MDPs are sampled from $M \sim ???$.
 
+\subsubsection{Langevin dynamics}
 
-\subsection{Thompson sampling} \label{thompson-sampling}
+\begin{align}
+\mathop{\text{argmin}}_{\theta} D(\bar \theta, \theta)
+\end{align}
+
+Where $\bar \theta$ is the nearest symmetric set of parameters.
+
+\begin{align}
+\theta = \theta_t - \eta \nabla_\theta \mathcal S(\theta) + w
+\end{align}
+
+Langevin dynamics. Where $w$ is sampled from some noise distribution.
+Therefore, we get a distribution over $\theta$.
+Only do a few iterations, so we sample $\theta$ that are near by!?!?
+The $\nabla_\theta \mathcal S(\theta)$ pulls us towards symmetric parameters.
+
+Need a differentiable measure of symmetry.!?
+If I actually find this, we can just use it as a regulariser..!?!?!?
+
+
+\subsubsection{Thompson sampling} \label{thompson-sampling}
 
 {\color{red}TODO need to introduce this framework}
 

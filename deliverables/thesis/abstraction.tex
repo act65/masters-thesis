@@ -29,9 +29,8 @@ which music should be playing.
 
 \vspace{5mm}
 
-There exists a mathematical formalism, a  \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism},
-that allows us to more precisely reason about this transformation from
-details to essence. Consider a ground space, $X$, (\textit{the reality of what
+We can make this notion more formal using, a  \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism}.
+Consider a ground space, $X$, (\textit{the reality of what
 needs to be done. all the details}), and an abstract space $Y$ (\textit{our recipe}).
 We are looking for a transformation between $X$ and $Y$ to preserves only the essential
 structure in $X$. This can be written as $f: X\to Y$ such that;
@@ -46,6 +45,8 @@ Where the $\circ$ is the preserved structure. \footnotemark[19]
 A common example of a structure we might want to preserve is the order $\le$.
 % In RL, we might want to preserve other operations such as the optimal policy or the Bellman operator.
 
+{\color{red}for example?!? want a better one.}
+
 \footnotetext[19]{Something that might not
 be clear is that you need to be able to define $\circ$ on both $X$ and $Y$.
 These definitions might be different from each other. For example on space might be continuious and the other discrete.}
@@ -59,16 +60,16 @@ In general, there are three steps to using abstraction to help solve a problem:
   \item Lift the solution back to the original domain  $g:Z \to X$
 \end{enumerate}
 
-{\color{red}for example?!?}
 
 \begin{displayquote}
  \textit{Why do we care?}
 \end{displayquote}
 
-The reasons we might care come back to wanting more efficient algorithms.
+We care because we want more efficient algorithms.
 By throwing away inessential details, there is less to compute.
-By throwing away unimportant factors, we have reduced the variance of our
-observations and thus allow quicker learning.
+By throwing away inessential details, we dont need to explore them.
+By throwing away inessential details, we reduce the variance of our
+observations (allow quicker learning).
 
 % History.
 %
@@ -100,48 +101,50 @@ and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computation
 \textit{Given an abstraction, how might a learner use it?}
 \end{displayquote}
 
-The abstracted $Q$-function and policy might be constructed on spaces $X, Y$,
+{\color{red}example. If I tell you that X and Y are the same, how can you use that to do Z?}
+
+The central functions in RL are the state-action value function, $Q$, and the policy, $\pi$.
+How can we build an abstraction into these?
+
+Let $X, Y$, refer to abstract spaces.  The we can generalise the notion of a state-action value function and policy to work on abstracted spaces.
 $Q_A: X \times Y \to \mathbb R$, $\pi_A: X \to \Delta(Y)$. We can now construct
 different classes of learners by giving them access to different types of abstraction.
 
-\begin{center}
-  \begin{tabular}{ c || c | c | c | c }
-    Abstraction & \textbf{X} & \textbf{Y} & \textbf{Value fn} & \textbf{Policy} \\ \hline \hline
-    State & $\phi: S \to X$ & $A$ & $Q(\phi(s), a)$ & $\pi(a| \phi(s))$ \\ \hline
-    Action & $S$ & $\psi: A \to Y$ & $Q(s, \psi(a))$ & $\pi(\psi^{-1}(y) | s)$\\ \hline
-    State and action \footnotemark[5] & $\phi: S \to X$ & $\psi: A \to Y$ & $Q(\phi(s), \psi(a))$ & $\pi(\psi^{-1}(y) | \phi(s))$ \\ \hline
-    State-action & \multicolumn{2}{c|}{$\varphi: S\times A \to X\times Y$} & $Q(\varphi(s, a))$ & $\mathop{\text{argmax}}_a Q(\varphi(s, a))$ \\ \hline
-    Temporal (goal like) & $S$ & $f: S \to Y$ & $Q(s, f(s))$ &   \\ \hline
-    Temporal (option like)\footnotemark[10] & $S$ & $g: \Omega \to Y$ & $Q(s, g(\omega))$ & $\pi(g^{-1}(y) | s)$ \\ \hline
-  \end{tabular}
-\end{center}
+\begin{changemargin}{-2cm}{-2cm}
+  \begin{center}
+    \begin{tabular}{ c || c | c | c | c }
+      Abstraction & \textbf{X} & \textbf{Y} & \textbf{Value fn} & \textbf{Policy} \\ \hline \hline
+      State & $\phi: S \to X$ & $A$ & $Q(\phi(s), a)$ & $\pi(a| \phi(s))$ \\ \hline
+      Action & $S$ & $\psi: A \to Y$ & $Q(s, \psi(a))$ & $\pi(\psi^{-1}(y) | s)$\\ \hline
+      State and action \footnotemark[5] & $\phi: S \to X$ & $\psi: A \to Y$ & $Q(\phi(s), \psi(a))$ & $\pi(\psi^{-1}(y) | \phi(s))$ \\ \hline
+      State-action & \multicolumn{2}{c|}{$\varphi: S\times A \to X\times Y$} & $Q(\varphi(s, a))$ & $\mathop{\text{argmax}}_a Q(\varphi(s, a))$ \\ \hline
+      Temporal (goal like) & $S$ & $f: S \to Y$ & $Q(s, f(s))$ &  $\pi(f(s)|s)$ \\ \hline
+      Temporal (option like)\footnotemark[10] & $S$ & $g: A^{\star} \to Y$ & $Q(s, g(\omega))$ & $\pi(g^{-1}(y) | s)$ \\ \hline
+    \end{tabular}
+  \end{center}
+\end{changemargin}
+
+{\color{red}Is the set of classes complete?}
 
 \footnotetext[5]{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
 then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
 
-\footnotetext[10]{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states. Recent work has shown that goal-conditioned RL can work when you pick a certain return as the goal. This allows cool stuff - ref - ref.}
-
-Where $\omega \in \Omega \subseteq A^k$.
-
-
+\footnotetext[10]{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states.}
 
 \begin{displayquote}
 \textit{Which class of abstraction should we use?}
 \end{displayquote}
 
-Possibly, the most interesting question is about the difference in performance between
-the \textit{State and action abstraction} and the \textit{State-action abstraction}.
-Or \textit{goal like} and \textit{option like} temporal abstractions.
+There exist some interesting question about the difference in performance between these abstractions.
+Such as the advantages \textit{State and action abstraction} versus \textit{State-action abstraction},
+or the advantages of \textit{goal-like} versus \textit{option-like} temporal abstraction.
 
 \subsubsection{Examples}
 
-\paragraph{State abstraction}
-
-groups together states that are similar. For example, a 20 NZD note.
-There are many different 20 NDZ notes that, for all actions, intents and purposes, are the same.
-Someone may have written a note on the note, the note may have fold marks through it,
-there might be different codes on the
-bottom left corner or right hand side, it might be an older version, ....
+\paragraph{State abstraction} groups together states that are similar. For example, a 20 NZD note.
+There are many different 20 NDZ notes that, for all intents and purposes (and actions), are the same.
+Someone may have written a note on the note, the note may have been folded,
+it might have different serial codes, it might be an older version, ....
 
 Rather than describing these inessential details, we can abstract away from them.
 
@@ -157,31 +160,29 @@ Rather than describing these inessential details, we can abstract away from them
 \caption{An artist's abstract rendering.}
 \end{figure}
 
-\paragraph{Action abstraction}
-
-groups together actions that are similar. For
+\paragraph{Action abstraction} groups together actions that are similar. For
 example, both action $i$ and action $j$ might yield the same rewards and change in state,
 in which case, we can just relabel them as the same action.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/hungry-caterpillar.png}
-\caption{Consider a hungry caterpillar. It wants to move towards the leaf. But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th leg slightly forward, etc...}
+\caption{Consider a hungry caterpillar. It wants to move towards the leaf.
+But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th leg slightly forward, etc...
+To specify an action it needs to pick from $8^{12}$ possible actions - 8 actions per leg, 12 legs.}
 \end{figure}
 
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/full-caterpillar.png}
-\caption{But, what if the caterpillar could specify actions in another way?
-Rather than specifying leg movements, it could pick a direction to move,
-which would specify the movement of multiple legs.}
+\caption{But, what if the caterpillar could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs. Note, we are not including any temporal abstraction here.}
 \end{figure}
 
-\paragraph{State-action abstraction}
+{\color{red}Problem. I think these need to be state dependent. Dependent on the current position of the legs! Not the best example!?!?}
 
-Groups together state-actions that achieve similar results. This class of abstraction
-should be more powerful than state and action abstraction. Consider a mirror symmetric maze.
+\paragraph{State-action abstraction} groups together state-actions that achieve similar results.
+This class of abstraction should be more powerful than state and action abstraction. Consider a mirror symmetric maze.
 
 \begin{figure}[h!]
 \centering
@@ -193,7 +194,10 @@ Consider two different, but 'similar' positions, shown in blue and green.}
 Given this setting, we can construct a representation of the state \footnotemark[11] where,
 we have $Q^{\pi}(s, a) = Q^{-\pi}(-_xs, -a), \forall \pi$.
 Where the negative operator $-_x$ only effects the horizontal ($x$) axis $s = (x, y), -_xs = (-x, y)$.
-And $-\pi := \pi(-a|-_xs)$.
+And $-\pi := \pi(-a|-_xs)$. \footnotemark[21]
+
+\footnotetext[21]{The tradeoff is that with state-actions, now we need to keep track of $(|S| \times|A|)\cdot (|S| \times|A| - 1)$
+similarities, rather than $|S|\cdot(|S|-1) + |A|\cdot(|A|-1)$ similarities.}
 
 \footnotetext[11]{To construct this representation, we set the state to be centered around the mirror plane.
 So the blue player is at location $(-3, 9)$ and the green player is at location
@@ -202,9 +206,7 @@ $(3, 9)$. And we equip the players with the actions $(+1, 0), (-1, 0), (0, -1), 
 State abstraction would not be able to group together the blue and green positions.
 As moving left from blue is not equivalent to moving left from green.
 
-\paragraph{Temporal abstraction}
-
-We can group together goals / options that achieve 'similar' results.
+\paragraph{Temporal abstraction} groups together goals / options that achieve 'similar' results.
 For example, the pumpkin recipe above: for the many ways there are to boil broth
 (in pot, in a jug, over a wood fire, in the oven, ...), group them together.
 For the many ways to puree some pumpkin (with a rolling pin and some vigor, with a blender, ...), group them together.
@@ -222,9 +224,8 @@ In the earlier sections we considered how an agent might use a given abstraction
 But where did that abstraction come from? Did someone construct it for the given task?
 Or can abstractions be discovered automatically?
 
-To build an abstraction, you need some notion of how two objects can be similar. (ref?!)
-% (need a ref for this?!)
-This allows you to group the 'similar' objects together, thus building an abstraction.
+To build an abstraction, you need some notion of how two objects can be similar. {\color{red}(ref?!}
+This allows you to group the 'similar' objects together, building an abstraction.
 In RL there are many possible notions of similarity. But which ones are sensible?
 And which ones allow us to efficiently finding the optimal policy?
 
@@ -234,7 +235,7 @@ For example, state abstraction: Li et al. \cite{Littman2006} give five classes o
 state abstraction in which they group states based on various similarities \footnotemark[20];
 \footnotetext[20]{Similarity and preservation are dual notions.
 Similarity tells us which objects we can group together,
-preservation tells us which objects we cannot group together.}
+'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.}
 
 \textit{intuitively,
 $\phi_{\text{model}}$ preserves the one step model,
@@ -252,7 +253,8 @@ In general, there seem to be a few different dimensions to designing similarity 
   \tightlist
   \item What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them,
   \item How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
-  \item Should these similarities hold for all policies or just a subset (such as just the optimal policy)? (OR?!?)
+  \item Should these similarities hold for all policies or a subset (such as the optimal policy)?
+  \item ??!?
 \end{itemize}
 
 \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
@@ -262,13 +264,33 @@ In general, there seem to be a few different dimensions to designing similarity 
 More formally. Let $X \in {S, A, R}^{* }$. $P \subset \Pi$
 
 \begin{align*}
-c(x) = \mathop{\mathbb E}_{\hat x \sim E(x, \pi)} [\gamma^t \hat x(t)] \\
-\chi(x, x'; \gamma) = \int_{\pi \in \mathcal P} D(c(x, \pi, \gamma), c(x, \pi, \gamma))
+c(\zeta) &= \sum_{t=0}^{\infty} \big( \prod_{j=1}^k\gamma_{t+j}\big)  f(\zeta_{t+k+1}) \\
+C_f(\pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_0)} [c(\zeta)] \\
+\\
+\chi(x, x') &= \int_{\pi \in \subset \Pi} D(c(x, \pi, \gamma), c(x, \pi, \gamma))
 \end{align*}
+
+Where $c: \zeta \to X$ is a generalisation of the return to work on representations of $S, A, R$ and to multi step estimates (??? is that what the $\prod$ does?).
+The expected cumulant, $C_f(\pi)$, is evaluated under a given policy.
 
 {\color{red}Work in progress...}
 
+The first part of this definition is closely related to (and inspired by) the general value function \ref{White2015}.
+
+Current formulation doesnt work if we want to compare trajectories, rather than expected cumulants...
+How powerful is the family of similarity measures that use expected cumulants versus the family that uses trajectories?!
+
+
 It would be nice to show that all abstractions of interest live in this happy family. (!!)
+
+Need to show that this family caputres abstrations of interest.
+
+\begin{itemize}
+  \tightlist
+  \item Transition abstraction. Set $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the discounted state visitation count (if we have encoded the states as onehots - so only works for finite state spaces...).
+  Two $x$s with the same expected discounted state visitation count for all policies must have the same transitions!?!??!?!
+  \item Optimal policy. Shit. $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the return. How do get the Q fn?!?!
+\end{itemize}
 
 \vspace{5mm}
 
