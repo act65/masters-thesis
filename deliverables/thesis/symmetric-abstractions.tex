@@ -225,21 +225,33 @@ We briefly explore this in \ref{game-invariants}.
 
 \subsection{Inductive bias towards seeing symmetry}
 
-% WANT GENERALISATION!
+Need to introduce RL as an inference problem. Which we can add priors to.
 
-The problem is the cost of inferring symmetry
+Then motivate these priors. WANT GENERALISATION! But aint gonna get it from the
+methods above.
 
-Guess that things are symmetrc, despite observing they are not.
+% The problem is the cost of inferring symmetry
 
-\begin{align}
-P(\tau, r| \theta)
-\end{align}
+% Would prefer to be able to sample easily constructible models. But this would require some sort choice of the family?
 
-Clip to nearest symmetric abstraction.
 
-Have a prior belief that MDPs are sampled from $M \sim ???$.
+We have a prior belief that symmetric $\tau, r$ should be more likely, this is captured by the distribution $P_S(\tau, r)$.
+MAP estimate of the data is $P(\tau_{\theta}, r_{\phi}| D) = \frac{P(D | \tau_{\theta}, r_{\phi})P_S(\tau_{\theta}, r_{\phi})}{P(D)}$.
+
+But, how can we construct $P_S(\tau_{\theta}, r_{\phi})$?
+Actually, we dont need to construct it, we only need samples!!?
+Then we can apply, grad descent, and the noise from the samples will average out!?
+
+
+Alternatively. The data generates a distribution over likely abstractions.
+$P(A|D) = \frac{P(D|A)P(A)}{P(D)}$??? Where the data here is the pairwise similarities?!?
+The key is $P(A)$. Which abstractions should we encourge? Coarser is better.
+Should be symmetric matrices. Should be full rank. What about identity, should also be likely?
+Identity is no symmetries.
 
 \subsubsection{Langevin dynamics}
+
+Clip to nearest symmetric abstraction.
 
 \begin{align}
 \mathop{\text{argmin}}_{\theta} D(\bar \theta, \theta)

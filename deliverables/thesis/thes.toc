@@ -59,7 +59,7 @@
 \contentsline {subsubsection}{Inferring symmetries from experience}{54}{section*.75}% 
 \contentsline {subsubsection}{Invariants}{55}{section*.76}% 
 \contentsline {subsection}{\numberline {3.3.4}Inductive bias towards seeing symmetry}{55}{subsection.3.3.4}% 
-\contentsline {subsubsection}{Langevin dynamics}{55}{section*.77}% 
+\contentsline {subsubsection}{Langevin dynamics}{56}{section*.77}% 
 \contentsline {subsubsection}{Thompson sampling}{56}{section*.78}% 
 \contentsline {chapter}{\numberline {4}Experiments}{59}{chapter.4}% 
 \contentsline {section}{\numberline {4.1}Interfaces}{59}{section.4.1}% 
