@@ -89,7 +89,7 @@ These abstractions are often built for two goals; efficient exploration
 (\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
 and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computational_complexity_theory}{computational complexity}).
 
-\subsection{Classes of abstraction for RL}
+\subsection{Exploiting abstractions}
 
 % \begin{displayquote}
 % \textit{But how might we contruct $Q^{\pi_{A}^* }$?}
@@ -101,7 +101,9 @@ and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computation
 \textit{Given an abstraction, how might a learner use it?}
 \end{displayquote}
 
-{\color{red}example. If I tell you that X and Y are the same, how can you use that to do Z?}
+{\color{red}example. If I tell you that X and Y are the same, how can you use that to do Z? need more intro here}
+
+\subsubsection{Classes of abstraction for RL}
 
 The central functions in RL are the state-action value function, $Q$, and the policy, $\pi$.
 How can we build an abstraction into these?
@@ -131,13 +133,6 @@ then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
 
 \footnotetext[10]{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states.}
 
-\begin{displayquote}
-\textit{Which class of abstraction should we use?}
-\end{displayquote}
-
-There exist some interesting question about the difference in performance between these abstractions.
-Such as the advantages \textit{State and action abstraction} versus \textit{State-action abstraction},
-or the advantages of \textit{goal-like} versus \textit{option-like} temporal abstraction.
 
 \subsubsection{Examples}
 
@@ -214,89 +209,130 @@ For the many ways to puree some pumpkin (with a rolling pin and some vigor, with
 The intuition behind both goal-like and option-like temporal abstractions is that
 we can decompose a sequential decision problem into a set of shorter, easier to solve, parts.
 
-\subsection{Discovery}
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{displayquote}
+\textit{But, which class of abstraction should we use? We need to be able to evaluate an abstraction.}
+\end{displayquote}
+
+\subsection{Discovering abstractions}
 
 \begin{displayquote}
   \textit{Where do abstractions come from?}
 \end{displayquote}
 
-In the earlier sections we considered how an agent might use a given abstraction.
-But where did that abstraction come from? Did someone construct it for the given task?
+Earlier, we considered how an agent might use a given abstraction.
+But where did that abstraction come from? Did someone construct it?
 Or can abstractions be discovered automatically?
 
-To build an abstraction, you need some notion of how two objects can be similar. {\color{red}(ref?!}
+To build an abstraction, you need a notion of how two objects might be similar. {\color{red}(ref?!)}
 This allows you to group the 'similar' objects together, building an abstraction.
 In RL there are many possible notions of similarity. But which ones are sensible?
-And which ones allow us to efficiently finding the optimal policy?
+Which ones allow us to efficiently finding the optimal policy?
 
 \vspace{5mm}
 
-For example, state abstraction: Li et al. \cite{Littman2006} give five classes of
+\subsubsection{Classes of similarity for RL}
+
+For example, Li et al. give five classes of
 state abstraction in which they group states based on various similarities \footnotemark[20];
-\footnotetext[20]{Similarity and preservation are dual notions.
-Similarity tells us which objects we can group together,
-'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.}
+\footnotetext[20]{Similarity and preservation are dual notions. Similarity tells us which objects we can group together,
+'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.
+For example, the \textit{"preservation of the one step model"} means: two states can be considered similar if they have the same one step model.}
 
 \textit{intuitively,
 $\phi_{\text{model}}$ preserves the one step model,
 $\phi_{Q_{\pi}}$ preserves the state-action value function for all policies,
 $\phi_{Q^{* }}$ preserves the optimal state-action value,
 $\phi_a^{* }$ preserves the optimal action and its value,
-$\phi_{\pi^{* }}$ preserves the optimal action.}
+$\phi_{\pi^{* }}$ preserves the optimal action.}\cite{Littman2006}
 
-{\color{red}haven't mentioned what these abstractions are being used for?!?}
+{\color{red}haven't mentioned what these abstractions are being used for?!? yes i have. in the earlier section... maybe reference to it}
 i.e. constructing a new MDP with $\{\tilde S, A, \tilde P, \tilde r, \gamma\}$
 
-In general, there seem to be a few different dimensions to designing similarity measures for RL.
+In general, there are few different dimensions to designing similarity measures for RL.
 
-\begin{itemize}
+\begin{enumerate}
   \tightlist
-  \item What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them,
-  \item How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
+  \item Representation: What objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them,
+  \item Characterisation: How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
+  \item Comparison: How to compare?! Which norm, which kernel space, ...?
   \item Should these similarities hold for all policies or a subset (such as the optimal policy)?
-  \item ??!?
-\end{itemize}
+\end{enumerate}
+% How does on/off policy come into this!?
+
+% This is an attempt to organise similarity measures for abstractions for RL.
 
 \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
 
-{\color{red}How does on/off policy come into this!? Is this family complete?!}
+{\color{red}Work in progress...}
+
+\paragraph{Representation}
+
+
+
+\paragraph{Characterisation}
+
+% Q(\sigma) + GVFs.
+RL is all about the future. Two objects in RL can often be described by what can
+be achieved from them. For example, the state value function. We characterise a state in terms of
+its likely future (discounted) rewards.
 
 More formally. Let $X \in {S, A, R}^{* }$. $P \subset \Pi$
 
 \begin{align*}
 c(\zeta) &= \sum_{t=0}^{\infty} \big( \prod_{j=1}^k\gamma_{t+j}\big)  f(\zeta_{t+k+1}) \\
-C_f(\pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_0)} [c(\zeta)] \\
-\\
-\chi(x, x') &= \int_{\pi \in \subset \Pi} D(c(x, \pi, \gamma), c(x, \pi, \gamma))
+C_f(\pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_0)} [c(\zeta)]
 \end{align*}
 
 Where $c: \zeta \to X$ is a generalisation of the return to work on representations of $S, A, R$ and to multi step estimates (??? is that what the $\prod$ does?).
 The expected cumulant, $C_f(\pi)$, is evaluated under a given policy.
-
-{\color{red}Work in progress...}
-
 The first part of this definition is closely related to (and inspired by) the general value function \ref{White2015}.
 
-Current formulation doesnt work if we want to compare trajectories, rather than expected cumulants...
-How powerful is the family of similarity measures that use expected cumulants versus the family that uses trajectories?!
+\paragraph{Comparison}
+
+% kernels?!? inner prod? ...
+
+\begin{align*}
+D(g(x), g(x))
+\end{align*}
+
+\paragraph{Policy preservation}
+
+The third dimension of similarity between two RL objects is about whether the
+property should be preserved for all, or just some policies. Subsets of interest, the optimal policy, deterministic policies, ???.
+
+\begin{align*}
+\chi(x, x') &= \int_{\pi \in B\subset \Pi} )
+\end{align*}
+
+Could relate to an inner product?! Are there other ways of calculating this?
 
 
-It would be nice to show that all abstractions of interest live in this happy family. (!!)
 
-Need to show that this family caputres abstrations of interest.
+\paragraph{Examples}
+
+% Need to show that this family caputres abstrations of interest.
+It would be nice to show that all abstractions of interest live in this happy family.
+Instead we will consider two abstractions; preservation of the n step model, and
+preservation of the optimal state-action value function.
+
 
 \begin{itemize}
   \tightlist
-  \item Transition abstraction. Set $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the discounted state visitation count (if we have encoded the states as onehots - so only works for finite state spaces...).
-  Two $x$s with the same expected discounted state visitation count for all policies must have the same transitions!?!??!?!
-  \item Optimal policy. Shit. $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the return. How do get the Q fn?!?!
+  \item Transition abstraction. Set $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the discounted state visitation count (if we have encoded the states as onehots - so only works for finite state spaces...). Two $x$s with the same expected discounted state visitation count for all policies must have the same transitions!?!??!?!
+  \item Optimal policy. $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the return. And set $\zeta_0 = {\zeta: \zeta_0^s = x^s, \zeta_0^a = x^a }$. So we are measureing the distance between the expected value of trajectories starting from $x = (s, a) and x' = (s', a')$. Aka the Q function?!?
 \end{itemize}
 
-\vspace{5mm}
+\subsubsection{Inference of the similarity}
 
 \begin{displayquote}
 	\textit{How might we infer that two objects are similar?}
 \end{displayquote}
+
+So we have our measure of similarity. But we need data.
+
+We want these masures of similarity to generalise. How? Priors.
 
 There are two possibilities: we can infer that two objects are similar because we have seen it,
 we have data / evidence / experience of the form $f(x_i) = f(x_j)$.
@@ -304,7 +340,9 @@ Alternatively, we can infer that two objects are similar because we have found a
 For example, we might have seen that rotations of $45, 90, 135, 180$, are all similar, therefore our first guess
 is that rotations of $225, 270, 315$ are also similar. (priors / inductive bias / generalisation)
 This insight motivates our work on symmetric abstractions \ref{symmstric-abstractions}.
-Which give the ability to generalise knowledge about a similarity to other similarities.
+Because of the structure in a symmetry, a similarity can imply others. Thus we can generalise.
+
+Abstraction can be framed as a supervised problem?
 
 
 \subsection{Evaluating abstractions}
@@ -312,6 +350,8 @@ Which give the ability to generalise knowledge about a similarity to other simil
 \begin{displayquote}
 \textit{But which type of abstraction should we pick?}
 \end{displayquote}
+
+!!We have families of similarity for building abstractions. But we need a way to analyse them and pick the best ones....
 
 Ideally we would pick the most coarse abstraction, as a coarse abstraction means we have grouped together many objects. (ref)
 Thus it has potential for the greatest increases in computational and sample efficiency.
@@ -403,9 +443,11 @@ and thus whether a 'high level' policy choosing these goals can approximate the 
 Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find.
 We might require large amounts of data or computation.
 
-
 \paragraph{Efficient exploration}
-% What is needed for efficient exploration. And when is 'it' preserved? !!!
+
+\begin{displayquote}
+\textit{What is needed for efficient exploration. And when is 'it' preserved?}
+\end{displayquote}
 
 For $Q$-learning, Jin el at. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$\footnotemark[13]) can be
 achieved with a UCB-Bernstein type exploration bonus, compared to the inefficient exploration ($\mathcal O(\sqrt{H^4SAT})$),
@@ -424,26 +466,48 @@ Is this true in general, or specific to Q-learning with exploration bonuses? Fut
 
 \paragraph{Efficient control}
 
-% this is about preserving the bellman eqn.
+\begin{displayquote}
+\textit{What is needed for efficient control. And when is 'it' preserved?}
+\end{displayquote}
+
 Fortunately, if we have preserved the state-action values, we have preserved the Bellman equation and can use it to guide the search. {\color{red}(ref / proof!!)}
 
 \begin{align*}
-\Delta Q(s, a) &= \alpha \big(T(Q)(s, a) - Q(s, a) \big) \\
-T(Q)(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \tau(\cdot|s, a)} \mathop{\mathbb E}_{a'\sim \pi(\cdot|s)} Q(s', a') \tag{SARSA} \\
-T(Q)(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \tau(\cdot|s, a)} \mathop{\text{max}}_{a'} Q(s', a') \tag{Q-learning}
+\delta &= \alpha \big(T(Q)(r, s', a') - Q(s, a) \big) \\
+T(Q)(r, s', a') &= r + \gamma Q(s', a') \tag{SARSA} \\
+T^{* }(Q)(r, s', a') &= r + \gamma \mathop{\text{max}}_{\tilde a} Q(s', \tilde a) \tag{Q-learning}
 \end{align*}
 
 We can see that if the optimal policy's state-action value, $Q^{* }(s, a)$, is preserved, then ...???
 
+{\color{red}This doesnt seem to be true... Still works for $\phi_{a^{* }}$ as well... Only preserving the value of the optimal action.}
+
+If we have preserved the value of the optimal action, the for all actions $\forall a: Q(s, a) \le Q(s, a^{* })$.
+We maybe have grouped together states that dont have similar transiions, value unver all policies, ...
+For example we might have: $s_i \sim s_j$ despite $Q(s_i, a_k) >> Q(s_j, a_k)$.
+But this doesnt matter as $Q(s, a^{* })$ must still be larger than $Q(s_i, a_k)$ (as grouped together states based on the value of the optimal action).
+
+
+So as long as the value of the optimal action as been preserved (in expectation) then we can use the Bellman operator?!?
+And effciently find controls?!
+{\color{red}(in eariler intro / mdp section. need to show that the bellman equation allows efficient search.)}
+
 \paragraph{Efficient inference}
-% What is needed for efficient inference (in RL). And when is 'it' preserved? !!!
 
-What are we inferring? Values, models, ???
+\begin{displayquote}
+\textit{What is needed for efficient inference. And when is 'it' preserved?}
+\end{displayquote}
 
-% Efficient inference and RL dont really go together...!?
+% What are we hoping to infer efficiently? In this case. The model parameters. Or the value of a state-action?
 
 \cite{Allen-Zhu2016a}
 % these refs actually show faster convergence not faster learning!?
+
+% Alternatively could frame as ERM for model params!?
+
+% \begin{align*}
+% \text{Regret()} = \mathbb E [\sum V^{\pi^{* }}() - V^{\pi}]
+% \end{align*}
 
 
 
@@ -469,18 +533,10 @@ Again, our next preference is $\phi_{Q^{* }}$ .
 But. $\phi_{Q^{* }}$ has not preserved the state-action values for all policies,
 therefore we cannot use on policy learning ({\color{red}TODO} see experiments / proof in ref).
 
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-% TODO
-% If two states have the same value under all possible policies, does this mean
-% they have the same rewards and transition probabilities?!?
-
-% $V(s) - V(s')$ as a similarity measure tells us very little. Because...? Many collsions?! But if over all policies then is ok!?
-% Why doesnt this simple baseline work. Try it out?! Explain.
-% On a simple MDP, on atari. How to implement? Need to learn $\chi(s, s')$.
-% It will learn whether two state are similar under many different policys. As we train it...
-% For every state in our replay buffer, is the return similar to other states?
-% Just sample a minibatch and compare those states.
-% Does this allow us to build more general abstractions?
+Ideally, we would be able to summarise the 'corseness', 'sub-optimality' and 'efficiency' all in a single number.
+Then we try to optimise it. A form of regret might be able to do this? (no, takes into account sample, or computational complexity?? not both.) Future work...
 
 \subsubsection{Complexity of finding an abstraction}
 
@@ -550,3 +606,19 @@ Representations that attempt to preserve
 \end{itemize}
 
 But with what guarantees?
+
+\subsection{Puzzles of interest?}
+
+{\color{red}move this somewhere else. and ref back to sources}
+There is a large amount of future work to be done if we want to understand abstractions for efficient RL.
+
+\begin{itemize}
+  \tightlist
+  \item the advantage of \textit{State and action abstraction} versus \textit{State-action abstraction},
+  \item the advantage of \textit{goal-like} versus \textit{option-like} temporal abstraction.
+  \item Are the three dimensions proposed above complete? Do they describe all abstractions of interest?
+  \item Are cumulants strictly superior to trajectory type similarity measures? (what about the trade off when you include their computational cost?)
+  \item What is the trade off of approximating $\int_{\pi \in \Pi}f(\pi)$ with $\int_{\pi \in B \subset \Pi}f(\pi)$?
+  How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
+  \item The topology of abstractions (partial ordering). Seems important!? Can use somehow?
+\end{itemize}

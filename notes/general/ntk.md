@@ -4,10 +4,7 @@ When using continuious function approximation of the value function, $V: S \time
 
 That is, by chaging a single parameter we change the value for multiple states.
 
-
-
 Refs
 
 - [Towards characterising divergence in deep q learning](https://arxiv.org/abs/1903.08894)
 - [A Fine-Grained Spectral Perspective on Neural Networks](https://arxiv.org/abs/1907.10599)
-- []()
