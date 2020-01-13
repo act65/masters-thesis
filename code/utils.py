@@ -26,3 +26,7 @@ class MDP():
     def step(self, a):
         self.current_state = sample(self.P[:, self.current_state, a])
         return self.current_state, self.r[self.current_state, a]
+
+
+def gaussian_dist(mu, stddev, x):
+    return np.exp(-0.5*np.dot((mu-x).T,np.dot(np.linalg.inv(stddev), mu-x))) / np.sqrt(((2*np.pi)**x.size) * np.linalg.det(stddev))

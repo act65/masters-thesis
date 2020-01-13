@@ -330,9 +330,9 @@ preservation of the optimal state-action value function.
 	\textit{How might we infer that two objects are similar?}
 \end{displayquote}
 
-So we have our measure of similarity. But we need data.
+% So we have our measure of similarity. But we need data.
 
-We want these masures of similarity to generalise. How? Priors.
+% We want these masures of similarity to generalise. How? Priors.
 
 There are two possibilities: we can infer that two objects are similar because we have seen it,
 we have data / evidence / experience of the form $f(x_i) = f(x_j)$.
@@ -342,7 +342,7 @@ is that rotations of $225, 270, 315$ are also similar. (priors / inductive bias 
 This insight motivates our work on symmetric abstractions \ref{symmstric-abstractions}.
 Because of the structure in a symmetry, a similarity can imply others. Thus we can generalise.
 
-Abstraction can be framed as a supervised problem?
+% Abstraction can be framed as a supervised problem?
 
 
 \subsection{Evaluating abstractions}
@@ -538,9 +538,10 @@ therefore we cannot use on policy learning ({\color{red}TODO} see experiments / 
 Ideally, we would be able to summarise the 'corseness', 'sub-optimality' and 'efficiency' all in a single number.
 Then we try to optimise it. A form of regret might be able to do this? (no, takes into account sample, or computational complexity?? not both.) Future work...
 
-\subsubsection{Complexity of finding an abstraction}
+\subsubsection{The complexity of abstraction}
 
-We hope to build learners capable of discovering an abstraction to help them efficiently solve the problems they are given.
+We hope to build learners capable of discovering an abstraction,
+then exploiting it to efficiently solve the problems they are given.
 But, the efficiency gains of using an abstraction \underline{must} offset the cost of
 discovering that abstraction! Else, why did we bother...?
 
@@ -549,8 +550,6 @@ discovering that abstraction! Else, why did we bother...?
 this results in a narrow opportunity for performance improvements, but a well-defined objective.
 In the ... transfer case, the key challenge is predicting the usefulness of a particular [abstraction] to future tasks, given limited data.}\cite{Konidaris2019}
 \end{displayquote}
-
-{\color{red}TODO}
 
 \paragraph{Single task case}
 
@@ -569,12 +568,11 @@ Thus ...
 
 \paragraph{Transfer case}
 
-Without biases, there is no hope in general. The no free lunch theorem.
-As often as we guess right about the "usefulness of a particular [abstraction] to future tasks",
-there will be another set of future tasks where we are wrong.
+For arbitrary problems, as often as we guess right about the "usefulness of a particular [abstraction] to future tasks",
+there will be another set of future tasks where we are wrong. This is a result of the
+no free lunch theorem. \ref{Wolpert1996}
 
-An abstraction (say hierarchical) is not always the answer. There are problems in which
-hierarchies do worse than ???. ref.
+???
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 

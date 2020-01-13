@@ -5,9 +5,9 @@ Reinforcement learning has an efficiency problem: AlphaGo \cite{Silver2016a}, th
 playing AI that beat world champion Lee Sedol, needed 1.28 million games, with
 extra supervision from another 29.4 million positions, using 50 GPUs.
 Libratus \cite{Brown2018b}, the poker playing AI that beat a table of professionals,
-evolved its poker-playing strategy by running for 15 million processor-core-hours.
+constructed its poker-playing strategy by running for 15 million processor-core-hours.
 OpenAI Five \cite{Berner2019}, the Dota 2 playing AI that beat OG, the winners of TI8/9, was
-trained over 10 months, at it peak, collecting 900 years of experience per day, using
+trained over 10 months, at it peak, collecting 900 years of experience per day using
 128,000 CPUs and 256 GPUs.
 
 Is RL fundamentally inefficient, or can we do better?
@@ -47,11 +47,11 @@ We explore the use of abstraction for efficient reinforcement learning.
 
 \begin{itemize}
   \tightlist
+  \item Clarify that a well cited method of abstraction doesn't work in general. \ref{lmdp-validation}
+  \item Evaluate a method of combining symmetric abstractions and Thompson sampling \ref{thompson-sampling}
+  \item Generalise the notion of MDP homomorphism to temporal abstractions \ref{temporal-abstraction}
+  \item Explore a new task for understanding a learners ability to generalise \ref{action-space-experiments}
   \item We explore the iteration complexity, effect of discounting, and the density of the Value functional polytope. \ref{polytope-extras}
   \item A way to visualise the dynamics of learning an MDP in higher dimensions \ref{graph-vis}. It's utility is unclear.
   \item Formulate a (new?) type of model based learner. \ref{model-iteration}
-  \item Clarify that a well cited method of abstraction doesn't work in general. \ref{lmdp-validation}
-  \item Evaluate a method of combining abstraction and Thompson sampling \ref{thompson-sampling}
-  \item Generalise the notion of MDP homomorphism to temporal abstracations \ref{temporal-abstraction}
-  \item Construct three new tasks for understanding a learners ability to generalise \ref{action-space-experiments}
 \end{itemize}

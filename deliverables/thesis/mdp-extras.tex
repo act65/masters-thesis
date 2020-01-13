@@ -23,9 +23,8 @@ Here are some examples of MDPs in the wild.
 \end{itemize}
 
 Note: The transition function could be diagonal, or not. If diagonal
-then buses are not able to effect the milage of other busses, possibly
-by taking another's shift. In this case, the problem is reduced to a
-contextual bandit problem (?).
+then buses are not able to effect the milage of other busses (a bus can effect the milage of another bus by taking its shift).
+In the diagonal case, the problem is reduced to a contextual bandit problem.
 
 \cite{Putterman2015}
 
@@ -35,12 +34,12 @@ contextual bandit problem (?).
 \begin{itemize}
 \tightlist
 \item
-  \textbf{States:} For each terminal, is last attempt a collision.
+  \textbf{States:} For each senser, was the last attempt to send a collision.
 \item
-  \textbf{Actions:} The probability of each terminal attempting to send
-  a new packet (if there has been a collision).
+  \textbf{Actions:} The probability of each sender attempting to send
+  a new packet.
 \item
-  \textbf{Transition fn:} Combines terminal packets into either a
+  \textbf{Transition fn:} Combines sender's packets into either a
   successful transmission, or a collision.
 \item
   \textbf{Reward fn:} If a packet is sent, great. If not, bad.
@@ -455,15 +454,18 @@ close the current policy is to deterministic ones.}
 \newpage
 \section{Deep policy gradients}\label{ss-extras}
 
-Currently, the most successful RL solvers are a variant of policy gradient methods \cite{Mnih2016,Schulmanb}.
-And are being combined with deep parameterised models. (refs)
-We would like to understand how parameterisation and policy gradients ...?
+Currently, the most successful deep RL solvers are a variants of policy gradient methods \cite{Mnih2016,Schulmanb}. (refs)
+Despite their efficacy in practice, we still don't have a good understanding of
+how policy gradient methods combine with deep learning.
+
+A key features of deep learning is over parameterisation. (amongst the other common features, heirarchical, non-linear, smooth, local, )
+There has been some recent work attempting to understand the effect of overparameterisation, and how it leads to generalisation. \cite{Arora2018}
+But, generalisation is ??? in RL.
 
 % In which spaces can we get the most information? (e.g. low variance gradients)
 % In which spaces to we have access to reliable guidance (e.g. large magnitude gradients)?
 % SNR
 
-Overparam. DL. \cite{Arora2018}
 
 Ok. So when $\phi$ are the parameters of a deep neural network, ...? The search space has certain (which) properties.
 Euclidean geometry.
@@ -471,13 +473,6 @@ Euclidean geometry.
 
 We can pick any space we we like to search with in. But, why would we want to pick one space over another?
 What properties are we looking for?
-
-\begin{figure}[!h]
-\centering
-\includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/mvi-iterations.png}
-\caption{Above you see: various MDPs where the value of each policy is colored
-by the number of iterations it took to converge to the optimum policy. Yellow is many iterations, purple is few iterations.}
-\end{figure}
 
 \begin{itemize}
 \tightlist
@@ -490,13 +485,11 @@ by the number of iterations it took to converge to the optimum policy. Yellow is
 \begin{itemize}
 \tightlist
 \item
-  What are the best ways to travel through policy space? (lines of
-  shortest distance?!)
+  What are the best ways to travel through policy space? (lines of shortest distance?!)
 \item
   How does this scale with \texttt{n\_actions} or \texttt{n\_states}??
 \item
-  Is there a way to use an interior search to give info about the
-  exterior? (dual methods?!)
+  Do some policies tell us more than others?
 \item
   What if your evaluations are only \(\epsilon\)-accurate? How does that
   effect things?!?
@@ -580,6 +573,20 @@ on what has happened in the past. Can we construct a space of possible
 trajectories? What properties do trajectories have? They are connected
 by the update fn.
 
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
+\caption{The iteration complexity of different initialisations and different learning rates.}
+\end{figure}
+
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/mvi-iterations.png}
+\caption{Above you see: various MDPs where the value of each policy is colored
+by the number of iterations it took to converge to the optimum policy. Yellow is many iterations, purple is few iterations.}
+\end{figure}
 
 \section{Conclusion}
 
