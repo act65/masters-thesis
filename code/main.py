@@ -8,6 +8,7 @@ Compare on distributions of MDPs sampled from uniform and symmetric priors.
 """
 
 import numpy as np
+import numpy.random as rnd
 
 env = MDP()
 
@@ -40,7 +41,7 @@ def rejection_sampler(sample_dist, target_dist, k):
     """
     while not accepted:
         x = sample_dist.sample()
-        if sample_dist(x)/target_dist(x) > k:
+        if rnd.random() <= target_dist(x)/(k*sample_dist(x)):
             break
     return x
 
