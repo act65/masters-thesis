@@ -1,5 +1,5 @@
 \newpage
-\section{Symmetric abstractions}\label{symmstric-abstractions}
+\section{Symmetric abstractions}\label{symmetric-abstractions}
 
 
 % Reasonably well understood how symmetric abstractions can improve computational complexity.
@@ -23,13 +23,6 @@ How does symmetry relate to simplicity?
 
 % how can symmetry help? more concretely
 But, why do we care about symmetry?
-\begin{displayquote}
-We want the ability to identify symmetries in state-actions-rewards (/values) and use that knowledge to share rewards (/values) between 'similar' state-actions.
-\end{displayquote}
-It gives us a way to find 'simple' hypotheses that fit the data.
-Imagine we knew that a learning problem was symmetry in some sense, for example ...
-How might we exploit this knowledge to learner more efficiently?
-Reduce variance, generalise in more 'intelligent' ways.
 
 % but. discovery
 But.
@@ -38,60 +31,64 @@ But.
 ???
 
 % related work on complexity / occam's razor
-This ability is currently lacking in the ML tool kit. There has been much work done
-to
+This ability is currently lacking in the ML tool kit. There has been much work done to
 
 %  why do we care?
 For sample efficiency!! Inductive bias. Generalise in the right way without making observations.
 
 \subsubsection{Definition}
 
-?!?!
-The most useful starting point. Finite groups.
+A useful starting point is finite groups.
 
-A group is a set, $G$, together with an operation $\circ$ (called the group law
-of $G$) that combines any two elements $a$ and $b$ to form another element.
+A group is a set, $G$ (\textit{say the set of rotations, $\{0, 90, 180, 270\}$}),
+and an operation $\circ$ that combines any two elements $a$ and $b$ to form
+another element (\textit{rot $90$ composed with rot $180$ is rot $270$, or} $a \circ b = a + b \;\text{mod} 360$).
 To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four requirements known as the group axioms:
 
 \begin{itemize}
 	\tightlist
-	\item \textbf{Closure:} For all $a, b \in G$, the result of the operation $a \circ b$ is also in $G$.
-	\item \textbf{Associativity:} For all $a,b,c \in G$, $(a\circ b) \circ c = a\circ (b\circ c)$.
-	\item \textbf{Identity element:} There exists and element $e\in G$ such that, for every element $a\in G$, the equation $e\circ a = a\circ e = a$ holds.
-	\item \textbf{Inverse element:} For each $a \in G$, there exists an element $b \in G$, commonly denoted $a^{−1}$, such that $a \circ b = b \circ a = e$.
+	\item \textbf{Closure:} For all $a, b \in G$, the result of the operation $a \circ b$ is also in $G$. (\textit{every combosition of two rotations, must also be a rotation})
+	\item \textbf{Associativity:} For all $a,b,c \in G$, $(a\circ b) \circ c = a\circ (b\circ c)$. (\textit{???})
+	\item \textbf{Identity element:} There exists and element $e\in G$ such that, for every element $a\in G$, the equation $e\circ a = a\circ e = a$ holds. (\textit{there must exist a rotation that doesn't rotate})
+	\item \textbf{Inverse element:} For each $a \in G$, there exists an element $b \in G$, commonly denoted $a^{−1}$, such that $a \circ b = b \circ a = e$. (\textit{we must be able to undo any rotation})
 \end{itemize}
+
+For example, we can imagine the \textit{action} of this rotation group $\big(0, 90, 180, 270, \circ \big)$ on a playing card. (bad example!?)
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/images/jacks.png}
+	\caption{Here we have applied the group of four rotations to a Jack of spades.
+	However, we see that there exists symmetry within the these rotations,
+	there are only two distinct rotations, vertical and horizontal. This is because }
+\end{figure}
+
+The action of a group on XXX.
 
 \subsection{Symmetries for RL}\label{mdp-homomorphism}
 
-Which types of symmetry can exist in RL problems?
+While there are many types of finite group, (cyclic, alternating, ...?) And then there are continuious symmetries, (Lie groups)
+Which types of symmetry are important for RL problems?
+
+Let's work through an example, the cart-pole control problem. Your goal is to balance a pole on a cart.
+You are allowed to move the cart left or right.
+
 % How hard is it to find these symmetries?
 % Are some harder than others?
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
-	\caption{Two mirror symmetric states of a cart pole.}
+	\caption{Two mirror symmetric states of a cart pole. But in what sense are they symmetric?}
 \end{figure}
 
 % Need to show this is actually a symmetry, isomorphic to $S_2$?!?
+In the case above, the mirrored cart pole is an instance of $S_2$.
+The action $f, g$ we apply to the MDP is isomorphism to the simple finite group, $S_2$
 
-These two objects are symmetric about a mirror plane (Need to draw).
-Symmetric because there exists $f$ such that ...
-
-% Want symmetry for efficient exploration / sample efficiency. !!!!
-% Rather than picking actions; randomly, to minimise uncertainty, to ...?
-% We want to pick actions to help us identify symmetries in the MDP.
-% How does this help us increase the sample efficiency?
-%
-% If we are using something like neural counts. How does it generalise it density estimates!?
-% Want symmetries!!!
-
-\vspace{5mm}
-
-As pointed out in \ref{abstraction}, the notion of an abstraction is captured by a homomorphism.
-So, what would it look like if we had a MDP homomorphism?
-
-What does it preserve?!?!
+Closely related to a homomorphism. See for a definition of a MDP homomorphism that captures symmetries.
+% As pointed out in \ref{abstraction}, the notion of an abstraction is captured by a homomorphism.
+% So, what would it look like if we had a MDP homomorphism?
 
 \cite{Ravindran2002}
 
@@ -102,16 +99,21 @@ P(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} P(s''| a, s) \\
 r(f(s), g_s(a)) = r(s, a)
 \end{align}
 
-
-To be done.
+This MDP homomorphism framework is a state-action abstraction, that uses a model based notion of similarity.
+However, as pointed out in eariler sections, there are many other possible
+notions of abstraction and similarity that make sense for RL. Specifically, the MDP homomorphism framework
+could be generalised in the following ways;
 
 \begin{itemize}
 \tightlist
   \item temporal symmetries
-  \item approximate symmetries (algorithm and complexity)
-  \item inference of symmetries under uncertainty (algorithm and complexity)
+  \item approximate symmetries
+  \item inference of symmetries under uncertainty
   \item complexity measure / inductive bias
 \end{itemize}
+
+
+
 
 \subsection{Exploitation}
 
@@ -119,25 +121,41 @@ To be done.
 \textit{Once have discovered a symmetry, how might we exploit that knowledge?}
 \end{displayquote}
 
+Similar to how we considered how to exploit an abstraction in section \ref{},
+let's review some existing methods for exploiting the knowledge of a symetry. \footnotemark[22]
+
+\footnotetext[22]{Note that, in all of these methods, symmetry provides
+advantage over considering just the pairwise similarities. We will return to this later.}
+
 \subsubsection{Exploiting symmetry for efficient control}
 
-% Simple and well demonstrated.
+If we have a MDP, $M_1$, then solving it via value iteration requires $\mathcal O(\epsilon |S|^2|A|)$ iterations.
+However, if we know that there exists symmetries in the state space, then we can 'minimise the model',
+by applying the MDP homomorphism $\mathcal H: \mathcal M\to \mathcal M$.
+This new, minimised, MDP, $M_2$ has a smaller state space, as $|S_{M_2}| = \frac{|S_{M_1}|}{k}$
+and essentially the same dynamics and rewards. Thus we can solve $M_2$, with cost $\mathcal O(\epsilon \frac{|S|^2|A|}{k^2})$
+and then lift the solution back to $M_1$. \cite{Dean1997, NARAYANAMURTHY}
 
-Model minimisation. (are there any alternatives?)
-
-...\cite{NARAYANAMURTHY}
 
 \subsubsection{Exploiting symmetry for efficient inference}
 
-\cite{Chen2019}
-\ref{symmetry-inference}
+There has been a large amount of work (that we are familiar with) exploring
+the exploitation of ... See  here for an overview \ref{symmetry-inference}.
+
+The general essence of the idea is \textit{"invariance reduces variance"}. \cite{Chen2019}
 
 \subsubsection{Exploiting symmetry for efficient exploration}
 
-\cite{Holtzen2019}
+Holtzen et al. \cite{Holtzen2019} show that by grouping together variables according to
+the knowledge of a symmetry, they show that \textit{orbit-jump MCMC mixes rapidly in the number of orbits}.
+In other words, symmetries allow the efficient estimation of distributions.
+% Want to demonstrate this.
+% {\color{red}TODO max ent + abstraction experiments}
 
-Want to demonstrate this.
-{\color{red}TODO max ent + abstraction experiments}
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+All of these methods rely on a similar type of argument. Picking a representative
+of a partition and only using that one. Averaging over orbits. ...
 
 \subsection{Discovery}
 
@@ -225,7 +243,26 @@ We briefly explore this in \ref{game-invariants}.
 
 \subsection{Inductive bias towards seeing symmetry}
 
+In the introduction to abstractions for RL we considered learning similarities
+to build an abstraction. But, learning pairwise similarities does not give
+you the ability to generalise. To generalise you need other priors. For example;
+CNNs generalise because they implicity encode priors for smoothness and explicitly for locality. (ref)
+
+Another potentially useful prior is symmetry: \textit{"We believe it is likely that
+the problems we are given have some symmetry within them."}
+
+The intuition is, this symmetry prior helps us generalise because, we can guess
+a symmetry that matches the observed pairwise similarities. This symmetry might
+require that other pairs to be similar (because of the closed natured of groups).
+Thus, we can generalise knowledge from some pairwise similarities to others
+pairwise similarities (assuming the prior is correct).
+
+\subsubsection{RL as inference}
+
 Need to introduce RL as an inference problem. Which we can add priors to.
+
+
+\subsubsection{Bayesian priors}
 
 Then motivate these priors. WANT GENERALISATION! But aint gonna get it from the
 methods above.
@@ -249,27 +286,33 @@ The key is $P(A)$. Which abstractions should we encourge? Coarser is better.
 Should be symmetric matrices. Should be full rank. What about identity, should also be likely?
 Identity is no symmetries.
 
-\subsubsection{Langevin dynamics}
+% \subsubsection{Langevin dynamics}
+%
+% Clip to nearest symmetric abstraction.
+%
+% \begin{align}
+% \mathop{\text{argmin}}_{\theta} D(\bar \theta, \theta)
+% \end{align}
+%
+% Where $\bar \theta$ is the nearest symmetric set of parameters.
+%
+% \begin{align}
+% \theta = \theta_t - \eta \nabla_\theta \mathcal S(\theta) + w
+% \end{align}
+%
+% Langevin dynamics. Where $w$ is sampled from some noise distribution.
+% Therefore, we get a distribution over $\theta$.
+% Only do a few iterations, so we sample $\theta$ that are near by!?!?
+% The $\nabla_\theta \mathcal S(\theta)$ pulls us towards symmetric parameters.
+%
+% Need a differentiable measure of symmetry.!?
+% If I actually find this, we can just use it as a regulariser..!?!?!?
 
-Clip to nearest symmetric abstraction.
 
-\begin{align}
-\mathop{\text{argmin}}_{\theta} D(\bar \theta, \theta)
-\end{align}
+\subsubsection{A measure of the symmetry of an MDP}
 
-Where $\bar \theta$ is the nearest symmetric set of parameters.
-
-\begin{align}
-\theta = \theta_t - \eta \nabla_\theta \mathcal S(\theta) + w
-\end{align}
-
-Langevin dynamics. Where $w$ is sampled from some noise distribution.
-Therefore, we get a distribution over $\theta$.
-Only do a few iterations, so we sample $\theta$ that are near by!?!?
-The $\nabla_\theta \mathcal S(\theta)$ pulls us towards symmetric parameters.
-
-Need a differentiable measure of symmetry.!?
-If I actually find this, we can just use it as a regulariser..!?!?!?
+The size of the automorphism group.
+Relax to measure how close we are to ...?
 
 
 \subsubsection{Thompson sampling} \label{thompson-sampling}

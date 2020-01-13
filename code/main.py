@@ -27,6 +27,24 @@ def reparam_sample(mu, var):
     e = rnd.standard_normal(var.shape)
     return mu + e * var
 
+def rejection_sampler(sample_dist, target_dist, k):
+    """
+    Want to sample from P(x, y) = P(x|y)P(y).
+    But we dont know how to sample from P(y).
+    Rather sample from P(x|y)U(y) and reject samples using P(y).
+
+    # p(x|y)U(y)/(p(x|y) . p(y)) -> 1/ p(y)
+
+    Args:
+        unnormalised_distribution (callable): our
+    """
+    while not accepted:
+        x = sample_dist.sample()
+        if sample_dist(x)/target_dist(x) > k:
+            break
+    return x
+
+
 def rejection_sample_include_prior(conditional_dist, unnormalised_prior, k):
     """
     Want to sample from P(x, y) = P(x|y)P(y).
@@ -103,10 +121,30 @@ def symmetry_measure(x):
     """
     THIS IS THE KEY!
     A soft measure of the symmetry in x.
+
+    Should;
+    - be invariant to the magnitude of the given x.
+    - increase with repeated rows
+
+    BAD. This has factorial complexity... Anything of shave over [10x10] will break.
+
     Args:
         x (np.ndarray): a n x n matrix.
     Returns:
-        float: the amount of symmetry in x. higher output means more symmetry
+        float: the amount of symmetry in x. higher output means more symmetry in [0, \infty]
+
+
+    Problem. Ordering is not maintained?
+    Might have some highly symmetric matrices scored lowly because
+    the have rows with very different norms.
+    While, other less symmetric matrices are scored highly bc
+    they have rows with similar norms.
+
+
+
+    Seems to work ok if given;
+    - matrix in elements in range [0, 1]
+    - symmetric matrices (x.T + x)/2 = x
     """
     # what is this fns computational cost. how can we efficiently approx?
 
@@ -115,10 +153,23 @@ def symmetry_measure(x):
     # if similar to all permutations, then max symmetry
     # if similar to only one (the identity) then min symmetry
 
-    permutations = np.stack([])
-    x_ps = np.einsum('ijl,lk->ijk', P, x)  # not sure this is what I want? we are permuting the rows.
-    err = np.mean(np.linalg.norm(x[None, :, :] - x_ps, axis=(1,2)))
-    return 1-sigmoid(err)
+    n = x.shape[0]
+    if n <= 10:
+        raise ValueError('n is too high. {} requires {} permutations'.format(n, np.prod(np.arange(n)+1)))
+
+    permutations = np.stack(np.eye(n)[list(itertools.permutations(range(n), n)), :])
+    permuted_xs = np.einsum('ijl,lk->ijk', permutations, x)  # apply the permutation
+    sims = np.einsum('ijk,jk->i', permuted_xs, x)  # frobenius norm
+    avg_sim = np.mean(sims/np.linalg.norm(x))
+    return avg_sim
+
+"""
+
+Future work to remove the factorial growth in computational complexity.
+
+- Pick permutations with some chance? Sample according to their 'complexity'.
+-
+"""
 
 class TS_Player():
     def __init__(self, n_states, n_actions):
