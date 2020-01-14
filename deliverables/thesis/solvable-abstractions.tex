@@ -1,9 +1,13 @@
 \newpage
-\section{Efficiently solvable abstrations}
+\section{Efficiently solvable abstractions}
 
 \begin{displayquote}
-  \textit{Abstraction for efficient optimisation.}
+  \textit{Abstractions for efficient control.}
 \end{displayquote}
+
+{\color{red}TODO}
+The control problem can be expensive, especially when there are long horizons, or high discount rates.
+For example, bound, bound. Can
 
 In optimisation for supervised learning we know that;
 linear models can be solved analytically,
@@ -19,7 +23,7 @@ within RL problems that we can use to find solutions more efficiently?
 % Yet, recent work \cite{} has shown that MDPs require at least $\Omega(|S|^2|A|).$
 
 While some interesting work has been done exploring convex RL \cite{ODonoghue2012a, Barratt2019},
-we chose to look into linear RL.
+we chose to consider linear RL.
 
 \subsection{Linear Markov decision problems (LMDPs)}
 
@@ -43,7 +47,7 @@ Linear systems are easy to solve. (ref). They have $\mathcal O(n^3)$ complexity.
 
 Imagine if your life were linear, in the sense of effort and achieving goals.
 More work in equals proportionally more rewards. This makes decision making
-a lot more simple. Pick the most rewarding ???, and work hard.
+a lot more simple. Pick the most rewarding activity, and work hard.
 
 Saxe el al. observe the power of linearity: \textit{"Consider two standard MDPs
 $M_1 = \{S, A, P, R_1\}$ and $M_2 = \{S, A, P, R_2\}$ which have
@@ -53,25 +57,18 @@ yield value functions $V_1$ and $V_2$. [If the problems were linear then] the va
 $M_{1+2} = \{S, A, P, R_1 +R_2\}$, whose instantaneous rewards are the sum of the
 first two, [would be] $V_{1+2} = V_1 + V_2$.} \cite{Saxea}
 
-% why do we care about multitask!?
-The ability to recycle knowledge from a task to a new task is !!!
-
-
-
-% are there other famous examples of linearising something to make it easy to solve?!?
-
 \subsubsection{What do we mean by a linear MDP?}
 
-Do we mean that the value function is a linear function of the policies,
-of the reward function, of the transition function? Others have tried to incorporate
+Do we mean that the value function is a linear function of a policy?
+Of the reward function? Of the transition function? Others have tried to incorporate
 linearity into MDPs in a few different ways.
 
 \begin{itemize}
   \tightlist
-  \item Todorov constructs a linearised MDP that is linear in the 'control' (a proxy for the policy). \cite{Todorov2006}
-  \item Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding. \cite{Wang}
-  \item Levine et al. contstruct a learner that assumes a linear transition function, allowing the use of \href{https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator}{LQR} solvers.\cite{Levine2019}
-  \item Pires et al. construct a factored linear MDP that allows the TD operator to be applied in a lower dimensional space. \cite{Pires2016}
+  \item Todorov constructs a linearised MDP that is linear in the 'control' (a proxy for the policy)\cite{Todorov2006}.
+  \item Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding\cite{Wang}.
+  \item Levine et al. construct a learner that assumes a linear transition function, allowing the use of \href{https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator}{LQR} solvers\cite{Levine2019}.
+  \item Pires et al. construct a factored linear MDP that allows the TD operator to be applied in a lower dimensional space\cite{Pires2016}.
 \end{itemize}
 
 Todorov's formulation appears to be the most powerful. By having a linear
@@ -83,10 +80,10 @@ are optimal. For the rest of this work we will refer to these as LMDPs.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/abstract-representations-solve.png}
-  \caption{'Solving the LMDP'}
+  \caption{Solving the LMDP}
 \end{figure}
 
-To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a few main {\color{red}tricks};
+To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} incorporate a few changes to the typical MDP setting;
 
 \begin{itemize}
 \tightlist
@@ -100,10 +97,10 @@ To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} uses a 
   $\mathop{\text{max}}_{\pi} \mathop{\mathbb E}_{\zeta \sim D(\pi)} e^{R(\zeta)}$ \cite{EricWarrenFox2016}
 \end{itemize}
 
-The intuition behind these tricks seems to be; we have allowed the learner to pick an arbitrary control.
+The intuition behind these changes seems to be; we have allowed the learner to pick an arbitrary control.
 This simplifies the optimisation problem. But, now the learner might pick a control that is not possible
 under the given transition function. So we incentivise controls that are close to the underlying dynamics.
-\textit{"It is reminicent of a linear programming relaxation in integer programming"} \cite{Todorov2009}.
+\textit{"It is reminiscent of a linear programming relaxation in integer programming"} \cite{Todorov2009}.
 
 % What is the relationship to other action embedding strategies? {\color{red}!!!!!}
 
@@ -111,9 +108,9 @@ under the given transition function. So we incentivise controls that are close t
 
 % formal definition
 Putting these tricks together, a linear markov decision process can be formulated as;
-LMDP = $\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space of possible controls (aka any transition function),
+LMDP = $\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space of possible controls (i.e. any transition function),
 $p: S \to S$ is the unconditioned dynamics, and $q \in \mathbb R^{|S|}$ is state rewards.
-Our goal is to find the control, $u: S \to S$, that gvies the highest exponentiated cumlative reward $z \in \mathbb R_+^{|S|}$.
+Our goal is to find the control, $u: S \to S$, that gives the highest exponentiated cumulative reward $z \in \mathbb R_+^{|S|}$.
 
 \begin{align}
 \log z_{u^{* }}(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \log z_{u^{* }}(s') \tag{1}\\
@@ -140,7 +137,7 @@ Rather than state-action rewards $r: S \times A \to \mathbb R$, we have state re
 How can state rewards direct behaviour? They can't, and they can. State rewards are not capable of giving rewards for actions taken.
 Rather, the action dependent part of the reward is captured by the KL divergence between the control and the unconstrained dynamics.
 So the unconstrained dynamics are responsible for rewarding actions.
-But, states with higher state reward will be perferable.
+But, states with higher state reward will be preferable.
 
 \subsubsection{The optimal policy}
 
@@ -152,7 +149,7 @@ u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s
 
 So the optimal control is the one that transitions to a new state with a
 probability proportional to the discounted exponentiated value of that state.
-That seems sensible, and is closely realted to a common way (refs...) of constructing a policy from $Q$ values.
+That seems sensible, and is closely related to a common way (refs...) of constructing a policy from $Q$ values.
 
 \begin{align*}
 \pi(\cdot|s) = \sigma(\tilde Q(s, \cdot))
@@ -185,7 +182,7 @@ Amount $QP$ expands and amount $/gamma$ contracts.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/abstract-representations-linear.png}
-\caption{''}
+\caption{Solving a MDP}
 \end{figure}
 
 \begin{displayquote}
@@ -220,7 +217,7 @@ z_{u_{\pi}}(s) = e^{v_{\pi}(s)} \tag{3} \\
 P(s'|s, a) \cdot \pi^{* }(a|s) = u^{* }(s'|s) \tag{4}
 \end{align*}
 
-Where $z_{u_{\pi}}$ is the value (as evaluted by the LMDP) of the control $u_{\pi}(s'|s) = P(s'|s, a) \cdot \pi(a|s)$.
+Where $z_{u_{\pi}}$ is the value (as evaluated by the LMDP) of the control $u_{\pi}(s'|s) = P(s'|s, a) \cdot \pi(a|s)$.
 
 Todorov hopes that (1), (2), will be sufficient to give (4). But he does not prove it.
 This is problem that we will return to.
@@ -244,7 +241,7 @@ The LMDP has disentangled the search for the optimal controls (solve the LMDP) (
 that state) and the search for the optimal policy (how to actually
 realise that control).
 
-This decomposition is reminicent of goal conditioned approaches to heirarchical RL.
+This decomposition is reminiscent of goal conditioned approaches to heirarchical RL.
 Where a higher level agent gives goals (go to this or that state) to a lower level
 agent, who must figure out how to achieve that goal. \cite{Vezhnevets2017} {\color{red}more refs?!?}
 
@@ -337,7 +334,7 @@ z_{t+1}(s_i) = (1- \eta)z_{t}(s_i) + \eta\tilde z(s_i) \tag{$Z$ iteration}\\
 \end{align*}
 
 They make this work by hand picking $q$ so that the optimisation will converge to the optimal value.
-Then they evaluate the accuacy of the value estimates.
+Then they evaluate the accuracy of the value estimates.
 They do not give a general way of constructing $q$ from a MDP.
 Nor do they give an efficient way to map an optimal control to an optimal policy.
 To understand the importance of these see the figures below.

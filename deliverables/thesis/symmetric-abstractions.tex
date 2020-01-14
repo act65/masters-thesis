@@ -47,7 +47,7 @@ To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four re
 
 \begin{itemize}
 	\tightlist
-	\item \textbf{Closure:} For all $a, b \in G$, the result of the operation $a \circ b$ is also in $G$. (\textit{every combosition of two rotations, must also be a rotation})
+	\item \textbf{Closure:} For all $a, b \in G$, the result of the operation $a \circ b$ is also in $G$. (\textit{every composition of two rotations, must also be a rotation})
 	\item \textbf{Associativity:} For all $a,b,c \in G$, $(a\circ b) \circ c = a\circ (b\circ c)$. (\textit{???})
 	\item \textbf{Identity element:} There exists and element $e\in G$ such that, for every element $a\in G$, the equation $e\circ a = a\circ e = a$ holds. (\textit{there must exist a rotation that doesn't rotate})
 	\item \textbf{Inverse element:} For each $a \in G$, there exists an element $b \in G$, commonly denoted $a^{−1}$, such that $a \circ b = b \circ a = e$. (\textit{we must be able to undo any rotation})
@@ -115,14 +115,14 @@ could be generalised in the following ways;
 
 
 
-\subsection{Exploitation}
+\subsection{Exploitation} \label{symmetric-exploitation}
 
 \begin{displayquote}
 \textit{Once have discovered a symmetry, how might we exploit that knowledge?}
 \end{displayquote}
 
 Similar to how we considered how to exploit an abstraction in section \ref{},
-let's review some existing methods for exploiting the knowledge of a symetry. \footnotemark[22]
+let's review some existing methods for exploiting the knowledge of a symmetry. \footnotemark[22]
 
 \footnotetext[22]{Note that, in all of these methods, symmetry provides
 advantage over considering just the pairwise similarities. We will return to this later.}
@@ -246,7 +246,7 @@ We briefly explore this in \ref{game-invariants}.
 In the introduction to abstractions for RL we considered learning similarities
 to build an abstraction. But, learning pairwise similarities does not give
 you the ability to generalise. To generalise you need other priors. For example;
-CNNs generalise because they implicity encode priors for smoothness and explicitly for locality. (ref)
+CNNs generalise because they implicitly encode priors for smoothness and explicitly for locality. (ref)
 
 Another potentially useful prior is symmetry: \textit{"We believe it is likely that
 the problems we are given have some symmetry within them."}
@@ -282,7 +282,7 @@ Then we can apply, grad descent, and the noise from the samples will average out
 
 Alternatively. The data generates a distribution over likely abstractions.
 $P(A|D) = \frac{P(D|A)P(A)}{P(D)}$??? Where the data here is the pairwise similarities?!?
-The key is $P(A)$. Which abstractions should we encourge? Coarser is better.
+The key is $P(A)$. Which abstractions should we encourage? Coarser is better.
 Should be symmetric matrices. Should be full rank. What about identity, should also be likely?
 Identity is no symmetries.
 

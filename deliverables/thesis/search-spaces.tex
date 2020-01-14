@@ -3,12 +3,12 @@
 \newpage
 
 Before going further with our quest for efficient RL. Let's try to understand
-some properties of our setting, MDPs.
+some properties of our setting, tabular MDPs.
 
 
 \section{The value function polytope}
 
-The Value Function Polytope \cite{Dadashi2018} provides some great intuition
+The Value Function Polytope \cite{Dadashi2018} provides intuition
 about the structure of a MDP and the dynamics and complexity of solvers.
 Let's take a look: consider a two state, two action MDP.
 
@@ -16,11 +16,11 @@ Let's take a look: consider a two state, two action MDP.
 \centering
 \includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/2-state-automata.png}
 \caption{The simplest possible MDP has two states and two actions. (Any simpler setting is entirely uninteresting. A single state means actions do nothing.
-And a single action means all policies are the same.).}
+A single action means all policies are the same.).}
 \end{figure}
 
 The space of possible policies is a 2D surface in a 4D space. For each state, we
-can pick $\text{action1}$ or $\text{action2}$, with some probability, $p$. For some intuition
+can pick \texttt{action1} or \texttt{action2}, with some probability, $p$. For some more intuition
 about this policy space see \ref{high-D-policies}.
 
 \begin{align}
@@ -38,24 +38,22 @@ p(a=a_1|s=s_2) & 1-p(a=a_1|s=s_2)\\
 
 Since the policies are a 2D space, we can visualise them. This square of all possible policies is not particularly interesting.
 
-Rather, we can evaluate (calculate the expected return) each each policy (using the \eqref{eq:value-functional}).
+Rather, we can evaluate (calculate the expected return) each policy (using the \eqref{eq:value-functional}).
 Since there are two states, the evaluation returns a 2D vector of values, one value for each state.
 Therefore, we can visualise the value of each policy.
 \begin{figure}[!hb]
 \centering
 \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/value-polytope.png}
-\caption{For every policy, we can plot a dot where that value of that policy lies in 'value space'.
+\caption{For every policy, we can plot a dot where that value of the policy lies in 'value space'.
 The red dots are deterministic policies.}
 \end{figure}
 
 Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope.
-Specifically they focused on its geometry and dynamics. In
-\ref{polytope-extras} you can find further exploration of other properties of
-the value polytope, such as; the density of policies and the effect of the discount rate.
+Specifically they focused on its geometry and dynamics.
 
 \subsubsection{Geometry of the polytope}
 
-Dadashi et al. remark, the polytope gives a clear illustration of the following classic results regarding MDPs \cite{Bertsekas1996}.
+Dadashi et al. remark; the polytope gives a clear illustration of the following classic results regarding MDPs \cite{Bertsekas1996}.
 
 \begin{enumerate}
 \tightlist
@@ -64,9 +62,11 @@ Dadashi et al. remark, the polytope gives a clear illustration of the following 
   \item (Continuity) The space V is connected.
 \end{enumerate}
 
-\textbf{1)} {\color{red} that isnt correct!?}
+Let's try to understand these.
 
-\textbf{2)} If $V(s_2)$ increases then $V(s_1)$ must either increase or stay the same.
+\paragraph{Dominance} {\color{red} that isnt correct!?}
+
+\paragraph{Monotonicity} If $V(s_2)$ increases then $V(s_1)$ must either increase or stay the same.
 This can be seen in the last equation below;
 
 \begin{align*}
@@ -75,11 +75,13 @@ V(s_1) &= \mathop{\mathbb E}_{a \sim\pi(\cdot|s_1)} r(s, a) + \gamma \mathop{\ma
 &= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_a P(s_1|s_1, a)\pi(a|s) V(s_1) + \gamma\sum_a P(s_2|s_1, a)\pi(a|s) V(s_2)
 \end{align*}
 
-If $\sum_a P(s_2|s_1, a)\pi(a|s) = 0$ then $V(s_1)$ stays the same, yielding a constant vertical line on the polytope.
-If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ then $V(s_1)$ increases with $V(s_2)$, yielding a positive orthant.
+If $\sum_a P(s_2|s_1, a)\pi(a|s) = 0$ (ie. $s_1$ and $s_2$ are not connected)
+then $V(s_1)$ stays the same, yielding a constant vertical line on the polytope.
+If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ (ie. there is some change of transitioning from $s_1$ to $s_2$)
+then $V(s_1)$ increases with $V(s_2)$, yielding a 'positive orthant'.
 $\sum_a P(s_2|s_1, a)\pi(a|s) < 0$ is not possible.
 
-\textbf{3)} The policy space is connected, and the value function is continuous.
+\paragraph{Continuity} The policy space is connected by definition, and the value function is continuous.
 Therefore the value space, the polytope, is connected. {\color{red}should give more details?!}
 
 % Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
@@ -104,8 +106,6 @@ natural policy gradients and the cross entropy method.
 Their results are intriguing. They show that different RL algorithms traverse the polytope in vastly different ways.
 Some are not even constrained to the polytope. This left me wondering;
 
-{\color{red}I feel like this needs more???}
-
 \begin{displayquote}
   \textit{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
@@ -118,23 +118,29 @@ search for this policy? We could search within;
 \begin{itemize}
 \tightlist
   \item the set of potentially optimal policies, the $|A|^{|S|}$ discrete policies,
-  \item the set of all possible policies $\pi \in \mathbb R^{|S| \times |A|}: \forall s \int_a \pi(a|s) = 1$
+  \item the set of all possible policies $\pi \in \mathbb R^{|S| \times |A|}: \int_a \pi(a|s) = 1 \forall s $
   \item the set of possible state-action value functions, $\mathbb R^{|S|\times|S|}$,
-  which we could then use to construct the optimal policy,
-  \item Or maybe some other space.
+  (which we could then use to construct the optimal policy),
+  \item Or maybe some other space?
 \end{itemize}
 
 \begin{displayquote}
   \textit{Which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?}
 \end{displayquote}
 
-Naively, we think smaller search spaces are better. We would rather
+Naively, we often think smaller search spaces are better. We would rather
 search for our keys in a few rooms, rather than many. But added
-structure (for example, an ordering) can be exploited to yield faster
+structure (for example, ordering) can be exploited to yield faster
 search, even when there are infinitely more states to search. For example,
 we might be able to order the rooms based on how recently we visited them.
 This should help us retrace our steps and find our keys, rather than arbitrarily
 picking rooms to search.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+In \ref{polytope-extras} you can find further exploration of other properties of
+the value polytope, such as; the density of policies, and the effect of the discount
+rate.
 
 \subsection{Policy search}
 
@@ -142,7 +148,7 @@ We can search through policies. In my opinion, this feels like the most 'natural
 As, after all, we are searching for the optimal \underline{policy}.
 
 Searching through the space of policies supports a couple of modes of travel:
-policy iteration and policy gradients
+policy iteration and policy gradients.
 
 \subsubsection{Policy iteration}
 
@@ -154,13 +160,15 @@ policy and then acting greedily. In our tabular setting, policy iteraction can b
 \begin{algorithmic}[1]
 
 \Procedure{PI}{$P, r, \gamma$}
-    \State $\pi_t \sim \mathcal U(\Pi)$
+    \State $t=0$
+    \State $\pi_t \sim \mathcal N$  \Comment{Initialise randomly}
     \While{not converged}
       \State $V_t = (I-\gamma P_{\pi_t})^{-1} r_{\pi_t}$ \Comment{Evaluate policy}
       \State $Q_t =  r + \gamma P\cdot_{s'} V_t$ \Comment{Bellman operator}
-      \State $\pi = \text{greedy}(Q_t) $ \Comment{Greedy update}
+      \State $\pi_t = \text{greedy}(Q_t) $ \Comment{Greedy update}
+      \State $t = t + 1$
     \EndWhile
-    \State \algorithmicreturn{ $\pi$}
+    \State \algorithmicreturn{ $\pi_t$}
 \EndProcedure
 
 \end{algorithmic}
@@ -170,10 +178,10 @@ The greedy operator picks the actions that give the highest state-action return,
 and sets their probability to be $1$.
 $\text{greedy}(Q) = \text{onehot}(\text{argmax}_a Q[s, a], |A|)$.
 
-This iteration converges because the state-action values capture counterfactuals.
-\textit{What would the return be if I took an action, $a$, not necessesarily chosen by
-the current policy, but then followed the current policy afterward. $Q^{\pi}(s, a)$}
-If there exists an action that achieves higher return than the current policies choice,
+This iteration converges because the state-action values capture counterfactuals, $Q^{\pi}(s, a)$.
+\textit{What would the return be if I took an action, $a$, not necessarily chosen by
+the current policy, then followed the current policy.}
+If there exists an action that achieves higher return than the current policies choice of action,
 then (because of the greedy step) PI will update the policy so it chooses that action.
 
 \footnotemark[7]
@@ -186,7 +194,8 @@ then (because of the greedy step) PI will update the policy so it chooses that a
 \centering
 \includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pi-polytope.png}
 \caption{PI jumps between the deterministic policies (the vertices of our polytope).
-This is because of the greedy step taken.}
+This is because of the greedy update step. Some trajectories require two steps
+because they jump to the lower right corner, and then to the top right.}
 \end{figure}
 
 \newpage
@@ -195,23 +204,21 @@ This is because of the greedy step taken.}
 
 This search is closely related to the deep learning / end-to-end paradigm.
 \textit{Simply write down what you want (the loss function),
-estimate its derivative and apply gradient descent.}
+estimate its derivative and apply gradient ascent.}
 
-In our case, the loss function is the value. And, we can estimate the derivative
-by differentiating the value functional \ref{eq:value-functional} with respect to the policy.
+In our case, the loss function is the state value function. And, we can estimate the derivative
+by differentiating the \ref{eq:value-functional} with respect to the policy.
 
-To ensure the optimisation problem is constrained properly, we pick $\theta$ as our parameters and
-construct the policy using $\pi = \sigma(\theta)$, where $\sigma$ is the softmax function.
-
-% However, has problems with sparse rewards / exploration (not considered in this setting).
-% (but dont they all have problems with sparse rewards!?)
+To ensure the optimisation problem is constrained properly (that the policy returns a distribution over actions),
+we pick $\theta$ as our parameters and construct the policy using $\pi = \sigma(\theta)$, where $\sigma$ is the softmax function.
 
 \begin{algorithm}
 \caption{Policy gradients}
 \begin{algorithmic}[1]
 
 \Procedure{PG}{$P, r, \gamma, \eta$}
-  \State $t=0, \quad\quad \theta_t = \log(\pi) \quad\quad \pi \sim \mathcal U(\Pi)$ \Comment{Init}
+  \State $t=0$
+  \State $\theta_t \sim \mathcal N$ \Comment{Initialise randomly}
   \While{not converged}
     \State $\theta_{t+1} = \pi_t + \eta \nabla_{\theta} V(\sigma(\theta_t))$ \Comment{Gradient update}
     \State t += 1
@@ -222,7 +229,7 @@ construct the policy using $\pi = \sigma(\theta)$, where $\sigma$ is the softmax
 \end{algorithmic}
 \end{algorithm}
 
-Note that to mitigate stability issues, we also added weak regularisation
+Note that to mitigate stability and convergence issues, it is common to add weak regularisation
 attempting to maximise the entropy of the policy. This forces the policies away
 from the edges of the polytope, where the gradients are not defined ($\log(0) = \text{NaN}$).
 
@@ -240,20 +247,15 @@ from the edges of the polytope, where the gradients are not defined ($\log(0) = 
 
 \subsection{Value search}
 
-Alternatively, we can search through possible values. But how can we ensure that our search will
+Alternatively, we can search through possible state values. But how can we ensure that our search will
 converge to a value that corresponds to a realisable policy? We can use Bellman's
 optimality operator to guide the search.
 
 (For similar reasons to why policy iteration converges) The greedy step using the
 state-action values will find actions with higher value.
 
-
-% (need to explain? why does stationarity mean optimality...?!)
-Intution about why it converges!? Contraction. Banach fixed-point theorem.
-
-% \begin{align}
-% T(V) &= \mathop{\text{max}}_a \big[r + \gamma PV\big] \\
-% \end{align}
+{\color{red}(need to explain? why does stationarity mean optimality...?!)}
+Intuition about why it converges!? Contraction. Banach fixed-point theorem.
 
 \begin{algorithm}
 \caption{Value iteration}
@@ -261,12 +263,12 @@ Intution about why it converges!? Contraction. Banach fixed-point theorem.
 
 \Procedure{VI}{$P, r, \gamma, \eta$}
   \State t = 0
-  \State $V_t = V(\pi) ; \;\; \pi \sim \mathcal U(\Pi)$ \Comment{Init}
+  \State $V_t = \mathcal N$ \Comment{Initialise randomly}
   \While{not converged}
-    % \State $V = r + \gamma PV_t$ \Comment{Evaluate}
     \State $Q = r + \gamma PV_t$ \Comment{Bellman operator}
-    \State $\hat V = \text{max}_a Q(s, a)$
-    \State $V_{t+1} = V_t + \eta (\hat V - V_t)$ \Comment{Average}
+    \State $\hat V = \text{max}_a Q(s, a)$  \Comment{Greedy}
+    \State $\hat V - V_t$ \Comment{Temporal difference}
+    \State $V_{t+1} = V_t + \eta \delta$ \Comment{Average}
     \State t += 1
   \EndWhile
   \State $\pi = \mathop{\text{argmax}}_{\pi} r_{\pi} + \gamma P_{\pi}V_t$
@@ -291,7 +293,7 @@ the optimal one.}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-So there are different classes of search space: each imbued with special
+Thus, there are different classes of search space: each imbued with special
 structure from the Bellman equation or expected return. Each with different types of search they
 support.
 
@@ -299,5 +301,5 @@ support.
 \textit{Which spaces support efficient search for the optimal policy? Can we characterise the properties of each space?}
 \end{displayquote}
 
-See appendix \ref{ss-extras} for an experimental exploration of the iteration complexity and dynamics of these different alforithms.
+See appendix \ref{ss-extras} for an experimental exploration of the iteration complexity and dynamics of these different algorithms.
 {\color{red}want to include in main section. but needs more work. not really sure what i am trying to say...}

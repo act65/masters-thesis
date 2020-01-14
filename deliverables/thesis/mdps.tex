@@ -37,7 +37,7 @@ delayed rewards. For example we could make a RL problem that is;
 \item
   Discrete versus continuous \cite{Bertsekas1995}
 \item
-  Given knowledge of the underlying model \cite{Sutton1991}
+  Given knowledge of the underlying model  or not\cite{Sutton1991}
 \end{itemize}
 
 \begin{displayquote}
@@ -49,16 +49,16 @@ delayed rewards. For example we could make a RL problem that is;
   consider that still poses an interesting challenge to the ML and / or RL communities?}
 \end{displayquote}
 
-Markov decision problems (MDPs) seem like a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
+Markov decision problems (MDPs) appear to be a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
 simple setting to analyse RL.
 
 Formally, a MDP, which is a type of sequential decision problem, is defined
 as a tuple, $\{\mathcal S, \mathcal A, P,r, \gamma, d_0\}$.
 Where $S$ is the set of possible states (\textit{for example arrangements of chess pieces}),
 $A$ is the set of actions (\textit{the different possible moves, left,
-right, diagonal, weird L-shaped thing, ...}),  $P: S \times A \to \Delta(S)$\footnotemark[16]
+right, diagonal, L-shaped step, ...}),  $P: S \times A \to \Delta(S)$\footnotemark[16]
 is the transition function which describes how the environment acts in response
-to the current state and to your actions (\textit{You play pawn to pawn to D4, in response your
+to the current state and to actions (\textit{You play pawn to pawn to D4, in response your
 opponent moves, knight to D4, taking your pawn.}). Next is the reward function, $r: S\times A \to \mathbb R$,
 (\textit{whether you won (+1) or lost (-1) the game }).
 Lastly, the policy, $\pi: S \to \Delta(A)$, is what the learner gets to choose, aka the learners strategy.
@@ -95,11 +95,11 @@ You can find examples of some simple MDPs in \ref{MDP-examples}.
 
 \section{Sequential decision problems}
 
-A general intuition for what is going on when solving a sequential decision problem is: actions (aka decisions) are made
-sequentially (\textit{eg. first we put on our socks then we put on our shoes}).
-These actions need to be conditioned on the current state of the world (\textit{eg. It is morning and time to go to work.}).
-The goal is to take actions that achieve higher rewards (\textit{eg. ???}). While instantaneous
-rewards are good, we really care about long term cumulative rewards (\textit{eg. ???}).
+A general intuition for the problem of solving a sequential decision problem is: actions (aka decisions) are made
+sequentially (\textit{e.g. first we put on our socks then we put on our shoes}).
+These actions need to be conditioned on the current state of the world (\textit{e.g. It is morning and time to go to work.}).
+The goal is to take actions that achieve higher rewards (\textit{e.g. Lying in bed is quite rewarding...}). While instantaneous
+rewards are good, we really care about long term cumulative rewards (\textit{e.g. Having a job and thus being able to afford a bed is more rewarding.}).
 
 % Maze with pendulums / doors. When moving through the maze, you must
 % swing the pendulums. In the future you must avoid being hit. (maybe make
@@ -121,7 +121,8 @@ This is not to say that past actions do not effect the future. Rather,
 it is a special type of dependence on the past. Where the dependence is
 totally described by changes to the state, $s\in S$.
 
-{\color{red}For example...}
+We can return to chess for an example: in chess there are no hidden pieces, or
+private knowledge about the current state. I know everything there is to know.
 
 % Can easily make a sequence Markovian by adding information. E.g. time
 
@@ -131,54 +132,48 @@ totally described by changes to the state, $s\in S$.
   \textit{What does it mean to solve a MDP?}
 \end{displayquote}
 
-A MDP is considered solved when we have found the 'optimal' policy. The 'optimal'
-policy is the policy that gives the highest expected return (value).
-More formally, the optimal policy, $\pi^{* }$ is defined as
+A MDP is considered solved when we have found the 'optimal' policy. As above,
+the 'optimal' policy is the policy that gives the highest expected return (value).
+This means that;
 
 \begin{align*}
 \pi^{*} : \;\; V^{\pi^* }(s) \ge V^{\pi}(s) \quad \forall \pi\in \Pi \;\;\forall s\in S\\
 \end{align*}
 
-Before we start searching for the optimal policy, it would be nice to know some of its properties.
+Which is implied by our earlier definition, but the optimal policy also has some other properties of note.\cite{Bertsekas1996}
 
 \begin{itemize}
 \tightlist
-  \item Does it always exist?
-  \item It is unique, or are there many optimal policies?
-  \item Does it necessarily have any specific properties?
+  \item it always exists,
+  \item it is deterministic, {}
+  \item it is unique, or are there many optimal policies?{\color{red}unsure about this}
 \end{itemize}
 
-{\color{red} And explanation, examples and refs}
+{\color{red}do I need to explain these?}
 
 \subsection{The Bellman Equations}
 
 {\color{red}how to intro / motivate bellman and TD??}
 
-The expected return can be rewritten to for the Bellman equation.
-
-An alternative, recursive, definition of the expected return
-
-% DP!
-% The Bellman equation (ref) ...
+The expected return (value) can also be rewritten in a recursive manner,
+which is known as the Bellman equation.
 
 \begin{align*}
-Q^{\pi}(s, a) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
-V^{\pi}(s) = \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
+Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
+V^{\pi}(s) &= \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
 \end{align*}
 
-
-\vspace{5mm}
-
-?????
+The formulation suggests a potential way to solve a MDP, through generalise policy iteration.
+Pick a policy randomly, estimate its value, apply the Bellman operator, to get state-action values.
+Construct a new policy by acting greedily with resepct to the state-action value. Repeat.
 
 \begin{align*}
-\text{Regret}(T) = \sum^T_{t=1} \bigg[ V^{* }(s_t) - V_{\pi_t}(s_t) \bigg] \\
-\pi^{* } = \mathop{\text{argmax}}_{\pi} \;\; \text{Regret}(T) ??!?\\
+\pi(a| s) &= \mathop{\text{argmax}}_a Q(s, a) \label{eq:greedy}\tag{greedy}\\
 \end{align*}
 
-[Provably Efficient Reinforcement Learning with Linear
-Function Approximation](https://arxiv.org/abs/1907.05388)
-
+% \begin{align}
+% T(V) &= \mathop{\text{max}}_a \big[r + \gamma PV\big] \\
+% \end{align}
 
 \subsection{Complexity}
 
@@ -199,7 +194,11 @@ r(s_2, a_2)  &+ \gamma \mathop{\text{max}}_{a_3} \mathop{\mathbb E}_{s_3\sim p(\
 \dots \Big] \bigg] \Bigg]
 \end{align*}
 
-{\color{red}TODO add some complexity bounds}
+% {\color{red}TODO add some complexity bounds}
+
+For the final maximisation problem we need to find the best action ($|A|$) for each potential final state we might be in ($|S|$).
+Then we need to do this again for each maximisation problem (of which there are $|S|$).
+So the computational complexity is $\mathcal O(|S|^2|A|)$.
 
 \section{A tabular representation of MDPs}
 
@@ -209,7 +208,10 @@ Imagine a MDP that can be described with tables (aka arrays). A table of
 three dimensions can describe the transition probabilities, $P[s_{t+1}, s_t, a_t]$,
 and a table of two dimensions can describe the rewards, $r[s_t, a_t]$: the
 states and actions act as indexes to locations in the tables.
-Let's formally define our tabular MDP.
+Let's formally define our tabular MDP. \footnotemark[23]
+
+\footnotetext[23]{It should be noted that this tabular MDP setting ignores an important
+aspect of RL: exploration, estimation error.}
 
 \begin{align}
 \mathcal M &= \{S, A, P, r, \gamma\}\; \tag{the MDP}\\
@@ -233,7 +235,7 @@ The values are written as a vector, $V \in \mathbb R^n$.
 The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.
 And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
 
-An alternative derivation of the value functional, which is more verbose and more enlightening, can be found in \ref{vf-neumann}
+An alternative derivation of the value functional, which is more verbose and more enlightening, can be found in \ref{vf-neumann}.
 
 \begin{displayquote}
 \textit{But why is the tabular MDP considered 'simple' enough?}
@@ -243,13 +245,8 @@ Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 
 This RL problem can be efficiently solved by non-statistical
 methods: dynamic programming and related planning techniques \cite{Bertsekas1995}.
 
-But, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
-seems to retain much of the complexity we care about. This setting does not allow
-efficient solutions via dynamic programming. And can be approached with algorithms
-that are used for state-of-the-art DRL such as;
-policy gradients\cite{Schulman2015a}, Q-learning \cite{Mnih2015}, ??? (more!?)
-
-{\color{red}!!!}
-Finally, it should be noted that this tabular MDP setting ignores a crucial
-aspects of RL: exploration, estimation error, . It is hoped that we can study
-optimisation dynamics,  abstraction,
+Rather, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
+seems to retain much of the complexity we care about: this setting does not allow
+efficient solutions via dynamic programming. And it can be approached with algorithms
+that are used for state-of-the-art deep RL such as;
+policy gradients \cite{Schulman2015a} and Q-learning \cite{Mnih2015}.

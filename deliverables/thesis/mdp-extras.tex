@@ -23,7 +23,7 @@ Here are some examples of MDPs in the wild.
 \end{itemize}
 
 Note: The transition function could be diagonal, or not. If diagonal
-then buses are not able to effect the milage of other busses (a bus can effect the milage of another bus by taking its shift).
+then buses are not able to effect the mileage of other buses (a bus can effect the mileage of another bus by taking its shift).
 In the diagonal case, the problem is reduced to a contextual bandit problem.
 
 \cite{Putterman2015}
@@ -34,7 +34,7 @@ In the diagonal case, the problem is reduced to a contextual bandit problem.
 \begin{itemize}
 \tightlist
 \item
-  \textbf{States:} For each senser, was the last attempt to send a collision.
+  \textbf{States:} For each sender, was the last attempt to send a collision.
 \item
   \textbf{Actions:} The probability of each sender attempting to send
   a new packet.
@@ -152,7 +152,7 @@ make it possible to intelligently guess which tests should be performed.
 \item
   \textbf{States:} The size of the salmon population.
 \item
-  \textbf{Actions:} The size of the salamon population to be left to
+  \textbf{Actions:} The size of the salmon population to be left to
   spawn.
 \item
   \textbf{Transition fn:} Given the number left to spawn, it returns the
@@ -161,9 +161,9 @@ make it possible to intelligently guess which tests should be performed.
   \textbf{Reward fn:} The size of salmon population harvested.
 \end{itemize}
 
-YOu might call this MDP a one dimensional MDP, as there is only a single
+You might call this MDP a one dimensional MDP, as there is only a single
 dimension that is acted up, is transitioned, is rewarded\ldots{} More
-salamon
+salmon
 
 \href{http://www.it.uu.se/edu/course/homepage/aism/st11/MDPApplications1.pdf}{Real
 applications of MDPs}
@@ -181,7 +181,7 @@ applications of MDPs}
 \item
   \textbf{Transition fn:} Given the number of fire engines fighting the
   fire, and the fires type / magnitude, the building may be destroyed or
-  saved. Fire may start at anytime, in a random location throughout the
+  saved. Fire may start at any time, in a random location throughout the
   city.
 \item
   \textbf{Reward fn:} Damage incurred by the fires.
@@ -214,7 +214,7 @@ More Refs
 
 \section{Tabular MDPs}\label{vf-neumann}
 
-It is possible to derive the value functional in another, possibly more enligtening way. But it takes a little more work. It requires a result from real analysis, the Neumann series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
+It is possible to derive the value functional in another, possibly more enlightening way. But it takes a little more work. It requires a result from real analysis, the Neumann series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
 
 \begin{align*}
 r &\in (-1, 1) \\
@@ -356,7 +356,7 @@ V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \tag{value functional}\\
 \section{Model search} \label{model-iteration}
 
 As noted in \ref{search-spaces-mdps}, we can search through policy space or value
-space, each with their own structre.
+space, each with their own structure.
 There is a third search space we could consider, the model parameters.
 
 However, this problem is not a control problem like the search for values or policies.
@@ -404,7 +404,7 @@ Relevant in the sense that they are useful for acting and achieving high return.
 
 Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
 The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
-{\color{red} TODO make picture ofthis example. and add to separate appendix?!}
+{\color{red} TODO make picture of this example. and add to separate appendix?!}
 
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
@@ -454,25 +454,7 @@ close the current policy is to deterministic ones.}
 \newpage
 \section{Deep policy gradients}\label{ss-extras}
 
-Currently, the most successful deep RL solvers are a variants of policy gradient methods \cite{Mnih2016,Schulmanb}. (refs)
-Despite their efficacy in practice, we still don't have a good understanding of
-how policy gradient methods combine with deep learning.
-
-A key features of deep learning is over parameterisation. (amongst the other common features, heirarchical, non-linear, smooth, local, )
-There has been some recent work attempting to understand the effect of overparameterisation, and how it leads to generalisation. \cite{Arora2018}
-But, generalisation is ??? in RL.
-
-% In which spaces can we get the most information? (e.g. low variance gradients)
-% In which spaces to we have access to reliable guidance (e.g. large magnitude gradients)?
-% SNR
-
-
-Ok. So when $\phi$ are the parameters of a deep neural network, ...? The search space has certain (which) properties.
-Euclidean geometry.
-(parameter dimensions are independent! no funny business)
-
-We can pick any space we we like to search with in. But, why would we want to pick one space over another?
-What properties are we looking for?
+From the search spaces section, we are left wondering;
 
 \begin{itemize}
 \tightlist
@@ -481,54 +463,66 @@ What properties are we looking for?
 \item In which spaces does momentum work (well)?
 \end{itemize}
 
+Currently, the most successful deep RL approaches are variants of policy gradient methods \cite{Mnih2016,Schulmanb}.
+Despite their efficacy in practice, we still don't have a good understanding of
+how policy gradient methods combine with deep learning methods to give performant agents.
 
-\begin{itemize}
-\tightlist
-\item
-  What are the best ways to travel through policy space? (lines of shortest distance?!)
-\item
-  How does this scale with \texttt{n\_actions} or \texttt{n\_states}??
-\item
-  Do some policies tell us more than others?
-\item
-  What if your evaluations are only \(\epsilon\)-accurate? How does that
-  effect things?!?
-\item
-  how can we pick the topology for better dynamics!?
-\end{itemize}
+A key feature of deep learning is over parameterisation (among the other features;
+hierarchies, non-linearity, smoothness, locality). There has been some recent work
+attempting to understand the effect of overparameterisation \cite{Arora2018}.
 
-\section{Topology and dynamics}
+Here we explore the effect of overparameterising the policy and then using
+policy gradient methods to find the optimally policy.
 
-\cite{Tsitsiklis2000} linear value iteration converges. When linear means ... . But we consider linear value function of the form ...
-Which diverge.
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
+\caption{The iteration complexity of different initialisations and different learning rates.}
+\end{figure}
 
-\cite{Brandfonbrener2019} consider the same setting, with an additional simplification. In the cts limit. No step sizes / learning rate.
-Obviously this simplification is not realistic. As in our experiments we see divergence with a overparameterised linear model.
+% \begin{figure}[!h]
+% \centering
+% \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/mvi-iterations.png}
+% \caption{Above you see: various MDPs where the value of each policy is colored
+% by the number of iterations it took to converge to the optimum policy. Yellow is many iterations, purple is few iterations.}
+% \end{figure}
 
-What kinds of query and movement does our search space support?
 
-If we parameterise our search space. We my have changed the topology of our search space.
-Is it possible to arbitrarily change the topology? (probably?!?)
+{\color{red}TODO. need to include some plots of vanilla PG}
 
-\textbf{Q:} How can we rationally pick the topology of our search space
-to accelerate learning?
-Aka how can we pick function classes (function approximators) that support the bellman equation?
+\subsection{Relationship to momentum}
 
-\begin{itemize}
-\item
-  A well connected space? For all possible policies, there exists
-  \(\theta_1, \theta_2 \text{ s.t. } \parallel \theta_1- \theta_2\parallel_2\)
-  is small. (but that doesnt necessarily help\ldots{} depends on the
-  landscape imposed by \(\nabla_{\theta} V\))
-\item
-  ???
-\end{itemize}
+Recently there has been work investigating the properties of overparameterised search spaces.
+Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yields acceleration, however,
+their explanation of the acceleration is not entirely convincing. Bc...
 
-See these gradient flows for example;
+More applied to RL, we want to know. How does overparameterisation effect the search for optimal policies?
+But, generalisation is ??? in RL.
 
-Pics?!?
+% In which spaces can we get the most information? (e.g. low variance gradients)
+% In which spaces to we have access to reliable guidance (e.g. large magnitude gradients)?
+% SNR
 
-Here are some examples \ldots{}???
+We can pick any space we we like to search with in. But, why would we want to pick one space over another?
+What properties are we looking for?
+
+
+
+How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
+Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
+How does momentum bias trajectories? To cover more distance? To have more diversity?
+
+
+\cite{Arora2018} shows that overparameterisation yields acceleration. Consider
+the dynamics of the parameter $w$, which we have overparameterised as $w_1 \cdot w_2$.
+
+
+% Does it even make sense to do a first order approx when trying to reason about momentum?
+% Momentum get interesting when considering non-first order factors?!?
+
+We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
+
+
 
 \begin{figure}
 \centering
@@ -542,25 +536,7 @@ Here are some examples \ldots{}???
 \caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
 \end{figure}
 
-If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
-%  insert pic / prove
 
-Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
-% insert pic / prove
-
-
-\subsection{Acceleration and parameterisation}
-
-{\color{red}insert iteration complexity figures of different lrs with parameterisation.}
-
-\cite{Arora2018} shows that overparameterisation yields acceleration. Consider
-the dynamics of the parameter $w$, which we have overparameterised as $w_1 \cdot w_2$.
-
-
-% Does it even make sense to do a first order approx when trying to reason about momentum?
-% Momentum get interesting when considering non-first order factors?!?
-
-We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
 
 
 \begin{align}
@@ -573,20 +549,47 @@ on what has happened in the past. Can we construct a space of possible
 trajectories? What properties do trajectories have? They are connected
 by the update fn.
 
+% \cite{Tsitsiklis2000} linear value iteration converges. When linear means ... . But we consider linear value function of the form ...
+% Which diverge.
+%
+% \cite{Brandfonbrener2019} consider the same setting, with an additional simplification. In the cts limit. No step sizes / learning rate.
+% Obviously this simplification is not realistic. As in our experiments we see divergence with a overparameterised linear model.
+
+
+\section{Acceleration, topology and re-parameterisation}
+
+If we are allowed to arbitrarily pick our optimisation space, which should we pick?
+
+If we parameterise our search space. We may have changed the topology of our search space.
+Is it possible to arbitrarily change the topology? (probably?!?)
+
+\textbf{Q:} How can we rationally pick the topology of our search space
+to accelerate learning?
+Aka how can we pick function classes (function approximators) that support the bellman equation?
 
 \begin{figure}
 \centering
-\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-ce-04.png}
 \caption{The iteration complexity of different initialisations and different learning rates.}
 \end{figure}
 
-
-\begin{figure}[!h]
+\begin{figure}
 \centering
-\includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/mvi-iterations.png}
-\caption{Above you see: various MDPs where the value of each policy is colored
-by the number of iterations it took to converge to the optimum policy. Yellow is many iterations, purple is few iterations.}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-mse-04.png}
+\caption{The iteration complexity of different initialisations and different learning rates.}
 \end{figure}
+
+\ref{Ganea2018} explore hyperbolic neural networks.
+
+Ok. So when $\phi$ are the parameters of a deep neural network, ...? The search space has certain (which) properties.
+Euclidean geometry.
+(parameter dimensions are independent! no funny business)
+
+If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
+%  insert pic / prove
+
+Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
+% insert pic / prove
 
 \section{Conclusion}
 
@@ -596,20 +599,3 @@ parameterised function approximators.
 There are unexplored types of solution strategy (???): model iteration. Which might be of interest to
 
 So, while MDPs may be simple, we have yet to fully understand them or explore their ???.
-
-Havent characterised their complexity?!? Sparse, ...
-
-Hopefully we are now prepared to consider how abstraction can be used to improve the efficiency of RL for solving MDPs.
-
-
-
-Recently there has been work investigating the properties of overparameterised search spaces.
-Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yields acceleration, however,
-their explanation of the acceleration is not entirely convincing. Bc...
-
-How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
-Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
-How does momentum bias trajectories? To cover more distance? To have more diversity?
-
-Search spaces with alternative geometries.
-Hyperbolic neural networks. https://arxiv.org/pdf/1805.09112.pdf
