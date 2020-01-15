@@ -288,13 +288,19 @@ Thus, we must infer similarities from noisy observations. There are two ways we 
 
 \hspace{\parindent}We can infer that two objects are similar because we have seen it,
 we have sufficient data (/ experience) to allow us to conclude that, with high
-certainty, $x_i$ and $x_j$ are similar (with probability $\delta$, $f(x_j) - f(x_i) \le \epsilon$ ).
+certainty, $x_i$ and $x_j$ are similar (with probability $\delta$, $f(x_i) - f(x_j) \le \epsilon$ ).
 
 \hspace{\parindent}Alternatively, we can infer that two objects are similar because we have found a pattern.
 For example, we might have seen that rotations of $45, 90, 135$$, 180, 225$, are all similar,
 therefore we guess that rotations of $270, 315$ are also similar.
 This motivates our work on symmetric abstractions \ref{symmetric-abstractions}.
 Because of the structure in a symmetry, a similarity can imply others. And thus we can generalise.
+
+Note: if we are relying on inferring similarity from data, and $f(x_i) = Q^{\pi^{* }}(s_i, a_i)$.
+Then learning that $x_i$ and $x_j$ are similar doesn't really help us.
+To estimate that similarity we had to know, $Q^{\pi^{* }}(s_i, a_i)$ and $Q^{\pi^{* }}(s_j, a_j)$.
+Rather, we care about (correctly) guessing that $x_i$ and $x_j$ are similar, so we can
+use the knowledge that $Q_i = Q^{\pi^{* }}(s_i, a_i)$ to help us learn $Q^{\pi^{* }}(s_j, a_j)$.
 
 \subsection{Evaluating abstractions}
 
