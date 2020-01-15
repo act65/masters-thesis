@@ -16,7 +16,7 @@ header-includes: \metroset{progressbar=frametitle,sectionpage=progressbar}
 __Markov decision problems__
 
 \begin{align*}
-M = \{S, A, \tau, r, d_0\} \tag{the MDP}\\
+M = \{S, A, \tau, r, \gamma\} \tag{the MDP}\\
 \tau: S \times A \to \Delta(S) \tag{the transition fn}\\
 r: S \times A \to \mathbb R^+ \tag{the reward fn}\\
 \end{align*}
@@ -60,11 +60,11 @@ Goal: Find and mine a diamond.
 ## What are some existing exploration strategies?
 
 - Injecting noise: [Epsilon greedy](), [Boltzman]()
+- Bayesian model uncertainty and [Thompson sampling]()
+- [Disagreement](https://arxiv.org/abs/1906.04161)
 - Optimism in the face of uncertainty
 - [Counts](https://arxiv.org/abs/1703.01310) / densities and [Max entropy](https://arxiv.org/abs/1812.02690)
 - Intrinsic motivation ([Surprise](https://arxiv.org/abs/1808.04355), [Reachability](https://arxiv.org/abs/1810.02274), Randomly picking goals)
-- [Disagreement](https://arxiv.org/abs/1906.04161)
-- Bayesian model uncertainty and [Thompson sampling]()
 
 Note. They mostly require some form of memory and / or a model of uncertainty.
 Exploration without memory is just random search...
@@ -139,7 +139,7 @@ When stochastic gradient descent is used to optimise this loss (with initialisat
 
 <!-- > Why? -->
 
-## Human bias in Minecraft
+## Human priors for Minecraft
 
 Types of prior?
 
@@ -192,11 +192,11 @@ Also;
 
 ## The power of priors
 
-> Last time I tried to mine a yellow sparkly rock, nothing happened, this time, 1,000 actions later, I got gold. Which action(s) helped?
+> After trying all 2,135 different ways of cutting down a tree. I am ready to conclude that you cannot get diamonds from cutting down trees.
 
 > I took 10,000 actions, now I have an axe. It doesn't appear to help me get diamonds.
 
-> After trying all 2,135 different ways of cutting down a tree. I am ready to conclude that you cannot get diamonds from cutting down trees.
+> Last time I tried to mine (with my hands) a light blue sparkly rock, nothing happened. This time, 1,000 actions later, I got a diamond. Which action(s) helped?
 
 ## How do RL algorithms implicitly bias exploration?
 
