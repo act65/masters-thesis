@@ -1,4 +1,26 @@
-\chapter{Conclusions}\label{C:con}
+\chapter{Discussion and conclusion}\label{C:con}
 
 If all the economists in the world were laid end-to-end they wouldn't
 reach a conclusion, and neither shall I.
+
+
+\section{Future work}
+
+There is a large amount of future work to be done if we want to understand abstractions for efficient RL.
+
+In \ref{exploit-abstraction-rl} we described \textit{state abstraction}, \textit{action abstraction}, and \textit{state-action abstraction}, but what is the advantage, if any, of \textit{state and action abstraction} versus \textit{state-action abstraction}? Similarity, \ref{exploit-abstraction-rl} we described \textit{goal-like} and \textit{option-like} temporal abstraction. But, is one strictly better that the other. If not, then in which cases does \textit{goal-like} temporal abstraction perform better?
+
+Is the family of similarity notions presented in \ref{similar-classes} 'complete'? Does it describe all abstractions of interest?
+Relatedly, are cumulants strictly superior to trajectory type similarity measures $\chi(x, x') = \int_\pi \mathbb E \sum D(c(x, \pi), c(x', \pi)))$?
+
+What is the trade off of approximating $\int_{\pi \in \Pi}f(\pi)$ with $\int_{\pi \in B \subset \Pi}f(\pi)$?
+How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
+The topology of abstractions (partial ordering). Seems important!? Can use somehow?
+hat is necessary for the preservation of Bellman equations ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions?
+
+% The comparison of topologies constructed using varios k length options.
+% With increaseing k, the topology of the abstraction is always coarser??
+% Are these properties for evaluation necessary and / or sufficient for good performance of an abstraction?
+
+
+\section{Conclusion}

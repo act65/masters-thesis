@@ -3,19 +3,24 @@
 % RL is inefficient
 Reinforcement learning has an efficiency problem: AlphaGo \cite{Silver2016a}, the Go
 playing AI that beat world champion Lee Sedol, needed 1.28 million games, with
-extra supervision from another 29.4 million positions, using 50 GPUs.
+extra supervision from another 29.4 million positions, while learning with 50 GPUs.
 Libratus \cite{Brown2018b}, the poker playing AI that beat a table of professionals,
-constructed its poker-playing strategy by running for 15 million processor-core-hours.
-OpenAI Five \cite{Berner2019}, the Dota 2 playing AI that beat OG, the winners of TI8/9, was
-trained over 10 months, at it peak, collecting 900 years of experience per day using
+constructed its poker-playing strategy over 15 million processor-core-hours.
+OpenAI Five \cite{Berner2019}, the Dota 2 playing AI that beat OG, the winners of The International 8 and 9, was
+trained over 10 months, at its peak, collected 900 years of experience per day using
 128,000 CPUs and 256 GPUs.
 
-Is RL fundamentally inefficient, or can we do better?
+Is reinforcement learning fundamentally inefficient, or can we do better?
+
+\section{Motivation}
+
+% Motivate abstraction
+
+Abstractions appear to essential for intelligent behaviour (ref some psyc / neuro paper?!).
 
 We explore the use of abstraction for efficient reinforcement learning.
 
-% Existing theory tells us ...
-% Bounds on sample and computational complexity tell us that !??!
+% Dimensionality reduction is not enough. Want to be able to preserve the important structure.
 
 % What strategies are there to improve the efficiency of RL?
 
@@ -23,30 +28,32 @@ We explore the use of abstraction for efficient reinforcement learning.
 % Existing theory has derived bounds (such as...). But these bounds are quite pessimistic (loose / not to be trusted) because;
 % don't exploit the structure within 'natural' MDPs. Sparsity, symmetry, continuity, ...
 
-% \section{Overview}
-%
-% ???
+%  research question goes here!
 
-\section{Timeline}
+\begin{displayquote}
+ \textit{Why do we care?}
+\end{displayquote}
 
-\begin{enumerate}
-  \tightlist
-  \item In my proposal I stated that I wanted to understand \textit{transfer} and \textit{HRL}. With the goal of understanding and / or improving an agents ability to learn.
-  \item I completed four 'sprints'; \textit{HRL, exploration, IRL, disentanglement}, each of two weeks. After these sprints I decided to focus on \textit{action abstractions},
-  which can be related to disentanglement.
-  \item I explored more general results about abstractions. I was especially interested in theoretical ways to analyse MDPs such as near optimality \cite{Abel2017}.
-  \item Something about action abstractions.
-  \item I understood that HRL is a special case of abstraction; one of a special hierarchical structure, and which is focused on achieving a temporal abstraction. I also became aware that no abstraction is likely to do better or worse than any other, in the general case (once you account for the complexity of building the abstraction -- this is a result of the no-free-lunch theorem).
-  \item I went to a conference and met Theja Tulabandhula. He was presenting his paper on symmetry based abstractions for RL \cite{Mahajan2017}. This is exactly what I had been looking for, but didn't know it. I promised myself I would look into it further.
-  \item After reading a few papers on the theory of RL, I decided I wanted a better understanding of MDPs, which were the main setting considered in the proofs I had been attempting to understand.
-  \item I found a great paper, the Value function polytope \cite{Dadashi2018}, that gave insight into the structure of the MDP and it's optimisation. I explored this further and got curious about how to understand optimisation, overparameterisation and dynamics for RL.
-  \item With my new understanding of MDPs, I returned to the problem of abstraction. A simple, and easily solvable system is a linear one. Is there a way find and exploit linearity within an MDP?
-\end{enumerate}
+We care because we want more efficient algorithms.
+By throwing away inessential details, there is less to compute.
+By throwing away inessential details, we dont need to explore them.
+By throwing away inessential details, we reduce the variance of our
+observations (allowing quicker learning).
+
+
+\section{Overview}
+
+First we pick Markov Decision Problems as our setting for studying abstractions (for RL) and give a slightly non-standard, but general introduction to them \ref{mdps}.
+Then we explore abstractions (for RL) and existing theory for understanding abstraction (for RL) and organise it into a clearer framework \ref{abstraction-rl}.
+Next, we analyse an existing method of abstraction for efficient control and find that it does not work in general \ref{solveable-abstractions}.
+Finally, we build an abstraction using symmetries \ref{symmetric-abstractions}.
 
 \section{Contributions}
 
 \begin{itemize}
   \tightlist
+  \item Construct a family of similarity measures for building abstractions for RL.
+  \item Explore a framework for evaluating abstractions.
   \item Clarify that a well cited method of abstraction doesn't work in general. \ref{lmdp-validation}
   \item Evaluate a method of combining symmetric abstractions and Thompson sampling \ref{thompson-sampling}
   \item Generalise the notion of MDP homomorphism to temporal abstractions \ref{temporal-abstraction}

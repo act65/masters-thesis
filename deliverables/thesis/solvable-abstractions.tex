@@ -1,5 +1,5 @@
 \newpage
-\section{Efficiently solvable abstractions}
+\section{Efficiently solvable abstractions}\label{solveable-abstractions}
 
 \begin{displayquote}
   \textit{Abstractions for efficient control.}
@@ -224,12 +224,12 @@ This is problem that we will return to.
 
 % If the optimal policy is not preserved by the transformation of MDP to LMDP then solving the
 
-\subsection{Decoding the optimal LMDP policy}
+\subsection{Lifting the optimal LMDP policy}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/abstract-representations-project.png}
-\caption{''}
+\caption{Lifting the LMDP's solution to the MDP}
 \end{figure}
 
 \begin{displayquote}
@@ -290,7 +290,7 @@ original can? We can formalise this question as the difference between the optim
 \end{align*}
 
 {\color{red}Note!!!: $\epsilon_{\pi}$ isnt reliable. we have not preserved the values.
-and therefore, there exist MDPs where the bellman equation is broken, meaning n some cases we cannot learn.}
+and therefore, there exist MDPs where the bellman equation is broken, meaning in some cases we cannot learn.}
 
 Where $\epsilon_{\pi}$ will tell us if the optimal behaviours are different. But What we really care about
 is whether their value is different. We might not care if the optimal control
@@ -309,16 +309,14 @@ Results... Bad.
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/figures/LBO_BO.png}
-\caption{For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the Bellman temporal difference operator points towards the optimal value. But, ther linear temporal difference operator points elsewhere...}
+\caption{For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the temporal difference operator points towards the optimal value. But, ther linear temporal difference operator points elsewhere...}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth,height=0.75\textheight]{../../pictures/figures/lmdp_mdp_optimal_dynamics.png}
-\caption{A comparison between the optimal control (LMDP) and the optimal policy (MDP).}
+\caption{A comparison between the optimal control $u^{* }(s'|s)$ (shown in the left column) and the dynamics of the optimal policy (MDP) $\sum_a P(s'|s, a)\pi^{* }(a|s)$ (shown in the right column). Because the optimal control, and dynamics of the optimal policy can be written as $2x2$ matrices, we can plot them. Yellow indicates high probability, purple indicates low probability. But the main thing to observe is: the optimal control is often not the same as the dynamics of the optimal policy.}
 \end{figure}
-
-{\color{red}also include some numbers of the value error}
 
 \subsection{Discussion}
 
@@ -342,17 +340,17 @@ To understand the importance of these see the figures below.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-zero-rewards.png}
-\caption{A chain problem with zero reward on all states except the last two. A small negative reward, then a large positive one.
-The optimal control to this problem is not sensible: in every state, jump to the state with positive reward.
+\caption{A chain problem \cite{Sutton2018a} with zero reward on all states except the last two. A small negative reward, then a large positive one.
+The optimal control to this problem is not realisable: in every state, jump to the state with positive reward.
 It is not possible to make those transitions.}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
-\caption{A chain problem with positive rewards applied to all states.
+\caption{The same chain problem as above, but with an positive reward added to all states.
 Now the structure of the transition function has made it into the optimal control!
-The LMDP's control can be decoded into a policy.}
+The LMDP's control can be decoded into a realisable policy.}
 \end{figure}
 
 % \begin{figure}
