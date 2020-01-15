@@ -1,25 +1,23 @@
 TODOs
 
-* [ ] Review RL for RL. (representation learning for reinforcement learning)
 * [ ] Relate homomorphisms to similarity measures
-* [ ] Section on Evaluating efficient exploration / control
-* [ ] Abstraction Complexity. single task / multi task
+* [ ] Section on Evaluating efficient inference
 * [ ] Construct family of abstractions
 * [ ] Sort out footnote ordering
-* [ ] Make sure i introduce the TD operator. esp notation $T(Q)$
-* motivate and explain the bellman eqn
-* write abstract
-* fix timeline. add some other points
-* fix all citations
-* double check the uniqueness of the optimal policy
-* explain why VI goes outside the polytope
-* tidy / finish abstraction intro section
-* regenerate trajectory pictures!?
-
-
+* [ ] write abstract
+* [ ] fix timeline. add some other points
+* [ ] fix all citations
+* [ ] double check the uniqueness of the optimal policy
+* [ ] explain why VI goes outside the polytope
+* [ ] regenerate trajectory pictures!?
+* [ ] write future work section
 
 Done
 
+* [x] Abstraction Complexity. single task / multi task
+* [x] Make sure i introduce the TD operator. esp notation $T(Q)$
+* [x] tidy / finish abstraction intro section
+* [x] motivate and explain the bellman eqn
 * [x] Finish / tidy section of coarseness.
 * [x] Abstraction - learnability experiments (off policy etc...)
 * [x] Add pictures for polytope graph visuals

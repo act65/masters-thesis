@@ -1,217 +1,5 @@
 \chapter{MDPs}
 
-\section{MDP examples}\label{MDP-examples}
-
-Here are some examples of MDPs in the wild.
-
-\paragraph{Bus engine replacement}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} Accumulated mileage of each bus (since their last
-  replacement).
-\item
-  \textbf{Actions:} Replace bus \(i\), Y / N. If Y, what year model to
-  replace with?
-\item
-  \textbf{Transition fn:} How the mileage of each bus changes between
-  fitness checks.
-\item
-  \textbf{Reward fn:} Age dependent recurring cost - for repairs - and
-  replacement cost.
-\end{itemize}
-
-Note: The transition function could be diagonal, or not. If diagonal
-then buses are not able to effect the mileage of other buses (a bus can effect the mileage of another bus by taking its shift).
-In the diagonal case, the problem is reduced to a contextual bandit problem.
-
-\cite{Putterman2015}
-
-\hypertarget{the-aloha-protocol}{%
-\paragraph{The ALOHA protocol}\label{the-aloha-protocol}}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} For each sender, was the last attempt to send a collision.
-\item
-  \textbf{Actions:} The probability of each sender attempting to send
-  a new packet.
-\item
-  \textbf{Transition fn:} Combines sender's packets into either a
-  successful transmission, or a collision.
-\item
-  \textbf{Reward fn:} If a packet is sent, great. If not, bad.
-\end{itemize}
-
-\cite{Putterman2015} pg 8
-
-\hypertarget{mate-desertion-in-coopers-hawks}{%
-\paragraph{Mate desertion in Cooper's
-Hawks}\label{mate-desertion-in-coopers-hawks}}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} The product of the brood's health and mother's health
-  (\([2:7] \times [2:7]\)).
-\item
-  \textbf{Actions:} Stay, hunt, desert.
-\item
-  \textbf{Transition fn:} The four developmental stages, early nestling,
-  late nestling, early fledgling, late fledgling. From one developmental
-  stage to the next, the energy levels of the mother and brood are
-  determined by the initial energy reserves, the actions taken and the
-  availability of food. (this was estimated from data gathered by
-  \ldots{})
-\item
-  \textbf{Reward fn:}
-\end{itemize}
-
-\cite{Putterman2015} pg 10
-
-\hypertarget{but-whos-counting}{%
-\paragraph{But who's counting?}\label{but-whos-counting}}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} A random number, and the value of each of five
-  possible locations. Possibly none value.
-\item
-  \textbf{Actions:} Choose which location to add the latest random
-  number.
-\item
-  \textbf{Transition fn:} Deterministically updates the storage location
-  given the action and observed random number.
-\item
-  \textbf{Reward fn:} The total magnitude of the stored number, only
-  given after the storage is full..
-\end{itemize}
-
-\cite{Putterman2015} pg 13
-
-\hypertarget{diagnosing-catnip-immunity}{%
-\paragraph{Diagnosing catnip
-immunity}\label{diagnosing-catnip-immunity}}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} The truth values for immunity to an of the 4 drugs (
-  Catnip / Valerian / Silvervine / Honeysuckle )
-\item
-  \textbf{Actions:} Choose which drug to test.
-\item
-  \textbf{Transition fn:} Updates the truth values with some probability
-  of returning a true positive or false negative.
-\item
-  \textbf{Reward fn:} Minimize the cost to find a working drug.
-  Catnip=\$8.96, Valerian=\$7.00, Silverine=\$17.77, Honeysuckle=\$7.99.
-\end{itemize}
-
-\begin{quote}
-Bol et al 2017, as noted, provides responses for 4 drugs
-(catnip/Valerian/silvervine/honeysuckle) in a large sample of cats;
-responses turn out to be heavily intercorrelated, permitting the ability
-to better predict responses to the catnip alternatives based on a known
-response to one of the others. This becomes useful if we treat it as a
-drug selection problem where we would like to find at least one working
-drug for a cat while saving money, and adapting our next test based on
-failed previous tests.
-\end{quote}
-
-\begin{quote}
-If they were not intercorrelated, one would simply minimize expected
-loss in a greedy fashion, starting with catnip etc; but as they are
-intercorrelated, now a drug has both direct value (if the cat responds)
-and value of information (its failure gives evidence about what other
-drugs that cat might respond to), which means the greedy policy may no
-longer be the optimal policy.
-\end{quote}
-
-\href{https://www.gwern.net/Catnip\#optimal-catnip-alternative-selection-solving-the-mdp}{gwern
-on Catnip}
-
-This one is interesting. The four actions effect only the four state
-element-wise. But our knowledge that certain immunities are correlated
-make it possible to intelligently guess which tests should be performed.
-
-\hypertarget{ad-targeting}{%
-\paragraph{Ad targeting}\label{ad-targeting}}
-
-\hypertarget{youtube-recommendation}{%
-\paragraph{Youtube recommendation}\label{youtube-recommendation}}
-
-\hypertarget{salamon-harvesting}{%
-\paragraph{Salamon harvesting}\label{salamon-harvesting}}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} The size of the salmon population.
-\item
-  \textbf{Actions:} The size of the salmon population to be left to
-  spawn.
-\item
-  \textbf{Transition fn:} Given the number left to spawn, it returns the
-  size of the salmon population in the next season.
-\item
-  \textbf{Reward fn:} The size of salmon population harvested.
-\end{itemize}
-
-You might call this MDP a one dimensional MDP, as there is only a single
-dimension that is acted up, is transitioned, is rewarded\ldots{} More
-salmon
-
-\href{http://www.it.uu.se/edu/course/homepage/aism/st11/MDPApplications1.pdf}{Real
-applications of MDPs}
-
-\hypertarget{fire-engine-allocation}{%
-\paragraph{Fire engine allocation}\label{fire-engine-allocation}}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{States:} The magnitude of a fire. The type of alarm. And the
-  total number of first and second fire engines already deployed.
-\item
-  \textbf{Actions:} Whether to send more fire engines.
-\item
-  \textbf{Transition fn:} Given the number of fire engines fighting the
-  fire, and the fires type / magnitude, the building may be destroyed or
-  saved. Fire may start at any time, in a random location throughout the
-  city.
-\item
-  \textbf{Reward fn:} Damage incurred by the fires.
-\end{itemize}
-
-\href{http://www.it.uu.se/edu/course/homepage/aism/st11/MDPApplications1.pdf}{Real
-applications of MDPs}
-
-Other possible MDPs?
-
-\begin{itemize}
-\tightlist
-\item
-  An animal stockpiling food?!
-\item
-  Robotics / movement
-\end{itemize}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-More Refs
-
-\begin{itemize}
-\tightlist
-\item
-  http://www.it.uu.se/edu/course/homepage/aism/st11/MDPApplications1.pdf
-\item
-  https://www.worldscientific.com/worldscibooks/10.1142/p809
-\end{itemize}
-
 \section{Tabular MDPs}\label{vf-neumann}
 
 It is possible to derive the value functional in another, possibly more enlightening way. But it takes a little more work. It requires a result from real analysis, the Neumann series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
@@ -240,13 +28,17 @@ This proof is more satisfying because we can more clearly see the nature of the 
 
 \section{Policies in high dimensions}\label{high-D-policies}
 
-Let's \textit{try} to gain some intuition about the space of policies in higher dimensions.
+Let's \textit{try} to gain intuition about the space of policies in higher dimensions.
 For each state, we have a distribution (on a simplex), over the possible actions.
+
+Imagine what the geometry of the space of policies in the two state, two action MDP. A policy tells us which actions should be taken when in a given state. Therefore, there will be \(|A| \times |S|\) entries in the policy. However, because the policy returns a distribution over actions, the true dimensionality of the policy is \((|A| -1) \times |S|\). Which in the two state, two action case equals 2D.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\textwidth,height=0.20\textheight]{../../pictures/drawings/2-state-2-action-simplices.png}
-\caption{Imagine what the geometry of the space of policies in the two state, two action MDP. A policy tells us what actions should be taken when in a given state. Therefore, there will be \(|A| \times |S|\) entries in the policy. However, because the policy returns a distribution over actions, the true dimensionality of the policy is \((|A| -1) \times |S|\). Which in the two state, two action case equals 2D.}
+\caption{(left) Given that you are in state, $s$, we have a simplex over two actions $\{a_1, a_2\}$.
+(right) The policy must describe distributions over actions for each state,
+so the policy space must describe the $|S|$ possible combinations of distribution over actions.}
 \end{figure}
 
 \begin{figure}[h]
@@ -278,9 +70,9 @@ p(V(\pi)) = |\det \frac{\partial V(\pi)}{\partial \pi}|^{-1} \cdot p(\pi) \tag{d
 \begin{figure}
 \centering
 \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/polytope_densities.png}
-\caption{2-state 2-action MDPs. We have visualised the likelihood of
-values under a uniform distribution over policies. They are coloured by density.
-Lighter colour is higher probability.}
+\caption{Here we have visualised the value polytope for 2-state 2-action MDPs. They are colored by the likelihood of
+each value under a uniform distribution over policies.
+Lighter color is higher probability.}
 \label{fig:density}
 \end{figure}
 
@@ -327,12 +119,11 @@ the shape of the value polytope.
 \begin{figure}
 \centering
 \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/discounts.png}
-\caption{Here we have shown a few different 2 state, 2 action, MDPs and how
-their polytopes change with changes in discount rate, ranging from 0 (left), to 1 (right).
+\caption{Here we have visualised the value polytope for 2-state 2-action MDPs. The
+rows show how their value polytopes change with changes in discount rate, ranging linearly from 0 (left), to 1 (right).
 The color map is represents the density of policies, as in \ref{fig:density}.}
 \label{fig:polytope-discounts}
 \end{figure}
-
 
 As we can see in Seen in \ref{fig:polytope-discounts}. As the discount rate tends to $1$,
 all the policies are projected into a 1D space. (is this 1D for 2D problems. is it always 1D?)
@@ -364,9 +155,9 @@ This is an inference problem, we are trying to infer the model parameters.
 Once we know these parameters, we can apply control.
 In general, this is known as model-based RL.
 
-We could search through models using supervision from next step prediction.
-This is a common approach to model-based RL. Rather, we consider using the value estimation error
-to guide the search for model parameters. {\color{red}refs!!}
+We could search through models ($P, r$) using supervision from next step prediction.
+This is a common approach to model-based RL. {\color{red}refs!!}
+Rather, we consider using the value estimation error to guide the search for model parameters.
 
 \begin{align}
 \tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V_{P, r}(\pi)-V_{\tilde P, \tilde r}(\pi) \parallel_\infty
@@ -374,43 +165,57 @@ to guide the search for model parameters. {\color{red}refs!!}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/model_iteration.png}
-\caption{Blue shows the value of policies when evaluated under the true model, $P, r$,
+\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/model_iteration.png}
+\caption{Model iteration applied to a 2-state, 2-action MDP.
+Blue shows the value of policies when evaluated under the true model, $P, r$,
 and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
 \end{figure}
 
-\begin{itemize}
-  \item We recieve $V_{P, r}(\pi)$ from the environment. But we want to minimise the number of these calls to the environment.
+There is a main advantage and some disadvantages to this framework.
+The advantage is that this approach focuses its resources only on 'relevant' features of the model.
+The disadvantages are that it requires many policy evaluations (from the environment),
+and many estimates of a policy's value (simulated evaluations).
+
+\subsection{Relevant features of the model}
+
+Model iteration via value prediction error only focuses on 'relevant' features of the model.
+Relevant in the sense that they are useful for accurately predicting state values.
+
+Consider a problem where the reward is only determined by the first feature of the state.
+We can add arbitrarily many extra features. A model-based learner that learns through next step prediction will attempt to
+accurately predict all of these features. This unnecessarily spends resources.
+
+More formally; let the state space but a subset of the reals $S \subset \mathbb R^d$.
+And construct a reward function that is only dependent on the first feature of the state space, $r(s, a) = f(s^0, a)$.
+While the transition function is constructed so that, there exists a $k$ dimensional subspace (that includes the first feature)
+that is independent of the other $d-k$ features, $P(s'|s, a) = [g_1(s^{0:k}, a), g_2(s^{k:d}, a)]$.
+
+An example with this structure, could be the addition of $d-k$ 'noise' features,
+that play no part in the transition dynamics, but only describe inessential features
+(such as features that describe the positions of leaves on a windy day).
+
+% \subsection{Jokes}
+%
+% This is just a less intelligent reinvention of Thompson sampling for MDPs.
+% No it isnt?!? They use
+
+\subsection{Policy evaluations}
+
+We recieve $V_{P, r}(\pi)$ from the environment. But we want to minimise the number of these calls to the environment.
   As it can be expensive to evaluate a policy with high accuracy.
-  \item For each $\tilde P_t, \tilde r_t$, we need to estimate the value of many policies, $V_{\tilde P_t, \tilde r_t}(\pi)$. Lots of compute...
-\end{itemize}
+For each $\tilde P_t, \tilde r_t$, we need to estimate the value of many policies, $V_{\tilde P_t, \tilde r_t}(\pi)$. Lots of compute...
 
 Can reduce the required number of policies. So we dont need to sample or solve as many.
 Can estimate the value of some policies based on off policy???
 
-\subsection{Compressed sensing}
+\paragraph{Compressed sensing}
 
 But. Integrating over all policies. However, there is redundancy.
 Can be made more efficient if you only use $m$ random policies.
 
-\subsection{Off policy value estimation}
+Did some experiments. Using only $\frac{n}{10}$ policies we get, on average, an approximation error of 0.5.
 
-?!?!
-
-\subsection{Failure of next step prediction supervision}
-
-Model iteration via value prediction error only focuses on 'relevant' parameters of the model.
-Relevant in the sense that they are useful for acting and achieving high return.
-
-Consider a problem where the reward is only determined by the first feature of the state. We can add $n$ extra, useless, features.
-The model based learner will spend resources on attempting to build a good predictor of those $n$ features.
-{\color{red} TODO make picture of this example. and add to separate appendix?!}
-
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-While it is nice to have $\tilde P^{* }, \tilde r^{* }$, the ultimate goal of
-solving a MDP is to find the optimal policy. ...!?!?
+\paragraph{Off policy estimation} improve the sample efficiency. Future work.
 
 \newpage
 \section{Visualising higher dimensional MDPs}\label{graph-vis}
@@ -438,17 +243,19 @@ Properties of the graphs / graph signals?
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.5\textwidth,height=0.3\textheight]{../../pictures/figures/discrete-graph.png}
-\caption{Policy iteration bounces between the nodes of the graph. As each node is a deterministic policy.
-Thus policy iteration is equivalent to finding the shortest path on a XX connected policy graph. }
+\caption{PI bounces between the nodes of the graph.
+So the search of the optimal policy using PI can be visualised as the walk along a graph.
+Note: the current policy is shown in yellow (close to the top right).}
 \end{figure}
 
-{\color{red} want a better picture}
+As each node is a deterministic policy.
+Thus policy iteration is equivalent to finding the shortest path on a XX connected policy graph.
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.5\textwidth,height=0.3\textheight]{../../pictures/figures/interior-graph.png}
-\caption{Policy gradient traverses through non-deterministic policies, thus we can visualise how
-close the current policy is to deterministic ones.}
+\caption{Policy gradient traverses through non-deterministic policies.
+So the search of the optimal policy using PG can be visualised the dynamics of a graph signal.}
 \end{figure}
 
 \newpage
@@ -468,7 +275,7 @@ Despite their efficacy in practice, we still don't have a good understanding of
 how policy gradient methods combine with deep learning methods to give performant agents.
 
 A key feature of deep learning is over parameterisation (among the other features;
-hierarchies, non-linearity, smoothness, locality). There has been some recent work
+hierarchies, non-linearity, smoothness, locality). There has been recent work
 attempting to understand the effect of overparameterisation \cite{Arora2018}.
 
 Here we explore the effect of overparameterising the policy and then using
@@ -477,7 +284,9 @@ policy gradient methods to find the optimally policy.
 \begin{figure}
 \centering
 \includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
-\caption{The iteration complexity of different initialisations and different learning rates.}
+\caption{Here we have visualised the value polytope a 2-state, 2-action MDP.
+These value polytopes are colored by the iteration complexity (many iterations - yellow, few iterations - purple) of parameterised policy gradients.
+Each polytope was generated using a different learning rates.}
 \end{figure}
 
 % \begin{figure}[!h]

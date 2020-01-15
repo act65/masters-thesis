@@ -20,7 +20,7 @@ A single action means all policies are the same.).}
 \end{figure}
 
 The space of possible policies is a 2D surface in a 4D space. For each state, we
-can pick \texttt{action1} or \texttt{action2}, with some probability, $p$. For some more intuition
+can pick \texttt{action1} or \texttt{action2}, with some probability, $p$. For more intuition
 about this policy space see \ref{high-D-policies}.
 
 \begin{align}
@@ -44,7 +44,7 @@ Therefore, we can visualise the value of each policy.
 \begin{figure}[!hb]
 \centering
 \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/value-polytope.png}
-\caption{For every policy, we can plot a dot where that value of the policy lies in 'value space'.
+\caption{For every policy, we can plot a dot that represents the value of that policy.
 The red dots are deterministic policies.}
 \end{figure}
 
@@ -193,8 +193,10 @@ then (because of the greedy step) PI will update the policy so it chooses that a
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pi-polytope.png}
-\caption{PI jumps between the deterministic policies (the vertices of our polytope).
-This is because of the greedy update step. Some trajectories require two steps
+\caption{Each color shows PI applied to a different policy initialisation.
+The arrows point from the current policy to the policy after a step of PI. As we can see,
+PI jumps between the deterministic policies (the vertices of our polytope).
+This is because of the greedy update step. Also. Some trajectories require two steps
 because they jump to the lower right corner, and then to the top right.}
 \end{figure}
 
@@ -236,7 +238,9 @@ from the edges of the polytope, where the gradients are not defined ($\log(0) = 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pg-polytope.png}
-\caption{An example of ... . Note that the majority of }
+\caption{Examples of policy gradients: observe that most of the trajectories are purple,
+indicating that the majority of progress is made in the first 20\% of training.
+They converge very slowly once close to the optimal policy.}
 \end{figure}
 
 % Want to include upper / lower bounds!?
@@ -281,7 +285,7 @@ Intuition about why it converges!? Contraction. Banach fixed-point theorem.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/vi-polytope.png}
-\caption{Observe that the value iterations are not constrained to map to a policy
+\caption{Observe that the value iterations are not constrained to map to a realisable policy
 (they can go out side of the polytope), but they do converge to a realisable policy,
 the optimal one.}
 \end{figure}

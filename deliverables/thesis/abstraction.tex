@@ -20,19 +20,19 @@ A recipe is an abstraction. For example, pumpkin soup:
 
 This is an abstraction because it captures the essential details: from this recipe, you could make pumpkin soup.
 While it ignores inessential details: the recipe doesn't tell you; where or what to cook in, where to get the
-ingredients, which species of pumpkin to use, how to do the many actions needed to actually puree something, etc...
-It also doesn't mandate; the time of day to perform this recipe, what clothes to wear (if any),
-which music should be playing.
+ingredients, which species of pumpkin to use, how to do the many actions needed to actually puree something, ... etc.
+It also doesn't mandate; the time of day to perform this recipe, what clothes to wear,
+the style of music.
 
 % Note that the essential / inessential details will depend on what you want to do with the abstraction.
 % While apples and oranges can be abstracted into a fruit category,  can sometimes .
 
 \vspace{5mm}
 
-We can make this notion more formal using, a  \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism}.
+We can make this notion more formal using, a \href{https://en.wikipedia.org/wiki/Homomorphism}{homomorphism}.
 Consider a ground space, $X$, (\textit{the reality of what
 needs to be done. all the details}), and an abstract space $Y$ (\textit{our recipe}).
-We are looking for a transformation between $X$ and $Y$ to preserves only the essential
+We are looking for a transformation between $X$ and $Y$ preserves only the essential
 structure in $X$. This can be written as $f: X\to Y$ such that;
 
 % Another way to think about it, a 'structure preserving' map.
@@ -42,14 +42,17 @@ f(x \circ_G y) = f(x) \circ_A f(y)
 \end{align*}
 
 Where the $\circ$ is the preserved structure.\footnotemark[19]
-A common example of a structure we might want to preserve is the order, $\le$.
-% In RL, we might want to preserve other operations such as the optimal policy or the Bellman operator.
-% example from word2vec. perserves semantic relationships.
-{\color{red}for example?!? want a better one.}
+
+For example, we might want to preserve the ordering of objects $x \le y \le z$
+(or the ordering of the steps in our recipe; boil, puree, then simmer). We can achieve this
+by picking $\circ$ (the preserved structure) to be the less-than operator, $\le$.
+Thus, any homomorphism that preserves $\le$ gives us an 'abstracted' description of our original set.
+
+% {\color{red} can homomorphisms also add information?!?!}
 
 \footnotetext[19]{Something that might not
 be clear is that you need to be able to define $\circ$ on both $X$ and $Y$.
-These definitions might be different from each other. For example on space might be continuous and the other discrete.}
+These definitions might be different from each other. For example one space might be continuous and the other discrete.}
 
 In general, there are three steps to using abstraction to help solve a problem:
 
@@ -57,19 +60,8 @@ In general, there are three steps to using abstraction to help solve a problem:
 \tightlist
   \item Transform the problem to the 'abstract' domain. $f: X\to Y$
   \item Solve the problem $\mathcal S: Y \to Z$
-  \item Lift the solution back to the original domain  $g:Z \to X$
+  \item 'Lift' the solution back to the original domain  $g:Z \to X$
 \end{enumerate}
-
-
-\begin{displayquote}
- \textit{Why do we care?}
-\end{displayquote}
-
-We care because we want more efficient algorithms.
-By throwing away inessential details, there is less to compute.
-By throwing away inessential details, we dont need to explore them.
-By throwing away inessential details, we reduce the variance of our
-observations (allowing quicker learning).
 
 % History.
 %
@@ -77,7 +69,7 @@ observations (allowing quicker learning).
 % - Physics?
 % - Comp sci, programming languages
 
-\section{Abstractions for RL}
+\section{Abstractions for RL}\label{abstraction-rl}
 
 % homomorphisms dont segue into this very well...
 
@@ -89,7 +81,7 @@ These abstractions are often built for two goals; efficient exploration
 (\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
 and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computational_complexity_theory}{computational complexity}).
 
-\subsection{Exploiting abstractions}
+\subsection{Exploiting abstractions}\label{exploit-abstraction-rl}
 
 % \begin{displayquote}
 % \textit{But how might we contruct $Q^{\pi_{A}^* }$?}
@@ -101,13 +93,15 @@ and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computation
 \textit{Given an abstraction, how might a learner use it?}
 \end{displayquote}
 
-Within RL, there are some broad classes of abstraction exploitation. To construct these classes.
+Within RL, there are broad classes of abstraction exploitation. To construct these classes.
 consider the central functions within RL; the state-action value function, $Q$, and the policy, $\pi$.
 How can we build an abstraction into these?
 
-Let $X, Y$, refer to abstract spaces. The we can generalise the notion of a state-action value function and policy to work on abstracted spaces.
+Let $X, Y$, refer to abstract spaces. We can generalise the notion of a state-action value function and policy to work on abstracted spaces.
 $Q_A: X \times Y \to \mathbb R$, $\pi_A: X \to \Delta(Y)$. We can now construct
 different classes of learners by giving them access to different types of abstraction.
+
+\vspace{5mm}
 
 \begin{changemargin}{-2cm}{-2cm}
   \begin{center}
@@ -140,23 +134,24 @@ Rather than describing these inessential details, we can abstract away from them
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth,height=0.2\textheight]{../../pictures/images/nz20.png}
+\includegraphics[width=0.6\textwidth,height=0.15\textheight]{../../pictures/images/nz20.png}
 \caption{A 20 NZD note.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth,height=0.2\textheight]{../../pictures/drawings/my-nz20.png}
-\caption{An artist's abstract rendering.}
+\includegraphics[width=0.6\textwidth,height=0.15\textheight]{../../pictures/drawings/my-nz20.png}
+\caption{An artist's abstract rendering. This state abstraction only shows the essential details; $20$, New Zealand, ...}
 \end{figure}
 
+\newpage
 \paragraph{Action abstraction} groups together 'similar' actions. For
 example, both action $i$ and action $j$ might yield the same rewards and change in state,
 in which case, we can just relabel them as the same action.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/hungry-caterpillar.png}
+\includegraphics[width=0.7\textwidth,height=0.15\textheight]{../../pictures/drawings/hungry-caterpillar.png}
 \caption{Consider a hungry caterpillar. It wants to move towards the leaf.
 But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th leg slightly forward, etc...
 To specify an action it needs to pick from $8^{12}$ possible actions - 8 actions per leg, 12 legs.}
@@ -165,7 +160,7 @@ To specify an action it needs to pick from $8^{12}$ possible actions - 8 actions
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth,height=0.2\textheight]{../../pictures/drawings/full-caterpillar.png}
+\includegraphics[width=0.7\textwidth,height=0.15\textheight]{../../pictures/drawings/full-caterpillar.png}
 \caption{But, what if the caterpillar could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs. Note, we are not including any temporal abstraction here.}
 \end{figure}
 
@@ -174,7 +169,7 @@ This class of abstraction should be more powerful than state and action abstract
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/drawings/maze.png}
+\includegraphics[width=0.75\textwidth,height=0.3\textheight]{../../pictures/drawings/maze.png}
 \caption{A symmetric maze, the goal(s) are shown in red.
 Consider two different, but 'similar' positions, shown in blue and green.}
 \end{figure}
@@ -197,7 +192,7 @@ As moving left from blue is not equivalent to moving left from green.
 \paragraph{Temporal abstraction} groups together 'similar' goals / options.
 For example, the pumpkin recipe above: for the many ways there are to boil broth
 (in pot, in a jug, over a wood fire, in the oven, ...), group them together.
-For the many ways to puree some pumpkin (with a rolling pin and some vigour, with a blender, ...), group them together.
+For the many ways to puree pumpkin (with a rolling pin and some vigour, with a blender, ...), group them together.
 
 The intuition behind both goal-like and option-like temporal abstractions is that
 we can decompose a sequential decision problem into a set of shorter, easier to solve, parts.
@@ -212,16 +207,17 @@ Earlier, we considered how an agent might use a given abstraction.
 But where did that abstraction come from? Did someone construct it?
 Or can abstractions be discovered automatically?
 
-To build an abstraction, you need a notion of how two objects might be similar. {\color{red}(ref?!)}
+To build an abstraction, you need a notion of how two objects might be
+similar (or a notion of what it is you want to preserve).
 This allows you to group the 'similar' objects together, building an abstraction.
 In RL there are many possible notions of similarity. But which ones are sensible?
 Which ones allow us to efficiently finding the optimal policy?
 
 \vspace{5mm}
 
-\subsubsection{Classes of similarity for RL}
+\subsubsection{Classes of similarity for RL}\label{similar-classes}
 
-Li et al. give five classes of state abstraction in which they group states based on various similarities \footnotemark[20];
+Li et al. \cite{Littman2006} give five classes of state abstraction in which they group states based on various similarities \footnotemark[20];
 \footnotetext[20]{Similarity and preservation are dual notions. Similarity tells us which objects we can group together,
 'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.
 For example, the \textit{"preservation of the one step model"} means: two states can be considered similar if they have the same one step model.}
@@ -231,78 +227,52 @@ $\phi_{\text{model}}$ preserves the one step model,
 $\phi_{Q_{\pi}}$ preserves the state-action value function for all policies,
 $\phi_{Q^{* }}$ preserves the optimal state-action value,
 $\phi_a^{* }$ preserves the optimal action and its value,
-$\phi_{\pi^{* }}$ preserves the optimal action.}\cite{Littman2006}
+$\phi_{\pi^{* }}$ preserves the optimal action.}
 
-In general, there are few different dimensions to constructing notions of similarity for RL.
+\vspace{5mm}
 
-\begin{enumerate}
-  \tightlist
-  \item Representation: Which objects do we want to base our similarity measure on? States, actions and / or rewards, or some combination or representation of them,
-  \item Characterisation: How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
-  \item Comparison: How to compare?! Which norm, which kernel space, ...?
-  \item Should these similarities hold for all policies or a subset (such as the optimal policy)?
-\end{enumerate}
+We can construct a family of similarity functions for building abstractions for RL. To do so, we measure the
+similarity between two 'RL objects'\footnotemark[28] as: for $x$ and $x'$,
+how similar are their likely futures starting from those objects, for a range of different policies.
+Let's make this formal.
 
-\footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
+\footnotetext[28]{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
 
-{\color{red}Work in progress...}
+Let $c(s, a, r)$ be a cumulant, and let $C$ be the expected discounted sum of that cumulant under a given policy
+(where the exceptation is over all trajectories starting from $x$).\footnotemark[29]
 
-\paragraph{Representation}
-
-
-
-\paragraph{Characterisation}
-
-% Q(\sigma) + GVFs.
-MDPs are all about the future. Two objects in a MDP can be described by what can
-be achieved from them. For example, the state value function. We characterise a state in terms of
-its likely future (discounted) rewards.
-
-More formally. Let $X \in {S, A, R}^{* }$. $P \subset \Pi$
+\footnotetext[29]{This is also know as a general value function \cite{White2015}}
 
 \begin{align*}
-c(\zeta) &= \sum_{t=0}^{\infty} \big( \prod_{j=1}^k\gamma_{t+j}\big)  f(\zeta_{t+k+1}) \\
-C_f(\pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_0)} [c(\zeta)]
+C(\zeta) &= \sum_{t=0}^{\infty} \gamma^{t}  c(\zeta_{t+1}) \\
+\mathcal C(x, \pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_{x})} [C(\zeta)] \\
+\chi(x, x') &= \int_{\pi \in B} \frac{1}{1+\parallel \mathcal C(x, \pi) - \mathcal C(x', \pi) \parallel_{p}} d\pi
 \end{align*}
 
-Where $c: \zeta \to X$ is a generalisation of the return to work on representations of $S, A, R$ and to multi step estimates (??? is that what the $\prod$ does?).
-The expected cumulant, $C_f(\pi)$, is evaluated under a given policy.
-The first part of this definition is closely related to (and inspired by) the general value function \ref{White2015}.
+We have written: the similarity $\chi$ between $x$ and $x'$ is; the sum over different policies, of the
+similarities (the inverse of distance) between likely futures, starting from $x$ / $x'$.
 
-\paragraph{Comparison}
+ by setting $\zeta_x = {\zeta: \zeta_0^s = x^s, \zeta_0^a = x^a \forall \zeta \in \mathcal Z}$
 
-% kernels?!? inner prod? ...
+{\color{red}HELP!?}
 
-\begin{align*}
-D(g(x), g(x))
-\end{align*}
-
-\paragraph{Policy preservation}
-
-The third dimension of similarity between two RL objects is about whether the
-property should be preserved for all, or just some policies. Subsets of interest, the optimal policy, deterministic policies, ???.
-
-\begin{align*}
-\chi(x, x') &= \int_{\pi \in B\subset \Pi} )
-\end{align*}
-
-Could relate to an inner product?! Are there other ways of calculating this?
-
-
+% Characterisation: How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
+% \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
 
 \paragraph{Examples}
 
 % Need to show that this family caputres abstrations of interest.
-It would be nice to show that all abstractions of interest live in this happy family.
-Instead we will consider two abstractions; preservation of the n step model, and
-preservation of the optimal state-action value function.
-
+It would be nice to show that all abstractions of interest to RL live in this happy family.
+Instead we will consider two abstractions. One abstraction constructed by preserving the n-step model,
+and the other is constructed by preserving the value of the optimal state-actions.
 
 \begin{itemize}
   \tightlist
-  \item Preservation of the one step transition function: Set $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the discounted state visitation count (if we have encoded the states as onehots - so only works for finite state spaces...). Two $x$s with the same expected discounted state visitation count for all policies must have the same transitions!?!??!?!
-  \item Preservation of the value of the optimal policy: $f(\zeta_{t+k+1}) = s_{t+k+1}$ then the cumulant becomes the return. And set $\zeta_0 = {\zeta: \zeta_0^s = x^s, \zeta_0^a = x^a }$. So we are measuring the distance between the expected value of trajectories starting from $x = (s, a) and x' = (s', a')$. Aka the Q function?!?
+  \item Preserving the n-step model: We start with $x=(s, a), x'=(s', a')$. Set $c(\zeta_{t}) = [s_{t+1}, r_{t}]$ then $\mathcal C=[N, V]$, where $N$ is the discounted state visitation count \footnotemark[27] and $V$ is the state value. Two $x$s with the same state visitation and value for all policies must have the same transitions. {\color{red}(need to prove?!?)}
+  \item Preserving the optimal state-action value: Again, we start with $x=(s, a), x'=(s', a')$. Next, we pick $c(\zeta_{t}) = r_{t}$ which means $\mathcal C(x, \pi) = Q^{\pi}(s, a)$.
 \end{itemize}
+
+\footnotetext[27]{If we have encoded the states as onehots.}
 
 \subsubsection{Inference of the similarity}
 
@@ -316,11 +286,11 @@ preservation of the optimal state-action value function.
 In the RL setting, we are often not given the transition or the reward function.
 Thus, we must infer similarities from noisy observations. There are two ways we can do this;
 
-We can infer that two objects are similar because we have seen it,
-we have sufficient data (/ experience) to allow us to conclude that
-$f(x_j) - f(x_i) \le \epsilon$ with probability $\delta$.
+\hspace{\parindent}We can infer that two objects are similar because we have seen it,
+we have sufficient data (/ experience) to allow us to conclude that, with high
+certainty, $x_i$ and $x_j$ are similar (with probability $\delta$, $f(x_j) - f(x_i) \le \epsilon$ ).
 
-Alternatively, we can infer that two objects are similar because we have found a pattern.
+\hspace{\parindent}Alternatively, we can infer that two objects are similar because we have found a pattern.
 For example, we might have seen that rotations of $45, 90, 135$$, 180, 225$, are all similar,
 therefore we guess that rotations of $270, 315$ are also similar.
 This motivates our work on symmetric abstractions \ref{symmetric-abstractions}.
@@ -338,11 +308,11 @@ We need to be able to evaluate these.}
 Ideally we would pick the most 'coarse' abstraction, as a coarse abstraction means we have grouped together many objects.
 Thus it has potential for the greatest increases in computational and sample efficiency.
 But. Coarseness is not the only property of an abstraction we care about.
-It must also allow us to represent near optimal policies and it must allow us
+An abstraction must also allow us to represent near optimal policies and it must allow us
 to efficiently find those near optimal policies.
 
 Ideally, we would be able to summarise the 'coarseness', 'sub-optimality' and 'efficiency' all in a single number.
-Then we could try to optimise it. But for now, let's consider these constraints on 'good' abstractions.
+Then we could try to optimise it. But for now, let's define these constraints on 'good' abstractions.
 
 \subsubsection{Coarse abstractions}
 
@@ -355,8 +325,8 @@ notion of similarity (more things are considered similar). \footnotemark[24]
 
 \footnotetext[24]{(Coarseness captures concepts such as a 'high level' abstraction or a 'general' abstraction).}
 
-\textit{We say [abstraction] $\phi_2$ is coarser than [abstraction] $\phi_1$, denoted $\phi_1 \ge \phi_2$,
-iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$.} \ref{Littman2006}
+\textit{We say [state abstraction] $\phi_2$ is coarser than [state abstraction] $\phi_1$, denoted $\phi_1 \ge \phi_2$,
+iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$.} \cite{Littman2006}
 
 Any time $s_1$ and $s_2$ are considered similar in an abstraction, then a coarser
 abstraction will also consider them to be similar, and there might also be other similar states. \footnotemark[25]
@@ -369,12 +339,12 @@ $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.}
 \end{displayquote}
 
 By throwing away inessential details;
-\begin{enumerate}
+\begin{itemize}
   \tightlist
   \item there is less to compute.
   \item we will not waste time exploring them.
   \item we have reduced the variance of our observations and thus allow quicker learning.
-\end{enumerate}
+\end{itemize}
 
 These arguments have been formalised in the case of symmetries and are described in \ref{symmetric-exploitation}.
 
@@ -439,21 +409,19 @@ Thus, when applying a greedy update to the Bellman equation, we are going to con
 
 {\color{red}but the new Q values might change the topology of the problem?!?!}
 
-\footnotetext[26]{This argument needs to be formalised. But, related work has shown that if the value of the optimal action is not preserved then
-applying the Bellman equation no longer guarantees that optimal policies are also optimal in the abstraction. \cite{Jong2005}
-}
+\footnotetext[26]{This argument needs to be formalised. So far, we only have empirical evidence of this. Also, related work has shown that if the value of the optimal action is not preserved then applying the Bellman equation no longer guarantees that optimal policies are also optimal in the abstraction. \cite{Jong2005}}
 
 \paragraph{Efficient exploration:} \textit{What is needed for efficient exploration. And when is 'it' preserved?}
 
 For $Q$-learning, Jin el at. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$)\footnotemark[13] can be
 achieved with a UCB-Bernstein type exploration bonus, compared to the inefficient exploration ($\mathcal O(\sqrt{H^4SAT})$),
 achieved by the UCB-Hoeffding type exploration bonus. To achieve this, the UCB-Bernstein type exploration bonus needed to incorporate an
-estimate the variance of the values, while the Hoeffding exploration bonus relied only on visitation counts.
+estimate the variance of the values, while the Hoeffding exploration bonus relies only on visitation counts.
 
 \footnotetext[13]{$\mathcal O(\sqrt{H^3SAT})$ tells us that the expected regret scales, in the worst case, as a function of $\sqrt{H^3SAT}$.
 Where $H$ is the planning horizon, S is the size of the state space, $A$ is the size of the action space and $T=KH$, where $K$ is the total number of episodes played.}
 
-This tells us that, if we want to preserve our ability to efficiently explore (in the sense above) we need to preserve the value for all policies.
+This tells us that, if we want to preserve our ability to efficiently explore (in the sense above) we need to preserve the  ability to accurately estimate the variance of the value function.
 
 % If the value under the abstraction of even a single state is wrong, it could arbitrarily change the variance estimates
 % (well, that isnt true...?!? depends on the value of the other states we might share with)
@@ -475,16 +443,16 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 
 {\color{red}TODO}
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-So, now that we have a notion of better / worse abstractions. Let's consider the abstractions
-that Li et al. \cite{Littman2006} defined.
-
-Li et al. \cite{Littman2006} show that $\phi_G \le \phi_{\text{model}} \le \phi_{Q_{\pi}} \le \phi_{Q^{* }} \le \phi_a^{* } \le \phi_{\pi^{* }}$
-
-So we should prefer $\phi_{\pi^{* }}$? But.
-There exist examples where the optimal policy found using $\phi_{\pi^{* }}$ is not optimal in the ground MDP \cite{Jong2005}.
-So the best choice appears to be $\phi_a^{* }$.
+% \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+%
+% So, now that we have a notion of better / worse abstractions. Let's consider the abstractions
+% that Li et al. \cite{Littman2006} defined.
+%
+% Li et al. \cite{Littman2006} show that $\phi_G \le \phi_{\text{model}} \le \phi_{Q_{\pi}} \le \phi_{Q^{* }} \le \phi_a^{* } \le \phi_{\pi^{* }}$
+%
+% So we should prefer $\phi_{\pi^{* }}$? But.
+% There exist examples where the optimal policy found using $\phi_{\pi^{* }}$ is not optimal in the ground MDP \cite{Jong2005}.
+% So the best choice appears to be $\phi_a^{* }$.
 
 \subsubsection{The complexity of abstraction}
 
@@ -499,77 +467,34 @@ this results in a narrow opportunity for performance improvements, but a well-de
 In the ... transfer case, the key challenge is predicting the usefulness of a particular [abstraction] to future tasks, given limited data.""}\cite{Konidaris2019}
 \end{displayquote}
 
-\paragraph{Single task case}
+For arbitrary problems, as often as we guess right about "the best abstraction for this task" or "the usefulness of a particular abstraction to future tasks",
+there will be another set of future tasks where we are wrong. This is a result of the no free lunch theorem \ref{Wolpert1996}. However, we can hope for good performance on restricted classes of problems.
 
-For example, in model-based RL. The agent attempts to learn (/ discover) the
-transition and reward functions. Once discovered, they can be used to find the optimal policy, without requiring data!
-But, to learn the transition and reward function, a lot of data might have been needed.
-
-In this case, the cost of discovery, the cost to learn the transition functions can be offset
-by the ability for the agent to easily generalise to new tasks (aka new reward functions).
-As it does not need to relearn the transition function.
-
-But, there do exist learning problems where the transition function has many
-factors of variance, while the value can be easily predicted from observations.
-Thus ...
-{\color{red}not the best example for talking about abstraction!?}
-
-\paragraph{Transfer case}
-
-For arbitrary problems, as often as we guess right about the "usefulness of a particular [abstraction] to future tasks",
-there will be another set of future tasks where we are wrong. This is a result of the
-no free lunch theorem. \ref{Wolpert1996}
-
-???
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-To evaluate an abstraction for the single task case, we need to analyse the
-complexity of all three steps (abstract, solve, lift), and compare them against
+To evaluate an abstraction for the single task case we need to compare the complexity of
+finding a solution via abstraction (abstract, solve, lift) against the performance against
 solvers that do not abstract.
 
-In the transfer case, we need to construct a set of task. And count the
-complexity of discovering the abstraction, and then the cost of solving
-and lifting it for each new task.
+In the transfer case, we need to construct a set of task. And accumulate the
+complexity of discovering the abstraction, and the complexity of solving
+and lifting the abstraction for each new task.
 
-\subsection{Related work: Representation learning for RL}
-
-% \begin{displayquote}
-%   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties} (Littman / Walsh.)
-% \end{displayquote}
-
-{\color{red}There is a lot to talk about here...}
-
-Representations that attempt to preserve
-\begin{itemize}
-\tightlist
-  \item the mutual information between ? and ??.
-  \item knowledge required to predict the next state
-  \item ... geometric bellamere
-  \item \cite{Nachum2018}
-  \item autoencoders...
-  \item next step prediction.
-\end{itemize}
-
-But with what guarantees?
-
-\subsection{Puzzles of interest?}
-
-{\color{red}move this somewhere else. and ref back to sources}
-There is a large amount of future work to be done if we want to understand abstractions for efficient RL.
-
-\begin{itemize}
-  \tightlist
-  \item the advantage of \textit{State and action abstraction} versus \textit{State-action abstraction},
-  \item the advantage of \textit{goal-like} versus \textit{option-like} temporal abstraction.
-  \item Are the three dimensions proposed above complete? Do they describe all abstractions of interest?
-  \item Are cumulants strictly superior to trajectory type similarity measures? (what about the trade off when you include their computational cost?)
-  \item What is the trade off of approximating $\int_{\pi \in \Pi}f(\pi)$ with $\int_{\pi \in B \subset \Pi}f(\pi)$?
-  How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
-  \item The topology of abstractions (partial ordering). Seems important!? Can use somehow?
-  \item What is necessary for the preservation of Bellman equations ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions?
-\end{itemize}
-
-% The comparison of topologies constructed using varios k length options.
-% With increaseing k, the topology of the abstraction is always coarser??
-% Are these properties for evaluation necessary and / or sufficient for good performance of an abstraction?
+% \subsection{Related work: Representation learning for RL}
+%
+% % \begin{displayquote}
+% %   \textit{[Abstraction] is a mapping from one problem representation to a new representation, while preserving some properties} (Littman / Walsh.)
+% % \end{displayquote}
+%
+% {\color{red}There is a lot to talk about here...}
+%
+% Representations that attempt to preserve
+% \begin{itemize}
+% \tightlist
+%   \item the mutual information between ? and ??.
+%   \item knowledge required to predict the next state
+%   \item ... geometric bellamere
+%   \item \cite{Nachum2018}
+%   \item autoencoders...
+%   \item next step prediction.
+% \end{itemize}
+%
+% But with what guarantees?

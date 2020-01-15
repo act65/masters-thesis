@@ -1,4 +1,4 @@
-\chapter{Markov Decision Problems}
+\chapter{Markov Decision Problems}\label{mdps}
 
 Reinforcement learning (RL) refers to the set of solutions to a type of problem.
 This general, reinforcement learning, problem, has two main properties;
@@ -9,7 +9,7 @@ is a 5". Teacher: "No, it's a 6"}), in RL the learner only receives evaluations 
 that digit is a 5". Teacher: "No."}). This means the student needs to explore the possible answers via some trial-and-error search.
 (\textit{Student: "Is it a 4?". Teacher: "No." Student: "How about a 0?". Teacher: "No." ... Student: "A 6?". Teacher: "Yes."})
 
-Ontop of terse teachers, many actions may be taken before any evaluation is received, thus requiring credit to be assigned to past actions,
+On top of terse teachers, many actions may be taken before any evaluation is received, thus requiring credit to be assigned to past actions,
 (\textit{Student: "Is it a 4? How about a 0? A 6? Maybe a 7?". ... Teacher: "No".})
 often leaving the learner wondering: "what did I do to deserve this?" (see
 \href{https://www.youtube.com/watch?v=Qv4H81gEGDQ}{pigeon superstition} for an amusing
@@ -37,7 +37,7 @@ delayed rewards. For example we could make a RL problem that is;
 \item
   Discrete versus continuous \cite{Bertsekas1995}
 \item
-  Given knowledge of the underlying model  or not\cite{Sutton1991}
+  Given knowledge of the underlying model or not \cite{Sutton1991}
 \end{itemize}
 
 \begin{displayquote}
@@ -46,8 +46,11 @@ delayed rewards. For example we could make a RL problem that is;
 
 \begin{displayquote}
   A better question might be: \textit{What is the simplest setting we can
-  consider that still poses an interesting challenge to the ML and / or RL communities?}
+  consider that still poses an interesting challenge to the ML and / or RL communities?}\footnotemark[26]
 \end{displayquote}
+
+\footnotetext[26]{I will often start a chapter / section / paragraph with a question like this. These
+questions are not meant as research questions. Rather, they are designed to orient the reader.}
 
 Markov decision problems (MDPs) appear to be a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
 simple setting to analyse RL.
@@ -90,8 +93,6 @@ D(\zeta, \pi, \tau, d_0) &= d_0(\zeta^s_0) \prod_{t=1}^{\infty} \pi(\zeta^a_t|\z
 
 % If we wanted we could pick our actions before we make observations,
 % reducing the search space to only \(|A| \times T\). But this is a bad idea\ldots{} example.
-
-You can find examples of some simple MDPs in \ref{MDP-examples}.
 
 \section{Sequential decision problems}
 
@@ -140,7 +141,7 @@ This means that;
 \pi^{*} : \;\; V^{\pi^* }(s) \ge V^{\pi}(s) \quad \forall \pi\in \Pi \;\;\forall s\in S\\
 \end{align*}
 
-Which is implied by our earlier definition, but the optimal policy also has some other properties of note.\cite{Bertsekas1996}
+Which is implied by our earlier definition, but the optimal policy also has other properties of note.\cite{Bertsekas1996}
 
 \begin{itemize}
 \tightlist
@@ -153,27 +154,23 @@ Which is implied by our earlier definition, but the optimal policy also has some
 
 \subsection{The Bellman Equations}
 
-{\color{red}how to intro / motivate bellman and TD??}
+\begin{displayquote}
+  \textit{But, how can we (efficiently) find the optimal policy?}
+\end{displayquote}
 
-The expected return (value) can also be rewritten in a recursive manner,
-which is known as the Bellman equation.
+If we randomly pick policies and evaluate them, we would need to test (in the worst case),
+$\mathcal O(|A|^{|S|})$ policies. However, if we use the \ref{eq:bellman-eqn} to
+guide our search we need (in the worst case) $\mathcal O(|S|^2|A|)$ evaluations.
+
+The Bellman equation simply the expected return (value), rewritten in a recursive manner.
 
 \begin{align*}
 Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
 V^{\pi}(s) &= \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
 \end{align*}
 
-The formulation suggests a potential way to solve a MDP, through generalise policy iteration.
-Pick a policy randomly, estimate its value, apply the Bellman operator, to get state-action values.
-Construct a new policy by acting greedily with resepct to the state-action value. Repeat.
-
-\begin{align*}
-\pi(a| s) &= \mathop{\text{argmax}}_a Q(s, a) \label{eq:greedy}\tag{greedy}\\
-\end{align*}
-
-% \begin{align}
-% T(V) &= \mathop{\text{max}}_a \big[r + \gamma PV\big] \\
-% \end{align}
+Note: The Bellman equation is sometimes written the operator, $T$, where
+$T(Q^{\pi}) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a), a'\sim \pi(\cdot | s)} [Q(s', a')]$.
 
 \subsection{Complexity}
 
@@ -223,8 +220,9 @@ r &\in \mathbb R^{n\times m} \tag{the reward fn}
 
 A result of this formulation is that we concisely write and solve the \eqref{eq:bellman-eqn}. \footnotemark[0]
 
-\footnotetext[0]{Note that the ability to solve the Bellman equation analytically does not allow
-us to solve for the optimal policy analytically.}
+\footnotetext[0]{Note that the ability to solve the Bellman equation analytically (via the value functional)
+does not allow us to solve for the optimal policy analytically. The value functional allows us to evaluate a single policy.
+To find the optimal policy, we many need to make many evaluations.}
 
 \begin{align}
 V &= r_{\pi} + \gamma P_{\pi} V \tag{tabular Bellman eqn}\\
