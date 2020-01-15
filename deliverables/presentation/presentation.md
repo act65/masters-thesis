@@ -13,8 +13,6 @@ header-includes: \metroset{progressbar=frametitle,sectionpage=progressbar}
 
 > (learning to) make optimal decisions
 
-Context ($S$), potential actions ($A$), utility function / reward ($r$).
-
 __Markov decision problems__
 
 \begin{align*}
@@ -26,20 +24,10 @@ r: S \times A \to \mathbb R^+ \tag{the reward fn}\\
 ## MDPs
 
 \begin{align*}
-\pi: S \to \Delta(A)  \tag{the policy}\\
-s_{t+1} \sim \tau(s_t, a_t), a_t \sim \pi(s_t) \tag{sampled actions and states} \\
-V(\pi) = \mathop{\mathbb E} [\sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) ] \tag{value estimate} \\
-\pi^{* } = \mathop{\text{argmax}}_{\pi} V(\pi) \tag{the optimisation problem}
-\end{align*}
-
-## Alternative formulation
-
-\begin{align*}
-V(\pi^{* }) \equiv  \mathop{\mathbb E}_{s_0\sim d_0} \mathop{\text{max}}_{a_0} r(s_0, a_0)
-+ \gamma  \mathop{\mathbb E}_{s_1\sim p(\cdot | s_0, a_0)} \Bigg[ \\ \mathop{\text{max}}_{a_1} r(s_1, a_1)
-+ \gamma \mathop{\mathbb E}_{s_2\sim p(\cdot | s_1, a_1)} \bigg[ \\ \mathop{\text{max}}_{a_2} r(s_2, a_2)
-+ \gamma  \mathop{\mathbb E}_{s_3\sim p(\cdot | s_2, a_2)} \Big[
-\dots \Big] \bigg] \Bigg]
+\pi: &S \to \Delta(A)  \tag{the policy}\\
+s_{t+1} &\sim \tau(\cdot| s_t, a_t), a_t \sim \pi(\cdot| s_t) \tag{sampled actions and states} \\
+V(\pi) &= \mathop{\mathbb E}_{D(\pi)} [ \gamma^0 r(s_0, a_0) + \gamma^1 r(s_1, a_1) + \dots + \gamma^t r(s_t, a_t)] \tag{value estimate} \\
+\pi^{* } &= \mathop{\text{argmax}}_{\pi} V(\pi) \tag{the optimisation problem}
 \end{align*}
 
 
@@ -71,12 +59,12 @@ Goal: Find and mine a diamond.
 
 ## What are some existing exploration strategies?
 
-- Injecting noise: [Epsilon greedy](), [boltzman]()
+- Injecting noise: [Epsilon greedy](), [Boltzman]()
 - Optimism in the face of uncertainty
-- Bayesian model uncertainty and [Thompson sampling]()
 - [Counts](https://arxiv.org/abs/1703.01310) / densities and [Max entropy](https://arxiv.org/abs/1812.02690)
 - Intrinsic motivation ([Surprise](https://arxiv.org/abs/1808.04355), [Reachability](https://arxiv.org/abs/1810.02274), Randomly picking goals)
 - [Disagreement](https://arxiv.org/abs/1906.04161)
+- Bayesian model uncertainty and [Thompson sampling]()
 
 Note. They mostly require some form of memory and / or a model of uncertainty.
 Exploration without memory is just random search...
@@ -87,8 +75,8 @@ In the simplest setting, we can just count how many times we have been in a stat
 We can use this to explore states that have have low visitation counts.
 
 \begin{align*}
-P(s=s_t) = \frac{\sum_{s=s_t} 1 }{\sum_{s\in S}1} \tag{normalised counts} \\
-a_t = \mathop{\text{argmin}}_{a} P(s=\tau(s_t, a)) \tag{pick the least freq $s$} \\
+P_{Count}(s=s_t) &= \frac{\sum_{s_t=\mathcal H} 1 }{\sum_{s\in \mathcal H}1} \tag{normalised counts} \\
+\pi_{exp}(s_t) &= \mathop{\text{argmin}}_{a} \int_{s_{t+1}}P_{Count}(s_{t+1})\tau(s_{t+1} | s_t, a) \tag{pick the least freq $s$} \\
 \end{align*}
 
 ## Intrinsic motivation
@@ -110,10 +98,10 @@ $$
 ## Maximum entropy
 
 \begin{align*}
-P^{\pi}(\xi | \pi) = d_0(s_0)\pi(a_0 | s_0)\tau(s_{1} | s_0, a_0)\pi(a_1 | s_1)\tau(s_{2} | s_1, a_1) \dots \tag{probability of a trajectory} \\
-d^{\pi}(s, t) = \sum_{\text{all $\xi$ with $s = s_t$}}P^{\pi}(\xi | \pi) \tag{all trajectories with $s$ at $t$}\\
-d^{\pi}(s) = (1-\gamma)\sum_{t=0}^{\infty} \gamma^t d^{\pi}(s, t) \\
-\pi^{* } = \mathop{\text{argmax}}_{\pi} \mathop{\mathbb E}_{s \sim d^{\pi}} [ -\log d^{\pi}(s)] \\
+P^{\pi}(\xi | \pi) &= d_0(s_0)\pi(a_0 | s_0)\tau(s_{1} | s_0, a_0)\pi(a_1 | s_1)\tau(s_{2} | s_1, a_1) \dots \tag{probability of a trajectory} \\
+d^{\pi}(s, t) &= \sum_{\text{all $\xi$ with $s = s_t$}}P^{\pi}(\xi | \pi) \tag{all trajectories with $s$ at $t$}\\
+d^{\pi}(s) &= (1-\gamma)\sum_{t=0}^{\infty} \gamma^t d^{\pi}(s, t) \\
+\pi^{* } &= \mathop{\text{argmax}}_{\pi} \mathop{\mathbb E}_{s \sim d^{\pi}} [ -\log d^{\pi}(s)] \\
 \end{align*}
 
 ## Inductive biases in exploration strategies
@@ -131,16 +119,11 @@ So my questions are;
 ## Inductive bias
 
 > Of the possible candidates, which one should we pick?
-> Well, we could try each of them, or... just pick the one we think will work, a priori.
 
 - The 'simplest'.
 - The one most likely to generalise.
 
-A set of priors, that guide the search where data doesn't.
-
-<!-- Underconstrained problems. -->
-
-<!-- Occam's Razor and overfitting. -->
+We want a set of priors, that guide the search where data doesn't.
 
 ## Implicit regularisation
 
@@ -171,7 +154,7 @@ We know;
 
 - what furnaces are 'for' (ore -> metal)
 - that coal is needed for heat (furnace + coal -> on(furnace))
-- that iron can be profuced via a furnace (on(furnace) + iron ore -> iron)
+- that iron can be produced via a furnace (on(furnace) + iron ore -> iron)
 
 ![A furnace](../../pictures/images/furnace.png){width=200}
 ![Smelting](../../pictures/images/forging.png){width=200}
@@ -213,15 +196,15 @@ Also;
 
 > I took 10,000 actions, now I have an axe. It doesn't appear to help me get diamonds.
 
-> After trying all 2,000 different ways of cutting down a tree. I am ready to conclude that you cannot get diamonds from cutting down trees. What about exploding a tree?
+> After trying all 2,135 different ways of cutting down a tree. I am ready to conclude that you cannot get diamonds from cutting down trees.
 
-## How do RL algorithms implicitly regularise exploration?
+## How do RL algorithms implicitly bias exploration?
 
 Exploration via;
 
 Surprise
 
-- Has a bias towards states with more noise in them.
+- Is drawn towards states with more noise in them.
 
 Density
 
@@ -233,7 +216,7 @@ Intrinsic motivation
 
 ## The state visitation distribution
 
-> How can we reason, in a principled manner, about bias / regularisation in exploration strategies?
+> How can we reason about bias in exploration strategies in a principled manner?
 
 $$
 \begin{aligned}
