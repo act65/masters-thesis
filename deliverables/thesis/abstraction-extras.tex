@@ -25,15 +25,14 @@ Weaker notions of similarity.
 
 \section{LMDPs}
 
-\subsection{Derivation}
+\subsection{LMDP solutions}\label{lmdp-derivation}
 
-\subsubsection{LMDP solutions}
+% Pick $a \in A$, versus, pick $\Delta(S)$. $f: S\to A$ vs $f:S \to \Delta(S)$.
 
-Pick $a \in A$, versus, pick $\Delta(S)$. $f: S\to A$ vs $f:S \to \Delta(S)$.
+In the original Todorov paper \cite{Todorov2009}, they derive the LMDP equations for minimising a cost function. This maximisation derivation just changes a few negative signs around.
+% Although there is also a subtle change in the interpretation of what the unconstrained dynamics are doing. (??? explain)
 
-In the original Todorov paper, they derive the LMDP equations for minimising a cost function. This maximisation derivation just changes a few negative signs around. Although there is also a subtle change in the interpretation of what the unconstrained dynamics are doing. (??? explain)
-
-\begin{align}
+\begin{align*}
 V(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} V(s') \tag{1}\\
 \\
 &= q(s) + \mathop{\text{max}}_{u} \bigg[ \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \log(\frac{p(s' | s) }{ u(s' | s)}+\gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \big[V(s')\big] \bigg] \tag{2}\\
@@ -46,19 +45,18 @@ u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s
 \log(z_{u^{* }}(s)) &= q(s) + \log \big(\sum_{s'} p(s' | s) z_{u^{* }}(s')^{\gamma}\big) \tag{9}\\
 z_{u^{* }}(s) &= e^{q(s)}\big(\sum_{s'} p(s' | s) z_{u^{* }}(s')^{\gamma}\big) \tag{10}\\
 z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{11}\\
-\end{align}
+\end{align*}
 
-By definition, an LMDP is the optimisation problem in (1). We can move the $\text{max}$ in (2), as $q(s)$ is not a function of $u$. Also in (2), expand the second term using the definiton of KL divergence, the negative from the KL cancels the second terms negative. (3) Define a new variable, $z(s) = e^{v(s)}$. Also, use the log rule to move the discount rate. (4) Both expectations are under the same distribution, therefore they can be combined. Also, using log rules, combine the log terms. (5) Define a new variable that will be used to normalise $p(s' | s)z(s')^{\gamma}$. (6) Multiply and divide by $G(s)$. This allows us to rewrite the log term as a KL divergence as now we have two distributions, $u(\cdot | s)$ and $\frac{p(\cdot | s)z(\cdot)^{\gamma}}{G(s)}$. (7) The change to a KL term introduces a negative, instead of maximising the negative KL, we minimise the KL. Also in (7) the extra G(s) term can be moved outside of the expectation as it is not dependent in $s'$. (8) Set the optimal policy to minimise the KL distance term. (9) Since we picked the optimal control to be the form in (8), the KL divergence term is zero. (10) Move the log. (11) Rewrite the equations for the tabular setting, giving a $z$ vector, uncontrolled dynamics matrix.
+By definition, an LMDP is the optimisation problem in (1). We can move the $\text{max}$ in (2), as $q(s)$ is not a function of $u$. Also in (2), expand the second term using the definiton of KL divergence, the negative from the KL cancels the second terms negative. (3) Define a new variable, $z(s) = e^{v(s)}$. Also, use the log rule to move the discount rate. (4) Both expectations are under the same distribution, therefore they can be combined. Also, using log rules, combine the log terms. (5) Define a new variable that will be used to normalise $p(s' | s)z(s')^{\gamma}$. (6) Multiply and divide by $G(s)$. This allows us to rewrite the log term as a KL divergence as now we have two distributions, $u(\cdot | s)$ and $\frac{p(\cdot | s)z(\cdot)^{\gamma}}{G(s)}$. (7) The change to a KL term introduces a negative, instead of maximising the negative KL, we minimise the KL. Also in (7) the extra G(s) term can be moved outside of the expectation as it is not dependent in $s'$. (8) Set the optimal policy to minimise the KL distance term. (9) Since we picked the optimal control to be the form in (8), the KL divergence term is zero. (10) Move the log. (11) Rewrite the equations for the tabular setting, where $z$ is vector, and the uncontrolled dynamics are a matrix.
 
-\subsubsection{MDP Linearisation}
+\subsection{MDP Linearisation}\label{mdp-Linearisation}
 
 The ability to solve LMDPs is great, but it's only useful if we can map MDPs into LMDPs, solve them, and map the solution back.
-Our goal here is to find a LMDP that has 'similar' structure to the original MDP we were given. \footnotemark[1]
+Our goal here is to find a LMDP that has 'similar' structure to the original MDP we were given.\footnotemark[1]
 
 \footnotetext[1]{This derivation is not the same as in Todorov. He sets $b_a \neq r, b_a = r - \sum P \log P$.}
 
-
-\begin{align}
+\begin{align*}
 \forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \tag{1}\\
 P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{2}\\
 r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{3}\\
@@ -74,15 +72,18 @@ r_a &= D_{as'} ( q \mathbf 1 - m_{s'}) \;\;\forall s \tag{9}\\
 r_a &= D_{as'}c_{s'}  \;\;\forall s \tag{10}\\
 c_{s'} &= r_aD_{as'}^{\dagger} \;\;\forall s\tag{11}\\
 q &= \log \sum_{s'} e^{c_{s'}} \;\;\forall s\tag{12}\\
-m_{s'} &= q - c_{s'} \;\;\forall s\tag{14}\\
-\end{align}
+m_{s'} &= q - c_{s'} \;\;\forall s\tag{13}\\
+\end{align*}
 
-
-Therefore we have $|A|$ linear relationships, for each $s\in S$.
-
-(5) KL introduces a negative, but we also use the log rule to move $p(s'|s)$ to the nominator, adding another negative, and thus cancelling. Yielding the cross entropy between .. and ... .
-
-(11) The More-Penrose pseudo inverse. We apply to the RHS... ???.
+We want to pick $p, q$ such that the dynamics of every action in the original MDP can be represented with a control (2),
+and every reward generated by an action, can be given by a combination of the
+state rewards and the $\text{KL}$-divergence between the true dynamics and a control (3).
+Combine (2), (3) to yeild (4). Expand the definition of $\text{KL}$-divergence to get (5).
+Now, we move to a tabular representation., where $m_{s'}[s]$ and $c_{s'}[s]$ are vectors, and
+$D_{as'}[s]$ is a matrix, defined in (6), (7), (8). With these new definitions, we can rewrite equation (5)
+as (9). The expectation can be moved to include $q$ because it sums to one.
+Substitute equation (8) into (9) to get (10). Solve the linear equation in (11) to get the value of $c_{s'}$.
+Use the value of $c_{s'}$ to calculate the state rewards and unconditioned dynamics by using equations (12), (13) and (6).
 
 \section{Symmetry}
 

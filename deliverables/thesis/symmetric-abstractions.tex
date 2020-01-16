@@ -43,7 +43,7 @@ A useful starting point is finite groups.
 A group is a set, $G$ (\textit{say the set of rotations, $\{0, 90, 180, 270\}$}),
 and an operation $\circ$ that combines any two elements $a$ and $b$ to form
 another element (\textit{rot $90$ composed with rot $180$ is rot $270$, or} $a \circ b = a + b \;\text{mod} 360$).
-To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four requirements known as the group axioms:
+To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four requirements;
 
 \begin{itemize}
 	\tightlist
@@ -161,7 +161,15 @@ of a partition and only using that one. Averaging over orbits. ...
 
 % This is about generalising using an inductive bias towards symmetry.
 
-Symmetry is a stricter notion of similarity. How can it be discovered?
+Symmetry is a stricter notion of similarity.
+If $x, x' \in X$ are symmetric, then there must exist $f$ such that $f(x) = x'$.
+Where, $(X, f)$ must satisfy the group axioms, (closure, associativity, identity, inverse).
+
+The key property we are interested in is closure.
+Two $x, x'$ are considered symmetric if $\exists g\in G$
+
+
+How can it be discovered?
 
 Relationship to disentanglement. \cite{Higgins2018} which makes a lot of sense because ...
 

@@ -6,12 +6,10 @@ def symmetry_measure(x):
     """
     n = x.size
 
-    ### calculate which transformation the objects are invariant to
+    ### calculate the invariant transforms
     permutations = np.stack(np.eye(n)[list(itertools.permutations(range(n), n)), :])
-
     diffs = x - np.einsum('ijk,kl->ijl', permutation, x)
-    errs = np.linalg.norm(diffs, 'inf', axis=(1,2))  # shape = [n_permutations]
-    # take the inf norm, as the objects are invariant, if ALL objects are invariant
+    errs = np.linalg.norm(diffs, '2', axis=(1,2))  # shape = [n_permutations]
 
     ### calculate how close the invariant tansforms are to a subgroup
     weights = sigmoid(-errs)  # weights. close to 1 if err is close to zero
@@ -48,6 +46,7 @@ def symmetry_measure(x):
     return min([is_isomorphic(subgroup, construct_graph(x)) for subgroup in all_subgroups(G)])
 
 # NEED to reread the MDP homomorphism papers!
+
 
 def main():
 
