@@ -10,55 +10,59 @@ OpenAI Five \cite{Berner2019}, the Dota 2 playing AI that beat OG, the winners o
 trained over 10 months, at its peak, collected 900 years of experience per day using
 128,000 CPUs and 256 GPUs.
 
-Is reinforcement learning fundamentally inefficient, or can we do better?
-
-\section{Motivation}
-
-% Motivate abstraction
-
-Abstractions appear to essential for intelligent behaviour (ref some psyc / neuro paper?!).
-
-We explore the use of abstraction for efficient reinforcement learning.
-
-% Dimensionality reduction is not enough. Want to be able to preserve the important structure.
-
-% What strategies are there to improve the efficiency of RL?
-
-
-% Existing theory has derived bounds (such as...). But these bounds are quite pessimistic (loose / not to be trusted) because;
-% don't exploit the structure within 'natural' MDPs. Sparsity, symmetry, continuity, ...
-
-%  research question goes here!
-
 \begin{displayquote}
- \textit{Why do we care?}
+\textit{Is reinforcement learning fundamentally inefficient, or can we do better?}
 \end{displayquote}
 
-We care because we want more efficient algorithms.
-By throwing away inessential details, there is less to compute.
-By throwing away inessential details, we dont need to explore them.
-By throwing away inessential details, we reduce the variance of our
-observations (allowing quicker learning).
 
+\section{Motivation of this thesis}
+
+Abstraction is about preserving essential structure and discarding inessential details.
+We want to apply abstraction to reinforcement learning in the hope of building more efficient reinforcement learners.
+
+\begin{displayquote}
+\textit{By throwing away inessential details, there is less to compute. \newline
+By throwing away inessential details, we don't need to explore them. \newline
+By throwing away inessential details, we reduce the variance of our \newline
+observations (allowing quicker learning).}
+\end{displayquote}
+
+% 1) Abstractions appear to essential for intelligent behaviour (ref some psyc / neuro paper?!).
+%
+% 2) Dimensionality reduction is not enough. Want to be able to preserve the important structure.
+%
+% % What strategies are there to improve the efficiency of RL?
+%
+% %  research question goes here!
+
+The main goal of this thesis is to understand:
+
+\begin{displayquote}
+\textit{to what extent can abstractions increase the efficiency of reinforcement learning?}
+\end{displayquote}
 
 \section{Overview}
 
-First we pick Markov Decision Problems as our setting for studying abstractions (for RL) and give a slightly non-standard, but general introduction to them \ref{mdps}.
-Then we explore abstractions (for RL) and existing theory for understanding abstraction (for RL) and organise it into a clearer framework \ref{abstraction-rl}.
+Given the goal above, we pick Markov Decision Problems as our setting for studying abstractions\footnotemark[43] and give a slightly non-standard, but general introduction to them \ref{mdps}.
+Then we explore abstractions and existing theory for understanding abstraction and attempt to organise it in to a clearer framework \ref{abstraction-rl}.
 Next, we analyse an existing method of abstraction for efficient control and find that it does not work in general \ref{solveable-abstractions}.
 Finally, we build an abstraction using symmetries \ref{symmetric-abstractions}.
 
+\footnotetext[34]{In general, when we state abstractions, we mean abstractions for reinforcement learning.}
+
 \section{Contributions}
+
+In this thesis, we;
 
 \begin{itemize}
   \tightlist
   \item Construct a family of similarity measures for building abstractions for RL.
-  \item Explore a framework for evaluating abstractions.
+  \item Review the fields ability to evaluate abstractions.
   \item Clarify that a well cited method of abstraction doesn't work in general. \ref{lmdp-validation}
-  \item Evaluate a method of combining symmetric abstractions and Thompson sampling \ref{thompson-sampling}
-  \item Generalise the notion of MDP homomorphism to temporal abstractions \ref{temporal-abstraction}
+  \item Evaluate a method of combining symmetric abstractions and Thompson sampling \ref{thompson-sampling} {\color{red}WIP}
+  \item Generalise the notion of MDP homomorphism to temporal abstractions \ref{temporal-abstraction} {\color{red}WIP}
   \item Explore a new task for understanding a learners ability to generalise \ref{action-space-experiments}
   \item We explore the iteration complexity, effect of discounting, and the density of the Value functional polytope. \ref{polytope-extras}
-  \item A way to visualise the dynamics of learning an MDP in higher dimensions \ref{graph-vis}. It's utility is unclear.
-  \item Formulate a (new?) type of model based learner. \ref{model-iteration}
+  \item Provide a way to visualise the dynamics of learning an MDP in higher dimensions \ref{graph-vis}. It's utility is unclear.
+  \item Formulate a type of model based learner \ref{model-iteration}, which has some serious, but potentially solvable, issues with larger problems.
 \end{itemize}

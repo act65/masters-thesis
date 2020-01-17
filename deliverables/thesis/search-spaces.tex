@@ -64,7 +64,7 @@ Dadashi et al. remark; the polytope gives a clear illustration of the following 
 
 Let's try to understand these.
 
-\paragraph{Dominance} {\color{red} that isnt correct!?}
+\paragraph{Dominance} {\color{red}I dont have a good explanation for this.}
 
 \paragraph{Monotonicity} If $V(s_2)$ increases then $V(s_1)$ must either increase or stay the same.
 This can be seen in the last equation below;
@@ -81,10 +81,8 @@ If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ (ie. there is some change of transitioning
 then $V(s_1)$ increases with $V(s_2)$, yielding a 'positive orthant'.
 $\sum_a P(s_2|s_1, a)\pi(a|s) < 0$ is not possible.
 
-\paragraph{Continuity} The policy space is connected by definition, and the value function is continuous.
-Therefore the value space, the polytope, is connected. {\color{red}should give more details?!}
-
-% Further more, Dadashi et al show that ... Line theorem. s-deterministic policies.
+\paragraph{Continuity} The policy space is connected by definition, and the value function is a continuous function.
+Therefore the value space, the polytope, is connected.
 
 \subsubsection{Dynamics on the polytope}
 
@@ -107,7 +105,7 @@ Their results are intriguing. They show that different RL algorithms traverse th
 Some are not even constrained to the polytope. This left me wondering;
 
 \begin{displayquote}
-  \textit{How does a search algorithm interact with its search space to yield efficient search?}
+  \textsl{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
 
 \section{Search spaces for MDPs}\label{search-spaces-mdps}
@@ -125,7 +123,7 @@ search for this policy? We could search within;
 \end{itemize}
 
 \begin{displayquote}
-  \textit{Which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?}
+  \textsl{Which space is best? Which space allows us to find the optimal policy in the 'cheapest' manner?}
 \end{displayquote}
 
 Naively, we often think smaller search spaces are better. We would rather
@@ -153,7 +151,7 @@ policy iteration and policy gradients.
 \subsubsection{Policy iteration}
 
 In policy iteration, we search for the optimal policy by evaluating our current
-policy and then acting greedily. In our tabular setting, policy iteraction can be written as:
+policy and then acting greedily. In our tabular setting, policy iteration can be written as:
 
 \begin{algorithm}
 \caption{Policy iteration}
@@ -184,15 +182,9 @@ the current policy, then followed the current policy.}
 If there exists an action that achieves higher return than the current policies choice of action,
 then (because of the greedy step) PI will update the policy so it chooses that action.
 
-\footnotemark[7]
-
-\footnotetext[7]{Actually has connections to the simplex method. ref}
-
-{\color{red}ref for PI.}
-
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pi-polytope.png}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/pi-polytope.png}
 \caption{Each color shows PI applied to a different policy initialisation.
 The arrows point from the current policy to the policy after a step of PI. As we can see,
 PI jumps between the deterministic policies (the vertices of our polytope).
@@ -200,13 +192,11 @@ This is because of the greedy update step. Also. Some trajectories require two s
 because they jump to the lower right corner, and then to the top right.}
 \end{figure}
 
-\newpage
-
 \subsubsection{Policy gradients}
 
 This search is closely related to the deep learning / end-to-end paradigm.
 \textit{Simply write down what you want (the loss function),
-estimate its derivative and apply gradient ascent.}
+estimate its derivative and apply gradient descent.}
 
 In our case, the loss function is the state value function. And, we can estimate the derivative
 by differentiating the \ref{eq:value-functional} with respect to the policy.
@@ -237,29 +227,26 @@ from the edges of the polytope, where the gradients are not defined ($\log(0) = 
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/pg-polytope.png}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/pg-polytope.png}
 \caption{Examples of policy gradients: observe that most of the trajectories are purple,
 indicating that the majority of progress is made in the first 20\% of training.
 They converge very slowly once close to the optimal policy.}
 \end{figure}
 
 % Want to include upper / lower bounds!?
-{\color{red}??? Converges at a rate of $\frac{1}{t}$. As can be seen by ...}
-\cite{Agarwal2019a}.
+% {\color{red}??? Converges at a rate of $\frac{1}{t}$. As can be seen by ...}
+% \cite{Agarwal2019a}.
 
 \newpage
 
 \subsection{Value search}
 
-Alternatively, we can search through possible state values. But how can we ensure that our search will
-converge to a value that corresponds to a realisable policy? We can use Bellman's
-optimality operator to guide the search.
+Alternatively, we can search through possible state values, then infer the policy that achieves that value.
+But how can we ensure that our search will converge to a value that corresponds to a realisable policy? We can use Bellman's
+optimality operator to constrain the search.
 
 (For similar reasons to why policy iteration converges) The greedy step using the
 state-action values will find actions with higher value.
-
-{\color{red}(need to explain? why does stationarity mean optimality...?!)}
-Intuition about why it converges!? Contraction. Banach fixed-point theorem.
 
 \begin{algorithm}
 \caption{Value iteration}
@@ -269,11 +256,9 @@ Intuition about why it converges!? Contraction. Banach fixed-point theorem.
   \State t = 0
   \State $V_t = \mathcal N$ \Comment{Initialise randomly}
   \While{not converged}
-    \State $Q = r + \gamma PV_t$ \Comment{Bellman operator}
-    \State $\hat V = \text{max}_a Q(s, a)$  \Comment{Greedy}
-    \State $\hat V - V_t$ \Comment{Temporal difference}
-    \State $V_{t+1} = V_t + \eta \delta$ \Comment{Average}
-    \State t += 1
+    \State $\hat V = \text{max}_a T(Q)$  \Comment{Bellman optimality}
+    \State $V_{t+1} = V_t + \eta \hat V - V_t$ \Comment{Average temporal difference}
+    \State $t += 1$
   \EndWhile
   \State $\pi = \mathop{\text{argmax}}_{\pi} r_{\pi} + \gamma P_{\pi}V_t$
   \State \algorithmicreturn{ $\pi$}
@@ -282,18 +267,20 @@ Intuition about why it converges!? Contraction. Banach fixed-point theorem.
 \end{algorithmic}
 \end{algorithm}
 
+{\color{red}important. Also, why does it go outside?!?}
+% Want to include upper / lower bounds!? On complexity. Sample / computational!?
+% {\color{red}(need to explain? why does stationarity mean optimality...?!)}
+% Intuition about why it converges!? Contraction. Banach fixed-point theorem.
+
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth,height=0.4\textheight]{../../pictures/figures/vi-polytope.png}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/vi-polytope.png}
 \caption{Observe that the value iterations are not constrained to map to a realisable policy
 (they can go out side of the polytope), but they do converge to a realisable policy,
 the optimal one.}
 \end{figure}
 
-{\color{red}important. Also, why does it go outside?!?}
-% Want to include upper / lower bounds!? On complexity. Sample / computational!?
 
-\newpage
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -305,4 +292,4 @@ support.
 \textit{Which spaces support efficient search for the optimal policy? Can we characterise the properties of each space?}
 \end{displayquote}
 
-See appendix \ref{ss-extras} for an experimental exploration of the iteration complexity and dynamics of these different algorithms.
+For further exploration of search spaces (their iteration complexity and dynamics) see appendix \ref{ss-extras}.

@@ -125,7 +125,7 @@ The color map is represents the density of policies, as in \ref{fig:density}.}
 \label{fig:polytope-discounts}
 \end{figure}
 
-As we can see in Seen in \ref{fig:polytope-discounts}. As the discount rate tends to $1$,
+As we can see in \ref{fig:polytope-discounts}. As the discount rate tends to $1$,
 all the policies are projected into a 1D space. (is this 1D for 2D problems. is it always 1D?)
 
 \subsection{Derivation of derivative}
@@ -156,7 +156,7 @@ Once we know these parameters, we can apply control.
 In general, this is known as model-based RL.
 
 We could search through models ($P, r$) using supervision from next step prediction.
-This is a common approach to model-based RL. {\color{red}refs!!}
+This is a common approach to model-based RL \cite{Wang2019a}.
 Rather, we consider using the value estimation error to guide the search for model parameters.
 
 \begin{align}
@@ -165,7 +165,7 @@ Rather, we consider using the value estimation error to guide the search for mod
 
 \begin{figure}
 \centering
-\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/model_iteration.png}
+\includegraphics[width=1.0\textwidth,height=0.8\textheight]{../../pictures/figures/model_iteration.png}
 \caption{Model iteration applied to a 2-state, 2-action MDP.
 Blue shows the value of policies when evaluated under the true model, $P, r$,
 and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
@@ -178,8 +178,10 @@ and many estimates of a policy's value (simulated evaluations).
 
 \subsection{Relevant features of the model}
 
-Model iteration via value prediction error only focuses on 'relevant' features of the model.
+Model iteration via value prediction error only focuses on 'relevant' features of the model \footnotemark[31].
 Relevant in the sense that they are useful for accurately predicting state values.
+
+\footnotetext[31]{Model free approaches to RL also focus on 'relevant' features, however, they do not explicitly represent the underying model.}
 
 Consider a problem where the reward is only determined by the first feature of the state.
 We can add arbitrarily many extra features. A model-based learner that learns through next step prediction will attempt to
@@ -201,21 +203,19 @@ that play no part in the transition dynamics, but only describe inessential feat
 
 \subsection{Policy evaluations}
 
-We recieve $V_{P, r}(\pi)$ from the environment. But we want to minimise the number of these calls to the environment.
-  As it can be expensive to evaluate a policy with high accuracy.
-For each $\tilde P_t, \tilde r_t$, we need to estimate the value of many policies, $V_{\tilde P_t, \tilde r_t}(\pi)$. Lots of compute...
+We receive $V_{P, r}(\pi)$ from the environment. But we want to minimise the number
+of these calls to the environment, as it can be expensive to evaluate a policy with high accuracy.
 
-Can reduce the required number of policies. So we dont need to sample or solve as many.
-Can estimate the value of some policies based on off policy???
+Also, for each iteration of $\tilde P_t, \tilde r_t$, we need to estimate the
+value of many policies, $\forall \pi; V_{\tilde P_t, \tilde r_t}(\pi)$. This requires lots of compute.
 
-\paragraph{Compressed sensing}
+Rather than integrating over all policies (thus requiring us to evaluate all of them),
+we only need the deterministic policies. As, Bellamare et al. 2019 show that \textit{"the maximal approximation error
+measured over all value functions is the same as the error measured over the set of extremal vertices [aka deterministic policies]"}\cite{Bellemare2019b}.
+However, this still requires us to evaluate $|A|^{|S|}$ policies, and to simulate $T |A|^{|S|}$ policies. \footnotemark[32]
 
-But. Integrating over all policies. However, there is redundancy.
-Can be made more efficient if you only use $m$ random policies.
-
-Did some experiments. Using only $\frac{n}{10}$ policies we get, on average, an approximation error of 0.5.
-
-\paragraph{Off policy estimation} improve the sample efficiency. Future work.
+% maybe a connction to compressed sensing?!
+\footnotetext[32]{It should be possible to use off policy estimation techniques to further reduce the required samples / compute. But we leave this for future work.}
 
 \newpage
 \section{Visualising higher dimensional MDPs}\label{graph-vis}
@@ -236,9 +236,9 @@ of the values of the deterministic policies.
   \alpha(\pi) = \mathop{\text{argmin}}_{\alpha \in \Delta^n} \parallel  V(\pi) - \sum_i (V(\pi_i) \cdot \alpha_i ) \parallel_2^2 + H(\alpha)
 \end{align*}
 
-The entropy term ensures we prefer convex combinations with lower entropy, (in this case, aka higher sparsity).
-
-Properties of the graphs / graph signals?
+The entropy term ensures we prefer convex combinations with lower entropy.
+% Properties of the graphs / graph signals?
+\newpage
 
 \begin{figure}[!h]
 \centering
@@ -248,8 +248,8 @@ So the search of the optimal policy using PI can be visualised as the walk along
 Note: the current policy is shown in yellow (close to the top right).}
 \end{figure}
 
-As each node is a deterministic policy.
-Thus policy iteration is equivalent to finding the shortest path on a XX connected policy graph.
+% As each node is a deterministic policy.
+% Thus policy iteration is equivalent to finding the shortest path on a XX connected policy graph.
 
 \begin{figure}[!h]
 \centering
@@ -258,10 +258,11 @@ Thus policy iteration is equivalent to finding the shortest path on a XX connect
 So the search of the optimal policy using PG can be visualised the dynamics of a graph signal.}
 \end{figure}
 
+
 \newpage
 \section{Deep policy gradients}\label{ss-extras}
 
-From the search spaces section, we are left wondering;
+From the search spaces section \ref{search-spaces-mdps}, we are left wondering;
 
 \begin{itemize}
 \tightlist
@@ -278,16 +279,12 @@ A key feature of deep learning is over parameterisation (among the other feature
 hierarchies, non-linearity, smoothness, locality). There has been recent work
 attempting to understand the effect of overparameterisation \cite{Arora2018}.
 
-Here we explore the effect of overparameterising the policy and then using
-policy gradient methods to find the optimally policy.
-
-\begin{figure}
-\centering
-\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
-\caption{Here we have visualised the value polytope a 2-state, 2-action MDP.
-These value polytopes are colored by the iteration complexity (many iterations - yellow, few iterations - purple) of parameterised policy gradients.
-Each polytope was generated using a different learning rates.}
-\end{figure}
+Here we explore the effects of;
+\begin{itemize}
+\tightlist
+  \item overparameterising the policy and then using policy gradient methods to find the optimally policy.
+  \item reparameterising the loss function, thus yielding some ither space to search through.
+\end{itemize}
 
 % \begin{figure}[!h]
 % \centering
@@ -297,114 +294,109 @@ Each polytope was generated using a different learning rates.}
 % \end{figure}
 
 
-{\color{red}TODO. need to include some plots of vanilla PG}
+% {\color{red}TODO. need to include some plots of vanilla PG}
 
-\subsection{Relationship to momentum}
+\subsection{Overparameterisation}
 
 Recently there has been work investigating the properties of overparameterised search spaces.
-Many \cite{Arora2018} (and others?!?!?) claim that overparameterisation yields acceleration, however,
-their explanation of the acceleration is not entirely convincing. Bc...
+Arora et al. 2018 \cite{Arora2018} prove that overparameterisation yields acceleration, however,
+their explanation of the acceleration is not entirely convincing (as it requires first order assumptions).
 
-More applied to RL, we want to know. How does overparameterisation effect the search for optimal policies?
-But, generalisation is ??? in RL.
+More applied to RL, we want to know: how does overparameterisation effect the search for optimal policies?
+
+In figures \ref{fig:param-compare-sgd} and \ref{fig:param-compare-sgd} we can see that
+parameterisation can yield vastly different training trajectories to gradient descent,
+{\color{red}and it's relation to momentum?!}\footnotemark[33].
+
+\footnotetext[33]{It is important to remember that these trajectories also reflect exploration.
+It seems interesting to ask, if there are any advantages to certain types of trajectory?}
+
+{\color{red}TODO regenerate these figures. better quality.}
+
+\begin{figure}
+\label{fig:param-compare-sgd}
+\centering
+\includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
+\caption{The optimisation dynamics of value iteration versus parameterised value iteration.}
+\end{figure}
+
+\begin{figure}
+\label{fig:mom-compare-sgd}
+\centering
+\includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom.png}
+\caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
+\end{figure}
+
+{\color{red}Also. Have some more of the ims below coming}
+
+In \ref{fig:iteration-complexity} we can observe that there can be sharp boundaries
+between neighboring policies. A kind of phase transition, between the optimal policy being easy to find, and not.
+(despite the fact that the we started from neighboring points).
+
+\begin{figure}
+\label{fig:iteration-complexity}
+\centering
+\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
+\caption{Here we have visualised the value polytope a 2-state, 2-action MDP.
+These value polytopes are colored by the iteration complexity (many iterations - yellow, few iterations - purple) of parameterised policy gradients.
+Each polytope was generated using a different learning rates.}
+\end{figure}
+
 
 % In which spaces can we get the most information? (e.g. low variance gradients)
 % In which spaces to we have access to reliable guidance (e.g. large magnitude gradients)?
 % SNR
 
-We can pick any space we we like to search with in. But, why would we want to pick one space over another?
-What properties are we looking for?
-
-
-
-How does momentum bias the kinds of solution that is converged to. (not really a question for RL?!)
-Do we care aout the intermediate policies? In the synchronous setting no. In the asynchronous setting yes.
-How does momentum bias trajectories? To cover more distance? To have more diversity?
-
-
-\cite{Arora2018} shows that overparameterisation yields acceleration. Consider
-the dynamics of the parameter $w$, which we have overparameterised as $w_1 \cdot w_2$.
-
-
-% Does it even make sense to do a first order approx when trying to reason about momentum?
-% Momentum get interesting when considering non-first order factors?!?
-
-We have implicit momentum from the parameterisation, and explicit momentum in the accelerated descent.
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
-\caption{The optimisation dynamics of value iteration versus parameterised value iteration.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom.png}
-\caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
-\end{figure}
-
-
-
-
-\begin{align}
-m_{t+1} &= \gamma m_t + g_t \\
-w_{t+1} &= w_t - \eta \cdot (1-\gamma) \cdot m_t
-\end{align}
-
-It is necessary to consider the trajectory to study momentum. It depends
-on what has happened in the past. Can we construct a space of possible
-trajectories? What properties do trajectories have? They are connected
-by the update fn.
-
-% \cite{Tsitsiklis2000} linear value iteration converges. When linear means ... . But we consider linear value function of the form ...
-% Which diverge.
-%
 % \cite{Brandfonbrener2019} consider the same setting, with an additional simplification. In the cts limit. No step sizes / learning rate.
 % Obviously this simplification is not realistic. As in our experiments we see divergence with a overparameterised linear model.
 
+% If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
+%  insert pic / prove
+%
+% Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
+% insert pic / prove
 
-\section{Acceleration, topology and re-parameterisation}
+\newpage
+\section{Reparameterisation}
 
-If we are allowed to arbitrarily pick our optimisation space, which should we pick?
+% Its effect on topology and acceleration.
 
-If we parameterise our search space. We may have changed the topology of our search space.
-Is it possible to arbitrarily change the topology? (probably?!?)
+{\color{red}Not sure if I should include this section. Very early stage...}
 
-\textbf{Q:} How can we rationally pick the topology of our search space
-to accelerate learning?
-Aka how can we pick function classes (function approximators) that support the bellman equation?
+\begin{displayquote}
+  \textsl{If we are allowed to arbitrarily pick our optimisation space, which should we pick?}
+\end{displayquote}
 
-\begin{figure}
+Here we raise the question: should, and if so, how can, we rationally pick the
+search space given knowledge of the loss function and likely starting points?
+
+Consider the simple convex problem;
+
+\begin{align*}
+  x^{* } = \mathop{\text{argmin}}_{x} x^2
+\end{align*}
+
+We can pick some other space, $Z$, that we want to search in. And we can map $Z$ on to $X$ using $f: Z \to X$.
+
+\begin{align*}
+  z^{* } &=\mathop{\text{argmin}}_{z} f(z)^2 \\
+    x^{* } &= f(z^{* })
+\end{align*}
+
+If we pick some simple functions for $f$. What happens? Well, if $f$ is non-linear
+then we lose the guarantees convergence of convex search. However, what is gained?
+
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-ce-04.png}
 \caption{The iteration complexity of different initialisations and different learning rates.}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-mse-04.png}
 \caption{The iteration complexity of different initialisations and different learning rates.}
 \end{figure}
 
-\ref{Ganea2018} explore hyperbolic neural networks.
-
-Ok. So when $\phi$ are the parameters of a deep neural network, ...? The search space has certain (which) properties.
-Euclidean geometry.
-(parameter dimensions are independent! no funny business)
-
-If we overparameterise the search space, then we can move between solutions in new ways. We can `tunnel' from A to B, without crossing C.
-%  insert pic / prove
-
-Every point (in output space) is closer, when measured in the distance in parameter space needed to be traveled.
-% insert pic / prove
-
-\section{Conclusion}
-
-So, we have seen, from our brief exploration of some properties of MDPs, that
-there are some mysteries of interest to the ML community: the optimisation dynamics and generalisation of
-parameterised function approximators.
-There are unexplored types of solution strategy (???): model iteration. Which might be of interest to
-
-So, while MDPs may be simple, we have yet to fully understand them or explore their ???.
+When $z$ is the parameters of a deep neural network, the search space has certain properties: for example it's euclidean.
+An alternative could be to search through a hyperbolic space, yielding 'hyperbolic neural networks' (explored by \ref{Ganea2018}).

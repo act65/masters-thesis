@@ -2,7 +2,7 @@
 \section{Efficiently solvable abstractions}\label{solveable-abstractions}
 
 \begin{displayquote}
-  \textit{Abstractions for efficient control.}
+  \textsl{Abstractions for efficient control.}
 \end{displayquote}
 
 % The control problem can be expensive, especially when there are long horizons, or high discount rates.
@@ -26,7 +26,7 @@ we choose to explore linear RL.
 \subsection{Linear Markov decision problems (LMDPs)}
 
 \begin{displayquote}
-\textit{Why linear MDPs?}
+\textsl{Why linear MDPs?}
 \end{displayquote}
 
 % How are we exploiting linearity?
@@ -108,7 +108,7 @@ under the given transition function. So we incentivise controls that are close t
 % Why did they need these tricks? Which ones were necessary / sufficient? !!!!!!!
 
 % formal definition
-Putting these changes together, a linear markov decision process can be formulated as;
+Putting these changes together, a linear Markov decision process can be formulated as;
 LMDP = $\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space of possible controls (i.e. any transitions),
 $p: S \to S$ is the unconditioned dynamics, and $q \in \mathbb R^{|S|}$ is state rewards.
 Our goal is to find the control, $u: S \to S$, that gives the highest exponentiated cumulative reward $z \in \mathbb R_+^{|S|}$.
@@ -125,13 +125,13 @@ And! We can solve for the value of the optimal control by solving the linear equ
 (see \ref{lmdp-derivation} for further explanation and a derivation of a LMDP)
 
 \begin{displayquote}
-\textit{Let's try and understand this linear MDP we have constructed.}
+\textsl{Let's try and understand this linear MDP we have constructed.}
 \end{displayquote}
 
 \subsubsection{The unconstrained dynamics and state rewards}
 
 \begin{displayquote}
-\textit{What do $p$ and $q$ do?}
+\textsl{What do $p$ and $q$ do?}
 \end{displayquote}
 
 Rather than state-action rewards $r: S \times A \to \mathbb R$, we have state rewards $q: S \to \mathbb R$.
@@ -146,7 +146,7 @@ This turns out to be wrong. The unconstrained dynamics are responsible for rewar
 \subsubsection{The optimal policy}
 
 \begin{displayquote}
-\textit{What should we make of the form of the optimal control?}
+\textsl{What should we make of the form of the optimal control?}
 \end{displayquote}
 
 \begin{align*}
@@ -165,7 +165,7 @@ which picks actions with probability proportional to their exponentiated $Q$ val
 \subsubsection{Solving for the optimal value}
 
 \begin{displayquote}
-\textit{What should we make of the form of the value estimate?}
+\textsl{What should we make of the form of the value estimate?}
 \end{displayquote}
 
 \begin{align*}
@@ -184,7 +184,7 @@ problem $z = QPz = Az$. In the discounted case, the exponentiated value, $z$, is
 \end{figure}
 
 \begin{displayquote}
-\textit{So, LMDPs can be easily solved. But how does solving a LMDP help us solve a MDP?}
+\textsl{So, LMDPs can be easily solved. But how does solving a LMDP help us solve a MDP?}
 \end{displayquote}
 
 We need a way to transform a MDP into a LMDP, while preserving the
@@ -234,14 +234,14 @@ This is problem that we will return to.
 \end{figure}
 
 \begin{displayquote}
-\textit{How can we use the optimal control, $u^{* }$, to construct a policy that is optimal in the original MDP, $\pi_{u^* }$?}
+\textsl{How can we use the optimal control, $u^{* }$, to construct a policy that is optimal in the original MDP, $\pi_{u^* }$?}
 \end{displayquote}
 
 The LMDP has disentangled the search for the optimal controls (solve the LMDP) (go to this or
 that state) and the search for the optimal policy (how to actually
 realise that control).
 
-This decomposition is reminiscent of goal conditioned approaches to heirarchical RL.
+This decomposition is reminiscent of goal conditioned approaches to hierarchical RL.
 Where a higher level agent gives goals (go to this or that state) to a lower level
 agent, who must figure out how to achieve that goal \cite{Vezhnevets2017}.
 
@@ -267,7 +267,7 @@ We have now built a way to solve a MDP with a LMDP. Let's try it out.
 \subsubsection{Optimality of solutions via LMDPs}
 
 \begin{quote}
-\textit{Do these two paths lead to the same place?}
+\textsl{Do these two paths lead to the same place?}
 \end{quote}
 
 One of the main questions we have not addressed yet is; if we solve the
@@ -301,7 +301,7 @@ The optimal control is very sensitive to the sign and magnitude of the rewards, 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-zero-rewards.png}
+\includegraphics[width=0.65\textwidth,height=0.325\textheight]{../../pictures/figures/chain-test-zero-rewards.png}
 \caption{A chain problem \cite{Sutton2018a} with zero reward on all states except the last two. A small negative reward, then a large positive one.
 The optimal control to this problem is not realisable: in every state, jump to the state with positive reward.}
 \label{fig:chain-zero}
@@ -309,7 +309,7 @@ The optimal control to this problem is not realisable: in every state, jump to t
 
 \begin{figure}
 \centering
-\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
+\includegraphics[width=0.65\textwidth,height=0.325\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
 \caption{The same chain problem as above, but with an positive reward added to all states.
 Now the structure of the transition function has made it into the optimal control!
 The LMDP's control can be decoded into a realisable policy.}
@@ -344,26 +344,18 @@ there is some doubt about whether I implemented the LMDP correctly. While the
 LDMP solution strategy does occasionally pick the correct optimal policy, more often than not,
 its guesses are seriously wrong.
 
-\newpage
-
 \subsubsection{Linearity in MDPs}
 
-Todorov's formulation of LMDPs do not seem to allow you to reliably embed a MDP in a LMDP.
+Todorov's formulation of LMDPs does not seem to allow a MDP to be to reliably embedd a LMDP.
 Despite this, it might still be possible to construct a linear MDP given different assumptions.
 
-Let's reconsider Jin et al.'s approach \cite{Wang}. Construct a MDP where the value is a
+Let's reconsider Jin et al.'s approach \cite{Wang}: construct a MDP where the value is a
 linear function of a state-action representation and of a policy embedding.
-To actually optimise this, we are required to use the bellman equation.
-Not every (policy) embedding can be realised as a policy, so to constrain the search dynamics properly
+It is important to note that, not every (policy) embedding can be realised as a policy, so to constrain the search dynamics properly
 we must use the bellman equation.
 
-And this captures the essence of the problem. The Bellman equation is not linear.
-We can linearise a MDP, but we will lose the ability to use the Bellman equation
-to guide the search for the optimal policy.
-
-% It seems that the main advantage gained by adding linearity in this way \cite{Wang} is the ease of analysis.
-% Whether this type of linear abstraction actually reduces the sample or computational complexity has yet to be proved.
-
+And this captures the essence of the problem. We need the Bellman equation for efficient search, but it is not linear in the policy.
+So, we can linearise a MDP, but we will lose the ability to use the Bellman equation to guide the search for the optimal policy.
 
 % Refs \cite{Todorov2006,Todorov2009,Zhong,Zhonga,Dvijotham,Wozabal}
 % Linearise around the optimal policy. But how does that tell us how to act when not at the optimal policy?

@@ -41,16 +41,16 @@ delayed rewards. For example we could make a RL problem that is;
 \end{itemize}
 
 \begin{displayquote}
-  \textit{But, which setting should we study?}
-\end{displayquote}
-
-\begin{displayquote}
-  A better question might be: \textit{What is the simplest setting we can
-  consider that still poses an interesting challenge to the ML and / or RL communities?}\footnotemark[26]
+  \textsl{But, which setting should we study?\footnotemark[26]}
 \end{displayquote}
 
 \footnotetext[26]{I will often start a chapter / section / paragraph with a question like this. These
 questions are not meant as research questions. Rather, they are designed to orient the reader.}
+
+\begin{displayquote}
+  A better question might be: \textsl{What is the simplest setting we can
+  consider that still poses an interesting challenge to the ML and / or RL communities?}
+\end{displayquote}
 
 Markov decision problems (MDPs) appear to be a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
 simple setting to analyse RL.
@@ -76,7 +76,7 @@ that maximises the expected cumulative discounted reward $V^{\pi}$ (aka the valu
 can be written as, maximising the expected return.
 
 \begin{align*}
-V^{\pi} &= \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)] \\
+V^{\pi} &= \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)] \tag{state value}\label{state-value}\\
 \pi^{* } &= \mathop{\text{max}}_{\pi}V^{\pi}
 \end{align*}
 
@@ -107,7 +107,7 @@ rewards are good, we really care about long term cumulative rewards (\textit{e.g
 % a picture of this?) also, is there a more general way to think about it?
 
 \begin{displayquote}
-  \textit{What does the M in MDP really mean?}
+  \textsl{What does the M in MDP really mean?}
 \end{displayquote}
 
 When we say a decision problem is Markovian, we mean that the transition
@@ -130,7 +130,7 @@ private knowledge about the current state. I know everything there is to know.
 \section{Solving a MDP}
 
 \begin{displayquote}
-  \textit{What does it mean to solve a MDP?}
+  \textsl{What does it mean to solve a MDP?}
 \end{displayquote}
 
 A MDP is considered solved when we have found the 'optimal' policy. As above,
@@ -141,13 +141,13 @@ This means that;
 \pi^{*} : \;\; V^{\pi^* }(s) \ge V^{\pi}(s) \quad \forall \pi\in \Pi \;\;\forall s\in S\\
 \end{align*}
 
-Which is implied by our earlier definition, but the optimal policy also has other properties of note.\cite{Bertsekas1996}
+Which is implied by our earlier definition, but the optimal policy also has other properties of note \cite{Bertsekas1996, Putterman2015}.
 
 \begin{itemize}
 \tightlist
   \item it always exists,
-  \item it is deterministic, {}
-  \item it is unique, or are there many optimal policies?{\color{red}unsure about this}
+  \item it is unique,
+  \item it is deterministic,
 \end{itemize}
 
 {\color{red}do I need to explain these?}
@@ -155,27 +155,28 @@ Which is implied by our earlier definition, but the optimal policy also has othe
 \subsection{The Bellman Equations}
 
 \begin{displayquote}
-  \textit{But, how can we (efficiently) find the optimal policy?}
+  \textsl{But, how can we (efficiently) find the optimal policy?}
 \end{displayquote}
 
 If we randomly pick policies and evaluate them, we would need to test (in the worst case),
-$\mathcal O(|A|^{|S|})$ policies. However, if we use the \ref{eq:bellman-eqn} to
-guide our search we need (in the worst case) $\mathcal O(|S|^2|A|)$ evaluations.
-
-The Bellman equation simply the expected return (value), rewritten in a recursive manner.
+all the deterministic policies, $\mathcal O(|A|^{|S|})$ . However, we can use the \ref{eq:bellman-eqn} to
+guide our search. The Bellman equation is the expected return (value), rewritten in a recursive manner.
 
 \begin{align*}
 Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
 V^{\pi}(s) &= \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
 \end{align*}
 
-Note: The Bellman equation is sometimes written the operator, $T$, where
-$T(Q^{\pi}) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a), a'\sim \pi(\cdot | s)} [Q(s', a')]$.
+The Bellman equation is sometimes written as an operator, $T$.
+
+\begin{align*}
+T(Q^{\pi}) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)}\mathop{\mathbb E}_{a'\sim \pi(\cdot | s')} [Q(s', a')]
+\end{align*}
 
 \subsection{Complexity}
 
 \begin{displayquote}
-  \textit{How hard is it to find the optimal policy?}
+  \textsl{How hard is it to find the optimal policy?}
 \end{displayquote}
 
 % Insert lower bound and some intution
@@ -236,7 +237,7 @@ And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s
 An alternative derivation of the value functional, which is more verbose and more enlightening, can be found in \ref{vf-neumann}.
 
 \begin{displayquote}
-\textit{But why is the tabular MDP considered 'simple' enough?}
+\textsl{But why is the tabular MDP considered 'simple' enough?}
 \end{displayquote}
 
 Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.

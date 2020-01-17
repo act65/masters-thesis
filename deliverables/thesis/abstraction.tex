@@ -6,7 +6,7 @@
 % Programming in python is an abstraction. In reality the code we are writing gets translated into machine code...
 
 \begin{displayquote}
- \textit{What is an abstraction?}
+ \textsl{What is an abstraction?}
 \end{displayquote}
 
 A recipe is an abstraction. For example, pumpkin soup:
@@ -90,7 +90,7 @@ and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computation
 % There are many different forms an abstraction might take, and ???
 
 \begin{displayquote}
-\textit{Given an abstraction, how might a learner use it?}
+\textsl{Given an abstraction, how might a learner use it?}
 \end{displayquote}
 
 Within RL, there are broad classes of abstraction exploitation. To construct these classes.
@@ -103,7 +103,7 @@ different classes of learners by giving them access to different types of abstra
 
 \vspace{5mm}
 
-\begin{changemargin}{-2cm}{-2cm}
+\begin{changemargin}{-3cm}{-3cm}
   \begin{center}
     \begin{tabular}{ c || c | c | c | c }
       Abstraction & \textbf{X} & \textbf{Y} & \textbf{Value fn} & \textbf{Policy} \\ \hline \hline
@@ -134,13 +134,13 @@ Rather than describing these inessential details, we can abstract away from them
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.6\textwidth,height=0.15\textheight]{../../pictures/images/nz20.png}
+\includegraphics[width=0.6\textwidth,height=0.175\textheight]{../../pictures/images/nz20.png}
 \caption{A 20 NZD note.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.6\textwidth,height=0.15\textheight]{../../pictures/drawings/my-nz20.png}
+\includegraphics[width=0.6\textwidth,height=0.175\textheight]{../../pictures/drawings/my-nz20.png}
 \caption{An artist's abstract rendering. This state abstraction only shows the essential details; $20$, New Zealand, ...}
 \end{figure}
 
@@ -151,7 +151,7 @@ in which case, we can just relabel them as the same action.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth,height=0.15\textheight]{../../pictures/drawings/hungry-caterpillar.png}
+\includegraphics[width=0.7\textwidth,height=0.175\textheight]{../../pictures/drawings/hungry-caterpillar.png}
 \caption{Consider a hungry caterpillar. It wants to move towards the leaf.
 But this is a complicated task! Move your 3rd leg up, your 7th leg down, 11th leg slightly forward, etc...
 To specify an action it needs to pick from $8^{12}$ possible actions - 8 actions per leg, 12 legs.}
@@ -160,7 +160,7 @@ To specify an action it needs to pick from $8^{12}$ possible actions - 8 actions
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth,height=0.15\textheight]{../../pictures/drawings/full-caterpillar.png}
+\includegraphics[width=0.7\textwidth,height=0.175\textheight]{../../pictures/drawings/full-caterpillar.png}
 \caption{But, what if the caterpillar could specify actions in another way? Rather than specifying leg movements, it could pick a direction to move, which would specify the movement of multiple legs. Note, we are not including any temporal abstraction here.}
 \end{figure}
 
@@ -169,7 +169,7 @@ This class of abstraction should be more powerful than state and action abstract
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.75\textwidth,height=0.3\textheight]{../../pictures/drawings/maze.png}
+\includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/drawings/maze.png}
 \caption{A symmetric maze, the goal(s) are shown in red.
 Consider two different, but 'similar' positions, shown in blue and green.}
 \end{figure}
@@ -179,7 +179,7 @@ we have $Q^{\pi}(s, a) = Q^{-\pi}(-_xs, -a), \forall \pi$.
 Where the negative operator $-_x$ only effects the horizontal ($x$) axis $s = (x, y), -_xs = (-x, y)$.
 And $-\pi := \pi(-a|-_xs)$. \footnotemark[21]
 
-\footnotetext[21]{The tradeoff is that with state-actions, now we need to keep track of $(|S| \times|A|)\cdot (|S| \times|A| - 1)$
+\footnotetext[21]{The trade off is that with state-actions, now we need to keep track of $(|S| \times|A|)\cdot (|S| \times|A| - 1)$
 similarities, rather than $|S|\cdot(|S|-1) + |A|\cdot(|A|-1)$ similarities.}
 
 \footnotetext[11]{To construct this representation, we set the state to be centered around the mirror plane.
@@ -197,115 +197,11 @@ For the many ways to puree pumpkin (with a rolling pin and some vigour, with a b
 The intuition behind both goal-like and option-like temporal abstractions is that
 we can decompose a sequential decision problem into a set of shorter, easier to solve, parts.
 
-\subsection{Discovering abstractions}
-
-\begin{displayquote}
-  \textit{Where do abstractions come from?}
-\end{displayquote}
-
-Earlier, we considered how an agent might use a given abstraction.
-But where did that abstraction come from? Did someone construct it?
-Or can abstractions be discovered automatically?
-
-To build an abstraction, you need a notion of how two objects might be
-similar (or a notion of what it is you want to preserve).
-This allows you to group the 'similar' objects together, building an abstraction.
-In RL there are many possible notions of similarity. But which ones are sensible?
-Which ones allow us to efficiently finding the optimal policy?
-
-\vspace{5mm}
-
-\subsubsection{Classes of similarity for RL}\label{similar-classes}
-
-Li et al. \cite{Littman2006} give five classes of state abstraction in which they group states based on various similarities \footnotemark[20];
-\footnotetext[20]{Similarity and preservation are dual notions. Similarity tells us which objects we can group together,
-'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.
-For example, the \textit{"preservation of the one step model"} means: two states can be considered similar if they have the same one step model.}
-
-\textit{intuitively,
-$\phi_{\text{model}}$ preserves the one step model,
-$\phi_{Q_{\pi}}$ preserves the state-action value function for all policies,
-$\phi_{Q^{* }}$ preserves the optimal state-action value,
-$\phi_a^{* }$ preserves the optimal action and its value,
-$\phi_{\pi^{* }}$ preserves the optimal action.}
-
-\vspace{5mm}
-
-We can construct a family of similarity functions for building abstractions for RL. To do so, we measure the
-similarity between two 'RL objects'\footnotemark[28] as: for $x$ and $x'$,
-how similar are their likely futures starting from those objects, for a range of different policies.
-Let's make this formal.
-
-\footnotetext[28]{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
-
-Let $c(s, a, r)$ be a cumulant, and let $C$ be the expected discounted sum of that cumulant under a given policy
-(where the exceptation is over all trajectories starting from $x$).\footnotemark[29]
-
-\footnotetext[29]{This is also know as a general value function \cite{White2015}}
-
-\begin{align*}
-C(\zeta) &= \sum_{t=0}^{\infty} \gamma^{t}  c(\zeta_{t+1}) \\
-\mathcal C(x, \pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_{x})} [C(\zeta)] \\
-\chi(x, x') &= \int_{\pi \in B} \frac{1}{1+\parallel \mathcal C(x, \pi) - \mathcal C(x', \pi) \parallel_{p}} d\pi
-\end{align*}
-
-We have written: the similarity $\chi$ between $x$ and $x'$ is; the sum over different policies, of the
-similarities (the inverse of distance) between likely futures, starting from $x$ / $x'$.
-
- by setting $\zeta_x = {\zeta: \zeta_0^s = x^s, \zeta_0^a = x^a \forall \zeta \in \mathcal Z}$
-
-{\color{red}HELP!?}
-
-% Characterisation: How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
-% \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
-
-\paragraph{Examples}
-
-% Need to show that this family caputres abstrations of interest.
-It would be nice to show that all abstractions of interest to RL live in this happy family.
-Instead we will consider two abstractions. One abstraction constructed by preserving the n-step model,
-and the other is constructed by preserving the value of the optimal state-actions.
-
-\begin{itemize}
-  \tightlist
-  \item Preserving the n-step model: We start with $x=(s, a), x'=(s', a')$. Set $c(\zeta_{t}) = [s_{t+1}, r_{t}]$ then $\mathcal C=[N, V]$, where $N$ is the discounted state visitation count \footnotemark[27] and $V$ is the state value. Two $x$s with the same state visitation and value for all policies must have the same transitions. {\color{red}(need to prove?!?)}
-  \item Preserving the optimal state-action value: Again, we start with $x=(s, a), x'=(s', a')$. Next, we pick $c(\zeta_{t}) = r_{t}$ which means $\mathcal C(x, \pi) = Q^{\pi}(s, a)$.
-\end{itemize}
-
-\footnotetext[27]{If we have encoded the states as onehots.}
-
-\subsubsection{Inference of the similarity}
-
-\begin{displayquote}
-	\textit{How might we infer that two objects are similar?}
-\end{displayquote}
-
-% So we have our measure of similarity. But we need data.
-% We want these masures of similarity to generalise. How? Priors.
-
-In the RL setting, we are often not given the transition or the reward function.
-Thus, we must infer similarities from noisy observations. There are two ways we can do this;
-
-\hspace{\parindent}We can infer that two objects are similar because we have seen it,
-we have sufficient data (/ experience) to allow us to conclude that, with high
-certainty, $x_i$ and $x_j$ are similar (with probability $\delta$, $f(x_i) - f(x_j) \le \epsilon$ ).
-
-\hspace{\parindent}Alternatively, we can infer that two objects are similar because we have found a pattern.
-For example, we might have seen that rotations of $45, 90, 135$$, 180, 225$, are all similar,
-therefore we guess that rotations of $270, 315$ are also similar.
-This motivates our work on symmetric abstractions \ref{symmetric-abstractions}.
-Because of the structure in a symmetry, a similarity can imply others. And thus we can generalise.
-
-Note: if we are relying on inferring similarity from data, and $f(x_i) = Q^{\pi^{* }}(s_i, a_i)$.
-Then learning that $x_i$ and $x_j$ are similar doesn't really help us.
-To estimate that similarity we had to know, $Q^{\pi^{* }}(s_i, a_i)$ and $Q^{\pi^{* }}(s_j, a_j)$.
-Rather, we care about (correctly) guessing that $x_i$ and $x_j$ are similar, so we can
-use the knowledge that $Q_i = Q^{\pi^{* }}(s_i, a_i)$ to help us learn $Q^{\pi^{* }}(s_j, a_j)$.
 
 \subsection{Evaluating abstractions}
 
 \begin{displayquote}
-\textit{But.
+\textsl{But.
 Which class of abstraction should we use?
 Which class of similarity measure should we use?
 We need to be able to evaluate these.}
@@ -341,7 +237,7 @@ abstraction will also consider them to be similar, and there might also be other
 $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.}
 
 \begin{displayquote}
-\textit{Why are coarse abstractions desirable?}
+\textsl{Why are coarse abstractions desirable?}
 \end{displayquote}
 
 By throwing away inessential details;
@@ -396,7 +292,7 @@ and thus whether a 'high level' policy choosing these goals can approximate the 
 Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find.
 We might require large amounts of data or computation.
 
-\paragraph{Efficient control:} \label{efficient-control} \textit{What is needed for efficient control. And when is 'it' preserved?}
+\paragraph{Efficient control:} \label{efficient-control} \textsl{What is needed for efficient control. And when is 'it' preserved?}
 
 We want to preserve our ability to use the Bellman equation to efficiently guide the search for optimal controls.
 But, what is necessary or sufficient to preserve the Bellman equation's ability to guide search?
@@ -407,9 +303,9 @@ But, what is necessary or sufficient to preserve the Bellman equation's ability 
 
 % If we have preserved the value of the optimal action (for each action), then, for all actions $\forall a: Q(s, a) \le Q(s, a^{* })$.
 Consider an abstraction that has preserved the value of the optimal action.
-When constructing the abstraction, we may have grouped together states that dont have similar transitions, or similar value under all policies, ... etc.
+When constructing the abstraction, we may have grouped together states that don't have similar transitions, or similar value under all policies, ... etc.
 For example we might have: $s_i \sim s_j$ despite $Q(s_i, a_k) - Q(s_j, a_k) > \epsilon, a_k \neq a^{* }$.
-But this doesnt matter as $Q(s, a^{* })$ must still be larger than $Q(s, a_k)$.
+But this doesn't matter as $Q(s, a^{* })$ must still be larger than $Q(s, a_k)$.
 Thus, when applying a greedy update to the Bellman equation, we are going to converge
 \footnotemark[26]
 
@@ -417,7 +313,7 @@ Thus, when applying a greedy update to the Bellman equation, we are going to con
 
 \footnotetext[26]{This argument needs to be formalised. So far, we only have empirical evidence of this. Also, related work has shown that if the value of the optimal action is not preserved then applying the Bellman equation no longer guarantees that optimal policies are also optimal in the abstraction. \cite{Jong2005}}
 
-\paragraph{Efficient exploration:} \textit{What is needed for efficient exploration. And when is 'it' preserved?}
+\paragraph{Efficient exploration:} \textsl{What is needed for efficient exploration. And when is 'it' preserved?}
 
 For $Q$-learning, Jin el at. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$)\footnotemark[13] can be
 achieved with a UCB-Bernstein type exploration bonus, compared to the inefficient exploration ($\mathcal O(\sqrt{H^4SAT})$),
@@ -434,7 +330,7 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 
 % Is this true in general, or specific to Q-learning with exploration bonuses? Future work.
 
-\paragraph{Efficient inference:} \textit{What is needed for efficient inference. And when is 'it' preserved?}
+\paragraph{Efficient inference:} \textsl{What is needed for efficient inference. And when is 'it' preserved?}
 
 % What are we hoping to infer efficiently? In this case. The model parameters. Or the value of a state-action?
 
@@ -447,7 +343,7 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 % \text{Regret()} = \mathbb E [\sum V^{\pi^{* }}() - V^{\pi}]
 % \end{align*}
 
-{\color{red}TODO}
+{\color{red}HELP. Thoughts on this!? Will do some reading over the weekend.}
 
 % \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 %
@@ -504,3 +400,114 @@ and lifting the abstraction for each new task.
 % \end{itemize}
 %
 % But with what guarantees?
+
+
+
+\subsection{Discovering abstractions}
+
+\begin{displayquote}
+  \textsl{Where do abstractions come from?}
+\end{displayquote}
+
+Earlier, we considered how an agent might use a given abstraction.
+But where did that abstraction come from? Did someone construct it?
+Or can abstractions be discovered automatically?
+
+To build an abstraction, you need a notion of how two objects might be
+similar (or a notion of what it is you want to preserve).
+This allows you to group the 'similar' objects together, building an abstraction.
+In RL there are many possible notions of similarity. But which ones are sensible?
+Which ones allow us to efficiently finding the optimal policy?
+
+\vspace{5mm}
+
+\subsubsection{Classes of similarity for RL}\label{similar-classes}
+
+Li et al. \cite{Littman2006} give five classes of state abstraction in which they group states based on various similarities \footnotemark[20];
+\footnotetext[20]{Similarity and preservation are dual notions. Similarity tells us which objects we can group together,
+'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.
+For example, the \textit{"preservation of the one step model"} means: two states can be considered similar if they have the same one step model.}
+
+\textit{intuitively,
+$\phi_{\text{model}}$ preserves the one step model,
+$\phi_{Q_{\pi}}$ preserves the state-action value function for all policies,
+$\phi_{Q^{* }}$ preserves the optimal state-action value,
+$\phi_a^{* }$ preserves the optimal action and its value,
+$\phi_{\pi^{* }}$ preserves the optimal action.}
+
+\vspace{5mm}
+
+We can construct a family of similarity functions for building abstractions for RL. To do so, we measure the
+similarity between two 'RL objects'\footnotemark[28] as: for $x$ and $x'$,
+how similar are their likely futures starting from those objects, for a range of different policies.
+Let's make this formal.
+
+\footnotetext[28]{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
+
+Let $c(s, a, r)$ be a cumulant, and let $C$ be the expected discounted sum of that cumulant under a given policy
+(where the expectation is over all trajectories starting from $x$).\footnotemark[29]
+
+\footnotetext[29]{This is also know as a general value function \cite{White2015}}
+
+\begin{align*}
+C(\zeta) &= \sum_{t=0}^{\infty} \gamma^{t}  c(\zeta_{t+1}) \\
+\mathcal C(x, \pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_{x})} [C(\zeta)] \\
+\chi(x, x') &= \int_{\pi \in B} \frac{1}{1+\parallel \mathcal C(x, \pi) - \mathcal C(x', \pi) \parallel_{p}} d\pi
+\end{align*}
+
+We have written: the similarity $\chi$ between $x$ and $x'$ is; the sum over different policies, of the
+similarities (the inverse of distance) between likely futures, starting from $x$ / $x'$.
+
+ by setting $\zeta_x = {\zeta: \zeta_0^s = x^s, \zeta_0^a = x^a \forall \zeta \in \mathcal Z}$
+
+{\color{red}HELP!? what do others think of this? want to discuss.
+main thing about this is the questions that need to be answered. how powerful is ths family?
+how does it relate to other families?}
+
+% Characterisation: How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
+% \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
+
+\paragraph{Examples}
+
+% Need to show that this family caputres abstrations of interest.
+It would be nice to show that all abstractions of interest to RL live in this happy family.
+Instead we will consider two abstractions. One abstraction constructed by preserving the n-step model,
+and the other is constructed by preserving the value of the optimal state-actions.
+
+\begin{itemize}
+  \tightlist
+  \item Preserving the n-step model: We start with $x=(s, a), x'=(s', a')$. Set $c(\zeta_{t}) = [s_{t+1}, r_{t}]$ then $\mathcal C=[N, V]$, where $N$ is the discounted state visitation count \footnotemark[27] and $V$ is the state value. Two $x$s with the same state visitation and value for all policies must have the same transitions.
+  \item Preserving the optimal state-action value: Again, we start with $x=(s, a), x'=(s', a')$. Next, we pick $c(\zeta_{t}) = r_{t}$ which means $\mathcal C(x, \pi) = Q^{\pi}(s, a)$.
+\end{itemize}
+{\color{red}(need to 'prove'?!? or is this sufficient?)}
+
+\footnotetext[27]{If we have encoded the states as onehots.}
+
+\subsubsection{Inference of the similarity}
+
+\begin{displayquote}
+	\textsl{How might we infer that two objects are similar?}
+\end{displayquote}
+
+% So we have our measure of similarity. But we need data.
+% We want these masures of similarity to generalise. How? Priors.
+
+In the RL setting, we are often not given the transition or the reward function.
+Thus, we must infer similarities from noisy observations. There are two ways we can do this;
+
+\hspace{\parindent}We can infer that two objects are similar because we have seen it,
+we have sufficient data (/ experience) to allow us to conclude that, with high
+certainty, $x_i$ and $x_j$ are similar (with probability $\delta$, $f(x_i) - f(x_j) \le \epsilon$ ).
+
+\hspace{\parindent}Alternatively, we can infer that two objects are similar because we have found a pattern.
+For example, we might have seen that rotations of $45, 90, 135$$, 180, 225$, are all similar,
+therefore we guess that rotations of $270, 315$ are also similar.
+This motivates our work on symmetric abstractions \ref{symmetric-abstractions}.
+Because of the structure in a symmetry, some similarities can imply others. Thus we can generalise.
+
+Note: if we are relying on inferring similarity from data, and (say) $f(x_i) = Q^{\pi^{* }}(s_i, a_i)$.
+Then learning that $x_i$ and $x_j$ are similar doesn't help.
+To estimate that similarity we needed to know, $Q^{\pi^{* }}(s_i, a_i)$ and $Q^{\pi^{* }}(s_j, a_j)$.
+Rather, we care about (correctly) guessing that $x_i$ and $x_j$ are similar, so we can
+exploit that knowledge that to improve efficiency,
+for example, by using the knowledge of $Q_i = Q^{\pi^{* }}(s_i, a_i)$ to help us learn $Q^{\pi^{* }}(s_j, a_j)$.
