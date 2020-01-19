@@ -2,6 +2,14 @@
 \section{Symmetric abstractions}\label{symmetric-abstractions}
 
 
+As a side note...
+Relationship to disentanglement. \cite{Higgins2018} which makes a lot of sense because ...
+
+Connection to causal hierarchy. Cite Pearl. Association, intervention, counterfactuals.
+Also recently noted by \cite{Caselles-Dupre2019}, ... where they assume that
+the group actions are the actions of the RL environment.
+This doesn't really make sense. Also, will miss many symmetries like ???
+
 % Reasonably well understood how symmetric abstractions can improve computational complexity.
 % But, want to understand how they effect sample complexity.
 
@@ -67,24 +75,10 @@ The action of a group on XXX.
 
 \subsection{Symmetries for RL}\label{mdp-homomorphism}
 
-While there are many types of finite group, (cyclic, alternating, ...?) And then there are continuious symmetries, (Lie groups)
-Which types of symmetry are important for RL problems?
+Different ways to approach characterising symmetries; automorphisms, invariants relations.
+% how do these two relate!?
 
-Let's work through an example, the cart-pole control problem. Your goal is to balance a pole on a cart.
-You are allowed to move the cart left or right.
-
-% How hard is it to find these symmetries?
-% Are some harder than others?
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
-	\caption{Two mirror symmetric states of a cart pole. But in what sense are they symmetric?}
-\end{figure}
-
-% Need to show this is actually a symmetry, isomorphic to $S_2$?!?
-In the case above, the mirrored cart pole is an instance of $S_2$.
-The action $f, g$ we apply to the MDP is isomorphism to the simple finite group, $S_2$
+\subsubsection{Automorphisms}
 
 Closely related to a homomorphism. See for a definition of a MDP homomorphism that captures symmetries.
 % As pointed out in \ref{abstraction}, the notion of an abstraction is captured by a homomorphism.
@@ -112,8 +106,46 @@ could be generalised in the following ways;
   \item complexity measure / inductive bias
 \end{itemize}
 
+\subsubsection{Invariants}
 
+While there are many types of finite group, (cyclic, alternating, ...?) And then there are continuious symmetries, (Lie groups)
+Which types of symmetry are important for RL problems?
 
+Let's work through an example, the cart-pole control problem. Your goal is to balance a pole on a cart.
+You are allowed to move the cart left or right.
+
+% How hard is it to find these symmetries?
+% Are some harder than others?
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
+	\caption{Two mirror symmetric states of a cart pole. But in what sense are they symmetric?}
+\end{figure}
+
+% Need to show this is actually a symmetry, isomorphic to $S_2$?!?
+In the case above, the mirrored cart pole is an instance of $S_2$.
+The action $f, g$ we apply to the MDP is isomorphism to the simple finite group, $S_2$
+
+Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
+What are the interesting invariants of MDPs? And how do they ???
+But, what does this symmetry imply about other quantities of interest for RL?
+
+Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
+
+In general we want to know;
+
+\begin{itemize}
+	\tightlist
+	\item We have $n$ different 'symmetries'. But are they really different?
+	\item Which symmetries share some invariants?
+	\item Which invariants uniquely characterise this symmetry?
+\end{itemize}
+
+With this knowledge, we could identify symmetries via their invariants!?!
+We can observe invariant properties. (not clear to me how you observe a symmetry!?)
+
+We briefly explore this in \ref{game-invariants}.
 
 \subsection{Exploitation} \label{symmetric-exploitation}
 
@@ -126,6 +158,9 @@ let's review some existing methods for exploiting the knowledge of a symmetry. \
 
 \footnotetext[22]{Note that, in all of these methods, symmetry provides
 advantage over considering just the pairwise similarities. We will return to this later.}
+
+% note: what has been given to these methods of exploitation?
+% knowledge of the group, or its actions, or ...?
 
 \subsubsection{Exploiting symmetry for efficient control}
 
@@ -177,13 +212,6 @@ Two $x, x'$ are considered symmetric if $\exists g\in G$
 
 How can it be discovered?
 
-Relationship to disentanglement. \cite{Higgins2018} which makes a lot of sense because ...
-
-Connection to causal hierarchy. Cite Pearl. Association, intervention, counterfactuals.
-Also recently noted by \cite{Caselles-Dupre2019}, ... where they assume that
-the group actions are the actions of the RL environment.
-This doesn't really make sense. Also, will miss many symmetries like ???
-
 A couple parts. Discovery of symmetries, exploration of the knowledge of symmetries.
 
 Unsupervised discovery. Not much success yet. Only when using some kind of supervised signal.
@@ -219,9 +247,7 @@ Want to have an inductive bias towards simpler symmetries. But, how can we do th
 A solution rejection sampling??
 
 
-%
-% - What about symmetries that are products of subgroups? $S = Z_2 \times Z_3$?
-% Are they easier to infer?
+% - What about symmetries that are products of subgroups? $S = Z_2 \times Z_3$? Are they easier to infer?
 % - Within the same $n$. Is there a notion of more or less complex group structures??
 % - Need to show that NNs dont have the right symmetric inductive bias. They dont generalise. !!!
 
@@ -230,29 +256,44 @@ A solution rejection sampling??
 % - Knowing that; range $= [0,360)$, and $0, 45, 90, 135, 180$, all are similar. I guess that we are in cyclic group $8$ and therefore $225, 270, 315$ are also similar. Key is that I know that $0, 45, 90, 135, 180$ are related by $0+0, 0+45, 0+45+45, 0+45+45+45, 0+45+45+45+45$.
 % - Cart pole. $V^{\pi(s, a)}(s') = V^{\pi(-s, -a)}(-s') \forall s'$.
 
+If we know the order of the group, then how hard is the problem?
+For many (lower) orders, there is only one or two possible symmetries. http://mathworld.wolfram.com/FiniteGroup.html
 
-\subsubsection{Invariants}
+% \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
-What are the interesting invariants of MDPs? And how do they ???
-But, what does this symmetry imply about other quantities of interest for RL?
+\subsection{Discovery}
 
-Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
+\begin{align*}
+C(x) = \mathop{\text{min}}_y S(y) + E(x, y)
+\end{align*}
 
-In general we want to know;
+Need to;
 
 \begin{itemize}
 	\tightlist
-	\item We have $n$ different 'symmetries'. But are they really different?
-	\item Which symmetries share some invariants?
-	\item Which invariants uniquely characterise this symmetry?
+	\item Construct a symmetry measure $S: Y \to \mathbb R^+$
+	\item Find a way to efficiently search through $Y$.
+	\item Pick a $E(x, y^{* })$.
+	\item Use $C(x)$ to accelerate learning.
 \end{itemize}
 
-With this knowledge, we could identify symmetries via their invariants!?!
-We can observe invariant properties. (not clear to me how you observe a symmetry!?)
+In our first experiment. We start by demonstrating the effectiveness of $C(x) = E(x, y^{* })$ to accelerate learning through biasing Thompson sampling.
+Next, we condider
 
-We briefly explore this in \ref{game-invariants}.
+\subsubsection{Acceleration of Thompson sampling}
 
+Grid experiments. Compare, vanilla thompson. Similarity thompson. Symmetry thompson.
+
+Of course, the symmetry didnt need to be inferred. So it's cheating.
+
+\subsubsection{Complexity of symmetries}
+
+
+\subsubsection{Complexity measure}
+
+\begin{align*}
+C(x) = -\log \sum_{y\in Y} e^{-S(y) - E(x, y)}
+\end{align*}
 
 \subsection{Inductive bias towards seeing symmetry}
 
@@ -269,6 +310,18 @@ a symmetry that matches the observed pairwise similarities. This symmetry might
 require that other pairs to be similar (because of the closed natured of groups).
 Thus, we can generalise knowledge from some pairwise similarities to others
 pairwise similarities (assuming the prior is correct).
+
+Desiderata of complexity measure
+\begin{itemize}
+	\tightlist
+	\item $\mathcal L(C_4) > \mathcal L(C_2\oplus C_2)$
+	\item $\mathcal L(D_4) > C_8$ (because $D_4$ is not abelian)
+	\item $s$
+\end{itemize}
+
+What about characterising the complexity by the number of generators /relations.
+Or something information theoretic?
+
 
 \subsubsection{RL as inference}
 
