@@ -75,7 +75,7 @@ In general, there are three steps to using abstraction to help solve a problem:
 
 % types of abstraction we will consider
 There are a few different types of abstraction that can be considered for RL:
-state abstractions \cite{Anand2019, Littman2006,Haarnoja,Cuccu2018,Zhonga,Vezzani2019,Abel2018,Duan2018,Abel2017,Silver2016a},
+state abstractions \cite{Anand2019, Littman2006,Cuccu2018,Zhonga,Vezzani2019,Abel2018,Duan2018,Abel2017,Silver2016a},
 action abstractions \cite{Chandak2019,Bester2019,Tennenholtz2019,Nagabandi2019}, state-action abstractions \cite{Dayan1993,Barreto2017}, temporal abstractions \cite{Christodoulou2019, Rafati,Mankowitz2018,Harutyunyan2017,Fruit2017,Riemer2018,Bacon2018,Achiam2018,Pham2019,Konidaris2018,Haarnoja,Sutton1999,Fruit2017a,Bacon2016a,Jinnai2018,Nachum2018}.
 These abstractions are often built for two goals; efficient exploration
 (\href{https://en.wikipedia.org/wiki/Sample_complexity}{sample complexity})
@@ -93,9 +93,9 @@ and / or efficient optimisation (\href{https://en.wikipedia.org/wiki/Computation
 \textsl{Given an abstraction, how might a learner use it?}
 \end{displayquote}
 
-Within RL, there are broad classes of abstraction exploitation. To construct these classes.
+Within RL, there are broad classes of abstraction exploitation. To construct these classes,
 consider the central functions within RL; the state-action value function, $Q$, and the policy, $\pi$.
-How can we build an abstraction into these?
+How can we build an abstraction into these functions?
 
 Let $X, Y$, refer to abstract spaces. We can generalise the notion of a state-action value function and policy to work on abstracted spaces.
 $Q_A: X \times Y \to \mathbb R$, $\pi_A: X \to \Delta(Y)$. We can now construct
@@ -184,7 +184,7 @@ similarities, rather than $|S|\cdot(|S|-1) + |A|\cdot(|A|-1)$ similarities.}
 
 \footnotetext[11]{To construct this representation, we set the state to be centered around the mirror plane.
 So the blue player is at location $(-3, 9)$ and the green player is at location
-$(3, 9)$. And we equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).}
+$(3, 9)$. We equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).}
 
 State abstraction would not be able to group together the blue and green positions.
 As moving left from blue is not equivalent to moving left from green.
@@ -201,15 +201,15 @@ we can decompose a sequential decision problem into a set of shorter, easier to 
 \subsection{Evaluating abstractions}
 
 \begin{displayquote}
-\textsl{But.
+\textsl{
 Which class of abstraction should we use?
 Which class of similarity measure should we use?
-We need to be able to evaluate these.}
+We need to be able to evaluate choices.}
 \end{displayquote}
 
-Ideally we would pick the most 'coarse' abstraction, as a coarse abstraction means we have grouped together many objects.
+Ideally, we would pick the most 'coarse' abstraction, as a coarse abstraction means we have grouped together many objects.
 Thus it has potential for the greatest increases in computational and sample efficiency.
-But. Coarseness is not the only property of an abstraction we care about.
+However, coarseness is not the only property of an abstraction we care about.
 An abstraction must also allow us to represent near optimal policies and it must allow us
 to efficiently find those near optimal policies.
 
@@ -225,7 +225,7 @@ Coarse (as opposed to fine) is a notion from topology.
 A (more) coarse abstraction describes an abstraction that has a looser
 notion of similarity (more things are considered similar). \footnotemark[24]
 
-\footnotetext[24]{(Coarseness captures concepts such as a 'high level' abstraction or a 'general' abstraction).}
+\footnotetext[24]{Coarseness captures concepts such as a 'high level' abstraction or a 'general' abstraction.}
 
 \textit{We say [state abstraction] $\phi_2$ is coarser than [state abstraction] $\phi_1$, denoted $\phi_1 \ge \phi_2$,
 iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$.} \cite{Littman2006}
@@ -261,8 +261,8 @@ Imagine we have a state abstraction, a road is a road, there is no real differen
 between them; gravel, winding, motorway, cliffs-on-either-side...
 One of the first things we want to know about the abstraction is:
 is it possible for me to act optimally
-using this abstraction? If not, what's the damage? In this case, does driving 100kph on every road --
-because they are all pretty-much-the-same -- lead to suboptimal results? Probably.
+using this abstraction? If not, what's the damage? In this example, does driving 100kph on every road --
+because all roads are pretty-much-the-same -- lead to suboptimal results? Probably.
 More precisely, we want know to whether the optimal policy can be approximately represented within an abstracted MDP.
 
 % formal
@@ -292,7 +292,7 @@ and thus whether a 'high level' policy choosing these goals can approximate the 
 Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find.
 We might require large amounts of data or computation.
 
-\paragraph{Efficient control:} \label{efficient-control} \textsl{What is needed for efficient control. And when is 'it' preserved?}
+\paragraph{Efficient control:} \label{efficient-control} \textsl{What is needed for efficient control? And, when is 'it' preserved?}
 
 We want to preserve our ability to use the Bellman equation to efficiently guide the search for optimal controls.
 But, what is necessary or sufficient to preserve the Bellman equation's ability to guide search?
@@ -313,11 +313,12 @@ Thus, when applying a greedy update to the Bellman equation, we are going to con
 
 \footnotetext[26]{This argument needs to be formalised. So far, we only have empirical evidence of this. Also, related work has shown that if the value of the optimal action is not preserved then applying the Bellman equation no longer guarantees that optimal policies are also optimal in the abstraction. \cite{Jong2005}}
 
-\paragraph{Efficient exploration:} \textsl{What is needed for efficient exploration. And when is 'it' preserved?}
+\paragraph{Efficient exploration:} \textsl{What is needed for efficient exploration? And, when is 'it' preserved?}
 
-For $Q$-learning, Jin el at. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$)\footnotemark[13] can be
+For $Q$-learning, Jin et al. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$)\footnotemark[13] can be
 achieved with a UCB-Bernstein type exploration bonus, compared to the inefficient exploration ($\mathcal O(\sqrt{H^4SAT})$),
-achieved by the UCB-Hoeffding type exploration bonus. To achieve this, the UCB-Bernstein type exploration bonus needed to incorporate an
+achieved by the UCB-Hoeffding type exploration bonus. The details of these algorithms is not too important in this discussion.
+The important part is that: the UCB-Bernstein type exploration bonus needed to incorporate an
 estimate the variance of the values, while the Hoeffding exploration bonus relies only on visitation counts.
 
 \footnotetext[13]{$\mathcal O(\sqrt{H^3SAT})$ tells us that the expected regret scales, in the worst case, as a function of $\sqrt{H^3SAT}$.
@@ -330,7 +331,7 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 
 % Is this true in general, or specific to Q-learning with exploration bonuses? Future work.
 
-\paragraph{Efficient inference:} \textsl{What is needed for efficient inference. And when is 'it' preserved?}
+\paragraph{Efficient inference:} \textsl{What is needed for efficient inference? And, when is 'it' preserved?}
 
 % What are we hoping to infer efficiently? In this case. The model parameters. Or the value of a state-action?
 
@@ -360,7 +361,7 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 
 We hope to build learners capable of discovering and exploiting an abstraction
 to efficiently solve the problems they are given.
-But, the efficiency gains of using an abstraction (as measured by its evaluation - in the above section) \underline{must} offset the cost of
+But, the efficiency gains of using an abstraction (as measured by its evaluation - see the section above) \underline{must} offset the cost of
 discovering that abstraction! Else, why did we bother...?
 
 \begin{displayquote}
@@ -376,7 +377,7 @@ To evaluate an abstraction for the single task case we need to compare the compl
 finding a solution via abstraction (abstract, solve, lift) against the performance against
 solvers that do not abstract.
 
-In the transfer case, we need to construct a set of task. And accumulate the
+In the transfer case, we need to construct a set of tasks. Then we accumulate; the
 complexity of discovering the abstraction, and the complexity of solving
 and lifting the abstraction for each new task.
 
@@ -410,14 +411,14 @@ and lifting the abstraction for each new task.
 \end{displayquote}
 
 Earlier, we considered how an agent might use a given abstraction.
-But where did that abstraction come from? Did someone construct it?
+But, where did that abstraction come from? Did someone construct it?
 Or can abstractions be discovered automatically?
 
 To build an abstraction, you need a notion of how two objects might be
 similar (or a notion of what it is you want to preserve).
 This allows you to group the 'similar' objects together, building an abstraction.
-In RL there are many possible notions of similarity. But which ones are sensible?
-Which ones allow us to efficiently finding the optimal policy?
+In RL there are many possible notions of similarity. Which ones are sensible?
+Which ones allow us to efficiently find the optimal policy?
 
 \vspace{5mm}
 
@@ -437,9 +438,9 @@ $\phi_{\pi^{* }}$ preserves the optimal action.}
 
 \vspace{5mm}
 
-We can construct a family of similarity functions for building abstractions for RL. To do so, we measure the
+We can construct a family of similarity functions for building abstractions for RL. To do so, we can measure the
 similarity between two 'RL objects'\footnotemark[28] as: for $x$ and $x'$,
-how similar are their likely futures starting from those objects, for a range of different policies.
+how similar are their likely futures starting from those objects, while using different policies.
 Let's make this formal.
 
 \footnotetext[28]{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
@@ -470,8 +471,8 @@ how does it relate to other families?}
 \paragraph{Examples}
 
 % Need to show that this family caputres abstrations of interest.
-It would be nice to show that all abstractions of interest to RL live in this happy family.
-Instead we will consider two abstractions. One abstraction constructed by preserving the n-step model,
+Future work should seek to show that all abstractions of interest to RL live in this happy family.
+Instead, we will consider two abstractions. One abstraction constructed by preserving the n-step model,
 and the other is constructed by preserving the value of the optimal state-actions.
 
 \begin{itemize}
@@ -495,14 +496,14 @@ and the other is constructed by preserving the value of the optimal state-action
 In the RL setting, we are often not given the transition or the reward function.
 Thus, we must infer similarities from noisy observations. There are two ways we can do this;
 
-\hspace{\parindent}We can infer that two objects are similar because we have seen it,
+\hspace{\parindent}We can infer that two objects are similar because we have observed it,
 we have sufficient data (/ experience) to allow us to conclude that, with high
 certainty, $x_i$ and $x_j$ are similar (with probability $\delta$, $f(x_i) - f(x_j) \le \epsilon$ ).
 
 \hspace{\parindent}Alternatively, we can infer that two objects are similar because we have found a pattern.
 For example, we might have seen that rotations of $45, 90, 135$$, 180, 225$, are all similar,
 therefore we guess that rotations of $270, 315$ are also similar.
-This motivates our work on symmetric abstractions \ref{symmetric-abstractions}.
+This motivates our work on symmetric abstractions (in section\ref{symmetric-abstractions}).
 Because of the structure in a symmetry, some similarities can imply others. Thus we can generalise.
 
 Note: if we are relying on inferring similarity from data, and (say) $f(x_i) = Q^{\pi^{* }}(s_i, a_i)$.

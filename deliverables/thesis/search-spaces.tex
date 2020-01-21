@@ -75,9 +75,9 @@ V(s_1) &= \mathop{\mathbb E}_{a \sim\pi(\cdot|s_1)} r(s, a) + \gamma \mathop{\ma
 &= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_a P(s_1|s_1, a)\pi(a|s) V(s_1) + \gamma\sum_a P(s_2|s_1, a)\pi(a|s) V(s_2)
 \end{align*}
 
-If $\sum_a P(s_2|s_1, a)\pi(a|s) = 0$ (ie. $s_1$ and $s_2$ are not connected)
+If $\sum_a P(s_2|s_1, a)\pi(a|s) = 0$ (i.e. $s_1$ and $s_2$ are not connected)
 then $V(s_1)$ stays the same, yielding a constant vertical line on the polytope.
-If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ (ie. there is some change of transitioning from $s_1$ to $s_2$)
+If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ (i.e. there is some change of transitioning from $s_1$ to $s_2$)
 then $V(s_1)$ increases with $V(s_2)$, yielding a 'positive orthant'.
 $\sum_a P(s_2|s_1, a)\pi(a|s) < 0$ is not possible.
 
@@ -86,13 +86,13 @@ Therefore the value space, the polytope, is connected.
 
 \subsubsection{Dynamics on the polytope}
 
-Furthermore, Dadashi et al. \cite{Dadashi2018} were interested in three aspects of different algorithms’ learning dynamics:
+Furthermore, Dadashi et al. \cite{Dadashi2018} were interested in three aspects of different algorithms’ learning dynamics;
 
 \begin{itemize}
 \tightlist
   \item the path taken through the value polytope,
   \item the speed at which they traverse the polytope,
-  \item and any accumulation points that occur along this path.
+  \item any accumulation points that occur along this path.
 \end{itemize}
 
 % Why do they care?
@@ -107,6 +107,12 @@ Some are not even constrained to the polytope. This left me wondering;
 \begin{displayquote}
   \textsl{How does a search algorithm interact with its search space to yield efficient search?}
 \end{displayquote}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+In \ref{polytope-extras} you can find further exploration of other properties of
+the value polytope, such as; the density of policies, and the effect of the discount
+rate.
 
 \section{Search spaces for MDPs}\label{search-spaces-mdps}
 
@@ -134,12 +140,6 @@ we might be able to order the rooms based on how recently we visited them.
 This should help us retrace our steps and find our keys, rather than arbitrarily
 picking rooms to search.
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-In \ref{polytope-extras} you can find further exploration of other properties of
-the value polytope, such as; the density of policies, and the effect of the discount
-rate.
-
 \subsection{Policy search}
 
 We can search through policies. In my opinion, this feels like the most 'natural' type of search for RL.
@@ -150,7 +150,7 @@ policy iteration and policy gradients.
 
 \subsubsection{Policy iteration}
 
-In policy iteration, we search for the optimal policy by evaluating our current
+In policy iteration (PI), we search for the optimal policy by evaluating our current
 policy and then acting greedily. In our tabular setting, policy iteration can be written as:
 
 \begin{algorithm}
@@ -185,20 +185,21 @@ then (because of the greedy step) PI will update the policy so it chooses that a
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/pi-polytope.png}
-\caption{Each color shows PI applied to a different policy initialisation.
-The arrows point from the current policy to the policy after a step of PI. As we can see,
+\caption{The optimal policy is shown by the cross.
+Each color shows PI applied to a different policy initialisation.
+The arrows point from the current policy to the next policy, after a step of PI. As we can see,
 PI jumps between the deterministic policies (the vertices of our polytope).
-This is because of the greedy update step. Also. Some trajectories require two steps
+This is because of the greedy update step. Also, certain trajectories require two steps
 because they jump to the lower right corner, and then to the top right.}
 \end{figure}
 
 \subsubsection{Policy gradients}
 
-This search is closely related to the deep learning / end-to-end paradigm.
+Policy gradients (PG) are closely related to the deep learning / end-to-end paradigm.
 \textit{Simply write down what you want (the loss function),
 estimate its derivative and apply gradient descent.}
 
-In our case, the loss function is the state value function. And, we can estimate the derivative
+In our case, the loss function is the state value function. We can estimate the derivative
 by differentiating the \ref{eq:value-functional} with respect to the policy.
 
 To ensure the optimisation problem is constrained properly (that the policy returns a distribution over actions),
@@ -221,8 +222,8 @@ we pick $\theta$ as our parameters and construct the policy using $\pi = \sigma(
 \end{algorithmic}
 \end{algorithm}
 
-Note that to mitigate stability and convergence issues, it is common to add weak regularisation
-attempting to maximise the entropy of the policy. This forces the policies away
+Note that to mitigate stability and convergence issues, it is common to add weak regularisation,
+which attempts to maximise the entropy of the policy. This forces the policies away
 from the edges of the polytope, where the gradients are not defined ($\log(0) = \text{NaN}$).
 
 \begin{figure}[h!]

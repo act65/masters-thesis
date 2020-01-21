@@ -60,58 +60,57 @@
 \contentsline {subsubsection}{Exploiting symmetry for efficient control}{50}{section*.75}% 
 \contentsline {subsubsection}{Exploiting symmetry for efficient inference}{50}{section*.76}% 
 \contentsline {subsubsection}{Exploiting symmetry for efficient exploration}{51}{section*.77}% 
-\contentsline {subsection}{\numberline {3.3.3}Discovery}{51}{subsection.3.3.3}% 
-\contentsline {subsubsection}{Inferring symmetries from experience}{52}{section*.78}% 
-\contentsline {subsection}{\numberline {3.3.4}Discovery}{52}{subsection.3.3.4}% 
-\contentsline {subsubsection}{Acceleration of Thompson sampling}{53}{section*.79}% 
-\contentsline {subsubsection}{Complexity of symmetries}{53}{section*.80}% 
-\contentsline {subsubsection}{Complexity measure}{53}{section*.81}% 
-\contentsline {subsection}{\numberline {3.3.5}Inductive bias towards seeing symmetry}{53}{subsection.3.3.5}% 
-\contentsline {subsubsection}{RL as inference}{54}{section*.82}% 
-\contentsline {subsubsection}{Bayesian priors}{54}{section*.83}% 
-\contentsline {subsubsection}{A measure of the symmetry of an MDP}{54}{section*.84}% 
-\contentsline {subsubsection}{Thompson sampling}{55}{section*.85}% 
-\contentsline {subsection}{\numberline {3.3.6}n-dimensional Cart pole}{56}{subsection.3.3.6}% 
-\contentsline {subsubsection}{How is this problem symmetric?}{56}{section*.86}% 
-\contentsline {subsubsection}{How might a learner exploit this knowledge to learn more efficiently?}{56}{section*.87}% 
-\contentsline {subsubsection}{Experiments}{57}{section*.88}% 
-\contentsline {chapter}{\numberline {4}Discussion and conclusion}{61}{chapter.4}% 
-\contentsline {section}{\numberline {4.1}Discussion}{61}{section.4.1}% 
-\contentsline {section}{\numberline {4.2}Future work}{61}{section.4.2}% 
-\contentsline {section}{\numberline {4.3}Conclusion}{62}{section.4.3}% 
-\contentsline {chapter}{\numberline {A}MDPs}{73}{appendix.A}% 
-\contentsline {section}{\numberline {A.1}Tabular MDPs}{73}{section.A.1}% 
-\contentsline {section}{\numberline {A.2}Policies in high dimensions}{74}{section.A.2}% 
-\contentsline {section}{\numberline {A.3}Other properties of the polytope}{75}{section.A.3}% 
-\contentsline {subsection}{\numberline {A.3.1}Distribution of policies}{75}{subsection.A.3.1}% 
-\contentsline {subsection}{\numberline {A.3.2}Discounting}{78}{subsection.A.3.2}% 
-\contentsline {subsection}{\numberline {A.3.3}Derivation of derivative}{78}{subsection.A.3.3}% 
-\contentsline {section}{\numberline {A.4}Model search}{80}{section.A.4}% 
-\contentsline {subsection}{\numberline {A.4.1}Relevant features of the model}{80}{subsection.A.4.1}% 
-\contentsline {subsection}{\numberline {A.4.2}Policy evaluations}{82}{subsection.A.4.2}% 
-\contentsline {section}{\numberline {A.5}Visualising higher dimensional MDPs}{83}{section.A.5}% 
-\contentsline {section}{\numberline {A.6}Deep policy gradients}{85}{section.A.6}% 
-\contentsline {subsection}{\numberline {A.6.1}Overparameterisation}{85}{subsection.A.6.1}% 
-\contentsline {section}{\numberline {A.7}Reparameterisation}{89}{section.A.7}% 
-\contentsline {chapter}{\numberline {B}Abstraction}{91}{appendix.B}% 
-\contentsline {section}{\numberline {B.1}Similarity}{91}{section.B.1}% 
-\contentsline {subsection}{\numberline {B.1.1}Pairing abstractions with similarity measures}{91}{subsection.B.1.1}% 
-\contentsline {section}{\numberline {B.2}LMDPs}{92}{section.B.2}% 
-\contentsline {subsection}{\numberline {B.2.1}LMDP solutions}{92}{subsection.B.2.1}% 
-\contentsline {subsection}{\numberline {B.2.2}MDP Linearisation}{93}{subsection.B.2.2}% 
-\contentsline {section}{\numberline {B.3}Symmetry}{95}{section.B.3}% 
-\contentsline {subsection}{\numberline {B.3.1}Efficient inference using symmetries}{95}{subsection.B.3.1}% 
-\contentsline {paragraph}{Output coupling}{95}{section*.160}% 
-\contentsline {paragraph}{Gradient coupling}{95}{section*.161}% 
-\contentsline {paragraph}{Data augmentation}{96}{section*.162}% 
-\contentsline {paragraph}{Architecture}{96}{section*.163}% 
-\contentsline {subsection}{\numberline {B.3.2}Cart pole}{96}{subsection.B.3.2}% 
-\contentsline {subsubsection}{Mirror symmetry}{96}{section*.164}% 
-\contentsline {subsubsection}{Translational symmetry}{98}{section*.171}% 
-\contentsline {subsubsection}{Future translational symmetry}{99}{section*.178}% 
-\contentsline {subsubsection}{Temporal symmetry}{100}{section*.179}% 
-\contentsline {subsection}{\numberline {B.3.3}Pong}{100}{subsection.B.3.3}% 
-\contentsline {subsubsection}{Mirror symmetry (vertical)}{100}{section*.180}% 
-\contentsline {paragraph}{Mirror symmetry (horizontal)}{101}{figure.B.6}% 
-\contentsline {paragraph}{Translational symmetry}{102}{figure.B.7}% 
-\contentsline {paragraph}{Temporal symmetries}{104}{figure.B.8}% 
+\contentsline {subsection}{\numberline {3.3.3}Priors for thompson sampling}{51}{subsection.3.3.3}% 
+\contentsline {subsubsection}{Thompson sampling}{51}{section*.78}% 
+\contentsline {subsubsection}{Abstracted Thompson sampling}{52}{section*.79}% 
+\contentsline {subsubsection}{Biased Abstracted Thompson sampling}{53}{section*.80}% 
+\contentsline {paragraph}{Rejection sampling}{53}{section*.81}% 
+\contentsline {subsection}{\numberline {3.3.4}Experiments}{54}{subsection.3.3.4}% 
+\contentsline {subsection}{\numberline {3.3.5}A symmetric inductive bias}{54}{subsection.3.3.5}% 
+\contentsline {subsubsection}{Inferring symmetries from experience}{56}{section*.82}% 
+\contentsline {subsubsection}{Complexity of symmetries}{57}{section*.83}% 
+\contentsline {subsubsection}{Complexity measure}{57}{section*.84}% 
+\contentsline {subsection}{\numberline {3.3.6}n-dimensional Cart pole}{57}{subsection.3.3.6}% 
+\contentsline {subsubsection}{How is this problem symmetric?}{57}{section*.85}% 
+\contentsline {subsubsection}{How might a learner exploit this knowledge to learn more efficiently?}{58}{section*.86}% 
+\contentsline {subsubsection}{Experiments}{58}{section*.87}% 
+\contentsline {chapter}{\numberline {4}Discussion and conclusion}{63}{chapter.4}% 
+\contentsline {section}{\numberline {4.1}Discussion}{63}{section.4.1}% 
+\contentsline {section}{\numberline {4.2}Future work}{63}{section.4.2}% 
+\contentsline {section}{\numberline {4.3}Conclusion}{64}{section.4.3}% 
+\contentsline {chapter}{\numberline {A}MDPs}{75}{appendix.A}% 
+\contentsline {section}{\numberline {A.1}Tabular MDPs}{75}{section.A.1}% 
+\contentsline {section}{\numberline {A.2}Policies in high dimensions}{76}{section.A.2}% 
+\contentsline {section}{\numberline {A.3}Other properties of the polytope}{77}{section.A.3}% 
+\contentsline {subsection}{\numberline {A.3.1}Distribution of policies}{77}{subsection.A.3.1}% 
+\contentsline {subsection}{\numberline {A.3.2}Discounting}{80}{subsection.A.3.2}% 
+\contentsline {subsection}{\numberline {A.3.3}Derivation of derivative}{80}{subsection.A.3.3}% 
+\contentsline {section}{\numberline {A.4}Model search}{82}{section.A.4}% 
+\contentsline {subsection}{\numberline {A.4.1}Relevant features of the model}{82}{subsection.A.4.1}% 
+\contentsline {subsection}{\numberline {A.4.2}Policy evaluations}{84}{subsection.A.4.2}% 
+\contentsline {section}{\numberline {A.5}Visualising higher dimensional MDPs}{85}{section.A.5}% 
+\contentsline {section}{\numberline {A.6}Deep policy gradients}{87}{section.A.6}% 
+\contentsline {subsection}{\numberline {A.6.1}Overparameterisation}{87}{subsection.A.6.1}% 
+\contentsline {section}{\numberline {A.7}Reparameterisation}{91}{section.A.7}% 
+\contentsline {chapter}{\numberline {B}Abstraction}{93}{appendix.B}% 
+\contentsline {section}{\numberline {B.1}Similarity}{93}{section.B.1}% 
+\contentsline {subsection}{\numberline {B.1.1}Pairing abstractions with similarity measures}{93}{subsection.B.1.1}% 
+\contentsline {section}{\numberline {B.2}LMDPs}{94}{section.B.2}% 
+\contentsline {subsection}{\numberline {B.2.1}LMDP solutions}{94}{subsection.B.2.1}% 
+\contentsline {subsection}{\numberline {B.2.2}MDP Linearisation}{95}{subsection.B.2.2}% 
+\contentsline {section}{\numberline {B.3}Symmetry}{97}{section.B.3}% 
+\contentsline {subsection}{\numberline {B.3.1}Efficient inference using symmetries}{97}{subsection.B.3.1}% 
+\contentsline {paragraph}{Output coupling}{97}{section*.159}% 
+\contentsline {paragraph}{Gradient coupling}{97}{section*.160}% 
+\contentsline {paragraph}{Data augmentation}{98}{section*.161}% 
+\contentsline {paragraph}{Architecture}{98}{section*.162}% 
+\contentsline {subsection}{\numberline {B.3.2}Cart pole}{98}{subsection.B.3.2}% 
+\contentsline {subsubsection}{Mirror symmetry}{98}{section*.163}% 
+\contentsline {subsubsection}{Translational symmetry}{100}{section*.170}% 
+\contentsline {subsubsection}{Future translational symmetry}{101}{section*.177}% 
+\contentsline {subsubsection}{Temporal symmetry}{102}{section*.178}% 
+\contentsline {subsection}{\numberline {B.3.3}Pong}{102}{subsection.B.3.3}% 
+\contentsline {subsubsection}{Mirror symmetry (vertical)}{102}{section*.179}% 
+\contentsline {paragraph}{Mirror symmetry (horizontal)}{103}{figure.B.6}% 
+\contentsline {paragraph}{Translational symmetry}{104}{figure.B.7}% 
+\contentsline {paragraph}{Temporal symmetries}{106}{figure.B.8}% 

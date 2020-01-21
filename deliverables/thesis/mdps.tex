@@ -49,7 +49,7 @@ questions are not meant as research questions. Rather, they are designed to orie
 
 \begin{displayquote}
   A better question might be: \textsl{What is the simplest setting we can
-  consider that still poses an interesting challenge to the ML and / or RL communities?}
+  consider that still poses a challenge to the ML and / or RL communities?}
 \end{displayquote}
 
 Markov decision problems (MDPs) appear to be a good candidate. Let's go through some definitions so we an more clearly understand how they can be used as a
@@ -97,7 +97,7 @@ D(\zeta, \pi, \tau, d_0) &= d_0(\zeta^s_0) \prod_{t=1}^{\infty} \pi(\zeta^a_t|\z
 \section{Sequential decision problems}
 
 A general intuition for the problem of solving a sequential decision problem is: actions (aka decisions) are made
-sequentially (\textit{e.g. first we put on our socks then we put on our shoes}).
+sequentially (\textit{e.g. First we put on our socks then we put on our shoes}).
 These actions need to be conditioned on the current state of the world (\textit{e.g. It is morning and time to go to work.}).
 The goal is to take actions that achieve higher rewards (\textit{e.g. Lying in bed is quite rewarding...}). While instantaneous
 rewards are good, we really care about long term cumulative rewards (\textit{e.g. Having a job and thus being able to afford a bed is more rewarding.}).
@@ -160,13 +160,14 @@ Which is implied by our earlier definition, but the optimal policy also has othe
 
 If we randomly pick policies and evaluate them, we would need to test (in the worst case),
 all the deterministic policies, $\mathcal O(|A|^{|S|})$ . However, we can use the \ref{eq:bellman-eqn} to
-guide our search. The Bellman equation is the expected return (value), rewritten in a recursive manner.
+guide our search. The expected return can be rewritten in a recursive manner, to give the Bellman equations.
 
 \begin{align*}
-Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
+Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V^{\pi}(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
 V^{\pi}(s) &= \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
 \end{align*}
 
+Where $Q$ is the state-action values.
 The Bellman equation is sometimes written as an operator, $T$.
 
 \begin{align*}
@@ -219,11 +220,10 @@ P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \tag
 r &\in \mathbb R^{n\times m} \tag{the reward fn}
 \end{align}
 
-A result of this formulation is that we concisely write and solve the \eqref{eq:bellman-eqn}. \footnotemark[0]
-
-\footnotetext[0]{Note that the ability to solve the Bellman equation analytically (via the value functional)
+A result of this formulation is that we concisely write and solve the \eqref{eq:bellman-eqn}.
+However, it should be noted that the ability to solve the Bellman equation analytically (via the value functional)
 does not allow us to solve for the optimal policy analytically. The value functional allows us to evaluate a single policy.
-To find the optimal policy, we many need to make many evaluations.}
+To find the optimal policy, we many need to make many evaluations.
 
 \begin{align}
 V &= r_{\pi} + \gamma P_{\pi} V \tag{tabular Bellman eqn}\\
@@ -246,6 +246,6 @@ methods: dynamic programming and related planning techniques \cite{Bertsekas1995
 
 Rather, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
 seems to retain much of the complexity we care about: this setting does not allow
-efficient solutions via dynamic programming. And it can be approached with algorithms
+efficient solutions via dynamic programming. Further, it can be approached with algorithms
 that are used for state-of-the-art deep RL such as;
 policy gradients \cite{Schulman2015a} and Q-learning \cite{Mnih2015}.

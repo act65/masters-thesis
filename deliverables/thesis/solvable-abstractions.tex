@@ -8,8 +8,8 @@
 % The control problem can be expensive, especially when there are long horizons, or high discount rates.
 % For example, bound, bound. Can
 
-In optimisation for supervised learning we know that;
-linear models can be solved analytically, convex problems converge quickly.
+In optimisation for supervised learning we know that
+linear models can be solved analytically and convex problems converge quickly.
 What makes an RL problem easy to solve? Is there linearity or convexity
 within RL problems that we can use to find solutions more efficiently?
 
@@ -44,21 +44,21 @@ we choose to explore linear RL.
 % Linear systems are easy to solve. (ref). They have $\mathcal O(n^3)$ complexity.
 
 Imagine if your life were linear, in the sense of effort and achieving goals.
-More work in equals proportionally more rewards. This makes decision making
+More work equals proportionally more rewards. This makes decision making
 a lot more simple. Pick the most rewarding activity, and work hard.
 
 \subsubsection{What do we mean by a linear MDP?}
 
-Do we mean that the value function is a linear function of a policy?
-Of the reward function? Of the transition function? Others have tried to incorporate
+Do we mean that the value function is a linear function of (say) a policy?
+Of the reward function? Of the transition function? Previous researhc has tried to incorporate
 linearity into MDPs in a few different ways.
 
 \begin{itemize}
   \tightlist
-  \item Todorov constructs a linearised MDP that is linear in the 'control' (a proxy for the policy)\cite{Todorov2006}.
-  \item Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding\cite{Wang}.
-  \item Levine et al. construct a learner that assumes a linear transition function, allowing the use of \href{https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator}{LQR} solvers\cite{Levine2019}.
-  \item Pires et al. construct a factored linear MDP that allows the TD operator to be applied in a lower dimensional space\cite{Pires2016}.
+  \item Todorov constructs a linearised MDP that is linear in the 'control' (a proxy for the policy) \cite{Todorov2006}.
+  \item Jin et al. construct a MDP where the value is a linear function of a state-action representation and of a policy embedding \cite{Wang}.
+  \item Levine et al. construct a learner that assumes a linear transition function, allowing the use of \href{https://en.wikipedia.org/wiki/Linear%E2%80%93quadratic_regulator}{LQR} solvers \cite{Levine2019}.
+  \item Pires et al. construct a factored linear MDP that allows the TD operator to be applied in a lower dimensional space \cite{Pires2016}.
 \end{itemize}
 
 Todorov's formulation appears to be the most powerful. By having a linear
@@ -73,7 +73,7 @@ are optimal. For the rest of this work we will refer to these as LMDPs.
 % $M_{1+2} = \{S, A, P, R_1 +R_2\}$, whose instantaneous rewards are the sum of the
 % first two, [would be] $V_{1+2} = V_1 + V_2$.} \cite{Saxea}
 
-\subsubsection{Constructing a linear MDP}
+\subsubsection{Constructing a LMDP}
 
 \begin{figure}[h!]
   \centering
@@ -86,13 +86,13 @@ To build a LMDP that acts similarly to a MDP, Todorov \cite{Todorov2006} incorpo
 \begin{itemize}
 \tightlist
   \item
-  they allow the agent to pick actions in the space of possible transitions, which they name 'controls', $u: S \to S$.
+  allow the agent to pick actions in the space of possible transitions, which they name 'controls', $u: S \to S$.
   \item
-  to ensure that chosen controls are possible under the given transition function, a new reward is added.
+  ensure that chosen controls are possible under the given transition function, a new reward is added.
   Controls are rewarded if they are close to the 'unconstrained dynamics', $p(s' | s)$.
   \item
-  rather than maximizing the cumulative reward, we maximise the exponentiated cumulative rewards.
-  $\mathop{\text{max}}_{u} \mathop{\mathbb E}_{\zeta \sim D(u)} e^{R(\zeta)}$ \cite{EricWarrenFox2016}
+  maximise the exponentiated cumulative rewards.
+  $\mathop{\text{max}}_{u} \mathop{\mathbb E}_{\zeta \sim D(u)} e^{R(\zeta)}$ \cite{EricWarrenFox2016} (rather than maximizing the cumulative reward).
 \end{itemize}
 
 The intuition behind these changes seems to be; we have allowed the learner to pick an arbitrary control.
@@ -121,11 +121,11 @@ z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{3}
 
 By definition, a linearised Bellman equation can be constructed (1). After some algebra,
 it can be shown that the optimal policy has the form in (2).
-And! We can solve for the value of the optimal control by solving the linear equation in (3).
+Most importantly! We can solve for the value of the optimal control by solving the linear equation in (3).
 (see \ref{lmdp-derivation} for further explanation and a derivation of a LMDP)
 
 \begin{displayquote}
-\textsl{Let's try and understand this linear MDP we have constructed.}
+\textsl{Let's try and understand this LMDP has been constructed.}
 \end{displayquote}
 
 \subsubsection{The unconstrained dynamics and state rewards}
@@ -135,9 +135,10 @@ And! We can solve for the value of the optimal control by solving the linear equ
 \end{displayquote}
 
 Rather than state-action rewards $r: S \times A \to \mathbb R$, we have state rewards $q: S \to \mathbb R$.
-How can state rewards direct behaviour? They can't, and they can. State rewards are not capable of giving rewards for actions taken.
+How can state rewards direct behaviour? They can't, and they can. State rewards are not capable of drectly giving rewards for actions taken.
 Rather, the action dependent part of the reward is captured by the KL divergence between
 the control and the unconstrained dynamics (this relationship is shown in \ref{unconstrained-dynamics-reward}).
+But, they do implicitly direct behaviour through their presence in the exponentiated value function $z_{u^{* }}$.
 
 While it may seem intuitive to think of the unconstrained dynamics as the expected result of using random policy
 $p(s' | s) = \int_a P(s' | s, a)U(a|s)$ (a random walk using the transition function).
