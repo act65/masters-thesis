@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}% 
 \contentsline {section}{\numberline {1.1}Motivation of this thesis}{1}{section.1.1}% 
 \contentsline {section}{\numberline {1.2}Overview}{2}{section.1.2}% 
@@ -116,3 +117,122 @@
 \contentsline {paragraph}{Translational symmetry}{104}{figure.B.7}% 
 \contentsline {paragraph}{Temporal symmetries}{106}{figure.B.8}% 
 \contentsline {subsection}{\numberline {B.3.4}Rejection Sampling}{106}{subsection.B.3.4}% 
+=======
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Our Motivation}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}Overview}{2}{section.1.2}
+\contentsline {section}{\numberline {1.3}Contributions}{2}{section.1.3}
+\contentsline {chapter}{\numberline {2}Markov Decision Problems}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Sequential decision problems}{7}{section.2.1}
+\contentsline {section}{\numberline {2.2}Solving a MDP}{8}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}The Bellman Equations}{9}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Complexity}{9}{subsection.2.2.2}
+\contentsline {section}{\numberline {2.3}A tabular representation of MDPs}{10}{section.2.3}
+\contentsline {section}{\numberline {2.4}The value function polytope}{12}{section.2.4}
+\contentsline {subsubsection}{Geometry of the polytope}{14}{section*.25}
+\contentsline {paragraph}{Dominance}{14}{section*.26}
+\contentsline {paragraph}{Monotonicity}{14}{section*.27}
+\contentsline {paragraph}{Continuity}{14}{section*.28}
+\contentsline {subsubsection}{Dynamics on the polytope}{15}{section*.29}
+\contentsline {section}{\numberline {2.5}Search spaces for MDPs}{15}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Policy search}{16}{subsection.2.5.1}
+\contentsline {subsubsection}{Policy iteration}{16}{section*.30}
+\contentsline {subsubsection}{Policy gradients}{17}{section*.31}
+\contentsline {subsection}{\numberline {2.5.2}Value search}{19}{subsection.2.5.2}
+\contentsline {chapter}{\numberline {3}Abstraction}{21}{chapter.3}
+\contentsline {section}{\numberline {3.1}Abstractions for RL}{22}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Exploiting abstractions}{22}{subsection.3.1.1}
+\contentsline {subsubsection}{Examples}{23}{section*.32}
+\contentsline {paragraph}{State abstraction}{23}{section*.33}
+\contentsline {paragraph}{Action abstraction}{24}{section*.34}
+\contentsline {paragraph}{State-action abstraction}{25}{section*.35}
+\contentsline {paragraph}{Temporal abstraction}{26}{section*.36}
+\contentsline {subsection}{\numberline {3.1.2}Evaluating abstractions}{26}{subsection.3.1.2}
+\contentsline {subsubsection}{Coarse abstractions}{27}{section*.37}
+\contentsline {subsubsection}{Near optimal abstractions}{28}{section*.38}
+\contentsline {subsubsection}{Efficiently solvable abstractions}{28}{section*.39}
+\contentsline {paragraph}{Efficient control:}{29}{section*.40}
+\contentsline {paragraph}{Efficient exploration:}{29}{section*.41}
+\contentsline {paragraph}{Efficient inference:}{30}{section*.42}
+\contentsline {subsubsection}{The complexity of abstraction}{30}{section*.43}
+\contentsline {subsection}{\numberline {3.1.3}Discovering abstractions}{31}{subsection.3.1.3}
+\contentsline {subsubsection}{Classes of similarity for RL}{31}{section*.44}
+\contentsline {paragraph}{Examples}{32}{section*.45}
+\contentsline {subsubsection}{Inference of the similarity}{33}{section*.46}
+\contentsline {section}{\numberline {3.2}Efficiently solvable abstractions}{34}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Linear Markov decision problems (LMDPs)}{34}{subsection.3.2.1}
+\contentsline {subsubsection}{What do we mean by a linear MDP?}{34}{section*.47}
+\contentsline {subsubsection}{Constructing a LMDP}{35}{section*.48}
+\contentsline {subsubsection}{The unconstrained dynamics and state rewards}{36}{section*.55}
+\contentsline {subsubsection}{The optimal policy}{37}{section*.56}
+\contentsline {subsubsection}{Solving for the optimal value}{37}{section*.57}
+\contentsline {subsection}{\numberline {3.2.2}Solving a MDP}{38}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Lifting the optimal LMDP policy}{39}{subsection.3.2.3}
+\contentsline {subsubsection}{Optimality of solutions via LMDPs}{40}{section*.66}
+\contentsline {subsection}{\numberline {3.2.4}Discussion}{41}{subsection.3.2.4}
+\contentsline {subsubsection}{Linearity in MDPs}{45}{section*.71}
+\contentsline {section}{\numberline {3.3}Symmetric abstractions}{46}{section.3.3}
+\contentsline {subsubsection}{Definition}{46}{section*.72}
+\contentsline {subsubsection}{Symmetrics and abstractions}{47}{section*.73}
+\contentsline {subsection}{\numberline {3.3.1}Symmetries for RL}{48}{subsection.3.3.1}
+\contentsline {subsubsection}{Automorphisms}{48}{section*.74}
+\contentsline {subsubsection}{Invariants}{48}{section*.75}
+\contentsline {subsection}{\numberline {3.3.2}Exploitation}{50}{subsection.3.3.2}
+\contentsline {subsubsection}{Exploiting symmetry for efficient control}{50}{section*.76}
+\contentsline {subsubsection}{Exploiting symmetry for efficient inference}{50}{section*.77}
+\contentsline {subsubsection}{Exploiting symmetry for efficient exploration}{50}{section*.78}
+\contentsline {subsection}{\numberline {3.3.3}Priors for thompson sampling}{51}{subsection.3.3.3}
+\contentsline {subsubsection}{Thompson sampling}{51}{section*.79}
+\contentsline {subsubsection}{Abstracted Thompson sampling}{52}{section*.80}
+\contentsline {subsubsection}{Biased Abstracted Thompson sampling}{53}{section*.81}
+\contentsline {paragraph}{Rejection sampling}{53}{section*.82}
+\contentsline {subsection}{\numberline {3.3.4}Experiments}{53}{subsection.3.3.4}
+\contentsline {subsection}{\numberline {3.3.5}A symmetric inductive bias}{54}{subsection.3.3.5}
+\contentsline {subsubsection}{Inferring symmetries from experience}{55}{section*.83}
+\contentsline {subsubsection}{Complexity of symmetries}{56}{section*.84}
+\contentsline {subsubsection}{Complexity measure}{57}{section*.85}
+\contentsline {subsection}{\numberline {3.3.6}n-dimensional Cart pole}{57}{subsection.3.3.6}
+\contentsline {subsubsection}{How is this problem symmetric?}{57}{section*.86}
+\contentsline {subsubsection}{An advantage}{58}{section*.91}
+\contentsline {subsubsection}{Experiments}{59}{section*.92}
+\contentsline {chapter}{\numberline {4}Discussion and conclusion}{63}{chapter.4}
+\contentsline {section}{\numberline {4.1}Discussion}{63}{section.4.1}
+\contentsline {section}{\numberline {4.2}Future work}{63}{section.4.2}
+\contentsline {section}{\numberline {4.3}Conclusion}{64}{section.4.3}
+\contentsline {chapter}{\numberline {A}MDPs}{73}{appendix.A}
+\contentsline {section}{\numberline {A.1}Tabular MDPs}{73}{section.A.1}
+\contentsline {section}{\numberline {A.2}Policies in high dimensions}{74}{section.A.2}
+\contentsline {section}{\numberline {A.3}Other properties of the polytope}{75}{section.A.3}
+\contentsline {subsection}{\numberline {A.3.1}Distribution of policies}{75}{subsection.A.3.1}
+\contentsline {subsection}{\numberline {A.3.2}Discounting}{78}{subsection.A.3.2}
+\contentsline {subsection}{\numberline {A.3.3}Derivation of derivative}{78}{subsection.A.3.3}
+\contentsline {section}{\numberline {A.4}Model search}{80}{section.A.4}
+\contentsline {subsection}{\numberline {A.4.1}Relevant features of the model}{80}{subsection.A.4.1}
+\contentsline {subsection}{\numberline {A.4.2}Policy evaluations}{82}{subsection.A.4.2}
+\contentsline {section}{\numberline {A.5}Visualising higher dimensional MDPs}{83}{section.A.5}
+\contentsline {section}{\numberline {A.6}Deep policy gradients}{85}{section.A.6}
+\contentsline {subsection}{\numberline {A.6.1}Overparameterisation}{85}{subsection.A.6.1}
+\contentsline {section}{\numberline {A.7}Reparameterisation}{89}{section.A.7}
+\contentsline {chapter}{\numberline {B}Abstraction}{91}{appendix.B}
+\contentsline {section}{\numberline {B.1}Similarity}{91}{section.B.1}
+\contentsline {subsection}{\numberline {B.1.1}Pairing abstractions with similarity measures}{91}{subsection.B.1.1}
+\contentsline {section}{\numberline {B.2}LMDPs}{92}{section.B.2}
+\contentsline {subsection}{\numberline {B.2.1}LMDP solutions}{92}{subsection.B.2.1}
+\contentsline {subsection}{\numberline {B.2.2}MDP Linearisation}{93}{subsection.B.2.2}
+\contentsline {section}{\numberline {B.3}Symmetry}{95}{section.B.3}
+\contentsline {subsection}{\numberline {B.3.1}Efficient inference using symmetries}{95}{subsection.B.3.1}
+\contentsline {paragraph}{Output coupling}{95}{section*.164}
+\contentsline {paragraph}{Gradient coupling}{95}{section*.165}
+\contentsline {paragraph}{Data augmentation}{96}{section*.166}
+\contentsline {paragraph}{Architecture}{96}{section*.167}
+\contentsline {subsection}{\numberline {B.3.2}Cart pole}{96}{subsection.B.3.2}
+\contentsline {subsubsection}{Mirror symmetry}{96}{section*.168}
+\contentsline {subsubsection}{Translational symmetry}{97}{section*.175}
+\contentsline {subsubsection}{Future symmetry}{99}{section*.182}
+\contentsline {subsubsection}{Temporal symmetry}{99}{section*.185}
+\contentsline {subsection}{\numberline {B.3.3}Pong}{100}{subsection.B.3.3}
+\contentsline {subsubsection}{Mirror symmetry (vertical)}{100}{section*.186}
+\contentsline {paragraph}{Mirror symmetry (player perspective / horizontal)}{101}{figure.B.6}
+\contentsline {paragraph}{Translational symmetry}{103}{figure.B.7}
+\contentsline {paragraph}{Temporal symmetries}{103}{figure.B.8}
+>>>>>>> d89e4ae3cb27b94841407321c548495d9fcaa813

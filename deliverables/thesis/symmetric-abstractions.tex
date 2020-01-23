@@ -1,49 +1,23 @@
 \newpage
 \section{Symmetric abstractions}\label{symmetric-abstractions}
 
+% symmetry is cool
+Symmetry is a concept from pure mathematics, which has found major success in physics ref ref ref.
+(why has it found such success in physics? beauty, compression, ... Occam's razor)
 
-As a side note...
-Relationship to disentanglement. \cite{Higgins2018} which makes a lot of sense because ...
-
-Connection to causal hierarchy. Cite Pearl. Association, intervention, counterfactuals.
+Recently, it has also been applied in machine learning in some imortant ways; to disentanglement \cite{Higgins2018} which makes a lot of sense because ...,
+% Connection to causal hierarchy. Cite Pearl. Association, intervention, counterfactuals.
 Also recently noted by \cite{Caselles-Dupre2019}, ... where they assume that
 the group actions are the actions of the RL environment.
 This doesn't really make sense. Also, will miss many symmetries like ???
 
-% Reasonably well understood how symmetric abstractions can improve computational complexity.
-% But, want to understand how they effect sample complexity.
-
-% symmetry is cool
-Symmetry is a concept from pure mathematics, which has found major success in physics, ...
-(why has it found such success in physics? beauty, compression, ... Occam's razor)
-But what do we mean by symmetry?
-
-% example
-
-
 % occam's razor
 Occam's razor is a core idea behind much of statistics, ML and science. Simple
-hypotheses should be preferred as the are more likely to be right. This intuition
-can be viewed a little more formally through a Bayesian perspective.
+hypotheses should be preferred as the are more likely to be right.
+% This intuition can be viewed a little more formally through a Bayesian perspective.
 
 % symmetry and occams razor
 How does symmetry relate to simplicity?
-
-% how can symmetry help? more concretely
-But, why do we care about symmetry?
-
-% but. discovery
-But.
-
-% relation to abstraction
-???
-
-% related work on complexity / occam's razor
-This ability is currently lacking in the ML tool kit. There has been much work done to
-
-%  why do we care?
-For sample efficiency!! Inductive bias. Generalise in the right way without making observations.
-
 
 \subsection{A symmetric inductive bias}
 
@@ -126,7 +100,7 @@ For many (lower) orders, there is only one or two possible symmetries. http://ma
 
 \subsubsection{Definition}
 
-A useful starting point is finite groups.
+A say that an object is symmetric is it has a 'group' structure.
 
 A group is a set, $G$ (\textit{say the set of rotations, $\{0, 90, 180, 270\}$}),
 and an operation $\circ$ that combines any two elements $a$ and $b$ to form
@@ -152,6 +126,16 @@ For example, we can imagine the \textit{action} of this rotation group $\big(0, 
 \end{figure}
 
 The action of a group on XXX.
+
+\subsubsection{Symmetries and abstractions}
+
+\begin{displayquote}
+\textsl{How do symmetries help us build abstractions?}
+\end{displayquote}
+
+We can use a group structure to define a similarity (or equivalence relation),
+$a \sim_G b$ iff $\exists g \in G: a = g \circ b$. {\color{red} for example??} Therefore, we can use this
+ notion of similarity to construct abstractions as we did in \ref{C:abstraction}.
 
 \subsection{Symmetries for RL}\label{mdp-homomorphism}
 
@@ -477,7 +461,8 @@ C(x) = -\log \sum_{y\in Y} e^{-S(y) - E(x, y)}
 \end{align*}
 
 
-
+% More generally. Connection between sample / computational complexity via
+% SGD + regularisation -> Langevin dynamics -> rejection sampling???
 
 % \subsubsection{Langevin dynamics}
 %
@@ -513,69 +498,120 @@ $\mathbb{R}^4$ (the position, velocity, angle and angular velocity), observation
 in $\mathbb{R}^{4\times n}$. And the action space is generalised from $\{0,1\}$ (left and right),
 to $\{0,1\}^{n}$.
 
-\cite{Brockman2016,baselines}
-
 % What makes this problem hard??
-
+% This setting allows us to easily control the amount of symmetry.
 % Existing envs dont test this because!?!?
 
 \subsubsection{How is this problem symmetric?}
 
-Well, the original cart pole problem has a few symmetries in it. But these are
-not central to the ...
+The $n$-dimensional cart pole problem can be reduced to $n$, one dimensional cart pole problems.
+Where each of these one dimensional cart pole problems cart pole problems is easy to solve.
 
-Many people realise that this problem can be reduce to $n$, one dimensional cart pole problems.
-But the learner needs to infer that.
+In a more formal sense. This problem is symmetric because the optimal policy and its ($Q$) values are invariant to the actions of the permutation group of order n, $S_n$.
 
-More formally. How does this problem have symmetry?
-Permutations of the observation-action space preserve the problem.
+\begin{align*}
+g \circ s_j &= g \circ [x_0, \dots, x_i, \dots, x_{n-1}] \\
+&= [x_1, x_0, \dots, x_i, \dots, x_{n-1}] \\
+g_i \circ a_k &= g \c[u_0, \dots, u_i, \dots, u_{n-1}] \\
+&= [u_1, u_0 \dots, u_i, \dots, u_{n-1}] \\
+g\circ \tau(s'|s, a) &= \tau(g\circ s'|g\circ s, g\circ a) \\
+g\circ R(s, a) &= R(g\circ s, g\circ a) \\
+g\circ \pi^{* }(a|s) &= \pi^{* }(g\circ a| g\circ s) \\
+&= \pi^{* }(a|s) \tag{invariance of the optimal policy}\\
+g\circ Q^{\pi^{* }}(s, a) &= Q^{\pi^{* }}(g\circ s, g\circ a) \\
+&= Q^{\pi^{* }}(s, a) \tag{invariance of the optimal values}
+\end{align*}
 
-\subsubsection{How might a learner exploit this knowledge to learn more efficiently?}
+{\color{red}do I need to prove this?! via the transition fn / reward fn...}
 
-What advantage is provided by this knowledge?
+We describe a state as $s_j = [x_0, \dots, x_i, \dots, x_{n-1}]$, where $x_i = (p_c^i, v_c^i, p_p^i, v_p^i)$. Where, $p_c$ is the position of the cart, $v_c$ is the velocity of the cart, $p_p$ is the position of the pole, $v_p$ is the angular velocity of the pole. We describe actions as $a_k \in \{0, 1\}^n$. Let $g\in S_n$ be the pairwise permutation, swapping the first two elements $(0\to 1)$.
 
-If we knew that the problem can be decomposed into $n$ identical subproblems,
-then that means we are gathering $n$ times the data for each subproblem.
+% However, the learner needs to infer these symmetries, so they can be exploited.
+
+% Well, the original cart pole problem has a few symmetries in it (as explored in \ref{}).
+% However, by
+
+\subsubsection{An advantage}
+
+\begin{displayquote}
+\textit{What advantage is provided by exploiting symmetries?}
+\end{displayquote}
+
+If a learner has inferred that the $n$-dimensional cart pole problem can be decomposed into $n$ identical subproblems,
+then that means it is gathering $n$ times the data for the one-dimensional cart pole problem.
 So, we should see a factor of $n$ speed up in learning.
-
 This is the same argument made here [quotient groups appendix...].
+
+We would expect that for a learner of
 
 For a learner that doesn't know of the symmetries. How is this problem hard?
 The more dimensions there are, the more ways there are to fail.
-Consider how exploration is done. In a single dimension, a greedy action is
+Consider how exploration is done. In a single dimension, actions are taken with probability  is
 taken with some chance of exploring instead.
-
+% How does PPO / PG do exploration?!?!?
 Maybe you correctly balanced the pole in all dimensions except one. To bad, you dont get any reward.
-
-
 
 \subsubsection{Experiments}
 
-What about if we rotate the observations. So the observations are not aligned with the actions?
-Or generalising to n+1? Could start the agent off with n+1 dims. But set them to observe nothing / actions do nothing. Until t > T?
+We use OpenAI's Gym \cite{Brockman2016} and Baselines \cite{baselines} to test this environment.
 
-\begin{figure}
+% What about if we rotate the observations. So the observations are not aligned with the actions?
+% Or generalising to n+1? Could start the agent off with n+1 dims. But set them to observe nothing / actions do nothing. Until t > T?
+
+Note: 'Average mean reward' refers to the fact that we have averaged (n=5)
+the mean reward (per episode). Also note: This reward is the training performance.
+
+\begin{figure}[h!]
   \centering
   \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/multibinary-nd-cart.png}
-  \caption{PPO2 solving the nd cartpole problem with access to a \textit{MultiBinary} action space that grows with $N$.}
+  \caption{Default PPO2 solving the nd cartpole problem with access to a \textit{MultiBinary} action space. Each color corresponds to a the average mean return of different, $n$, the number of repeated cart pole problems.}
 \end{figure}
 
-\begin{figure}
+As mentioned in the previous section, we expected learning to become much
+harder for a learner that doesn't exploit symmetries. These results suggest either of two possibilities:
+that PPO2 can discover and exploit symmetries, our setting does not test what we think it does. {\color{red}so... how did we answer this???}
+
+While investigating this further, we realised that the given action space, \textit{MultiBinary}, provies a large amount of information. We ran another test with a \textit{Discrete} action space. Where the learner gets to choose $a\in \mathbb Z_n$.
+This action then gets (binary) decoded to the \textit{MultiBinary} format.
+
+A learner that exploits the permutation symmetries in the $n$-dimensional cart pole problem should learn $n$ times quicker.
+However, the cost of discovering this permutation symmetry is unknown.
+
+\begin{figure}[h!]
 \centering
 \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/discrete-nd-cart.png}
-\caption{PPO2 solving the nd cartpole problem with access to a \textit{Discrete} action space that grows with $2^N$.}
+\caption{Default PPO2 solving the nd cartpole problem with access to a \textit{Discrete} action space. Each color corresponds to a the average mean return of different, $n$, the number of repeated cart pole problems.}
 \end{figure}
 
 
-\textit{Note: Average mean reward refers to the fact that we have averaged (n=5)
-the mean reward (per episode). Also, this reward is the training performance.
-Generalisation in RL can mean a few things.}
 
-It seems surprising that access to the \textit{MultiBinary} action space provides such an advantage.
-Also, it seems surprising that the an increase of 6 dimensions only results in approximately a ~2 million increase in the data required.
-Is the learner doing some sort of intelligent sharing?
-Why is it so hard for the Discrete learner? What operation does it find hard to learn. The ability to decode? $n$ bits to $2^n$ onehots?
+% It seems surprising that access to the \textit{MultiBinary} action space provides such an advantage.
+% Also, it seems surprising that the an increase of 6 dimensions only results in approximately a ~2 million increase in the data required.
+% Is the learner doing some sort of intelligent sharing?
+% Why is it so hard for the Discrete learner? What operation does it find hard to learn. The ability to decode? $n$ bits to $2^n$ onehots?
 
-Also, interesting to note that the 1D learner equipped with a \textit{Discrete}
-action space achieves max performance at ~1.75 million samples, while the learner
-equipped with a \textit{MultiBinary} action space achieves max performance at ~2.25 million samples. (significant??)
+% Also, interesting to note that the 1D learner equipped with a \textit{Discrete}
+% action space achieves max performance at ~1.75 million samples, while the learner
+% equipped with a \textit{MultiBinary} action space achieves max performance at ~2.25 million samples. (significant??)
+
+
+Future work. The hardness of learning a binary decoder is not sufficient to explain the difference between the
+\textit{Discrete} and \textit{MultiBinary} action spaces.
+
+
+\subsection{Symmetry measure}
+
+
+
+Increases quickly. 2->1, 3->3, 4->9, 5->25, 6->75, 7->231, 8->763, 9->??
+
+Why so expensive? There is no structure in the states. They are discrete and unrelated.
+(at least our representation of them). Cyclic symmetry is easy to detect in (example) because
+we ... .
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/discrete-nd-cart.png}
+\caption{Default PPO2 solving the nd cartpole problem with access to a \textit{Discrete} action space. Each color corresponds to a the average mean return of different, $n$, the number of repeated cart pole problems.}
+\end{figure}
