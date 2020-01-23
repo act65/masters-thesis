@@ -147,7 +147,7 @@ This turns out to be wrong. The unconstrained dynamics are responsible for rewar
 \subsubsection{The optimal policy}
 
 \begin{displayquote}
-\textsl{What should we make of the form of the optimal control?}
+\textsl{What can we interpret about the form of the optimal control?}
 \end{displayquote}
 
 \begin{align*}
@@ -156,17 +156,17 @@ u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s
 
 Interpreting the equation above, the optimal control is the control that transitions to new state, $s'$, with a
 probability proportional to the discounted exponentiated value of that state, $z(s)$.
-That seems sensible, and is closely related to the RL as inference framework \cite{Levinea},
+That seems reasonable, and is closely related to the RL as inference framework \cite{Levinea},
 which picks actions with probability proportional to their exponentiated $Q$ values.
 
 \begin{align*}
 \pi(\cdot|s) \propto e^{Q(s, \cdot)}
 \end{align*}
 
-\subsubsection{Solving for the optimal value}
+\subsubsection{Solving for the optimal value}\label{solve-lmdp}
 
 \begin{displayquote}
-\textsl{What should we make of the form of the value estimate?}
+\textsl{What can we interpret about the form of the value estimate?}
 \end{displayquote}
 
 \begin{align*}
@@ -176,7 +176,7 @@ z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma}
 In the undiscounted case (aka first exit case), where $\gamma=1$, this turns into an eigen value
 problem $z = QPz = Az$. In the discounted case, the exponentiated value, $z$, is guaranteed to converge \cite{Todorov2009}.
 
-\subsection{Solving a MDP}
+\subsection{Solving a MDP}\label{construct-lmdp-from-mdp}
 
 \begin{figure}[h!]
 \centering
@@ -190,7 +190,7 @@ problem $z = QPz = Az$. In the discounted case, the exponentiated value, $z$, is
 
 We need a way to transform a MDP into a LMDP, while preserving the
 `structure' of the original MDP. But what do we mean by a MDP's structure?
-According \cite{Todorov2009}, the LMDP should; be able to represent the same \ref{state-reward-rep} as the original MDP,
+According \cite{Todorov2009}, the LMDP should be able to represent the same \ref{state-reward-rep} as the original MDP,
 and give the the same \ref{unconstrained-dynamics-reward} was the original MDP.
 
 \begin{align*}
@@ -202,15 +202,13 @@ r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \label{unc
 % "We do not yet have theoretical error bounds but have found the approximation to be very accurate in practice" \cite{Todorov}
 
 So, given a reward function, $r$, and a transition function, $P$,
-(from an MDP), we can use \ref{state-reward-rep}, \ref{unconstrained-dynamics-reward}
+(from an MDP), we can use the \ref{state-reward-rep} and \ref{unconstrained-dynamics-reward}
 to solve for the unconditioned dynamics $p$ and a state reward $q$.
 This transformation, from $P, r \to p, q$ requires $|S| \times |A|$ computations, as for each state in the
-MDP we need to satisfy constrints for each action.
-
-For a derivation and explanation see appendix \ref{mdp-Linearisation}.
+MDP we need to satisfy constraints for each action. For a derivation and explanation see appendix \ref{mdp-Linearisation}.
 
 However, an important condition missing!
-We should preserve the value of optimal actions (as discussed in \ref{efficient-control})!
+We should preserve the value of optimal actions (as discussed in \ref{efficient-control}).
 Alternatively, we might settle for preserving the optimal policy.
 
 \begin{align*}
@@ -219,14 +217,13 @@ z_{u_{\pi}}(s) = e^{V_{\pi}(s)} \label{value-preserved}\tag{value} \\
 P(s'|s, a) \cdot \pi^{* }(a|s) = u^{* }(s'|s) \label{opt-policy-preserved}\tag{optimal policy}
 \end{align*}
 
-Where $z_{u_{\pi}}$ is the value (as evaluated by the LMDP) of the control $u_{\pi}(s'|s) = P(s'|s, a) \cdot \pi(a|s)$.
-And where $V_{\pi}$ is the expected return of policy $\pi$ as evaluated by the original MDP.
+Where $z_{u_{\pi}}$ is the value (as evaluated by the LMDP) of the control $u_{\pi}(s'|s) = P(s'|s, a) \cdot \pi(a|s)$, and $V_{\pi}$ is the expected return of policy $\pi$ as evaluated by the original MDP.
 
 It seems that Todorov hopes that the constraints \ref{state-reward-rep}, \ref{unconstrained-dynamics-reward},
 will be sufficient to give \ref{value-preserved}, \ref{opt-policy-preserved}. But he does not prove it.
-This is problem that we will return to.
+This is problem that we will return to in \ref{paths}.
 
-\subsection{Lifting the optimal LMDP policy}
+\subsection{Lifting the optimal LMDP policy}\label{lift-mdp}
 
 \begin{figure}[h!]
 \centering
@@ -263,9 +260,13 @@ In the worst case it has complexity $\mathcal O(|S|^2|A|)$ (which is the same as
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-We have now built a way to solve a MDP with a LMDP. Let's try it out.
+We have now built a way to solve a MDP with a LMDP.
+We have a method to transform a MDP to a LMDP \ref{construct-lmdp-from-mdp}.
+We can solve the LMDP \ref{solve-lmdp}.
+And finally, we can lift the solution to the original MDP \ref{lift-mdp}.
+Let's try it out.
 
-\subsubsection{Optimality of solutions via LMDPs}
+\subsubsection{Optimality of solutions via LMDPs}\label{paths}
 
 \begin{quote}
 \textsl{Do these two paths lead to the same place?}
@@ -274,7 +275,7 @@ We have now built a way to solve a MDP with a LMDP. Let's try it out.
 One of the main questions we have not addressed yet is; if we solve the
 MDP directly, or we linearise then solve then lift, do we end up in the same
 place? This is a question about the sub-optimality of our abstraction \ref{near-optimal-abstraction}. Can
-our abstraction represent (and find) the same solutions that the
+our abstraction approximately represent (and find) the same solutions that the
 original can? We can formalise this question as the difference between the optimal values or optimal policies.
 
 \begin{align*}
@@ -286,19 +287,19 @@ We answer this question using experiments, described in figures \ref{fig:ltd} an
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/figures/LBO_BO.png}
-\caption{For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the temporal difference operator points towards the optimal value. But, ther linear temporal difference operator points elsewhere...}
+\caption{For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the temporal difference operator points towards the optimal value. But, the linear temporal difference operator points elsewhere.}
 \label{fig:ltd}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth,height=0.75\textheight]{../../pictures/figures/lmdp_mdp_optimal_dynamics.png}
-\caption{A comparison between the optimal control $u^{* }(s'|s)$ (shown in the left column) and the dynamics of the optimal policy (MDP) $\sum_a P(s'|s, a)\pi^{* }(a|s)$ (shown in the right column). Because the optimal control, and dynamics of the optimal policy can be written as $2x2$ matrices, we can plot them. Yellow indicates high probability, purple indicates low probability. But the main thing to observe is: the optimal control is often not the same as the dynamics of the optimal policy.}
+\caption{A comparison between the optimal control $u^{* }(s'|s)$ (shown in the left column) and the dynamics of the optimal policy (MDP) $\sum_a P(s'|s, a)\pi^{* }(a|s)$ (shown in the right column). Because the optimal control, and dynamics of the optimal policy can be written as $2\times 2$ matrices, we can plot them. Yellow indicates high probability, purple indicates low probability. But the main thing to observe is that the optimal control is often not the same as the dynamics of the optimal policy.}
 \label{fig:opt-control}
 \end{figure}
 
 We also investigate the sensitivity of the LMDP's optimal control given different MDPs.
-The optimal control is very sensitive to the sign and magnitude of the rewards, as can be seen in \label{fig:chain-zero} and \label{fig:chain-pos}.
+The optimal control is very sensitive to the sign and magnitude of the rewards, as can be seen in \ref{fig:chain-zero} and \ref{fig:chain-pos}.
 
 \begin{figure}
 \centering
@@ -312,7 +313,7 @@ The optimal control to this problem is not realisable: in every state, jump to t
 \centering
 \includegraphics[width=0.65\textwidth,height=0.325\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
 \caption{The same chain problem as above, but with an positive reward added to all states.
-Now the structure of the transition function has made it into the optimal control!
+We can see that the structure of the transition function has now made it into the optimal control!
 The LMDP's control can be decoded into a realisable policy.}
 \label{fig:chain-pos}
 \end{figure}
@@ -329,7 +330,7 @@ z_{t+1}(s_i) = (1- \eta)z_{t}(s_i) + \eta\tilde z(s_i) \tag{$Z$ iteration}\\
 \end{align*}
 
 He makes this work by hand picking $q$ so that the optimisation will converge to the optimal value.
-Then they evaluate the accuracy of the value estimates.
+Then he evaluates the accuracy of the value estimates.
 They do not give a general way of constructing $q$ from a MDP that actually works (in the sense of yielding the same optima).
 Nor do they give an efficient way to map an optimal control to an optimal policy.
 
@@ -340,20 +341,20 @@ Nor do they give an efficient way to map an optimal control to an optimal policy
 % Again, the structure of the transition function is missing.}
 % \end{figure}
 
-Because, there are no benchmarks that we can validate our implementation on,
+Because there are no benchmarks that we can validate our implementation on,
 there is some doubt about whether I implemented the LMDP correctly. While the
 LDMP solution strategy does occasionally pick the correct optimal policy, more often than not,
 its guesses are seriously wrong.
 
 \subsubsection{Linearity in MDPs}
 
-Todorov's formulation of LMDPs does not seem to allow a MDP to be to reliably embedd a LMDP.
+Todorov's formulation of LMDPs does not seem to allow a MDP to be to reliably embed a LMDP.
 Despite this, it might still be possible to construct a linear MDP given different assumptions.
 
 Let's reconsider Jin et al.'s approach \cite{Wang}: construct a MDP where the value is a
 linear function of a state-action representation and of a policy embedding.
 It is important to note that, not every (policy) embedding can be realised as a policy, so to constrain the search dynamics properly
-we must use the bellman equation.
+we must use the Bellman equation.
 
 And this captures the essence of the problem. We need the Bellman equation for efficient search, but it is not linear in the policy.
 So, we can linearise a MDP, but we will lose the ability to use the Bellman equation to guide the search for the optimal policy.

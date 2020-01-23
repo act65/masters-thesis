@@ -44,6 +44,86 @@ This ability is currently lacking in the ML tool kit. There has been much work d
 %  why do we care?
 For sample efficiency!! Inductive bias. Generalise in the right way without making observations.
 
+
+\subsection{A symmetric inductive bias}
+
+% This is about generalising using an inductive bias towards symmetry.
+
+In the introduction to abstractions for RL we considered learning similarities
+to build an abstraction. But, learning pairwise similarities does not give
+you the ability to generalise. To generalise you need priors. For example;
+CNNs generalise because they implicitly encode priors for smoothness and explicitly for locality. (ref)
+
+Another potentially useful prior is symmetry: \textit{"We believe it is likely that
+the problems we are given have some symmetry within them."}
+
+The intuition is, this symmetry prior helps us generalise because, we can guess
+a symmetry that matches the observed pairwise similarities. This symmetry might
+require that other pairs to be similar (because of the closed natured of groups).
+Thus, we can generalise knowledge from some pairwise similarities to others
+pairwise similarities (assuming the prior is correct).
+
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+
+Symmetry is a stricter notion of similarity.
+If $x, x' \in X$ are symmetric, then there must exist $f$ such that $f(x) = x'$.
+Where, $(X, f)$ must satisfy the group axioms, (closure, associativity, identity, inverse).
+
+The key property we are interested in is closure.
+Two $x, x'$ are considered symmetric if $\exists g\in G$
+
+
+How can it be discovered?
+
+A couple parts. Discovery of symmetries, exploration of the knowledge of symmetries.
+
+Unsupervised discovery. Not much success yet. Only when using some kind of supervised signal.
+
+\cite{Ho2019a, Lim2019, Cubuk2018, Cubuk2019}
+Discover which symmetries apply to a given domain, and at what magnitude.
+The optimisation problem becomes one of picking the probability of each op and its magnitude.
+There is a small set of ops (aka symmetries) that are given:
+\textit{Identity, AutoContrast, Equalize, Rotate, Solarize, Color, Posterize, Contrast,
+	Brightness, Sharpness, ShearX, ShearY, TranslateX, TranslateY.}
+Uses validation error as a reward for learning.
+
+\subsubsection{Inferring symmetries from experience}
+
+% How easy is it to solve this symmetry inference problem?
+
+% HOW?!
+
+What does this buy us? If have sufficient data to tell us that $x$ and $y$ are
+similar, say that they are mirror images of each other.
+As an unsupervised pre-training step. Then apply and share labels and learn more quickly?
+What else can $x$ tell us about $y$?
+
+\cite{Yang2019}
+
+Or end to end? As we get more certain that x and y are similar, we more strongly
+encourage their symmetry through one of the methods outlined above.
+Is it possible (/easier) to learn that x and y are similar (in terms of their labels) before (accurately) learning their labels.
+
+
+
+Want to have an inductive bias towards simpler symmetries. But, how can we do this without needing to represent all possible symmetries?
+A solution rejection sampling??
+
+
+% - What about symmetries that are products of subgroups? $S = Z_2 \times Z_3$? Are they easier to infer?
+% - Within the same $n$. Is there a notion of more or less complex group structures??
+% - Need to show that NNs dont have the right symmetric inductive bias. They dont generalise. !!!
+
+% Examples
+
+% - Knowing that; range $= [0,360)$, and $0, 45, 90, 135, 180$, all are similar. I guess that we are in cyclic group $8$ and therefore $225, 270, 315$ are also similar. Key is that I know that $0, 45, 90, 135, 180$ are related by $0+0, 0+45, 0+45+45, 0+45+45+45, 0+45+45+45+45$.
+% - Cart pole. $V^{\pi(s, a)}(s') = V^{\pi(-s, -a)}(-s') \forall s'$.
+
+If we know the order of the group, then how hard is the problem?
+For many (lower) orders, there is only one or two possible symmetries. http://mathworld.wolfram.com/FiniteGroup.html
+
 \subsubsection{Definition}
 
 A useful starting point is finite groups.
@@ -198,143 +278,157 @@ Also. \cite{Campbell2019}
 All of these methods rely on a similar type of argument. Picking a representative
 of a partition and only using that one. Averaging over orbits. ...
 
-\subsection{Priors for thompson sampling} \label{thompson-sampling}
+\subsection{Biased Thompson Sampling} \label{thompson-sampling}
 
-{\color{red}INSERT experiments.}
-Grid experiments. Compare, vanilla thompson. Similarity thompson. Symmetry thompson.
+Following our insights from \ref{symmetry} and \ref{???}.
+
+% A way to add explicit inductive biases is via importance (/ rejection) sampling.
+
 
 \subsubsection{Thompson sampling}
+\begin{displayquote}
+	\textsl{What is Thompson Sampling?}
+\end{displayquote}
 
-{\color{red}TODO need to introduce this framework, and the RL as inference framework}
+\begin{displayquote}
+	\textit{Thompson sampling is an algorithm for online decision problems where actions are taken sequentially in a manner that
+must balance between exploiting what is known to maximize immediate performance and investing to accumulate
+new information that may improve future performance.}\cite{Russo2017}
+\end{displayquote}
 
-SARSA plus thompson sampling. Does this really work? Want to test.
 
 \begin{algorithm}
-	\caption{Thompson sampling}
+	\caption{Thompson Sampling}
 	\begin{algorithmic}[1]
 
 		\Procedure{TS}{$\gamma$}
-		\State $\theta_t \sim \mathcal N$
 		\State $t=0$
 		\While{not converged}
-		\State $(s, a, r, s', a')$ \Comment{Observe}
-		\State $\tau, R \sim P_{\theta_t}(\cdot | D)$ \Comment{Sample a model}
+		\State $(s, a, r, s')$ \Comment{Observe}
+		\State $H_t \leftarrow (s, a, r, s', a')$ \Comment{Update history}
+		\State $\tau, R \sim P(\cdot | H_t)$ \Comment{Sample a model}
 		\State $Q_{t+1}(s, a) = R(s, a) + \gamma \tau(s'| s, a) Q_t(s', a')$ \Comment{Bellman operator}
-		\State $\theta_{t+1} = \theta_t - \eta \nabla_{\theta} P((s, a, r, s', a')| \theta_t)$ \Comment{Max a posteriori}
+		\State $\pi_t = \text{greedy}(Q_{t+1})$ \Comment{Act greedily}
 		\State $t += 1$
 
 		\EndWhile
-		\State \algorithmicreturn{ $\pi$}
+		\State \algorithmicreturn{ $\pi_t$}
 		\EndProcedure
 
 	\end{algorithmic}
 \end{algorithm}
 
-The way we parameterise the distribution over possible models (/ MDPs), $\theta$, has implicit inductive biases about the true structure of the model.
-A way to add explicit inductive biases is via importance (/ rejection) sampling.
+Where $H_t$ is the history of observations, $(s, a, r, s')$.
+And we construct $P(\tau, R | H_t) = P(\tau | H_t) \cdot P(R | H_t)$. Where $P(\tau | H_t)$
+is modelled as a non-parametric distribution: the normalised.
+And $P(R | H_t)$ is modelled as a isotropic gaussian.
+These can be estimated by storing state-action-state transition counts
+and the incremental mean and variance of the rewards.
 
-We can encourage the model to be more symmetric!?
-How much computation does this cost?
+Note that we act greedily with respect to the $Q$ function. Normally, this would
+lead to sub optimal behaviour, because no exploration is being done. But, Thompson sampling
+directs exploration through its uncertainty in the model, $\tau, r$. Thus,
+exploration occurs by acting greedily with respect to a sampled model.
 
-But. How can we construct the distribution? We want to be able to take samples
-from it.
+\subsubsection{Abstracted Thompson Sampling}
 
-Ok. Great we have this inductive bias. But it doesnt help exploration in the way I want it to...
-The parameters we have learned are close to being symmetric in some way. So the complexity measure alters the likelihoods and makes the symmetric version the most probable.
-How does this help exploration? More likely to sample the true model / a symmetric one. Need to be able to exploit this symmetry.
-
-This solves the efficient inference problem. Not efficient exploration... How can we get both?
-Sample an abstraction then lift it to the original MDP?!
-
-
-\subsubsection{Abstracted Thompson sampling}
-
+There may be structure in the model,
 Thompson sampling from estimates of similarity / symmetry.
-\begin{enumerate}
-	\tightlist
-	\item Keep estimate of similarity. $\chi(x_i, x_j)_{t+1} = \chi(x_i, x_j)_t + ?$
-	\item Construct distribution over likely abstractions $P(x_i = x_j) \propto e^{\chi(x_i, x_j)_t}$. $\mathcal F = P(f|\chi_t)$
-	\item Sample an abstraction. $f\sim \mathcal F$
-	\item Reduce the MDP $M' = f(M)$
-\end{enumerate}
 
-For now just assume we have an accurate estimate of the model.
-What does acting optimally wrt the reduced model mean for exploration and convergence??
+The likelihood of an abstraction, $P(A|H_t)$, is modelled as a isotropic (actually should really use full covar?!?!) guassian.
 
-% How to reason about the tradeoff between symmetry and fitting the data!?.
+\begin{align*}
+	P(A|H_t) &= \mathcal N(\chi_{\mu}, \chi_{\sigma}) \\
+	\chi_{\mu} &= \frac{1}{t}\sum_{i=0}^t Q_i \tag{mean} \\
+	\chi_{\sigma} &= \sqrt{\sum_{i=0}^t (Q_i - \chi_{\mu})^2} \tag{standard deviation}
+\end{align*}
+
+When notice that two states are similar, we group them together. After grouping them, we can apply the Bellman optimality operator.
 
 \begin{algorithm}
 	\caption{Abstracted Thompson sampling}
 	\begin{algorithmic}[1]
 
-		\Procedure{TS}{$\gamma$}
-		\State $\theta_t \sim \mathcal N$
+		\Procedure{ATS}{$\gamma$}
 		\State $t=0$
 		\While{not converged}
-		\State $(s, a, r, s', a')$ \Comment{Observe}
-		\State $\tau, R \sim P_{\theta_t}(\cdot | D)$ \Comment{Sample a model}
-		\State $S \sim P(\cdot | D)$ \Comment{Sample a state abstraction}
-		\State $\tilde \tau, \tilde r, \tilde Q_t = S(\tau, r, Q_t)$ \Comment{Do a model reduction}
+		\State $(s, a, r, s')$ \Comment{Observe}
+		\State $H_t \leftarrow (s, a, r, s', a')$ \Comment{Update history}
+		\State $\tau, R \sim P(\cdot | H_t)$ \Comment{Sample a model}
+		\State $A \sim P(\cdot | H_t)$ \Comment{Sample a state abstraction}
+		\State $\tilde \tau, \tilde r, \tilde Q_t = A(\tau, r, Q_t)$ \Comment{Do a model reduction}
 		\State $\tilde Q_{t+1}(s, a) = \tilde r(s, a) + \gamma \tilde \tau(s'| s, a) \tilde Q_t(s', a')$ \Comment{Bellman operator}
-		\State $\theta_{t+1} = \theta_t - \eta \nabla_{\theta} P((s, a, r, s', a')| \theta_t)$ \Comment{Max a posteriori}
 		\State $Q_{t+1} = S^{-1}(\tilde Q_{t+1})$ \Comment{Lift the values}
+		\State $\pi_t = \text{greedy}(Q_{t+1})$ \Comment{Act greedily}
 		\State $t += 1$
 
 		\EndWhile
-		\State \algorithmicreturn{ $\pi$}
+		\State \algorithmicreturn{ $\pi_t$}
 		\EndProcedure
 
 	\end{algorithmic}
 \end{algorithm}
 
-Where we estimate $P(A|D)$ as ... .
-$A \in R^{n\times n}$.
+% if we were certain enough, we could throw away estimates of certain states. and just work in the abstracted domain?!
 
-\subsubsection{Biased Abstracted Thompson sampling}
+This doesnt really work. For a few reasons. Costs a lot of keep track of the pairwise state similarities.
+Saves compute on Bellman step.
+But overall, is probably costing more compute than has been gained.
 
-The only difference between \texttt{Abstracted Thompson Sampling} and \texttt{Biased Abstracted Thompson Sampling}
-is how we construct the posteriori over abstractions, $P(A|D)$.
+Shouldn't effect sample efficiency.
 
-We have a prior belief that symmetric $\tau, r$ should be more likely, this is captured by the distribution $P(A)$.
-MAP estimate of the abstraction is $P(A | D) = \frac{P(D | A)P_S(A)}{P(D)}$.
+\subsubsection{Biased Abstracted Thompson Sampling}
 
-\paragraph{Rejection sampling}
+The difference between \textit{Abstracted Thompson Sampling} and \textit{Biased Abstracted Thompson Sampling}
+is how we construct the distribution over abstractions, $P(A|D)$.
 
-\begin{displayquote}
-\textsl{But, how do we actually construct $P_S(A)$?}
-\end{displayquote}
+We believe that the states will have group structure, a symmetry. ({\color{red}why?})
+Therefore, we want a way to say: state abstractions, $A$, that are symmetric should be more likely.
 
+To achieve this, we need to construct a distribution, $P_S(A)$, that prefers more symmetric abstractions.
+We can then use this prior, with maximum a posterori, to estimate the posteror as $P(A | H_t) = \frac{P(H_t | A)P_S(A)}{P(H_t)}$.
+
+However, there are a couple of problems. Constructing $P_S(A)$. Estimating $P(H_t)$, ...?
 Actually, we dont need to construct it, we only need samples from $P(A | D)$.
 
-\begin{algorithm}
-	\caption{Rejection sampling}
-	\begin{algorithmic}[1]
+See \ref{rejection-sampling}.
 
-		\Procedure{RS}{$p, q, k$}
-		\State $t=0$
-		\While{not accepted}
-			\State $x\sim U([0, 1])$
-			\If{$x < \frac{p(x)}{kq(x)}$}
-				\State $Break$
-			\EndIf
-			\State $t += 1$
-		\EndWhile
-		\State \algorithmicreturn{ $x$}
-		\EndProcedure
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-	\end{algorithmic}
-\end{algorithm}
+Assuming the prior is corrent. How much compute does it cost? And how many samples does it buy?
+
+Need to calculate;
+
+\begin{itemize}
+	\item Computational cost of finding all the actions of $S_2$ on a d-dimensional vector.
+	\item The number of rejected samples required (on average), before one is accepted. (and how this scales with $|S|$)
+	\item
+\end{itemize}
+
+% This solves the efficient inference problem. Not efficient exploration... How can we get both???
+
 
 \subsection{Experiments}
 
 \begin{itemize}
 	\tightlist
-	\item Vanilla TS
+	\item TS
 	\item Abstracted TS
 	\item Biased Abstracted TS
 \end{itemize}
 
 Which has the best sample efficiency?
+
+\subsubsection{Race grid world}
+
+% describe the setting. its symmetric bc.
+% it makes sense bc...
+The trype of abstraction used is state abstraction. So we should see BATS scale better with MDPs of increasing state space.
+
+\subsubsection{Results}
+
+
+
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -343,84 +437,6 @@ We could have simply built the symmetry into the solver. But we want to
 construct a 'high' level prior that is not specific to a single problem (like $S_2$ is), but
 to many. Something that prefers symmetries of any kind.
 
-\subsection{A symmetric inductive bias}
-
-% This is about generalising using an inductive bias towards symmetry.
-
-In the introduction to abstractions for RL we considered learning similarities
-to build an abstraction. But, learning pairwise similarities does not give
-you the ability to generalise. To generalise you need priors. For example;
-CNNs generalise because they implicitly encode priors for smoothness and explicitly for locality. (ref)
-
-Another potentially useful prior is symmetry: \textit{"We believe it is likely that
-the problems we are given have some symmetry within them."}
-
-The intuition is, this symmetry prior helps us generalise because, we can guess
-a symmetry that matches the observed pairwise similarities. This symmetry might
-require that other pairs to be similar (because of the closed natured of groups).
-Thus, we can generalise knowledge from some pairwise similarities to others
-pairwise similarities (assuming the prior is correct).
-
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-
-Symmetry is a stricter notion of similarity.
-If $x, x' \in X$ are symmetric, then there must exist $f$ such that $f(x) = x'$.
-Where, $(X, f)$ must satisfy the group axioms, (closure, associativity, identity, inverse).
-
-The key property we are interested in is closure.
-Two $x, x'$ are considered symmetric if $\exists g\in G$
-
-
-How can it be discovered?
-
-A couple parts. Discovery of symmetries, exploration of the knowledge of symmetries.
-
-Unsupervised discovery. Not much success yet. Only when using some kind of supervised signal.
-
-\cite{Ho2019a, Lim2019, Cubuk2018, Cubuk2019}
-Discover which symmetries apply to a given domain, and at what magnitude.
-The optimisation problem becomes one of picking the probability of each op and its magnitude.
-There is a small set of ops (aka symmetries) that are given:
-\textit{Identity, AutoContrast, Equalize, Rotate, Solarize, Color, Posterize, Contrast,
-	Brightness, Sharpness, ShearX, ShearY, TranslateX, TranslateY.}
-Uses validation error as a reward for learning.
-
-\subsubsection{Inferring symmetries from experience}
-
-% How easy is it to solve this symmetry inference problem?
-
-% HOW?!
-
-What does this buy us? If have sufficient data to tell us that $x$ and $y$ are
-similar, say that they are mirror images of each other.
-As an unsupervised pre-training step. Then apply and share labels and learn more quickly?
-What else can $x$ tell us about $y$?
-
-\cite{Yang2019}
-
-Or end to end? As we get more certain that x and y are similar, we more strongly
-encourage their symmetry through one of the methods outlined above.
-Is it possible (/easier) to learn that x and y are similar (in terms of their labels) before (accurately) learning their labels.
-
-
-
-Want to have an inductive bias towards simpler symmetries. But, how can we do this without needing to represent all possible symmetries?
-A solution rejection sampling??
-
-
-% - What about symmetries that are products of subgroups? $S = Z_2 \times Z_3$? Are they easier to infer?
-% - Within the same $n$. Is there a notion of more or less complex group structures??
-% - Need to show that NNs dont have the right symmetric inductive bias. They dont generalise. !!!
-
-% Examples
-
-% - Knowing that; range $= [0,360)$, and $0, 45, 90, 135, 180$, all are similar. I guess that we are in cyclic group $8$ and therefore $225, 270, 315$ are also similar. Key is that I know that $0, 45, 90, 135, 180$ are related by $0+0, 0+45, 0+45+45, 0+45+45+45, 0+45+45+45+45$.
-% - Cart pole. $V^{\pi(s, a)}(s') = V^{\pi(-s, -a)}(-s') \forall s'$.
-
-If we know the order of the group, then how hard is the problem?
-For many (lower) orders, there is only one or two possible symmetries. http://mathworld.wolfram.com/FiniteGroup.html
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 

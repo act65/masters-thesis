@@ -363,3 +363,24 @@ outcome (up to the boundary conditions).
 
 The same future state can be reached, and thus the same rewards can be
 achieved.
+
+\subsection{Rejection Sampling}\label{rejection-sampling}
+
+\begin{algorithm}
+	\caption{Rejection sampling}
+	\begin{algorithmic}[1]
+
+		\Procedure{RS}{$p, q, k$}
+		\State $t=0$
+		\While{not accepted}
+			\State $x\sim U([0, 1])$
+			\If{$x < \frac{p(x)}{kq(x)}$}
+				\State $Break$
+			\EndIf
+			\State $t += 1$
+		\EndWhile
+		\State \algorithmicreturn{ $x$}
+		\EndProcedure
+
+	\end{algorithmic}
+\end{algorithm}
