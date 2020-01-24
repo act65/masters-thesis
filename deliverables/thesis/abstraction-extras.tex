@@ -85,67 +85,7 @@ as (9). The expectation can be moved to include $q$ because it sums to one.
 Substitute equation (8) into (9) to get (10). Solve the linear equation in (11) to get the value of $c_{s'}$.
 Use the value of $c_{s'}$ to calculate the state rewards and unconditioned dynamics by using equations (12), (13) and (6).
 
-\section{Symmetry}
-
-\subsection{Efficient inference using symmetries}\label{symmetry-inference}
-
-\paragraph{Output coupling}
-
-Mahajan et al. propose to use knowledge similarity to share couple outputs.
-\cite{Mahajan2017}
-
-\begin{align*}
-\chi: (S\times A) \times (S\times A) \to [0, 1] \\
-\mathcal L(\theta) = \mathop{\mathbb E}_{\chi} \Big[(Q(s, a, \theta)-Q(s', a', \theta))^2 \Big]
-\end{align*}
-
-Coupling the outputs of similar state-actions. This is nice because, we might know
-that $s, a$ and $s', a'$ are similar. Yet we many not have observed $s', a'$.
-
-% Equivalent to sharing training data?!?
-
-However, how did we know that $s, a$ and $s', a'$ are similar without seeing $s', a'$?
-
-- Data sharing (aka duplicate tuples \cite{Ho2019a})
-
-\paragraph{Gradient coupling}
-
-\begin{align*}
-\nabla_{\theta} \ell(s, a, \theta) = \nabla_{\theta} \ell(s', a', \theta) \\
-\chi \cdot \nabla_{\theta} \mathcal L(\theta)
-\end{align*}
-
-If $\chi$ has the structure $\chi((s, a), (s', a')) = \langle \nabla_{\theta}f(s, a, \theta), \nabla_{\theta} f(s', a', \theta) \rangle$ then will couple gradient in a certain way. NTK.
-
-\cite{Ho2019a}
-
-\paragraph{Data augmentation}
-
-Sharing targets between 'similar' inputs.
-
-\paragraph{Architecture}
-
-Weight sharing?!? Weight coupling!?
-\cite{Ravanbakhsh2017a,Abdolhosseini}
-\cite{Anselmi2019}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-\begin{displayquote}
-\textit{Which method of incorporating knowledge of symmetries is best?}
-\end{displayquote}
-
-\begin{itemize}
-\tightlist
-  \item Data augmentation: flips.
-  \item Gradient coupling: ??? gets complicated?
-  \item Output coupling: regulariser on similar outputs.
-  \item Architecture: mirror weights.
-\end{itemize}
-
-Equivalent?! (in this case, or in general?)
-What other ways are there? Want to construct the space of possible ways to incorporate symmetries into a learner.
-
+\section{Symmetric RL examples}
 
 \subsection{Cart pole} \label{game-invariants}
 
@@ -365,6 +305,139 @@ outcome (up to the boundary conditions).
 The same future state can be reached, and thus the same rewards can be
 achieved.
 
+
+\section{Symmetry and machine learning}
+
+\subsection{Exploitation} \label{symmetric-exploitation}
+
+\begin{displayquote}
+\textsl{Once have discovered a symmetry, how might we exploit that knowledge?}
+\end{displayquote}
+
+Similar to how we considered how to exploit an abstraction in section \ref{},
+let's review some existing methods for exploiting the knowledge of a symmetry. \footnotemark[22]
+
+\footnotetext[22]{Note that, in all of these methods, symmetry provides
+advantage over considering just the pairwise similarities. We will return to this later.}
+
+% note: what has been given to these methods of exploitation?
+% knowledge of the group, or its actions, or ...?
+
+\paragraph{Exploiting symmetry for efficient control}
+
+If we have a MDP, $M_1$, then solving it via value iteration requires $\mathcal O(\epsilon |S|^2|A|)$ iterations.
+However, if we know that there exists symmetries in the state space, then we can 'minimise the model',
+by applying the MDP homomorphism $\mathcal H: \mathcal M\to \mathcal M$.
+This new, minimised, MDP, $M_2$ has a smaller state space, as $|S_{M_2}| = \frac{|S_{M_1}|}{k}$
+and essentially the same dynamics and rewards. Thus we can solve $M_2$, with cost $\mathcal O(\epsilon \frac{|S|^2|A|}{k^2})$
+and then lift the solution back to $M_1$. \cite{Dean1997, NARAYANAMURTHY}
+
+
+\paragraph{Exploiting symmetry for efficient inference}\label{symmetry-inference}
+
+There has been a large amount of work (that we are familiar with) exploring
+the exploitation of ... See  here for an overview \ref{symmetry-inference}.
+
+The general essence of the idea is \textit{"invariance reduces variance"}. \cite{Chen2019}
+
+Locomotion sharing ... \cite{Abdolhosseini}
+
+By sharing weights according to group structure\cite{Ravanbakhsh2017a}, we can increase the effective data seen by each weight.
+
+\paragraph{Output coupling}
+
+Mahajan et al. propose to use knowledge similarity to share couple outputs.
+\cite{Mahajan2017}
+
+\begin{align*}
+\chi: (S\times A) \times (S\times A) \to [0, 1] \\
+\mathcal L(\theta) = \mathop{\mathbb E}_{\chi} \Big[(Q(s, a, \theta)-Q(s', a', \theta))^2 \Big]
+\end{align*}
+
+Coupling the outputs of similar state-actions. This is nice because, we might know
+that $s, a$ and $s', a'$ are similar. Yet we many not have observed $s', a'$.
+
+% Equivalent to sharing training data?!?
+
+However, how did we know that $s, a$ and $s', a'$ are similar without seeing $s', a'$?
+
+- Data sharing (aka duplicate tuples \cite{Ho2019a})
+
+\paragraph{Gradient coupling}
+
+\begin{align*}
+\nabla_{\theta} \ell(s, a, \theta) = \nabla_{\theta} \ell(s', a', \theta) \\
+\chi \cdot \nabla_{\theta} \mathcal L(\theta)
+\end{align*}
+
+If $\chi$ has the structure $\chi((s, a), (s', a')) = \langle \nabla_{\theta}f(s, a, \theta), \nabla_{\theta} f(s', a', \theta) \rangle$ then will couple gradient in a certain way. NTK.
+
+\cite{Ho2019a}
+
+\paragraph{Data augmentation}
+
+Sharing targets between 'similar' inputs.
+
+\paragraph{Architecture}
+
+Weight sharing?!? Weight coupling!?
+\cite{Ravanbakhsh2017a,Abdolhosseini}
+\cite{Anselmi2019}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{displayquote}
+\textit{Which method of incorporating knowledge of symmetries is best?}
+\end{displayquote}
+
+\begin{itemize}
+\tightlist
+  \item Data augmentation: flips.
+  \item Gradient coupling: ??? gets complicated?
+  \item Output coupling: regulariser on similar outputs.
+  \item Architecture: mirror weights.
+\end{itemize}
+
+Equivalent?! (in this case, or in general?)
+What other ways are there? Want to construct the space of possible ways to incorporate symmetries into a learner.
+
+
+\paragraph{Exploiting symmetry for efficient exploration}
+
+Holtzen et al. \cite{Holtzen2019} show that by grouping together variables according to
+the knowledge of a symmetry, they show that \textit{orbit-jump MCMC mixes rapidly in the number of orbits}.
+In other words, symmetries allow the efficient estimation of distributions.
+% Want to demonstrate this.
+% {\color{red}TODO max ent + abstraction experiments}
+
+Also. \cite{Campbell2019}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+All of these methods rely on a similar type of argument. Picking a representative
+of a partition and only using that one. Averaging over orbits. ...
+
+
+\subsection{Discovery}
+
+Also.
+
+Existing methods of discovery!?!?
+ How can it be discovered?
+
+ A couple parts. Discovery of symmetries, exploration of the knowledge of symmetries.
+
+ Unsupervised discovery. Not much success yet. Only when using some kind of supervised signal.
+
+ \cite{Ho2019a, Lim2019, Cubuk2018, Cubuk2019}
+ Discover which symmetries apply to a given domain, and at what magnitude.
+ The optimisation problem becomes one of picking the probability of each op and its magnitude.
+ There is a small set of ops (aka symmetries) that are given:
+ \textit{Identity, AutoContrast, Equalize, Rotate, Solarize, Color, Posterize, Contrast,
+ 	Brightness, Sharpness, ShearX, ShearY, TranslateX, TranslateY.}
+ Uses validation error as a reward for learning.
+
+
 \subsection{Rejection Sampling}\label{rejection-sampling}
 
 \begin{algorithm}
@@ -385,3 +458,127 @@ achieved.
 
 	\end{algorithmic}
 \end{algorithm}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/ks.png}
+\caption{}
+\end{figure}
+
+
+Why so expensive? There is no structure in the states. They are discrete and unrelated.
+(at least our representation of them). Cyclic symmetry is easy to detect in (example) because
+we ... .
+
+
+\subsection{Symmetry Examples}
+
+$S_4$
+
+ \begin{align*}
+  \begin{bmatrix}
+    0 & 1 & 2 & 3 \\
+    3 & 0 & 1 & 2 \\
+    2 & 3 & 0 & 1 \\
+    1 & 2 & 3 & 0 \\
+  \end{bmatrix}
+  \begin{bmatrix}
+    a & b & c & d \\
+    d & a & b & c \\
+    c & d & a & b \\
+    b & c & d & a \\
+  \end{bmatrix}
+ \end{align*}
+
+$S_2 \times S_2$
+
+ \begin{align*}
+  \begin{bmatrix}
+    (0, 0) & (0, 1) & (1, 0) & (1, 1) \\
+    (0, 1) & (0, 0) & (1, 1) & (1, 0) \\
+    (1, 0) & (1, 1) & (0, 0) & (0, 1) \\
+    (1, 1) & (1, 0) & (0, 1) & (0, 0) \\
+  \end{bmatrix}
+ \begin{bmatrix}
+   a & b & c & d \\
+   b & a & d & c \\
+   c & d & a & b \\
+   b & c & b & a \\
+ \end{bmatrix}
+ \end{align*}
+
+ % http://mathworld.wolfram.com/FiniteGroup.html
+
+How many observations are sufficient to discriminate between $S_4$ and $S_2\times S_2$?
+What about symmetries of different order?
+
+\subsubsection{Actions}
+
+Let $S_2$ be the group $\big(\{e, g\}, \circ \big)$. Where we represent the action of $e, g$ on the real vectors, $x\in R^n$
+as permutation matrices, and the composition operator $\circ$ becomes matrix multiplication, $\cdot$. Therefore $e = I_n$ and $g$ can be one of many possible actions. For example, consider the nine \footnotemark[34] representations of $g$ when applied $R^4$.
+
+\footnotetext[34]{There are no others. Proof by construction. Enumerate all permutations and check which ones are idempotent.}
+
+\begin{align*}
+ \begin{bmatrix}
+ 1 & 0 & 0 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ 0 & 0 & 1 & 0 \\
+ \end{bmatrix}
+ &\begin{bmatrix}
+ 1 & 0 & 0 & 0 \\
+ 0 & 0 & 1 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ \end{bmatrix}
+ \begin{bmatrix}
+ 1 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ 0 & 0 & 1 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ \end{bmatrix}   \\
+ \begin{bmatrix}
+ 0 & 1 & 0 & 0 \\
+ 1 & 0 & 0 & 0 \\
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ \end{bmatrix}
+ &\begin{bmatrix}
+ 0 & 0 & 1 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ 1 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ \end{bmatrix}
+ \begin{bmatrix}
+ 0 & 0 & 0 & 1 \\
+ 0 & 1 & 0 & 0 \\
+ 0 & 0 & 1 & 0 \\
+ 1 & 0 & 0 & 0 \\
+ \end{bmatrix}   \\
+ \begin{bmatrix}
+ 0 & 1 & 0 & 0 \\
+ 1 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ 0 & 0 & 1 & 0 \\
+ \end{bmatrix}
+ &\begin{bmatrix}
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ 1 & 0 & 0 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ \end{bmatrix}
+ \begin{bmatrix}
+ 0 & 0 & 0 & 1 \\
+ 0 & 0 & 1 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ 1 & 0 & 0 & 0 \\
+ \end{bmatrix}   \\
+\end{align*}
+
+Each of these actions has the $S_2$ group structure.
+But which of these actions are preferable?
+
+Observe that the first two row contain permutations that swaps (two) elements of the vector ($a\leftrightarrow b$).
+While the last row of permutations contain permutations that swaps pairs ($(a, b) \leftrightarrow (c, b)$).

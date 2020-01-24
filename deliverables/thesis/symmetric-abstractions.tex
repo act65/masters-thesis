@@ -21,7 +21,7 @@ How does symmetry relate to simplicity?
 
 \subsubsection{Definition}
 
-A say that an object is symmetric is it has a 'group' structure.
+We say that an object is symmetric if it has a 'group' structure.
 
 A group is a set, $G$ (\textit{say the set of rotations, $\{0, 90, 180, 270\}$}),
 and an operation $\circ$ that combines any two elements $a$ and $b$ to form
@@ -51,34 +51,42 @@ The action of a group on XXX.
 \subsubsection{Symmetries and abstractions}
 
 \begin{displayquote}
-\textsl{How do symmetries help us build abstractions?}
+\textsl{How can symmetries be used to build abstractions?}
 \end{displayquote}
 
 We can use a group structure to define a similarity (or equivalence relation),
 $a \sim_G b$ iff $\exists g \in G: a = g \circ b$. {\color{red} for example??} Therefore, we can use this
  notion of similarity to construct abstractions as we did in \ref{C:abstraction}.
 
- \subsubsection{A symmetric inductive bias}
+Are identifiable by their invariants.
+
+% How does knowing the specific structure of the similarities help?   !!!!!
+% If we are just going to group them together?
+
+ \subsection{A symmetric inductive bias}
 
  % This is about generalising using an inductive bias towards symmetry.
 
- In the introduction to abstractions for RL we considered learning similarities
+ In \ref{infer-similarity} we considered learning similarities
  to build an abstraction. But, learning pairwise similarities does not give
- you the ability to generalise. To generalise you need priors. For example;
- CNNs generalise because they implicitly encode priors for smoothness and explicitly for locality. (ref)
+ you the ability to generalise. To generalise you need (accurate) priors \cite{Wolpert1996}.
 
- Another potentially useful prior is symmetry: \textit{"We believe it is likely that
- the problems we are given have some symmetry within them."}
+Existing approaches to infering similarities do generalise because the ... implicitly encodes priors. For example;
+SGD implicitly encodes a preference for low rank solutions (when applied to ???).... ref.
+CNNs implicitly encode preference for smooth and local functions. (ref)
 
- The intuition is, this symmetry prior helps us generalise because, we can guess
- a symmetry that matches the observed pairwise similarities. This symmetry might
- require that other pairs to be similar (because of the closed natured of groups).
- Thus, we can generalise knowledge from some pairwise similarities to others
- pairwise similarities (assuming the prior is correct).
+ Another potentially useful prior is symmetry:
 
+ \begin{displayquote}
+	 \textit{"We believe that the problems we are given are likely to have group structure."}
+\end{displayquote}
 
- \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+ The allows us to impose abstract structure on potential similarities, without specifying
+ 'details' (!!!) of the similarities.
 
+ % Given uncertainty, we prefer symmetry.
+
+\subsubsection{Closedness and generalisation}
 
  Symmetry is a stricter notion of similarity.
  If $x, x' \in X$ are symmetric, then there must exist $f$ such that $f(x) = x'$.
@@ -87,20 +95,11 @@ $a \sim_G b$ iff $\exists g \in G: a = g \circ b$. {\color{red} for example??} T
  The key property we are interested in is closure.
  Two $x, x'$ are considered symmetric if $\exists g\in G$
 
-
- How can it be discovered?
-
- A couple parts. Discovery of symmetries, exploration of the knowledge of symmetries.
-
- Unsupervised discovery. Not much success yet. Only when using some kind of supervised signal.
-
- \cite{Ho2019a, Lim2019, Cubuk2018, Cubuk2019}
- Discover which symmetries apply to a given domain, and at what magnitude.
- The optimisation problem becomes one of picking the probability of each op and its magnitude.
- There is a small set of ops (aka symmetries) that are given:
- \textit{Identity, AutoContrast, Equalize, Rotate, Solarize, Color, Posterize, Contrast,
- 	Brightness, Sharpness, ShearX, ShearY, TranslateX, TranslateY.}
- Uses validation error as a reward for learning.
+ % The intuition is, this symmetry prior helps us generalise because, we can guess
+ % a symmetry that matches the observed pairwise similarities. This symmetry might
+ % require that other pairs to be similar (because of the closed natured of groups).
+ % Thus, we can generalise knowledge from some pairwise similarities to others
+ % pairwise similarities (assuming the prior is correct).
 
  \subsubsection{Inferring symmetries from experience}
 
@@ -120,7 +119,6 @@ $a \sim_G b$ iff $\exists g \in G: a = g \circ b$. {\color{red} for example??} T
  Is it possible (/easier) to learn that x and y are similar (in terms of their labels) before (accurately) learning their labels.
 
 
-
  Want to have an inductive bias towards simpler symmetries. But, how can we do this without needing to represent all possible symmetries?
  A solution rejection sampling??
 
@@ -129,20 +127,18 @@ $a \sim_G b$ iff $\exists g \in G: a = g \circ b$. {\color{red} for example??} T
  % - Within the same $n$. Is there a notion of more or less complex group structures??
  % - Need to show that NNs dont have the right symmetric inductive bias. They dont generalise. !!!
 
- % Examples
 
- % - Knowing that; range $= [0,360)$, and $0, 45, 90, 135, 180$, all are similar. I guess that we are in cyclic group $8$ and therefore $225, 270, 315$ are also similar. Key is that I know that $0, 45, 90, 135, 180$ are related by $0+0, 0+45, 0+45+45, 0+45+45+45, 0+45+45+45+45$.
- % - Cart pole. $V^{\pi(s, a)}(s') = V^{\pi(-s, -a)}(-s') \forall s'$.
+Questions / future work
+\begin{itemize}
+	\item If we know the order of the group, then how hard is it to discover a symmetry?
+\end{itemize}
 
- If we know the order of the group, then how hard is the problem?
- For many (lower) orders, there is only one or two possible symmetries. http://mathworld.wolfram.com/FiniteGroup.html
-
-\subsection{Symmetries for RL}\label{mdp-homomorphism}
+\subsection{Symmetries for RL}
 
 Different ways to approach characterising symmetries; automorphisms, invariants relations.
 % how do these two relate!?
 
-\subsubsection{Automorphisms}
+\subsubsection{Automorphisms}\label{mdp-homomorphism}
 
 Closely related to a homomorphism. See for a definition of a MDP homomorphism that captures symmetries.
 % As pointed out in \ref{abstraction}, the notion of an abstraction is captured by a homomorphism.
@@ -211,107 +207,80 @@ We can observe invariant properties. (not clear to me how you observe a symmetry
 
 We briefly explore this in \ref{game-invariants}.
 
-\subsubsection{Exploitation} \label{symmetric-exploitation}
-
-\begin{displayquote}
-\textsl{Once have discovered a symmetry, how might we exploit that knowledge?}
-\end{displayquote}
-
-Similar to how we considered how to exploit an abstraction in section \ref{},
-let's review some existing methods for exploiting the knowledge of a symmetry. \footnotemark[22]
-
-\footnotetext[22]{Note that, in all of these methods, symmetry provides
-advantage over considering just the pairwise similarities. We will return to this later.}
-
-% note: what has been given to these methods of exploitation?
-% knowledge of the group, or its actions, or ...?
-
-\paragraph{Exploiting symmetry for efficient control}
-
-If we have a MDP, $M_1$, then solving it via value iteration requires $\mathcal O(\epsilon |S|^2|A|)$ iterations.
-However, if we know that there exists symmetries in the state space, then we can 'minimise the model',
-by applying the MDP homomorphism $\mathcal H: \mathcal M\to \mathcal M$.
-This new, minimised, MDP, $M_2$ has a smaller state space, as $|S_{M_2}| = \frac{|S_{M_1}|}{k}$
-and essentially the same dynamics and rewards. Thus we can solve $M_2$, with cost $\mathcal O(\epsilon \frac{|S|^2|A|}{k^2})$
-and then lift the solution back to $M_1$. \cite{Dean1997, NARAYANAMURTHY}
-
-
-\paragraph{Exploiting symmetry for efficient inference}
-
-There has been a large amount of work (that we are familiar with) exploring
-the exploitation of ... See  here for an overview \ref{symmetry-inference}.
-
-The general essence of the idea is \textit{"invariance reduces variance"}. \cite{Chen2019}
-
-Locomotion sharing ... \cite{Abdolhosseini}
-
-By sharing weights according to group structure\cite{Ravanbakhsh2017a}, we can increase the effective data seen by each weight.
-
-\paragraph{Exploiting symmetry for efficient exploration}
-
-Holtzen et al. \cite{Holtzen2019} show that by grouping together variables according to
-the knowledge of a symmetry, they show that \textit{orbit-jump MCMC mixes rapidly in the number of orbits}.
-In other words, symmetries allow the efficient estimation of distributions.
-% Want to demonstrate this.
-% {\color{red}TODO max ent + abstraction experiments}
-
-Also. \cite{Campbell2019}
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-All of these methods rely on a similar type of argument. Picking a representative
-of a partition and only using that one. Averaging over orbits. ...
-
 \subsection{Symmetry measure}
 
-To discover symmetries, we need to be able to measure them. Using this measure, we can
+To discover symmetries, we need to be able to measure them.
+We want to construct a measure of complexity that gives lower complexity to more symmetric objects.
+We hope to use this measure to bias a learner towards more symmetric guesses.
+
+The desiderata of this measure of symmetry $S: X \to \mathbb R^+$ are;
+
+\begin{itemize}
+	\tightlist
+	% \item A symmetry is less complex if it has more 'structure'. Where it can be build via the direct product of subgroups $\mathcal S(C_4) > \mathcal S(C_2 \oplus C_2)$
+	% \item Groups that are commutative are less complex $\mathcal S(D_4) > \mathcal S(C_8)$ (because $D_4$ is not abelian)
+	\item A perfect symmetry should have lower complexity than an approximate symmetry $\mathcal S(([a,a,b,c]) < \mathcal S([a,a+\epsilon,b,c])$
+	\item Symmetries with larger ??? should have lower complexity. $\mathcal S(([a,b,a,b]) < \mathcal S(([a,a,b,c])$
+	\item $\mathcal S([a,a,b,c]) = \mathcal S(10 \times [a,a,b,c])$
+\end{itemize}
+
+\subsubsection{More or less symmetric?}
+
+The measure should find the 'largest' symmetry of $x$.
+
+Of the possible symmetries. Pick the largest possible. But, we prefer smaller ones / ones with structure.
+
+\begin{align*}
+G \text{s.t.} G(x) \\
+G^{* } = \mathop{\text{max}}_G |G| \\
+C(x) = S(G^{* })
+\end{align*}
+
+What do we mean by largest?
+
+The existence of 2-gram swaps implies $S_2 \times S_2$, see \ref{s2-lemma} for proof.
+Similarity, existence of n-gram swaps implies $S_2 \times S_2$
+
+\subsubsection{Approximate symmetries}
+
+The fundamental complexity of the nearest symmetry, and the distance between that symmetry and
 
 \begin{align*}
 C(x) = \mathop{\text{min}}_y S(y) + E(x, y)
 \end{align*}
 
-Need to;
-
-\begin{itemize}
-	\tightlist
-	\item Construct a symmetry measure $S: Y \to \mathbb R^+$
-	\item Find a way to efficiently search through $Y$.
-	\item Pick a $E(x, y^{* })$.
-	\item Use $C(x)$ to accelerate learning (/ get money).
-\end{itemize}
-
-\subsubsection{Complexity of symmetries}
-
-Desiderata of complexity measure;
-
-\begin{itemize}
-	\tightlist
-	\item $\mathcal L(C_4) > \mathcal L(C_2 \oplus C_2)$
-	\item $\mathcal L(D_4) > C_8$ (because $D_4$ is not abelian)
-	\item A perfect symmetry should have lower complexity than $C([a,a,b,c]) < C([a,a+\epsilon,b,c])$
-	\item Symmetries with larger ??? should have lower complexity. $C([a,b,a,b]) < C([a,a,b,c])$
-	\item $C([a,a,b,c]) = C(10 \times [a,a,b,c])$
-\end{itemize}
+\begin{align*}
+C(x) &= \mathop{\text{argmax}}_i  \parallel x-P_i\cdot x\parallel_2 + e^{-S(P_i)^2}\\
+\end{align*}
 
 % What about characterising the complexity by the number of generators /relations.
 % Or something information theoretic?
 
-We restrict the familiy of symmetries to $S_2$ $C(x) = E(x, y^{* })$ to accelerate learning.
-Next, we condider need to construct
+\subsubsection{Computational issues}
+
+Therefore, we only experiment with a restricted familiy of symmetries: the permutation group of order two: $S_2$.
+
+% BUT. $S_2$ has no interesting group structure. We cant use closure to infer other similarities!??!
+% We can only push things towards being in $S_2$
+
+Increases quickly. 2->1, 3->3, 4->9, 5->25, 6->75, 7->231, 8->763, 9->??
 
 Not explicit knowledge of a symmetry. But, a family of symmetries. A higher level prior.
 
-Future work. Generalise to more symmetries.
+Future work.
+- Generalise to more symmetries.
+- How do the number of actions scale with d and / or the (type of) symmetry group?
 
 % \begin{align*}
 % C(x) = -\log \sum_{y\in Y} e^{-S(y) - E(x, y)}
 % \end{align*}
 
-\begin{align*}
-C(x) &= \mathop{\text{argmax}}_i  \parallel x-P_i\cdot x\parallel_2 + e^{-S(P_i)^2}\\
-\end{align*}
 
 \subsubsection{Topology}
+
+\begin{displayquote}
+\textit{Does this measure give us what we wanted?}
+\end{displayquote}
 
 \begin{figure}[h!]
 \centering
@@ -330,21 +299,6 @@ C(x) &= \mathop{\text{argmax}}_i  \parallel x-P_i\cdot x\parallel_2 + e^{-S(P_i)
 \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/complexity_surface_nd-4d-S-2.png}
 \caption{}
 \end{figure}
-
-\subsubsection{Scalability}
-
-Increases quickly. 2->1, 3->3, 4->9, 5->25, 6->75, 7->231, 8->763, 9->??
-
-\begin{figure}[h!]
-\centering
-\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/ks.png}
-\caption{}
-\end{figure}
-
-
-Why so expensive? There is no structure in the states. They are discrete and unrelated.
-(at least our representation of them). Cyclic symmetry is easy to detect in (example) because
-we ... .
 
 
 \subsection{Biased Thompson Sampling} \label{thompson-sampling}
@@ -444,25 +398,35 @@ When notice that two states are similar, we group them together. After grouping 
 
 This doesnt really work. For a few reasons. Costs a lot of keep track of the pairwise state similarities.
 Saves compute on Bellman step.
-But overall, is probably costing more compute than has been gained.
+But overall, is costs more compute than has been gained.
 
-Shouldn't effect sample efficiency.
+Shouldn't effect sample efficiency. (unless we replace the tabular model with something that can generalise)
+
+\subsubsection{Biased Thompson Sampling}
+
+The difference between \textit{Thompson Sampling} and \textit{Biased Thompson Sampling}
+is how we construct the distribution over the model, $P(\tau, R |D)$.
+
+We believe that the states will have group structure, a symmetry. ({\color{red}why?})
+Therefore, we want a way to say: models that are symmetric should be more likely.
+
+To achieve this, we need to construct a distribution, $P_S(\tau, R)$, that prefers more symmetric abstractions.
+We can then use this prior, with maximum a posterori, to estimate the posteror as $P(\tau, R | H_t) = \frac{P(H_t | \tau, R)P_S(\tau, R)}{P(H_t)}$.
+
+We estimate $P(H_t | \tau, R)$ using ...? This is an unbiased estimator?!?!
+
+But. There are a couple of problems. Constructing $P_S(\tau, R)$. Estimating $P(H_t)$, ...?
+Actually, we dont need to construct it, we only need samples from $P(\tau, R | D)$.
+
+See \ref{rejection-sampling}.
 
 \subsubsection{Biased Abstracted Thompson Sampling}
 
-The difference between \textit{Abstracted Thompson Sampling} and \textit{Biased Abstracted Thompson Sampling}
-is how we construct the distribution over abstractions, $P(A|D)$.
-
-We believe that the states will have group structure, a symmetry. ({\color{red}why?})
-Therefore, we want a way to say: state abstractions, $A$, that are symmetric should be more likely.
+Similarly, we can apply the same idea to \textit{Abstracted Thompson Sampling}.
+We can use the prior: state abstractions, $A$, that are symmetric should be more likely.
 
 To achieve this, we need to construct a distribution, $P_S(A)$, that prefers more symmetric abstractions.
 We can then use this prior, with maximum a posterori, to estimate the posteror as $P(A | H_t) = \frac{P(H_t | A)P_S(A)}{P(H_t)}$.
-
-However, there are a couple of problems. Constructing $P_S(A)$. Estimating $P(H_t)$, ...?
-Actually, we dont need to construct it, we only need samples from $P(A | D)$.
-
-See \ref{rejection-sampling}.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -478,14 +442,15 @@ Need to calculate;
 
 % This solves the efficient inference problem. Not efficient exploration... How can we get both???
 
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\subsection{Experiments}
+Now to test.
 
 \begin{itemize}
 	\tightlist
 	\item TS
 	\item Abstracted TS
-	\item Biased Abstracted TS
+	\item Biased TS
 \end{itemize}
 
 Which has the best sample efficiency?
@@ -494,7 +459,7 @@ Which has the best sample efficiency?
 
 % describe the setting. its symmetric bc.
 % it makes sense bc...
-The trype of abstraction used is state abstraction. So we should see BATS scale better with MDPs of increasing state space.
+The type of abstraction used is state abstraction. So we should see BATS scale better with MDPs of increasing state space.
 
 \subsubsection{Results}
 
@@ -507,35 +472,6 @@ Of course, the symmetry didnt need to be inferred. So it's cheating.
 We could have simply built the symmetry into the solver. But we want to
 construct a 'high' level prior that is not specific to a single problem (like $S_2$ is), but
 to many. Something that prefers symmetries of any kind.
-
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-
-% More generally. Connection between sample / computational complexity via
-% SGD + regularisation -> Langevin dynamics -> rejection sampling???
-
-% \subsubsection{Langevin dynamics}
-%
-% Clip to nearest symmetric abstraction.
-%
-% \begin{align}
-% \mathop{\text{argmin}}_{\theta} D(\bar \theta, \theta)
-% \end{align}
-%
-% Where $\bar \theta$ is the nearest symmetric set of parameters.
-%
-% \begin{align}
-% \theta = \theta_t - \eta \nabla_\theta \mathcal S(\theta) + w
-% \end{align}
-%
-% Langevin dynamics. Where $w$ is sampled from some noise distribution.
-% Therefore, we get a distribution over $\theta$.
-% Only do a few iterations, so we sample $\theta$ that are near by!?!?
-% The $\nabla_\theta \mathcal S(\theta)$ pulls us towards symmetric parameters.
-%
-% Need a differentiable measure of symmetry.!?
-% If I actually find this, we can just use it as a regulariser..!?!?!?
 
 \subsection{n-dimensional Cart pole}\label{action-space-experiments}
 
@@ -563,7 +499,7 @@ In a more formal sense. This problem is symmetric because the optimal policy and
 \begin{align*}
 g \circ s_j &= g \circ [x_0, \dots, x_i, \dots, x_{n-1}] \\
 &= [x_1, x_0, \dots, x_i, \dots, x_{n-1}] \\
-g_i \circ a_k &= g \c[u_0, \dots, u_i, \dots, u_{n-1}] \\
+g_i \circ a_k &= g \circ [u_0, \dots, u_i, \dots, u_{n-1}] \\
 &= [u_1, u_0 \dots, u_i, \dots, u_{n-1}] \\
 g\circ \tau(s'|s, a) &= \tau(g\circ s'|g\circ s, g\circ a) \\
 g\circ R(s, a) &= R(g\circ s, g\circ a) \\
