@@ -260,10 +260,15 @@ C(x) &= \mathop{\text{argmax}}_i  \parallel x-P_i\cdot x\parallel_2 + e^{-S(P_i)
 
 Therefore, we only experiment with a restricted familiy of symmetries: the permutation group of order two: $S_2$.
 
+We can construct (and identify) the family of groups $S_{2\times n}$.
+If group element $?!?!$ exists, then ...?!
+
+Therefore, these can be identified using only representations of $S_2$.
+
 % BUT. $S_2$ has no interesting group structure. We cant use closure to infer other similarities!??!
 % We can only push things towards being in $S_2$
 
-Increases quickly. 2->1, 3->3, 4->9, 5->25, 6->75, 7->231, 8->763, 9->??
+Increases quickly. 2->1, 3->3, 4->9, 5->25, 6->75, 7->231, 8->763, 9->2619
 
 Not explicit knowledge of a symmetry. But, a family of symmetries. A higher level prior.
 
@@ -461,9 +466,22 @@ Which has the best sample efficiency?
 % it makes sense bc...
 The type of abstraction used is state abstraction. So we should see BATS scale better with MDPs of increasing state space.
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/race-mdp-puzzle-n3.png}
+  \caption{The purple nodes represent the starting states. The green-teal nodes represent states wth reward $1$. There are 5 actions, left, right, up, down, none.
+	Starting from the leftmost purple node: Left moves clockwise to the next purple node. Up moves to the blue node. Down doesn't result in movement. None doesn't result in movement.}
+\end{figure}
+
+
 \subsubsection{Results}
 
-
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/race-mdp-puzzle-n3.png}
+%   \caption{The purple nodes represent the starting states. The green-teal nodes represent states wth reward $1$. There are 5 actions, left, right, up, down, none.
+% 	Starting from the leftmost purple node: Left moves clockwise to the next purple node. Up moves to the blue node. Down doesn't result in movement. None doesn't result in movement.}
+% \end{figure}
 
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
