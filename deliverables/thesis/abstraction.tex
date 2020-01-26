@@ -494,7 +494,7 @@ and the other is constructed by preserving the value of the optimal state-action
 % We want these masures of similarity to generalise. How? Priors.
 
 In the RL setting, we are often not given the transition or the reward function.
-Thus, we must infer similarities from noisy observations. There are two ways we can do this;
+Thus, we must infer similarities from (noisy) observations. There are two ways we can do this;
 
 \hspace{\parindent}We can infer that two objects are similar because we have observed it,
 we have sufficient data (/ experience) to allow us to conclude that, with high
@@ -508,7 +508,7 @@ Because of the structure in a symmetry, some similarities can imply others. Thus
 
 Note: if we are relying on inferring similarity from data, and (say) $f(x_i) = Q^{\pi^{* }}(s_i, a_i)$.
 Then learning that $x_i$ and $x_j$ are similar doesn't help.
-To estimate that similarity we needed to know, $Q^{\pi^{* }}(s_i, a_i)$ and $Q^{\pi^{* }}(s_j, a_j)$.
+Because, to estimate that $x_i$ and $x_j$ are similar, we needed to know, $Q^{\pi^{* }}(s_i, a_i)$ and $Q^{\pi^{* }}(s_j, a_j)$.
 Rather, we care about (correctly) guessing that $x_i$ and $x_j$ are similar, so we can
 exploit that knowledge that to improve efficiency,
-for example, by using the knowledge of $Q_i = Q^{\pi^{* }}(s_i, a_i)$ to help us learn $Q^{\pi^{* }}(s_j, a_j)$.
+for example, we want to use the knowledge of $Q_i = Q^{\pi^{* }}(s_i, a_i)$ to help us learn $Q^{\pi^{* }}(s_j, a_j)$.

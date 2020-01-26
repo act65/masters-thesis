@@ -85,11 +85,83 @@ as (9). The expectation can be moved to include $q$ because it sums to one.
 Substitute equation (8) into (9) to get (10). Solve the linear equation in (11) to get the value of $c_{s'}$.
 Use the value of $c_{s'}$ to calculate the state rewards and unconditioned dynamics by using equations (12), (13) and (6).
 
-\section{Symmetric RL examples}
+\section{Symmetries for RL}
 
-\subsection{Cart pole} \label{game-invariants}
+\subsection{MDP homomorphisms}\label{mdp-homomorphism}
 
-\subsubsection{Mirror symmetry}
+As pointed out in \ref{C:abstraction}, the notion of an abstraction is captured by a homomorphism.
+Given this, it seems natural to extent the defition to MDPs.
+
+A MDP homomorphism is a transformation of a MDP, $\mathcal H: \mathcal M\to \mathcal M$, that preserves the transition and reward function \cite{Ravindran2002}. We can describe this MDP homomorphism as $\mathcal H = (f, g)$ such that;
+
+\begin{align}
+P(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} P(s''| a, s) \\
+r(f(s), g_s(a)) = r(s, a)
+\end{align}
+
+This MDP homomorphism framework yields state-action abstraction, that uses a model based notion of similarity.
+However, as pointed out in eariler sections, there are many other possible
+notions of abstraction and similarity that can make sense for RL. Specifically, the MDP homomorphism framework
+could be generalised in the following ways;
+
+\begin{itemize}
+\tightlist
+  \item temporal symmetries
+  \item approximate symmetries
+  \item inference of symmetries under uncertainty
+  \item complexity measure / inductive bias
+\end{itemize}
+
+% Indeed ...
+
+\subsection{Invariants}
+
+{\color{red}What are the unique differential invariants of $S_2$?!?!}
+
+An important poperty of symmetries is that they can be identified by their generators and relations.
+
+While there are many types of finite group, (cyclic, alternating, ...?) And then there are continuious symmetries, (Lie groups)
+Which types of symmetry are important for RL problems?
+
+Let's work through an example, the cart-pole control problem. Your goal is to balance a pole on a cart.
+You are allowed to move the cart left or right.
+
+% How hard is it to find these symmetries?
+% Are some harder than others?
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
+	\caption{Two mirror symmetric states of a cart pole. But in what sense are they symmetric?}
+\end{figure}
+
+% Need to show this is actually a symmetry, isomorphic to $S_2$?!?
+In the case above, the mirrored cart pole is an instance of $S_2$.
+The action $f, g$ we apply to the MDP is isomorphism to the simple finite group, $S_2$
+
+Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
+What are the interesting invariants of MDPs? And how do they ???
+But, what does this symmetry imply about other quantities of interest for RL?
+
+Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
+
+In general we want to know;
+
+\begin{itemize}
+	\tightlist
+	\item We have $n$ different 'symmetries'. But are they really different?
+	\item Which symmetries share some invariants?
+	\item Which invariants uniquely characterise this symmetry?
+\end{itemize}
+
+With this knowledge, we could identify symmetries via their invariants!?!
+We can observe invariant properties. (not clear to me how you observe a symmetry!?)
+
+% We briefly explore this in \ref{game-invariants}.
+
+\subsubsection{Cart pole} \label{game-invariants}
+
+\paragraph{Mirror symmetry}
 
 \begin{displayquote}
 \textit{What are the invariants of the mirror cart pole example?}
@@ -130,7 +202,7 @@ So the expected return, Bellman residual and state transition are invariant to t
 
 Is this combination of invariants unique to the mirror symmetry? (how to prove this?!)
 
-\subsubsection{Translational symmetry}
+\paragraph{Translational symmetry}
 
 \begin{displayquote}
 \textit{What are the invariants of the translated cart pole example?}
@@ -166,7 +238,7 @@ T(Q^\pi)(s,a) - Q^\pi(s,a) &=T(g \circ Q^\pi)(s, a) - (g \circ Q^\pi)(s,a) \tag{
 {\color{red}Huh, the key is the action. These have the same invariants!??! No. One is $S_2$, the other is a cts cyclic symmetry...}
 
 
-\subsubsection{Future symmetry}
+\paragraph{Future symmetry}
 
 \begin{figure}[!h]
 \centering
@@ -191,7 +263,7 @@ Therefore
 T(Q)^\pi(s, a) &= T(g \circ Q^{\pi})(s, a) \tag{future expected return}\\
 \end{align*}
 
-\subsubsection{Temporal symmetry}
+\paragraph{Temporal symmetry}
 
 {\color{red} this one seems hard. not sure i am going to be able to explicitly construct this one?!}
 
@@ -208,14 +280,14 @@ Q_{\pi}(s_1, \omega_1) = Q_{\pi}(s_1,\omega_2) \\
 \end{align*}
 
 
-\subsection{Pong}
+\subsubsection{Pong}
 
 % {\color{red}Need to be more careful with the state / action spaces here. Need to define properly!?}
 State = $[p_1, v_1, p_2, v_2, p^x_b, p^y_b, v^x_b, v^y_b]$
 Where all of these are centered around the middle.
 Action = $\{+x, -x, 0\}$
 
-\subsubsection{Mirror symmetry (vertical)}
+\paragraph{Mirror symmetry (vertical)}
 
 \begin{figure}[!h]
 \centering
@@ -289,8 +361,7 @@ can they be dealt with!?})
 If we take the same actions, in translated states, we get the same
 outcome (up to the boundary conditions).
 
-\hypertarget{temporal-symmetries}{%
-\paragraph{Temporal symmetries}\label{temporal-symmetries}}
+\paragraph{Temporal symmetries}
 
 \begin{figure}
 \centering
@@ -438,58 +509,6 @@ Existing methods of discovery!?!?
  Uses validation error as a reward for learning.
 
 
-\subsection{Rejection Sampling}\label{rejection-sampling}
-
-\begin{algorithm}
-	\caption{Rejection sampling}
-	\begin{algorithmic}[1]
-
-		\Procedure{RS}{$p, q, k$}
-		\State $t=0$
-		\While{not accepted}
-			\State $x\sim U([0, 1])$
-			\If{$x < \frac{p(x)}{kq(x)}$}
-				\State $Break$
-			\EndIf
-			\State $t += 1$
-		\EndWhile
-		\State \algorithmicreturn{ $x$}
-		\EndProcedure
-
-	\end{algorithmic}
-\end{algorithm}
-
-
-\begin{figure}[h!]
-\centering
-\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/ks.png}
-\caption{}
-\end{figure}
-
-
-Why so expensive? There is no structure in the states. They are discrete and unrelated.
-(at least our representation of them). Cyclic symmetry is easy to detect in (example) because
-we ... .
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/symmetric-gaussian-0.png}
-  \caption{On the left we can see a Gaussian distribution of mean zero and variance one.
-  On the right, we have used rejection sampling, with $p(x)$ a gaussian
-  distribution augmented by our measure of symmetry, and $q(x)$ being the original gaussian distribution.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/symmetric-gaussian-0.png}
-  \caption{On the left we can see a Gaussian distribution of mean zero and variance one.
-  On the right, we have used rejection sampling, with $p(x)$ a gaussian
-  distribution augmented by our measure of symmetry, and $q(x)$ being the original gaussian distribution.}
-\end{figure}
-
-Future work.
-Metropolis-hastings. To allow this to scale to higher dimensions.
-
 \subsection{Symmetry Examples}
 
 $S_4$
@@ -600,3 +619,129 @@ But which of these actions are preferable?
 
 Observe that the first two row contain permutations that swaps (two) elements of the vector ($a\leftrightarrow b$).
 While the last row of permutations contain permutations that swaps pairs ($(a, b) \leftrightarrow (c, b)$).
+
+
+\subsubsection{Race grid world}\label{race-grid-world}
+
+% describe the setting. its symmetric bc.
+% it makes sense bc...
+The type of abstraction used is state abstraction. So we should see BATS scale better with MDPs of increasing state space.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/race-mdp-puzzle-n3.png}
+  \caption{The purple nodes represent the starting states. The green-teal nodes represent states wth reward $1$. There are 5 actions, left, right, up, down, none.
+	Starting from the leftmost purple node: Left moves clockwise to the next purple node. Up moves to the blue node. Down doesn't result in movement. None doesn't result in movement.}
+\end{figure}
+
+
+
+\subsection{n-dimensional Cart pole}\label{action-space-experiments}
+
+\begin{displayquote}
+  \textit{How can we test a learners ability to detect symmetries and exploit them?}
+\end{displayquote}
+
+We propose a simple test, the n-dimensional cart pole: a generalisation of the
+cart pole problem to $n$ dimensions. Rather than receiving observations in
+$\mathbb{R}^4$ (the position, velocity, angle and angular velocity), observations are
+in $\mathbb{R}^{4\times n}$. And the action space is generalised from $\{0,1\}$ (left and right),
+to $\{0,1\}^{n}$.
+
+% What makes this problem hard??
+% This setting allows us to easily control the amount of symmetry.
+% Existing envs dont test this because!?!?
+
+\subsubsection{How is this problem symmetric?}
+
+The $n$-dimensional cart pole problem can be reduced to $n$, one dimensional cart pole problems.
+Where each of these one dimensional cart pole problems cart pole problems is easy to solve.
+
+In a more formal sense. This problem is symmetric because the optimal policy and its ($Q$) values are invariant to the actions of the permutation group of order n, $S_n$.
+
+\begin{align*}
+g \circ s_j &= g \circ [x_0, \dots, x_i, \dots, x_{n-1}] \\
+&= [x_1, x_0, \dots, x_i, \dots, x_{n-1}] \\
+g_i \circ a_k &= g \circ [u_0, \dots, u_i, \dots, u_{n-1}] \\
+&= [u_1, u_0 \dots, u_i, \dots, u_{n-1}] \\
+g\circ \tau(s'|s, a) &= \tau(g\circ s'|g\circ s, g\circ a) \\
+g\circ R(s, a) &= R(g\circ s, g\circ a) \\
+g\circ \pi^{* }(a|s) &= \pi^{* }(g\circ a| g\circ s) \\
+&= \pi^{* }(a|s) \tag{invariance of the optimal policy}\\
+g\circ Q^{\pi^{* }}(s, a) &= Q^{\pi^{* }}(g\circ s, g\circ a) \\
+&= Q^{\pi^{* }}(s, a) \tag{invariance of the optimal values}
+\end{align*}
+
+{\color{red}do I need to prove this?! via the transition fn / reward fn...}
+
+We describe a state as $s_j = [x_0, \dots, x_i, \dots, x_{n-1}]$, where $x_i = (p_c^i, v_c^i, p_p^i, v_p^i)$. Where, $p_c$ is the position of the cart, $v_c$ is the velocity of the cart, $p_p$ is the position of the pole, $v_p$ is the angular velocity of the pole. We describe actions as $a_k \in \{0, 1\}^n$. Let $g\in S_n$ be the pairwise permutation, swapping the first two elements $(0\to 1)$.
+
+% However, the learner needs to infer these symmetries, so they can be exploited.
+
+% Well, the original cart pole problem has a few symmetries in it (as explored in \ref{}).
+% However, by
+
+\subsubsection{An advantage}
+
+\begin{displayquote}
+\textit{What advantage is provided by exploiting symmetries?}
+\end{displayquote}
+
+If a learner has inferred that the $n$-dimensional cart pole problem can be decomposed into $n$ identical subproblems,
+then that means it is gathering $n$ times the data for the one-dimensional cart pole problem.
+So, we should see a factor of $n$ speed up in learning.
+This is the same argument made here [quotient groups appendix...].
+
+For a learner that doesn't know of the symmetries. How is this problem hard?
+The more dimensions there are, the more ways there are to fail.
+Consider how exploration is done. In a single dimension, actions are taken with probability  is
+taken with some chance of exploring instead.
+% How does PPO / PG do exploration?!?!?
+Maybe you correctly balanced the pole in all dimensions except one. To bad, you dont get any reward.
+
+\subsubsection{Experiments}
+
+We use OpenAI's Gym \cite{Brockman2016} and Baselines \cite{baselines} to test this environment.
+
+% What about if we rotate the observations. So the observations are not aligned with the actions?
+% Or generalising to n+1? Could start the agent off with n+1 dims. But set them to observe nothing / actions do nothing. Until t > T?
+
+Note: 'Average mean reward' refers to the fact that we have averaged (n=5)
+the mean reward (per episode). Also note: This reward is the training performance.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/multibinary-nd-cart.png}
+  \caption{Default PPO2 solving the nd cartpole problem with access to a \textit{MultiBinary} action space. Each color corresponds to a the average mean return of different, $n$, the number of repeated cart pole problems.}
+\end{figure}
+
+As mentioned in the previous section, we expected learning to become much
+harder for a learner that doesn't exploit symmetries. These results suggest either of two possibilities:
+that PPO2 can discover and exploit symmetries, our setting does not test what we think it does. {\color{red}so... how did we answer this???}
+
+While investigating this further, we realised that the given action space, \textit{MultiBinary}, provies a large amount of information. We ran another test with a \textit{Discrete} action space. Where the learner gets to choose $a\in \mathbb Z_n$.
+This action then gets (binary) decoded to the \textit{MultiBinary} format.
+
+A learner that exploits the permutation symmetries in the $n$-dimensional cart pole problem should learn $n$ times quicker.
+However, the cost of discovering this permutation symmetry is unknown.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth,height=0.5\textheight]{../../pictures/figures/discrete-nd-cart.png}
+\caption{Default PPO2 solving the nd cartpole problem with access to a \textit{Discrete} action space. Each color corresponds to a the average mean return of different, $n$, the number of repeated cart pole problems.}
+\end{figure}
+
+
+
+% It seems surprising that access to the \textit{MultiBinary} action space provides such an advantage.
+% Also, it seems surprising that the an increase of 6 dimensions only results in approximately a ~2 million increase in the data required.
+% Is the learner doing some sort of intelligent sharing?
+% Why is it so hard for the Discrete learner? What operation does it find hard to learn. The ability to decode? $n$ bits to $2^n$ onehots?
+
+% Also, interesting to note that the 1D learner equipped with a \textit{Discrete}
+% action space achieves max performance at ~1.75 million samples, while the learner
+% equipped with a \textit{MultiBinary} action space achieves max performance at ~2.25 million samples. (significant??)
+
+
+Future work. The hardness of learning a binary decoder is not sufficient to explain the difference between the
+\textit{Discrete} and \textit{MultiBinary} action spaces.
