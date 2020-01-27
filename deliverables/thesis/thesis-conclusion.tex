@@ -1,55 +1,51 @@
-\chapter{Discussion and conclusion}\label{C:con}
+\chapter{Discussion}\label{C:con}
 
-If all the economists in the world were laid end-to-end they wouldn't
-reach a conclusion, and neither shall I.
+\section{Conclusions}
 
+While there do exist some tools for analysing abstractions for RL, we need better ones.
+For instance, there is no well defined way to evaluate abstractions.
 
-\section{Discussion}
+The LMDPs attempted to preserve the space of transition dynamics and the rewards. But, they failed to preserve the value of the optimal actions, and thus cannot guarantee performance in general.
 
-The LMDPs attempted to preserve, ... . But failed to preserve X, and thus cannot guarantee performance in general.
-
-Symmetry attempts to preserve, ...?
-
-Need better tools for this!?
-
+Measures of symmetry do not scale well.
+% Symmetry attempts to preserve, ...?
 
 \section{Future work}
 
-Future work should seek to show that all abstractions of interest to RL live in this happy family.
-
 There is a large amount of future work to be done if we want to understand abstractions for efficient RL.
+
+\paragraph{Abstraction}
+
+\begin{itemize}
+	\item Are the properties for evaluation presented in \ref{eval-abstractions} necessary and / or sufficient for 'efficient' performance of an abstraction?
+	\item Show that many (or even all) abstractions of interest to RL live in the family defined in \ref{similar-classes}.
+	\item Compare trajectory based similarity measures ($\chi(x, x') = \int_\pi \mathbb E \Big[\sum_t \gamma^t D(c(x, \pi), c(x', \pi)))\Big]$) with the family defined in \ref{similar-classes}.
+	\item What is the trade off of approximating $\int_{\pi \in \Pi}f(\pi)$ with $\int_{\pi \in B \subset \Pi}f(\pi)$?
+	How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
+	The topology of abstractions (partial ordering). Seems important!? Can use somehow?
+	hat is necessary for the preservation of Bellman equations ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions?
+	\item Is it sufficient to preserve the ordering of the state-action values, rather than their value?
+	% Preserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
+\end{itemize}
 
 In \ref{exploit-abstraction-rl} we described \textit{state abstraction}, \textit{action abstraction}, and \textit{state-action abstraction}, but what is the advantage, if any, of \textit{state and action abstraction} versus \textit{state-action abstraction}? Similarity, \ref{exploit-abstraction-rl} we described \textit{goal-like} and \textit{option-like} temporal abstraction. But, is one strictly better that the other. If not, then in which cases does \textit{goal-like} temporal abstraction perform better?
 
-Is the family of similarity notions presented in \ref{similar-classes} 'complete'? Does it describe all abstractions of interest?
-Relatedly, are cumulants strictly superior to trajectory type similarity measures $\chi(x, x') = \int_\pi \mathbb E \sum D(c(x, \pi), c(x', \pi)))$?
+\paragraph{Efficiently Solveable Abstractions}
 
-What is the trade off of approximating $\int_{\pi \in \Pi}f(\pi)$ with $\int_{\pi \in B \subset \Pi}f(\pi)$?
-How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
-The topology of abstractions (partial ordering). Seems important!? Can use somehow?
-hat is necessary for the preservation of Bellman equations ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions?
+In which cases does the LDMP give the right solution? What are the properties that make a MDP easily solveble?
+Can easily solvable MDPs be easily identified? Is there some notion of close to easily solvable?
+
+\paragraph{Symmetric abstractions}
+
+Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
 
 % The comparison of topologies constructed using varios k length options.
-% With increaseing k, the topology of the abstraction is always coarser??
-% Are these properties for evaluation necessary and / or sufficient for good performance of an abstraction?
-
-
-Questions / future work
-\begin{itemize}
-	\item If we know the order of the group, then how hard is it to discover a symmetry?
-\end{itemize}
-
-Future work.
-Metropolis-hastings. To allow this to scale to higher dimensions.
-
+% With increasing k, the topology of the abstraction is always coarser??
 
 Future work.
 - Generalise to more symmetries.
 - How do the number of actions scale with d and / or the (type of) symmetry group?
 - learn representations that are ordered. So we can reduce the combinatorial space of possible symmetries.
-
-Future work.
-Use this measure with SGD as a regualriser.
 
 % Alternatively, we could???
 % \begin{itemize}
@@ -58,10 +54,13 @@ Use this measure with SGD as a regualriser.
 % 	\item ???
 % \end{itemize}
 
+Future work.
+Use this measure with SGD as a regualriser.
+
+
+% % % % % % % % % % % % % % %
 % Q: Number of integer factors as a function of n???
 % Q: Efficiency of rejection sampling.
 % Q: Relation to Lyapanov dynamics. Sampling distributions with gradient descent!??!
 % Q: Proximity to symmetric states. How does this change as d increases?
-
-
-\section{Conclusion}
+% Q: Is there an advantage to building your temporal abstraction from k=n first, then to k=n+1.

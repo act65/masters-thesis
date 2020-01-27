@@ -1,28 +1,5 @@
 \chapter{Abstraction}
 
-\section{Similarity}
-
-\subsection{Pairing abstractions with similarity measures}
-
-% we have a similarity measure and a way to allow the learner to use it. now ...
-
-Want to remove unimportant structure, while keeping the structure that allows us
-to exploit the bellman equation (and thus more efficient search).
-
-Different abstraction spaces support different similarity measures.
-State similarity based on value fails in rather simple settings.
-But works with state-action abstractions!?
-
-Weaker notions of similarity.
-\begin{itemize}
-\tightlist
-  \item Preserving the ordering of policies. Rather than their absolute value.
-  \item Preserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
-  \item Preserving the neighbourhoods of policies and their values.
-  \item ?
-\end{itemize}
-
-
 \section{LMDPs}
 
 \subsection{LMDP solutions}\label{lmdp-derivation}
@@ -104,23 +81,60 @@ However, as pointed out in eariler sections, there are many other possible
 notions of abstraction and similarity that can make sense for RL. Specifically, the MDP homomorphism framework
 could be generalised in the following ways;
 
-\begin{itemize}
+\begin{enumerate}
 \tightlist
-  \item temporal symmetries
   \item approximate symmetries
-  \item inference of symmetries under uncertainty
   \item complexity measure / inductive bias
-\end{itemize}
+  \item inference of symmetries under uncertainty
+  \item temporal symmetries
+\end{enumerate}
 
-% Indeed ...
+Indeed, some work has extended the notion of symmetric model-based abstraction (1)
+to approximately symmetric model-based abstraction \cite{Ravindran2004}. However, this has yet to be generalised to other types of symmetry with (say) the state-action values.
+
+Section \ref{symmetric-abstractions} is our not-so-humble attempt to achieve a symmetric inducive bias (2). And, as far as we know, little progress has been made on (3).
+
+Finally, there has been at least one attempt \cite{Ravindran2000} to build a framework capable of exploiting temporal symmetries (4). And while their poposal makes sense, we offer an alternative below.
+
+\subsection{Temporal symmetries}
+
+Consider a transformation on a MDP that takes sequences of actions, an option, $a_1, a_2, \dots, a_k$, and relabels them as actions in a new MDP.
+
+\begin{align*}
+\Omega_k&: M \to M \\
+\Omega_k&:\{S, A, r, P, \gamma\} \to \{S, A^k, \hat T_k(r), \hat T_k(P), \gamma\} \\
+\hat T_k(r) &= \sum_{i=t}^{t+k} \gamma^{i-t} r(s_i, a_i) \\
+\hat T_k(P) &= \prod_{i=t}^{t+k} P(s_{i+1} | s_i, a_i) \\
+\end{align*}
+
+% (is this actually a homomorphism!? what do I need to prove?)
+It seems easy to see that the transformation of the actions is bijective\footnotemark[43] (each option is identified with one action), and therefore we have an isomorphism (which is a type of homomorphism).
+
+\footnotetext[43]{Although, care does need to be taken with the transitions and rewards. We must ensure that the transitions / rewards for an options are the same as the transition / reward for the relabelled option (now a single action).}
+
+% Need to show two temporally transformed MDPs can be composed? This allows us to construct options of various length!? $\Omega_i(M) \wedge \Omega_j(M) \to \tilde M$.
+
+% What about a goal-like verion of this?
+
+We can now define a temporal homomorphism as the composition of our temporal transformation and the MDP homomorphism.
+
+\begin{align*}
+\mathcal H: M \to M \tag{MDP homomorphism}\\
+\Omega_k: M \to M \tag{temporal transformation}\\
+\mathcal H\circ \Omega_k : M \to M \tag{temporal homomorphism}
+\end{align*}
+
+Rather than finding model-based symmetries in the state-actions. This construction will find symmetries
+in state-options (of a specific length).
 
 \subsection{Invariants}
 
-{\color{red}What are the unique differential invariants of $S_2$?!?!}
-
 An important poperty of symmetries is that they can be identified by their generators and relations.
 
-While there are many types of finite group, (cyclic, alternating, ...?) And then there are continuious symmetries, (Lie groups)
+{\color{red}A generator is ... A relation is ... .}
+
+There are many types of finite group, (cyclic, alternating, symmetric, ...?)
+And then there are continuious symmetries, (Lie groups)
 Which types of symmetry are important for RL problems?
 
 Let's work through an example, the cart-pole control problem. Your goal is to balance a pole on a cart.
@@ -382,29 +396,25 @@ achieved.
 \subsection{Exploitation} \label{symmetric-exploitation}
 
 \begin{displayquote}
-\textsl{Once have discovered a symmetry, how might we exploit that knowledge?}
+\textsl{Once we have discovered a symmetry, how might we exploit that discovery?}
 \end{displayquote}
 
-Similar to how we considered how to exploit an abstraction in section \ref{},
-let's review some existing methods for exploiting the knowledge of a symmetry. \footnotemark[22]
-
-\footnotetext[22]{Note that, in all of these methods, symmetry provides
-advantage over considering just the pairwise similarities. We will return to this later.}
+Similar to how we considered how to exploit an abstraction in section \ref{exploit-abstraction-rl},
+let's review some existing methods for exploiting the knowledge of a symmetry.
 
 % note: what has been given to these methods of exploitation?
 % knowledge of the group, or its actions, or ...?
 
-\paragraph{Exploiting symmetry for efficient control}
+\subsubsection{Exploiting symmetry for efficient control}
 
 If we have a MDP, $M_1$, then solving it via value iteration requires $\mathcal O(\epsilon |S|^2|A|)$ iterations.
-However, if we know that there exists symmetries in the state space, then we can 'minimise the model',
+However, if we know that there exists symmetry of order $k$ in the state space, then we can 'minimise the model',
 by applying the MDP homomorphism $\mathcal H: \mathcal M\to \mathcal M$.
 This new, minimised, MDP, $M_2$ has a smaller state space, as $|S_{M_2}| = \frac{|S_{M_1}|}{k}$
 and essentially the same dynamics and rewards. Thus we can solve $M_2$, with cost $\mathcal O(\epsilon \frac{|S|^2|A|}{k^2})$
 and then lift the solution back to $M_1$. \cite{Dean1997, NARAYANAMURTHY}
 
-
-\paragraph{Exploiting symmetry for efficient inference}\label{symmetry-inference}
+\subsubsection{Exploiting symmetry for efficient inference}\label{symmetry-inference}
 
 There has been a large amount of work (that we are familiar with) exploring
 the exploitation of ... See  here for an overview \ref{symmetry-inference}.
@@ -461,19 +471,18 @@ Weight sharing?!? Weight coupling!?
 \textit{Which method of incorporating knowledge of symmetries is best?}
 \end{displayquote}
 
-\begin{itemize}
-\tightlist
-  \item Data augmentation: flips.
-  \item Gradient coupling: ??? gets complicated?
-  \item Output coupling: regulariser on similar outputs.
-  \item Architecture: mirror weights.
-\end{itemize}
+% \begin{itemize}
+% \tightlist
+%   \item Data augmentation: flips.
+%   \item Gradient coupling: ??? gets complicated?
+%   \item Output coupling: regulariser on similar outputs.
+%   \item Architecture: mirror weights.
+% \end{itemize}
 
 Equivalent?! (in this case, or in general?)
 What other ways are there? Want to construct the space of possible ways to incorporate symmetries into a learner.
 
-
-\paragraph{Exploiting symmetry for efficient exploration}
+\subsubsection{Exploiting symmetry for efficient exploration}
 
 Holtzen et al. \cite{Holtzen2019} show that by grouping together variables according to
 the knowledge of a symmetry, they show that \textit{orbit-jump MCMC mixes rapidly in the number of orbits}.
@@ -487,7 +496,6 @@ Also. \cite{Campbell2019}
 
 All of these methods rely on a similar type of argument. Picking a representative
 of a partition and only using that one. Averaging over orbits. ...
-
 
 \subsection{Discovery}
 

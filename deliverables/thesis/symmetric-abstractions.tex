@@ -5,6 +5,7 @@
 Symmetry is a concept from pure mathematics, which has found major success in physics (for example, \href{https://en.wikipedia.org/wiki/Noether%27s_theorem}{see Noether's theorem}).
 Symmetry has also had success in machine learning. For example, the formalism has
 helped us understand convolutional neural networks \cite{Cohen2017}, and disentanglement \cite{Higgins2018}.
+We are interested in using symmetry to build abstractions for RL. But first, what do me mean by symmetry?
 
 % also, to disentanglement
 % % Connection to causal hierarchy. Cite Pearl. Association, intervention, counterfactuals.
@@ -53,9 +54,8 @@ For example, we can imagine the \textit{action}\footnotemark[37] of this rotatio
 \end{displayquote}
 
 We can use a group structure to define a similarity (aka an equivalence relation),
-$a \sim_G b$ iff $\exists g \in G: a = g \circ b$. {\color{red} for example??}
-Therefore, we can use this
-notion of similarity to construct abstractions as we did in \ref{C:abstraction}.
+$a \sim_G b$ iff $\exists g \in G: a = g \circ b$. For some examples of symmetries within RL see \ref{game-invariants}.
+Therefore, we can use this notion of similarity, as we did in \ref{C:abstraction}, to construct abstractions.
 
 % How does knowing the specific structure of the similarities help?   !!!!!
 % If we are just going to group them together?
@@ -71,9 +71,9 @@ you the ability to generalise\footnotemark[38]. To generalise you need (accurate
 
 \footnotetext[38]{Knowing that $a$ and $b$ are similar tells you nothing about $c$ and / or $d$.}
 
-Existing approaches to estimating similarity generalise as the (measure of) similarity encodes priors.
+Existing approaches to estimating similarity can generalise if the (measure of) similarity encodes priors.
 For example;
-If our measure of similarity is parameterised as a CNN, then the CNN implicitly encode preferences for continuious and local functions\cite{Yann1995}.
+If our measure of similarity is parameterised as a CNN, then the CNN implicitly encodes a preference for continuious and local functions\cite{Yann1995}.
 If our measure of similarity is trained using SGD, SGD implicitly encodes a preference for low rank solutions \cite{Gunasekar2017}.
 
 In this section we explore how to construct a prior that says:
@@ -107,12 +107,14 @@ the 'details' of these similarities.
 \end{displayquote}
 
 We need to construct a measure of symmetry, $S: X \to \mathbb [0, 1]$, that returns higher values for 'more' symmetric objects.
-We canthen use this measure to bias a learner towards more symmetric guesses (see \ref{thomspon-sampling}).
+We canthen use this measure to bias a learner towards more symmetric guesses (see \ref{thompson-sampling}).
 
 Given an object, $x \in X$, we want to know, how symmetric is that object?
 % This would allow us to consider alterative possibilities, such as $y \in X$, and say that we prefer $x$ to $y$ because $x$ is more symmetric.
 But, what makes something more or less symmetric?
-We define the amount of symmetry to be: the order of the largest group that $x$ is invariant to.
+We define the amount of symmetry to be: the order \footnotemark[42] of the largest group that $x$ is invariant to.
+
+\footnotetext[42]{The order of a group is defined as the cardinality of the set of group elements, which is written $|G|$.}
 
 For example, $x_{ab} = [a,a,b,b]$ should be considered more symmetric than $x_{abc} = [a,a,b,c]$ because,
 $x_{ab}$ is invariant to actions of $S_2 \times S_2$, while $x_{abc}$ is (only) invariant to actions of $S_2$.
@@ -120,6 +122,9 @@ $x_{ab}$ is invariant to actions of $S_2 \times S_2$, while $x_{abc}$ is (only) 
 
 Note, the larger the group order, the coarser the abstraction we can build. We can group together $x_{ab}[0] \sim x_{ab}[2], x_{ab}[1] \sim x_{ab}[3]$, thus building an abstraction of size $2$.
 {\color{red}Should show it is coarser in a formal sense...}
+
+% \textit{We say [state abstraction] $\phi_2$ is coarser than [state abstraction] $\phi_1$, denoted $\phi_1 \ge \phi_2$,
+% iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$ \cite{Littman2006}}
 
 % This, makes sense as we can build coarser abstractions from the groups of higher order.
 % So by preferring groups of higher order, we are able to build coarser abstractions.
@@ -129,7 +134,7 @@ We write this measure of symmetry as;
 \begin{align*}
 G^{* } &= \mathop{\text{max}}_G |G| \tag{pick the largest group}\\
 \text{s.t.} \;\; &\forall g\in G, x = \phi(g, x) \tag{that $x$ is invariant to} \\
-S(x) &= e^{n-|G^{* }|}
+S(x) &= e^{-\parallel n-|G^{* }| \parallel_1} \tag{transform so $S(x)\in [0, 1]$}
 \end{align*}
 
 While this measure of symmetry captures some of what we want, it does not work on inputs of interest.
@@ -144,7 +149,7 @@ $x = [1,1,2,2]$. So rather than asking: \textit{is $x$ invariant to $G$?}, we ca
 % The fundamental complexity of the nearest symmetry, and the distance between that symmetry an
 
 \begin{align*}
-C(x) &= \mathop{\text{min}}_G \sum_{g_i\in G}\parallel x-\phi(g_i, x)\parallel_2 - \beta |G|\\
+C(x) &= \mathop{\text{min}}_G \sum_{g_i\in G}\parallel x-\phi(g_i, x)\parallel_2 - \beta \parallel n-|G^{* }| \parallel_1\\
 S(x) &= e^{-C(x)}
 \end{align*}
 
@@ -155,11 +160,11 @@ S(x) &= e^{-C(x)}
 
 \subsubsection{Implementation issues}
 
-This measure of approximate symmetry has two implementation issues;
+In its current state, this measure of approximate symmetry has two main implementation issues;
 the search over groups, the representation of the action(s).
 
 \paragraph{Searching through groups:}\label{searching-through-groups} For a given order, the number of possible
-groups is roughly equal to the number of integer factorisations of the given order.
+groups is roughly equal to the number of integer factorisations of the order itself.
 We could try to explicitly construct these groups, however, there are many special cases (known as the sporadic groups \cite{Conway1985}).
 This complicates their construction\footnotemark[38].
 \footnotetext[38]{Complicated from a program design perspective, not a computational perspective.}
@@ -175,11 +180,28 @@ a group acts on $X$. As the dimensionality of $X$ grows, the number of possible 
 
 % Say $X$ is a subset of $\mathbb R^n$. Then there are $n!$ possible group elements, each corresponding to a permutation.
 
-Consider the representation of group actions as permutation matrices, $\phi(g, \cdot) = P_i, \; P_i \in {0, 1}^d$.
-Then there are $d!$ possible perumtations. And checking that a collection of actions is closed requires $\mathcal O(d! \times d!)$ compositions.\footnotemark[39]
+Consider the representation of group actions as permutation matrices, $\phi(g_i, x) = P_i \cdot x$ where $P_i \in {0, 1}^{d\times d}$ and $P \cdot \mathbf 1 = \mathbf 1$.
+Then there are $d!$ possible perumtations.
+ And checking that a collection of actions is closed requires $\mathcal O(d! \times d!)$ compositions.\footnotemark[39]
+
+% for symmetric groups. how many ways are there to associate the group elements and permutation matrices?
+% this would be the upper bound?
 
 \footnotetext[39]{Why is this so expensive? The reason is that we treat each
 dimension as independent from the others. They are discrete, unordered and unrelated.}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+For these reason, we start with a restricted family of groups:
+the groups which can be constructed by direct products of $S_2$.
+By using this family of groups as a prior, we are saying: \textit{we prefer objects that are invariant to flips / reflections}.
+
+The actions of these groups can be easily constructed (the permutations that swap $n$-grams\footnotemark[43]), and (more importantly)
+their order can be identified by the existence of idempotent permutations generated by an n-gram swap.
+
+\footnotetext[43]{For example, a $1$-gram swap could be $0 \leftrightarrow 1$, a $2$-gram swaps could be $(0, 1) \leftrightarrow (2,3)$. Where these numbers represent the indicies of a vector.}
+
+Still, the number of actions of this restricted family grows quickly. We are constrained to consider small problems.
 
 \begin{changemargin}{-3cm}{-3cm}
   \begin{center}
@@ -195,15 +217,6 @@ dimension as independent from the others. They are discrete, unordered and unrel
 In the table above, we count the total number of possible actions (minus the identity) for
 different groups (rows) and $X$s of different dimension (columns).
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-For these reason, we start with a restricted family of groups:
-the groups which can be constructed by direct products of $S_2$.
-
-The actions of these groups can be easily constructed (the permutations that swap n-grams), and (more importantly)
-their order can be identified by the existence of idempotent permutations generated by some n-gram swap.
-
-By using this family of groups as a prior, we are saying: \textit{we prefer objects that are invariant to flips / reflections}.
 % Thus, we have built a family of symmetries. A higher level prior.!!! No explicit knowledge of a symmetry. But,
 
 \subsubsection{Topology}
@@ -224,7 +237,8 @@ Properties this measure of symmetry should satisfy are, \ref{}, \ref{}, \ref{}.
 	\item An exact group structure should have higher symmetry than an approximate group structure $\mathcal S(([a,a,b,c]) < \mathcal S([a,a+\epsilon,b,c])$
 \end{itemize}
 
-We can see that the measure is invariant to changes in norm.
+We can see that the measure is not invariant to changes in norm.
+We can easily fix this by normalising the distance measure.
 
 
 \begin{figure}[h!]
