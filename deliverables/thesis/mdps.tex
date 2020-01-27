@@ -6,7 +6,7 @@ This general, reinforcement learning, problem, has two main properties;
 
 Unlike supervised learning, which gives the learner feedback (\textit{Student: "I think that digit
 is a 5". Teacher: "No, it's a 6"}), in RL the learner only receives evaluations (\textit{Student: "I think
-that digit is a 5". Teacher: "No."}). This means the student needs to explore the possible answers via some trial-and-error search.
+that digit is a 5". Teacher: "No."}). This means the learner needs to explore the possible answers via some trial-and-error search.
 (\textit{Student: "Is it a 4?". Teacher: "No." Student: "How about a 0?". Teacher: "No." ... Student: "A 6?". Teacher: "Yes."})
 
 On top of terse teachers, many actions may be taken before any evaluation is received, thus requiring credit to be assigned to past actions,
@@ -120,9 +120,8 @@ that effects future transitions.}
 
 This is not to say that past actions do not effect the future. Rather,
 it is a special type of dependence on the past. Where the dependence is
-totally described by changes to the state, $s\in S$.
-
-We can return to chess for an example: in chess there are no hidden pieces, or
+totally described by changes to the state, $s\in S$. We can return to chess for
+an example: in chess there are no hidden pieces, or
 private knowledge about the current state. I know everything there is to know.
 
 % Can easily make a sequence Markovian by adding information. E.g. time
@@ -141,18 +140,9 @@ This means that;
 \pi^{*} : \;\; V^{\pi^* }(s) \ge V^{\pi}(s) \quad \forall \pi\in \Pi \;\;\forall s\in S\\
 \end{align*}
 
-Which is implied by our earlier definition, but the optimal policy also has other properties of note \cite{Bertsekas1996, Putterman2015}.
-
-\begin{itemize}
-\tightlist
-  \item it always exists,
-  \item it is unique,
-  \item it is deterministic,
-\end{itemize}
-
-{\color{red}do I need to explain these?}
-
-\subsection{The Bellman Equations}
+% The optimal policy has other properties of note; it always exists,
+% it is unique, and it is deterministic \cite{Bertsekas1996, Putterman2015}.
+% We will return to these properties in \ref{geom-polytope}.
 
 \begin{displayquote}
   \textsl{But, how can we (efficiently) find the optimal policy?}
@@ -216,8 +206,8 @@ aspect of RL: exploration, estimation error.}
 \mathcal M &= \{S, A, P, r, \gamma\}\; \tag{the MDP}\\
 S &= [0:n-1] \tag{the state space}\\
 A &= [0:m-1] \tag{the action space}\\
-P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \tag{the transition fn}\\
-r &\in \mathbb R^{n\times m} \tag{the reward fn}
+P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \tag{the transition fn.}\\
+r &\in \mathbb R^{n\times m} \tag{the reward fn.}
 \end{align}
 
 A result of this formulation is that we concisely write and solve the \eqref{eq:bellman-eqn}.
@@ -243,6 +233,7 @@ An alternative derivation of the value functional, which is more verbose and mor
 Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
 This RL problem can be efficiently solved by non-statistical
 methods: dynamic programming and related planning techniques \cite{Bertsekas1995}.
+This setting is too simple.
 
 Rather, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
 seems to retain much of the complexity we care about: this setting does not allow

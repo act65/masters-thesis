@@ -51,7 +51,7 @@ The red dots are deterministic policies.}
 Dadashi et al. \cite{Dadashi2018} explored a few properties of the polytope.
 Specifically they focused on its geometry and dynamics.
 
-\subsubsection{Geometry of the polytope}
+\subsubsection{Geometry of the polytope}\label{geom-polytope}
 
 Dadashi et al. remark; the polytope gives a clear illustration of the following classic results regarding MDPs \cite{Bertsekas1996}.
 
@@ -64,7 +64,9 @@ Dadashi et al. remark; the polytope gives a clear illustration of the following 
 
 Let's try to understand these.
 
-\paragraph{Dominance} {\color{red}I dont have a good explanation for this.}
+\paragraph{Dominance} By the definition of the optimal policy, $\forall s: V^{\pi^{*}}(s)\ge V^{\pi}(s)$.
+Imagine there is some other policy, $\pi'$ and state $s'$, such that $V^{\pi^{*}}(s')\le V^{\pi'}(s')$. This is a contradiction.
+Thus, the optimal value function must have the largest value in all states, meaning it will be the 'dominating' vertex.
 
 \paragraph{Monotonicity} If $V(s_2)$ increases then $V(s_1)$ must either increase or stay the same.
 This can be seen in the last equation below;
@@ -114,6 +116,7 @@ In \ref{polytope-extras} you can find further exploration of other properties of
 the value polytope, such as; the density of policies, and the effect of the discount
 rate.
 
+\newpage
 \section{Search spaces for MDPs}\label{search-spaces-mdps}
 
 We want to efficiently find the optimal policy for a given MDP. But where and how should we
@@ -142,7 +145,7 @@ picking rooms to search.
 
 \subsection{Policy search}
 
-We can search through policies. In my opinion, this feels like the most 'natural' type of search for RL.
+We can search through policies. In my opinion, this is the most 'natural' type of search for RL.
 As, after all, we are searching for the optimal \underline{policy}.
 
 Searching through the space of policies supports a couple of modes of travel:
@@ -153,7 +156,7 @@ policy iteration and policy gradients.
 In policy iteration (PI), we search for the optimal policy by evaluating our current
 policy and then acting greedily. In our tabular setting, policy iteration can be written as:
 
-\begin{algorithm}
+\begin{algorithm}[H]
 \caption{Policy iteration}
 \begin{algorithmic}[1]
 
@@ -178,34 +181,34 @@ $\text{greedy}(Q) = \text{onehot}(\text{argmax}_a Q[s, a], |A|)$.
 
 This iteration converges because the state-action values capture counterfactuals, $Q^{\pi}(s, a)$.
 \textit{What would the return be if I took an action, $a$, not necessarily chosen by
-the current policy, then followed the current policy.}
-If there exists an action that achieves higher return than the current policies choice of action,
-then (because of the greedy step) PI will update the policy so it chooses that action.
+the current policy, then I followed the current policy.}
+If there exists an action that achieves higher return than the current policy's choice of action,
+then (because of the greedy step) PI update to pick that action.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/pi-polytope.png}
 \caption{The optimal policy is shown by the cross.
 Each color shows PI applied to a different policy initialisation.
-The arrows point from the current policy to the next policy, after a step of PI. As we can see,
+The labels denote the number of iterations to reach convergence.
+The arrows point from the current to the next policy. As we can see,
 PI jumps between the deterministic policies (the vertices of our polytope).
-This is because of the greedy update step. Also, certain trajectories require two steps
-because they jump to the lower right corner, and then to the top right.}
+This is because of the greedy update step.}
 \end{figure}
 
+\newpage
 \subsubsection{Policy gradients}
 
 Policy gradients (PG) are closely related to the deep learning / end-to-end paradigm.
 \textit{Simply write down what you want (the loss function),
-estimate its derivative and apply gradient descent.}
-
-In our case, the loss function is the state value function. We can estimate the derivative
+estimate its derivative and apply gradient descent.} In our case, the loss function
+is the state value function. We can estimate the derivative
 by differentiating the \ref{eq:value-functional} with respect to the policy.
 
 To ensure the optimisation problem is constrained properly (that the policy returns a distribution over actions),
 we pick $\theta$ as our parameters and construct the policy using $\pi = \sigma(\theta)$, where $\sigma$ is the softmax function.
 
-\begin{algorithm}
+\begin{algorithm}[H]
 \caption{Policy gradients}
 \begin{algorithmic}[1]
 
@@ -222,14 +225,15 @@ we pick $\theta$ as our parameters and construct the policy using $\pi = \sigma(
 \end{algorithmic}
 \end{algorithm}
 
-Note that to mitigate stability and convergence issues, it is common to add weak regularisation,
-which attempts to maximise the entropy of the policy. This forces the policies away
-from the edges of the polytope, where the gradients are not defined ($\log(0) = \text{NaN}$).
+To mitigate stability / convergence issues, it is common to add weak regularisation,
+which maximises the entropy of the policy. This forces policies away
+from the edges of the polytope, where gradients are not defined.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/pg-polytope.png}
-\caption{Examples of policy gradients: observe that most of the trajectories are purple,
+\caption{
+Examples of policy gradients: observe that most of the trajectories are purple,
 indicating that the majority of progress is made in the first 20\% of training.
 They converge very slowly once close to the optimal policy.}
 \end{figure}
@@ -239,7 +243,6 @@ They converge very slowly once close to the optimal policy.}
 % \cite{Agarwal2019a}.
 
 \newpage
-
 \subsection{Value search}
 
 Alternatively, we can search through possible state values, then infer the policy that achieves that value.
@@ -249,7 +252,7 @@ optimality operator to constrain the search.
 (For similar reasons to why policy iteration converges) The greedy step using the
 state-action values will find actions with higher value.
 
-\begin{algorithm}
+\begin{algorithm}[H]
 \caption{Value iteration}
 \begin{algorithmic}[1]
 
@@ -268,7 +271,9 @@ state-action values will find actions with higher value.
 \end{algorithmic}
 \end{algorithm}
 
-{\color{red}important. Also, why does it go outside?!?}
+% {\color{red}important. Also, why does it go outside?!?}
+
+
 % Want to include upper / lower bounds!? On complexity. Sample / computational!?
 % {\color{red}(need to explain? why does stationarity mean optimality...?!)}
 % Intuition about why it converges!? Contraction. Banach fixed-point theorem.
@@ -282,7 +287,7 @@ the optimal one.}
 \end{figure}
 
 
-
+\newpage
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 Thus, there are different classes of search space: each imbued with special

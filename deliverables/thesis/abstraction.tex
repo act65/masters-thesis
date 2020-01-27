@@ -198,7 +198,7 @@ The intuition behind both goal-like and option-like temporal abstractions is tha
 we can decompose a sequential decision problem into a set of shorter, easier to solve, parts.
 
 
-\subsection{Evaluating abstractions}
+\subsection{Evaluating abstractions}\label{eval-abstractions}
 
 \begin{displayquote}
 \textsl{
@@ -228,7 +228,7 @@ notion of similarity (more things are considered similar). \footnotemark[24]
 \footnotetext[24]{Coarseness captures concepts such as a 'high level' abstraction or a 'general' abstraction.}
 
 \textit{We say [state abstraction] $\phi_2$ is coarser than [state abstraction] $\phi_1$, denoted $\phi_1 \ge \phi_2$,
-iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$.} \cite{Littman2006}
+iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$ \cite{Littman2006}}
 
 Any time $s_1$ and $s_2$ are considered similar in an abstraction, then a coarser
 abstraction will also consider them to be similar, and there might also be other similar states. \footnotemark[25]
@@ -240,12 +240,12 @@ $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.}
 \textsl{Why are coarse abstractions desirable?}
 \end{displayquote}
 
-By throwing away inessential details;
+By grouping together more states, there fewer states over all, and thus;
 \begin{itemize}
   \tightlist
-  \item there is less to compute.
-  \item we will not waste time exploring them.
-  \item we have reduced the variance of our observations and thus allow quicker learning.
+  \item there is less to compute,
+  \item there is less to explore,
+  \item there is less variance in our observations and thus allow quicker learning.
 \end{itemize}
 
 These arguments have been formalised in the case of symmetries and are described in \ref{symmetric-exploitation}.
@@ -287,6 +287,7 @@ state-goals to temporally extended actions.
 This allows them to reason about which behaviours are representable using goals,
 and thus whether a 'high level' policy choosing these goals can approximate the optimal policy.}
 
+\newpage
 \subsubsection{Efficiently solvable abstractions}
 
 Just because a near optimal policy exists (under our abstraction), that does not mean it will be easy to find.
@@ -296,22 +297,16 @@ We might require large amounts of data or computation.
 
 We want to preserve our ability to use the Bellman equation to efficiently guide the search for optimal controls.
 But, what is necessary or sufficient to preserve the Bellman equation's ability to guide search?
-
-\begin{displayquote}
-\textbf{Claim:} Preserving the value of the optimal action is sufficient to preserve the Bellman equation's ability to guide search.
-\end{displayquote}
+It appears that: Preserving the value of the optimal action is sufficient to preserve the Bellman equation's ability to guide search. \cite{Jong2005,Littman2006,Abel2017}
 
 % If we have preserved the value of the optimal action (for each action), then, for all actions $\forall a: Q(s, a) \le Q(s, a^{* })$.
 Consider an abstraction that has preserved the value of the optimal action.
 When constructing the abstraction, we may have grouped together states that don't have similar transitions, or similar value under all policies, ... etc.
 For example we might have: $s_i \sim s_j$ despite $Q(s_i, a_k) - Q(s_j, a_k) > \epsilon, a_k \neq a^{* }$.
 But this doesn't matter as $Q(s, a^{* })$ must still be larger than $Q(s, a_k)$.
-Thus, when applying a greedy update to the Bellman equation, we are going to converge
-\footnotemark[26]
+Thus, when applying a greedy update to the Bellman equation, we will be pull towards the 'true' value of the optimal policy\footnotemark[26].
 
-{\color{red}but the new Q values might change the topology of the problem?!?!}
-
-\footnotetext[26]{This argument needs to be formalised. So far, we only have empirical evidence of this. Also, related work has shown that if the value of the optimal action is not preserved then applying the Bellman equation no longer guarantees that optimal policies are also optimal in the abstraction. \cite{Jong2005}}
+\footnotetext[26]{However, this argument does not take into account how the topology of the $Q$ values may have changed.}
 
 \paragraph{Efficient exploration:} \textsl{What is needed for efficient exploration? And, when is 'it' preserved?}
 
@@ -331,20 +326,20 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 
 % Is this true in general, or specific to Q-learning with exploration bonuses? Future work.
 
-\paragraph{Efficient inference:} \textsl{What is needed for efficient inference? And, when is 'it' preserved?}
-
-% What are we hoping to infer efficiently? In this case. The model parameters. Or the value of a state-action?
-
-\cite{Allen-Zhu2016a,Johnson2013a}
-% these refs actually show faster convergence not faster learning!?
-
-% Alternatively could frame as ERM for model params!?
-
-% \begin{align*}
-% \text{Regret()} = \mathbb E [\sum V^{\pi^{* }}() - V^{\pi}]
-% \end{align*}
-
-{\color{red}HELP. Thoughts on this!? Will do some reading over the weekend.}
+% \paragraph{Efficient inference:} \textsl{What is needed for efficient inference? And, when is 'it' preserved?}
+%
+% % What are we hoping to infer efficiently? In this case. The model parameters. Or the value of a state-action?
+%
+% \cite{Allen-Zhu2016a,Johnson2013a}
+% % these refs actually show faster convergence not faster learning!?
+%
+% % Alternatively could frame as ERM for model params!?
+%
+% % \begin{align*}
+% % \text{Regret()} = \mathbb E [\sum V^{\pi^{* }}() - V^{\pi}]
+% % \end{align*}
+%
+% {\color{red}HELP. Thoughts on this!? Will do some reading over the weekend.}
 
 % \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 %
@@ -361,17 +356,17 @@ This tells us that, if we want to preserve our ability to efficiently explore (i
 
 We hope to build learners capable of discovering and exploiting an abstraction
 to efficiently solve the problems they are given.
-But, the efficiency gains of using an abstraction (as measured by its evaluation - see the section above) \underline{must} offset the cost of
+But, the efficiency gains of using an abstraction (as measured by its evaluation, see \ref{eval-abstractions}) \underline{must} offset the cost of
 discovering that abstraction! Else, why did we bother...?
 
 \begin{displayquote}
 \textit{"The challenge in the single-task case is overcoming the additional cost of discovering [an abstraction];
 this results in a narrow opportunity for performance improvements, but a well-defined objective.
-In the ... transfer case, the key challenge is predicting the usefulness of a particular [abstraction] to future tasks, given limited data.""}\cite{Konidaris2019}
+In the ... transfer case, the key challenge is predicting the usefulness of a particular [abstraction] to future tasks, given limited data."}\cite{Konidaris2019}
 \end{displayquote}
 
 For arbitrary problems, as often as we guess right about "the best abstraction for this task" or "the usefulness of a particular abstraction to future tasks",
-there will be another set of future tasks where we are wrong. This is a result of the no free lunch theorem \ref{Wolpert1996}. However, we can hope for good performance on restricted classes of problems.
+there will be another set of future tasks where we are wrong. This is a result of the no free lunch theorem \cite{Wolpert1996}. However, we can hope for good performance on restricted classes of problems.
 
 To evaluate an abstraction for the single task case we need to compare the complexity of
 finding a solution via abstraction (abstract, solve, lift) against the performance against
@@ -439,50 +434,38 @@ $\phi_{\pi^{* }}$ preserves the optimal action.}
 \vspace{5mm}
 
 We can construct a family of similarity functions for building abstractions for RL. To do so, we can measure the
-similarity between two 'RL objects'\footnotemark[28] as: for $x$ and $x'$,
-how similar are their likely futures starting from those objects, while using different policies.
+similarity between two 'RL objects'\footnotemark[28] as: for  different objects, $x$ and $x'$,
+how similar are their likely futures starting from those objects. Where we evaluate the similarity under (potentially) many different policies.
 Let's make this formal.
 
 \footnotetext[28]{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
 
-Let $c(s, a, r)$ be a cumulant, and let $C$ be the expected discounted sum of that cumulant under a given policy
-(where the expectation is over all trajectories starting from $x$).\footnotemark[29]
+Let $c(s, a, r)$ be a cumulant, and let $C$ be the discounted sum of that cumulant under a given trajectory\footnotemark[29].
+Then $\mathcal C$ is the expected value of $C$ under a given policy.
 
-\footnotetext[29]{This is also know as a general value function \cite{White2015}}
+\footnotetext[29]{This is is closely related to the notion of a general value function \cite{White2015}}
 
 \begin{align*}
 C(\zeta) &= \sum_{t=0}^{\infty} \gamma^{t}  c(\zeta_{t+1}) \\
-\mathcal C(x, \pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, \zeta_{x})} [C(\zeta)] \\
-\chi(x, x') &= \int_{\pi \in B} \frac{1}{1+\parallel \mathcal C(x, \pi) - \mathcal C(x', \pi) \parallel_{p}} d\pi
+\mathcal C(x, \pi) &= \mathop{\mathbb E}_{\zeta \sim D(\cdot | \pi, x)} [C(\zeta)] \\
+\chi(x, x') &= \int_{\pi \in B} e^{-\parallel \mathcal C(x, \pi) - \mathcal C(x', \pi) \parallel_{2}} d\pi \label{eq:family}
 \end{align*}
 
-We have written: the similarity $\chi$ between $x$ and $x'$ is; the sum over different policies, of the
-similarities (the inverse of distance) between likely futures, starting from $x$ / $x'$.
-
- by setting $\zeta_x = {\zeta: \zeta_0^s = x^s, \zeta_0^a = x^a \forall \zeta \in \mathcal Z}$
-
-{\color{red}HELP!? what do others think of this? want to discuss.
-main thing about this is the questions that need to be answered. how powerful is ths family?
-how does it relate to other families?}
-
-% Characterisation: How will we characterise these objects? By considering n-step futures, their expected value versus a rollout \footnotemark[9],
-% \footnotetext[9]{These can be unified using the $Q(\sigma)$ algorithm \cite{Asis2018}}
+Where we construct $D(\cdot | \pi, x)$ as the probability distribution over trajectories, given that we started at $x$ and followed $\pi$.
 
 \paragraph{Examples}
 
 % Need to show that this family caputres abstrations of interest.
-Future work should seek to show that all abstractions of interest to RL live in this happy family.
-Instead, we will consider two abstractions. One abstraction constructed by preserving the n-step model,
-and the other is constructed by preserving the value of the optimal state-actions.
+Consider: an abstraction that preserves the n-step model,
+and another that preserves the value of the optimal state-actions.
+We show that these abstractions are captured by our family \ref{eq:family}.
 
-\begin{itemize}
-  \tightlist
-  \item Preserving the n-step model: We start with $x=(s, a), x'=(s', a')$. Set $c(\zeta_{t}) = [s_{t+1}, r_{t}]$ then $\mathcal C=[N, V]$, where $N$ is the discounted state visitation count \footnotemark[27] and $V$ is the state value. Two $x$s with the same state visitation and value for all policies must have the same transitions.
-  \item Preserving the optimal state-action value: Again, we start with $x=(s, a), x'=(s', a')$. Next, we pick $c(\zeta_{t}) = r_{t}$ which means $\mathcal C(x, \pi) = Q^{\pi}(s, a)$.
-\end{itemize}
-{\color{red}(need to 'prove'?!? or is this sufficient?)}
+\underline{Preserving the n-step model:} We start with $x=(s, a), x'=(s', a')$. Set the cumulant be the next states and the rewards, $c(\zeta_{t}) = [s_{t+1}, r_{t}]$. Then the expected discounted cumulant, $\mathcal C=[N, V]$, represents the discounted state visitation count, $N$, and the state value $V$. if $x$ and $x'$ have the same state visitation and value for all policies must have the same transitions\footnotemark[27].
 
-\footnotetext[27]{If we have encoded the states as onehots.}
+\vspace{5mm}
+\footnotetext[27]{This statement assumes we have encoded the states as onehots. Also, it does not seem so obvious that it doesn't need proof.}
+\underline{Preserving the optimal state-action value:} Again, we start with $x=(s, a), x'=(s', a')$. Next, we pick $c(\zeta_{t}) = r_{t}$ which means $\mathcal C(x, \pi) = Q^{\pi}(s, a)$. Finally, we only integrate over the optimal policy. Thus, $x$ and $x'$ are similar if $Q^{\pi}(s, a) \approx Q^{\pi}(s', a')$.
+
 
 \subsubsection{Inference of the similarity}\label{infer-similarity}
 

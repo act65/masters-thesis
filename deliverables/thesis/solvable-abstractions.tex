@@ -174,7 +174,8 @@ z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma}
 \end{align*}
 
 In the undiscounted case (aka first exit case), where $\gamma=1$, this turns into an eigen value
-problem $z = QPz = Az$. In the discounted case, the exponentiated value, $z$, is guaranteed to converge \cite{Todorov2009}.
+problem $z = QPz = Az$. As these are linear problems, they are efficiently solvable.
+Similarly, in the discounted case, the exponentiated value, $z$, is guaranteed to converge quickly \cite{Todorov2009}.
 
 \subsection{Solving a MDP}\label{construct-lmdp-from-mdp}
 
@@ -236,7 +237,7 @@ This is problem that we will return to in \ref{paths}.
 \end{displayquote}
 
 The LMDP has disentangled the search for the optimal controls (solve the LMDP) (go to this or
-that state) and the search for the optimal policy (how to actually
+that state) from the search for the optimal policy (how to actually
 realise that control).
 
 This decomposition is reminiscent of goal conditioned approaches to hierarchical RL.
@@ -284,14 +285,14 @@ original can? We can formalise this question as the difference between the optim
 
 We answer this question using experiments, described in figures \ref{fig:ltd} and \ref{fig:opt-control}.
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/figures/LBO_BO.png}
 \caption{For the same MDP, shown is a comparison of the linear temporal difference operator (left), versus the true, Bellman, temporal difference operator (right). As expected, the temporal difference operator points towards the optimal value. But, the linear temporal difference operator points elsewhere.}
 \label{fig:ltd}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth,height=0.75\textheight]{../../pictures/figures/lmdp_mdp_optimal_dynamics.png}
 \caption{A comparison between the optimal control $u^{* }(s'|s)$ (shown in the left column) and the dynamics of the optimal policy (MDP) $\sum_a P(s'|s, a)\pi^{* }(a|s)$ (shown in the right column). Because the optimal control, and dynamics of the optimal policy can be written as $2\times 2$ matrices, we can plot them. Yellow indicates high probability, purple indicates low probability. But the main thing to observe is that the optimal control is often not the same as the dynamics of the optimal policy.}
@@ -301,7 +302,7 @@ We answer this question using experiments, described in figures \ref{fig:ltd} an
 We also investigate the sensitivity of the LMDP's optimal control given different MDPs.
 The optimal control is very sensitive to the sign and magnitude of the rewards, as can be seen in \ref{fig:chain-zero} and \ref{fig:chain-pos}.
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.65\textwidth,height=0.325\textheight]{../../pictures/figures/chain-test-zero-rewards.png}
 \caption{A chain problem \cite{Sutton2018a} with zero reward on all states except the last two. A small negative reward, then a large positive one.
@@ -309,7 +310,7 @@ The optimal control to this problem is not realisable: in every state, jump to t
 \label{fig:chain-zero}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.65\textwidth,height=0.325\textheight]{../../pictures/figures/chain-test-pos-rewards.png}
 \caption{The same chain problem as above, but with an positive reward added to all states.
@@ -318,6 +319,7 @@ The LMDP's control can be decoded into a realisable policy.}
 \label{fig:chain-pos}
 \end{figure}
 
+\newpage
 \subsection{Discussion}\label{lmdp-validation}
 
 Unfortunately, Todorov \cite{Todorov2006,Todorov2009} never actually produced
@@ -344,7 +346,7 @@ Nor do they give an efficient way to map an optimal control to an optimal policy
 Because there are no benchmarks that we can validate our implementation on,
 there is some doubt about whether I implemented the LMDP correctly. While the
 LDMP solution strategy does occasionally pick the correct optimal policy, more often than not,
-its guesses are seriously wrong.
+its outputs are seriously wrong.
 
 \subsubsection{Linearity in MDPs}
 

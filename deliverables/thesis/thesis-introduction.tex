@@ -38,7 +38,7 @@ observations (allowing quicker learning).}
 Thus, the main goal of this thesis is to understand:
 
 \begin{displayquote}
-\textit{to what extent can abstractions increase the efficiency of reinforcement learning?}
+\textit{to understand how abstractions can increase the efficiency of reinforcement learning?}
 \end{displayquote}
 
 \section{Overview}
@@ -56,13 +56,13 @@ In this thesis, we;
 
 \begin{itemize}
   \tightlist
-  % \item Construct a family of similarity measures for building abstractions for RL.
+  % \item CSurveyonstruct a family of similarity measures for building abstractions for RL.
   \item Clarify that a well cited method of linear abstraction doesn't work in general. \ref{lmdp-validation}
-  \item Build a Thompson sampler that prefers symmetric MDPs. \ref{thompson-sampling}
+  \item Evaluate a method of combining symmetric abstractions and Thompson sampling \ref{thompson-sampling}
   % \item Explore methods of discovering symmetries and a complexity measure \ref{????} {\color{red}WIP}
   % \item Generalise the notion of Markov decision problem homomorphism to temporal abstractions \ref{temporal-abstraction} {\color{red}WIP}
-  \item We explore the iteration complexity, effect of discounting, and the density of the Value functional polytope. \ref{polytope-extras}
-  \item Provide a way to visualise the dynamics of learning an Markov decision problem in higher dimensions \ref{graph-vis}. It's utility is unclear.
+  \item Explore the iteration complexity, effect of discounting, and the density of the Value functional polytope. \ref{polytope-extras}
+  \item Provide a way to visualise the dynamics of learning an Markov decision problem in higher dimensions \ref{graph-vis}.
   \item Formulate a type of model based learner \ref{model-iteration}, which has some serious, but potentially solvable, issues with scaling to larger problems.
   \item Explore a new task for understanding a learners ability to generalise \ref{action-space-experiments}
 \end{itemize}
