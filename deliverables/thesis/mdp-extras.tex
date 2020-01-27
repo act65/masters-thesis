@@ -11,16 +11,16 @@ T &\in \mathbb X^k: \det(T) \in (-1, 1) \\
 (I-T)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n T^i \label{eq:neumann}\tag{Neumann series}
 \end{align*}
 
-We can expand the recursion in the Bellman equation to get an \eqref{eq:inf-series}. We can then use the \eqref{eq:neumann} (by setting $T=\gamma P_{\pi}$) to give the nice analytic form of the value functional.
+We can expand the recursion in the Bellman equation to get an \eqref{eq:inf-series}. We can then use the \eqref{eq:neumann} (by setting $T=\gamma \tau_{\pi}$) to give the nice analytic form of the value functional.
 
 \begin{align*}
-V &= r_{\pi} + \gamma P_{\pi} V \tag{Bellman eqn}\\
-V &= r_{\pi} + \gamma P_{\pi}\big( r_{\pi} + \gamma P_{\pi} V\big) \\
-V &= r_{\pi} + \gamma P_{\pi}\Big(r_{\pi} + \gamma P_{\pi}\big( r_{\pi} + \gamma P_{\pi} V\big)) \\
-&= r_{\pi} + \gamma P_{\pi}r_\pi + \gamma^2 P_{\pi}P_{\pi}r_{\pi} + \gamma^3 P_{\pi}P_{\pi}P_{\pi}V \\
-&= \sum_{t=0}^{\infty} \gamma^tP_{\pi}^tr_{\pi} \label{eq:inf-series}\tag{infinite series} \\
-&= \big( \sum_{t=0}^{\infty} \gamma^tP_{\pi}^t \big) \cdot r_{\pi}\\
-&= (I-\gamma P_{\pi})^{-1} r_{\pi} \tag{value functional}\\
+V &= r_{\pi} + \gamma \tau_{\pi} V \tag{Bellman eqn}\\
+V &= r_{\pi} + \gamma \tau_{\pi}\big( r_{\pi} + \gamma \tau_{\pi} V\big) \\
+V &= r_{\pi} + \gamma \tau_{\pi}\Big(r_{\pi} + \gamma \tau_{\pi}\big( r_{\pi} + \gamma \tau_{\pi} V\big)) \\
+&= r_{\pi} + \gamma \tau_{\pi}r_\pi + \gamma^2 \tau_{\pi}\tau_{\pi}r_{\pi} + \gamma^3 \tau_{\pi}\tau_{\pi}\tau_{\pi}V \\
+&= \sum_{t=0}^{\infty} \gamma^t\tau_{\pi}^tr_{\pi} \label{eq:inf-series}\tag{infinite series} \\
+&= \big( \sum_{t=0}^{\infty} \gamma^t\tau_{\pi}^t \big) \cdot r_{\pi}\\
+&= (I-\gamma \tau_{\pi})^{-1} r_{\pi} \tag{value functional}\\
 \end{align*}
 
 This proof is more satisfying because we can more clearly see the nature of the value functional. It is a closed form of the infinite sum of discounted future rewards.
@@ -93,10 +93,10 @@ This is because we can simply sample a random policy which is likely to be close
 
 \vspace{5mm}
 
-\textbf{Open problem}\footnotemark[15]: If an MDP has sub-optimality,  $\epsilon^{* }(M)$,
+\textbf{Open problem}\footnotemark: If an MDP has sub-optimality,  $\epsilon^{* }(M)$,
 then it is possible to find a $\epsilon$ optimal policy with $\{\}$ samples.
 
-\footnotetext[15]{Open problem* of dubious interest.}
+\footnotetext{Open problem* of dubious interest.}
 
 Where $\epsilon = \mathop{\text{max}}_s V^{\pi^{* }}(s) - V(s)$.
 
@@ -133,14 +133,14 @@ all the policies are projected into a 1D space. (is this 1D for 2D problems. is 
 We want to derive the derivative of the value functional. Here we go.
 
 \begin{align*}
-V(\pi) &= (I − \gamma P_{\pi})^{−1}r_{\pi} \tag{value functional}\\
-&= (I − \gamma P\cdot \pi)^{−1}r\cdot \pi \\
-\frac{\partial V}{\partial \pi} &= \frac{\partial}{\partial \pi}((I-\gamma P_{\pi})^{-1} r_{\pi}) \\
-&= (I-\gamma \pi P)^{-1} \frac{\partial \pi r}{\partial \pi}+   \frac{\partial (I-\gamma \pi P)^{-1}}{\partial \pi}\pi r\tag{product rule} \\
-&= (I-\gamma \pi P)^{-1} r + -(I-\gamma \pi P)^{-2} \cdot -\gamma P\cdot \pi r\\
-&= \frac{r}{I-\gamma \pi P} + \frac{ \gamma P\cdot \pi r}{(I-\gamma \pi P)^2} \tag{rewrite as fractions}\\
-&= \frac{r(I-\gamma \pi P) + \gamma P \pi r}{(I-\gamma \pi P)^2} \tag{common demoninator}\\
-& = \frac{r}{(I-\gamma P \pi)^2} \tag{cancel}
+V(\pi) &= (I − \gamma \tau_{\pi})^{−1}r_{\pi} \tag{value functional}\\
+&= (I − \gamma \tau\cdot \pi)^{−1}r\cdot \pi \\
+\frac{\partial V}{\partial \pi} &= \frac{\partial}{\partial \pi}((I-\gamma \tau_{\pi})^{-1} r_{\pi}) \\
+&= (I-\gamma \pi \tau)^{-1} \frac{\partial \pi r}{\partial \pi}+   \frac{\partial (I-\gamma \pi \tau)^{-1}}{\partial \pi}\pi r\tag{product rule} \\
+&= (I-\gamma \pi \tau)^{-1} r + -(I-\gamma \pi \tau)^{-2} \cdot -\gamma \tau\cdot \pi r\\
+&= \frac{r}{I-\gamma \pi \tau} + \frac{ \gamma \tau\cdot \pi r}{(I-\gamma \pi \tau)^2} \tag{rewrite as fractions}\\
+&= \frac{r(I-\gamma \pi \tau) + \gamma \tau \pi r}{(I-\gamma \pi \tau)^2} \tag{common demoninator}\\
+& = \frac{r}{(I-\gamma \tau \pi)^2} \tag{cancel}
 \end{align*}
 
 \newpage
@@ -155,20 +155,20 @@ This is an inference problem, we are trying to infer the model parameters.
 Once we know these parameters, we can apply control.
 In general, this is known as model-based RL.
 
-We could search through models ($P, r$) using supervision from next step prediction.
+We could search through models ($\tau, r$) using supervision from next step prediction.
 This is a common approach to model-based RL \cite{Wang2019a}.
 Rather, we consider using the value estimation error to guide the search for model parameters.
 
 \begin{align}
-\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde P, \tilde r} \int_{\Pi} \parallel V_{P, r}(\pi)-V_{\tilde P, \tilde r}(\pi) \parallel_\infty
+\tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde \tau, \tilde r} \int_{\Pi} \parallel V_{\tau, r}(\pi)-V_{\tilde \tau, \tilde r}(\pi) \parallel_\infty
 \end{align}
 
 \begin{figure}
 \centering
 \includegraphics[width=1.0\textwidth,height=0.8\textheight]{../../pictures/figures/model_iteration.png}
 \caption{Model iteration applied to a 2-state, 2-action MDP.
-Blue shows the value of policies when evaluated under the true model, $P, r$,
-and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde P, \tilde r$.}
+Blue shows the value of policies when evaluated under the true model, $\tau, r$,
+and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde \tau, \tilde r$.}
 \end{figure}
 
 There is a main advantage and some disadvantages to this framework.
@@ -178,10 +178,10 @@ and many estimates of a policy's value (simulated evaluations).
 
 \subsection{Relevant features of the model}
 
-Model iteration via value prediction error only focuses on 'relevant' features of the model \footnotemark[31].
+Model iteration via value prediction error only focuses on 'relevant' features of the model \footnotemark.
 Relevant in the sense that they are useful for accurately predicting state values.
 
-\footnotetext[31]{Model free approaches to RL also focus on 'relevant' features, however, they do not explicitly represent the underying model.}
+\footnotetext{Model free approaches to RL also focus on 'relevant' features, however, they do not explicitly represent the underying model.}
 
 Consider a problem where the reward is only determined by the first feature of the state.
 We can add arbitrarily many extra features. A model-based learner that learns through next step prediction will attempt to
@@ -190,7 +190,7 @@ accurately predict all of these features. This unnecessarily spends resources.
 More formally; let the state space but a subset of the reals $S \subset \mathbb R^d$.
 And construct a reward function that is only dependent on the first feature of the state space, $r(s, a) = f(s^0, a)$.
 While the transition function is constructed so that, there exists a $k$ dimensional subspace (that includes the first feature)
-that is independent of the other $d-k$ features, $P(s'|s, a) = [g_1(s^{0:k}, a), g_2(s^{k:d}, a)]$.
+that is independent of the other $d-k$ features, $\tau(s'|s, a) = [g_1(s^{0:k}, a), g_2(s^{k:d}, a)]$.
 
 An example with this structure, could be the addition of $d-k$ 'noise' features,
 that play no part in the transition dynamics, but only describe inessential features
@@ -206,16 +206,16 @@ that play no part in the transition dynamics, but only describe inessential feat
 We receive $V_{P, r}(\pi)$ from the environment. But we want to minimise the number
 of these calls to the environment, as it can be expensive to evaluate a policy with high accuracy.
 
-Also, for each iteration of $\tilde P_t, \tilde r_t$, we need to estimate the
-value of many policies, $\forall \pi; V_{\tilde P_t, \tilde r_t}(\pi)$. This requires lots of compute.
+Also, for each iteration of $\tilde \tau_t, \tilde r_t$, we need to estimate the
+value of many policies, $\forall \pi; V_{\tilde \tau_t, \tilde r_t}(\pi)$. This requires lots of compute.
 
 Rather than integrating over all policies (thus requiring us to evaluate all of them),
 we only need the deterministic policies. As, Bellamare et al. 2019 show that \textit{"the maximal approximation error
 measured over all value functions is the same as the error measured over the set of extremal vertices [aka deterministic policies]"}\cite{Bellemare2019b}.
-However, this still requires us to evaluate $|A|^{|S|}$ policies, and to simulate $T |A|^{|S|}$ policies. \footnotemark[32]
+However, this still requires us to evaluate $|A|^{|S|}$ policies, and to simulate $T |A|^{|S|}$ policies. \footnotemark
 
 % maybe a connction to compressed sensing?!
-\footnotetext[32]{It should be possible to use off policy estimation techniques to further reduce the required samples / compute. But we leave this for future work.}
+\footnotetext{It should be possible to use off policy estimation techniques to further reduce the required samples / compute. But we leave this for future work.}
 
 \newpage
 \section{Visualising higher dimensional MDPs}\label{graph-vis}
@@ -306,9 +306,9 @@ More applied to RL, we want to know: how does overparameterisation effect the se
 
 In figures \ref{fig:param-compare-sgd} and \ref{fig:param-compare-sgd} we can see that
 parameterisation can yield vastly different training trajectories to gradient descent,
-{\color{red}and it's relation to momentum?!}\footnotemark[33].
+{\color{red}and it's relation to momentum?!}\footnotemark.
 
-\footnotetext[33]{It is important to remember that these trajectories also reflect exploration.
+\footnotetext{It is important to remember that these trajectories also reflect exploration.
 It seems interesting to ask, if there are any advantages to certain types of trajectory?}
 
 {\color{red}TODO regenerate these figures. better quality.}
@@ -357,7 +357,7 @@ Each polytope was generated using a different learning rates.}
 % insert pic / prove
 
 \newpage
-\section{Reparameterisation}
+\subsection{Reparameterisation}
 
 % Its effect on topology and acceleration.
 

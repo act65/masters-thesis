@@ -3,8 +3,9 @@
 
 % symmetry is cool
 Symmetry is a concept from pure mathematics, which has found major success in physics (for example, \href{https://en.wikipedia.org/wiki/Noether%27s_theorem}{see Noether's theorem}).
-Symmetry has also had success in machine learning. For example, the formalism has
-helped us understand convolutional neural networks \cite{Cohen2017}, and disentanglement \cite{Higgins2018}.
+Symmetry has also had success in machine learning. For example, the notion has led to;
+data augmentation strategies \cite{Simard2003},
+understanding of convolutional neural networks \cite{Cohen2017}, and a definition of disentanglement \cite{Higgins2018}.
 We are interested in using symmetry to build abstractions for RL. But first, what do me mean by symmetry?
 
 % also, to disentanglement
@@ -35,9 +36,9 @@ To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four re
 	\item \textbf{Inverse element:} For each $a \in G$, there exists an element $b \in G$, commonly denoted $a^{−1}$, such that $a \circ b = b \circ a = e$. (\textit{we must be able to undo any rotation})
 \end{itemize}
 
-For example, we can imagine the \textit{action}\footnotemark[37] of this rotation group $\big(0, 90, 180, 270, \circ \big)$ on a playing card. (bad example!?)
+For example, we can imagine the \textit{action}\footnotemark of this rotation group $\big(0, 90, 180, 270, \circ \big)$ on a playing card. (bad example!?)
 
-\footnotetext[37]{An action is defined as $\phi: G\times X \to X$ such that $\phi(e, x) = x$ and $\phi(g\circ h, x) = \phi(g, \phi(h, x))$.}
+\footnotetext{An action is defined as $\phi: G\times X \to X$ such that $\phi(e, x) = x$ and $\phi(g\circ h, x) = \phi(g, \phi(h, x))$.}
 
 \begin{figure}[h!]
 	\centering
@@ -46,8 +47,6 @@ For example, we can imagine the \textit{action}\footnotemark[37] of this rotatio
 	However, we see that there exists symmetry within the these rotations,
 	there are only two distinct rotations, vertical and horizontal. This is because }
 \end{figure}
-
-{\color{red}order of a group}
 
 \begin{displayquote}
 \textsl{How can symmetries be used to build abstractions?}
@@ -67,12 +66,12 @@ Therefore, we can use this notion of similarity, as we did in \ref{C:abstraction
 
 In \ref{infer-similarity} we considered using similarities
 to build an abstraction. But, learning pairwise similarities does not give
-you the ability to generalise\footnotemark[38]. To generalise you need (accurate) priors \cite{Wolpert1996}.
+you the ability to generalise\footnotemark. To generalise you need (accurate) priors \cite{Wolpert1996}.
 
-\footnotetext[38]{Knowing that $a$ and $b$ are similar tells you nothing about $c$ and / or $d$.}
+\footnotetext{Knowing that $a$ and $b$ are similar tells you nothing about $c$ and / or $d$.}
 
 Existing approaches to estimating similarity can generalise if the (measure of) similarity encodes priors.
-For example;
+For example:
 If our measure of similarity is parameterised as a CNN, then the CNN implicitly encodes a preference for continuious and local functions\cite{Yann1995}.
 If our measure of similarity is trained using SGD, SGD implicitly encodes a preference for low rank solutions \cite{Gunasekar2017}.
 
@@ -100,7 +99,7 @@ the 'details' of these similarities.
 % - Within the same $n$. Is there a notion of more or less complex group structures??
 % - Need to show that NNs dont have the right symmetric inductive bias. They dont generalise. !!!
 
-\subsection{A measure of symmetry}
+\subsection{A measure of symmetry}\label{measure-symmetry}
 
 \begin{displayquote}
 	\textsl{To build this prior, we need to be able to measure symmetries.}
@@ -112,13 +111,12 @@ We canthen use this measure to bias a learner towards more symmetric guesses (se
 Given an object, $x \in X$, we want to know, how symmetric is that object?
 % This would allow us to consider alterative possibilities, such as $y \in X$, and say that we prefer $x$ to $y$ because $x$ is more symmetric.
 But, what makes something more or less symmetric?
-We define the amount of symmetry to be: the order \footnotemark[42] of the largest group that $x$ is invariant to.
+We define the amount of symmetry to be: the order \footnotemark of the largest group that $x$ is invariant to.
 
-\footnotetext[42]{The order of a group is defined as the cardinality of the set of group elements, which is written $|G|$.}
+\footnotetext{The order of a group is defined as the cardinality of the set of group elements, which is written $|G|$.}
 
 For example, $x_{ab} = [a,a,b,b]$ should be considered more symmetric than $x_{abc} = [a,a,b,c]$ because,
 $x_{ab}$ is invariant to actions of $S_2 \times S_2$, while $x_{abc}$ is (only) invariant to actions of $S_2$.
-{\color{red}Do i need to show this?!? need to explain properly}
 
 Note, the larger the group order, the coarser the abstraction we can build. We can group together $x_{ab}[0] \sim x_{ab}[2], x_{ab}[1] \sim x_{ab}[3]$, thus building an abstraction of size $2$.
 {\color{red}Should show it is coarser in a formal sense...}
@@ -166,8 +164,8 @@ the search over groups, the representation of the action(s).
 \paragraph{Searching through groups:}\label{searching-through-groups} For a given order, the number of possible
 groups is roughly equal to the number of integer factorisations of the order itself.
 We could try to explicitly construct these groups, however, there are many special cases (known as the sporadic groups \cite{Conway1985}).
-This complicates their construction\footnotemark[38].
-\footnotetext[38]{Complicated from a program design perspective, not a computational perspective.}
+This complicates their construction\footnotemark.
+\footnotetext{Complicated from a program design perspective, not a computational perspective.}
 
 % http://mathworld.wolfram.com/FiniteGroup.html
 
@@ -182,12 +180,14 @@ a group acts on $X$. As the dimensionality of $X$ grows, the number of possible 
 
 Consider the representation of group actions as permutation matrices, $\phi(g_i, x) = P_i \cdot x$ where $P_i \in {0, 1}^{d\times d}$ and $P \cdot \mathbf 1 = \mathbf 1$.
 Then there are $d!$ possible perumtations.
- And checking that a collection of actions is closed requires $\mathcal O(d! \times d!)$ compositions.\footnotemark[39]
+ And checking that a collection of actions is closed requires $\mathcal O(d! \times d!)$ compositions.\footnotemark
+
+ As an example, we construct the possible actions of $S_2$ and $S_2 \times S_2$ in \ref{construct-actions}.
 
 % for symmetric groups. how many ways are there to associate the group elements and permutation matrices?
 % this would be the upper bound?
 
-\footnotetext[39]{Why is this so expensive? The reason is that we treat each
+\footnotetext{Why is this so expensive? The reason is that we treat each
 dimension as independent from the others. They are discrete, unordered and unrelated.}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
@@ -196,10 +196,10 @@ For these reason, we start with a restricted family of groups:
 the groups which can be constructed by direct products of $S_2$.
 By using this family of groups as a prior, we are saying: \textit{we prefer objects that are invariant to flips / reflections}.
 
-The actions of these groups can be easily constructed (the permutations that swap $n$-grams\footnotemark[43]), and (more importantly)
+The actions of these groups can be easily constructed (the permutations that swap $n$-grams\footnotemark), and (more importantly)
 their order can be identified by the existence of idempotent permutations generated by an n-gram swap.
 
-\footnotetext[43]{For example, a $1$-gram swap could be $0 \leftrightarrow 1$, a $2$-gram swaps could be $(0, 1) \leftrightarrow (2,3)$. Where these numbers represent the indicies of a vector.}
+\footnotetext{For example, a $1$-gram swap could be $0 \leftrightarrow 1$, a $2$-gram swaps could be $(0, 1) \leftrightarrow (2,3)$. Where these numbers represent the indicies of a vector.}
 
 Still, the number of actions of this restricted family grows quickly. We are constrained to consider small problems.
 
@@ -270,7 +270,7 @@ Each pixel represents a vector in the 4D space. Lighter color is more symmetric.
 \end{displayquote}
 
 We can use rejection sampling to bias produce distributions biased towards symmetric
-samples, or in other words, we can use rejection sampling toincorporate our symmetric prior. Let's see how.
+samples, or in other words, we can use rejection sampling to incorporate our symmetric prior. Let's see how.
 
 \paragraph{Rejection sampling} allows you to generate samples from a target distribution, $p(\cdot)$ (which we cannot efficiently sample from) and a 'related' distribution that we can easily sample from, $q(\cdot)$.
 The notion of relatedness of $p(\cdot)$ and $q(\cdot)$ is captured by $k = \mathop{\text{max}}_x \frac{p(x)}{q(x)}$.
@@ -350,7 +350,9 @@ rejection sampling correctly, and it works as described.
 How can we use that to make RL more efficient?}
 \end{displayquote}
 
-Here we consider how to use a symmetric prior to make Thompson sampling more sample efficient.
+Here we consider how to use a symmetric prior to make Thompson sampling more sample efficient\footnotemark.
+
+\footnotetext{For a more general picture of the combination of symmetry and RL see \ref{mdp-homomorphism}.}
 
 \subsubsection{Thompson sampling} \label{ts}
 \begin{displayquote}
@@ -363,7 +365,7 @@ must balance between exploiting what is known to maximize immediate performance 
 new information that may improve future performance.}\cite{Russo2017}
 \end{displayquote}
 
-Less cryptically, Thomspon sampling estimates the model. We then act optimally with respect to the estimated model. However, the estimate uncertainty, so ...? We can write this as follows.
+Less cryptically, Thomspon sampling estimates the model, $P\, r$. We then act optimally with respect to the estimated model. However, the estimate uncertainty, so ...? We can write this as follows.
 
 \begin{algorithm}
 	\caption{Thompson Sampling}
@@ -374,8 +376,8 @@ Less cryptically, Thomspon sampling estimates the model. We then act optimally w
 		\While{not converged}
 		\State $(s, a, r, s')$ \Comment{Observe}
 		\State $H_t \leftarrow (s, a, r, s', a')$ \Comment{Update history}
-		\State $\tau, R \sim P(\cdot | H_t)$ \Comment{Sample a model}
-		\State $Q_{t+1}(s, a) = R(s, a) + \gamma \tau(s'| s, a) Q_t(s', a')$ \Comment{Bellman operator}
+		\State $\tau, r \sim P(\cdot | H_t)$ \Comment{Sample a model}
+		\State $Q_{t+1}(s, a) = r(s, a) + \gamma \tau(s'| s, a) Q_t(s', a')$ \Comment{Bellman operator}
 		\State $\pi_t = \text{greedy}(Q_{t+1})$ \Comment{Act greedily}
 		\State $t += 1$
 
@@ -387,9 +389,9 @@ Less cryptically, Thomspon sampling estimates the model. We then act optimally w
 \end{algorithm}
 
 Where $H_t$ is the history of observations, $\{(s_i, a_i, r_i, s_i') : \forall i \in [0, t]\}$.
-And we construct the estimate of the model as independent distributions of the transition and reward functions $P(\tau, R | H_t) = P(\tau | H_t) \cdot P(R | H_t)$. Where $P(\tau | H_t)$
+And we construct the estimate of the model as independent distributions of the transition and reward functions $P(\tau, r | H_t) = P(\tau | H_t) \cdot P(r | H_t)$. Where $\tau(\tau | H_t)$
 is modelled as the normalised state transition counts {\color{red}should formally define?}.
-And $P(R | H_t)$ is modelled as a isotropic gaussian.
+And $P(r | H_t)$ is modelled as a isotropic gaussian.
 These can be estimated by storing state-action-state transition counts
 and the incremental mean and variance of the rewards. {\color{red}should give more details?}
 
@@ -403,10 +405,10 @@ exploration occurs by acting greedily with respect to a sampled model.
 % There may be structure in the model,
 % Thompson sampling from estimates of similarity / symmetry.
 %
-% The likelihood of an abstraction, $P(A|H_t)$, is modelled as a isotropic (actually should really use full covar?!?!) guassian.
+% The likelihood of an abstraction, $\tau(A|H_t)$, is modelled as a isotropic (actually should really use full covar?!?!) guassian.
 %
 % \begin{align*}
-% 	P(A|H_t) &= \mathcal N(\chi_{\mu}, \chi_{\sigma}) \\
+% 	\tau(A|H_t) &= \mathcal N(\chi_{\mu}, \chi_{\sigma}) \\
 % 	\chi_{\mu} &= \frac{1}{t}\sum_{i=0}^t Q_i \tag{mean} \\
 % 	\chi_{\sigma} &= \sqrt{\sum_{i=0}^t (Q_i - \chi_{\mu})^2} \tag{standard deviation}
 % \end{align*}
@@ -422,8 +424,8 @@ exploration occurs by acting greedily with respect to a sampled model.
 % 		\While{not converged}
 % 		\State $(s, a, r, s')$ \Comment{Observe}
 % 		\State $H_t \leftarrow (s, a, r, s', a')$ \Comment{Update history}
-% 		\State $\tau, R \sim P(\cdot | H_t)$ \Comment{Sample a model}
-% 		\State $A \sim P(\cdot | H_t)$ \Comment{Sample a state abstraction}
+% 		\State $\tau, R \sim \tau(\cdot | H_t)$ \Comment{Sample a model}
+% 		\State $A \sim \tau(\cdot | H_t)$ \Comment{Sample a state abstraction}
 % 		\State $\tilde \tau, \tilde r, \tilde Q_t = A(\tau, r, Q_t)$ \Comment{Do a model reduction}
 % 		\State $\tilde Q_{t+1}(s, a) = \tilde r(s, a) + \gamma \tilde \tau(s'| s, a) \tilde Q_t(s', a')$ \Comment{Bellman operator}
 % 		\State $Q_{t+1} = S^{-1}(\tilde Q_{t+1})$ \Comment{Lift the values}
@@ -452,7 +454,7 @@ exploration occurs by acting greedily with respect to a sampled model.
 \end{displayquote}
 
 The difference between \textit{Thompson Sampling} and \textit{Biased Thompson Sampling}
-is how we construct the distribution over models, $P(\tau, R |D)$.
+is how we construct the distribution over models, $P(\tau, r |D)$.
 
 We believe that the states will have group structure, a symmetry. ({\color{red}why?})
 We use the symmetric rejection sampling method, outlined above (\ref{rejection-sampling}) to bias the
@@ -466,7 +468,7 @@ To simplify, we estimate $P_{\text{sym}}(\tau, R)$ as $P_{\text{sym}}(R)$. That 
 % We can use the prior: state abstractions, $A$, that are symmetric should be more likely.
 %
 % To achieve this, we need to construct a distribution, $P_S(A)$, that prefers more symmetric abstractions.
-% We can then use this prior, with maximum a posterori, to estimate the posteror as $P(A | H_t) = \frac{P(H_t | A)P_S(A)}{P(H_t)}$.
+% We can then use this prior, with maximum a posterori, to estimate the posteror as $\tau(A | H_t) = \frac{\tau(H_t | A)P_S(A)}{\tau(H_t)}$.
 
 \subsubsection{Experiments}
 

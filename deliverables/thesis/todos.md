@@ -1,19 +1,22 @@
 TODOs
 
-* [ ] Relate homomorphisms to similarity measures
-* [ ] Section on Evaluating efficient inference
-* [ ] Construct family of abstractions
-* [ ] Sort out footnote ordering
-* [ ] write abstract
-* [ ] fix timeline. add some other points
-* [ ] fix all citations
-* [ ] double check the uniqueness of the optimal policy
-* [ ] explain why VI goes outside the polytope
-* [ ] regenerate trajectory pictures!?
 * [ ] write future work section
+* [ ] fix invariant RL examples
+* [ ] new group theory example
+* [ ] final spell check
+* [ ] tidy or remove lit review section on ML + symmetry
+* [ ] finish topology section
+* [ ] write conclusion
 
 Done
 
+* [x] Make sure all appendicies are referenced
+* [x] fix all citations
+* [x] Sort out footnote ordering
+* [x] Construct family of abstractions
+* [x] Relate homomorphisms to similarity measures
+* [x] write abstract
+* [x] double check the uniqueness of the optimal policy
 * [x] Abstraction Complexity. single task / multi task
 * [x] Make sure i introduce the TD operator. esp notation $T(Q)$
 * [x] tidy / finish abstraction intro section

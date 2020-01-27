@@ -12,32 +12,49 @@ Measures of symmetry do not scale well.
 
 \section{Future work}
 
-There is a large amount of future work to be done if we want to understand abstractions for efficient RL.
+There is a large amount of future work to be done if we want to:
 
-\paragraph{Abstraction}
+\begin{displayquote}
+\textit{understand how abstractions can increase the efficiency of reinforcement learning.}
+\end{displayquote}
+
+Our exploration of \textbf{Abstractions} in general, \ref{abstraction-rl}, raised a few fundamental questions;
 
 \begin{itemize}
-	\item Are the properties for evaluation presented in \ref{eval-abstractions} necessary and / or sufficient for 'efficient' performance of an abstraction?
-	\item Show that many (or even all) abstractions of interest to RL live in the family defined in \ref{similar-classes}.
-	\item Compare trajectory based similarity measures ($\chi(x, x') = \int_\pi \mathbb E \Big[\sum_t \gamma^t D(c(x, \pi), c(x', \pi)))\Big]$) with the family defined in \ref{similar-classes}.
-	\item What is the trade off of approximating $\int_{\pi \in \Pi}f(\pi)$ with $\int_{\pi \in B \subset \Pi}f(\pi)$?
-	How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
-	The topology of abstractions (partial ordering). Seems important!? Can use somehow?
-	hat is necessary for the preservation of Bellman equations ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions?
-	\item Is it sufficient to preserve the ordering of the state-action values, rather than their value?
-	% Preserving ordering of value. $\phi(s) > \phi(s') \implies Q_{\pi}(s, a) > Q_{\pi}(s', a)$
+	\tightlist
+	\item What is the advantage, if any, of \textit{state and action abstraction} versus \textit{state-action abstraction} \ref{exploit-abstraction-rl}?
+	\item Of the two approaches to temporal abstraction, \textit{goal-like} and \textit{option-like} temporal abstraction, is one strictly better that the other? If not, then in which cases does \textit{goal-like} temporal abstraction perform better?
+	\item Are the facets of evalution presented in \ref{eval-abstractions} necessary and / or sufficient for 'efficient' performance of an abstraction in practice?
+	\item Do many, or even all, abstractions of interest to RL live in the family defined in \ref{similar-classes}?
+	\item Is there a difference between trajectory based similarity measures (that set the similarity $\chi(x, x')$ to be built from distances between the cumulants $D(c(x, \pi), c(x', \pi))$, rather than expected discounted cumulants $D(\mathcal C(x, \pi), \mathcal C(x, \pi))$)?
+	\item What is the trade off (between computation and approximation error) of approximating $\int_{\pi \in \Pi}f(\pi)$ with $B \subset \Pi, \; \int_{\pi \in B}f(\pi)$?
+	% How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
+	\item What is necessary (rather than sufficient, which is what is proved in existing work) for the preservation of Bellman equation's ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions (rather than their values as in existing work)?
 \end{itemize}
 
-In \ref{exploit-abstraction-rl} we described \textit{state abstraction}, \textit{action abstraction}, and \textit{state-action abstraction}, but what is the advantage, if any, of \textit{state and action abstraction} versus \textit{state-action abstraction}? Similarity, \ref{exploit-abstraction-rl} we described \textit{goal-like} and \textit{option-like} temporal abstraction. But, is one strictly better that the other. If not, then in which cases does \textit{goal-like} temporal abstraction perform better?
+Similarly, our results on \textbf{LMDPs} \ref{lmdp-validation} leave a few questions unanswered;
 
-\paragraph{Efficiently Solveable Abstractions}
+\begin{itemize}
+	\tightlist
+	\item In which cases does the LDMP give the right solution?
+	\item What are the properties that make a MDP easily solveble (via LDMPs)?
+	\item Can easily solvable MDPs (via LDMPs) be easily identified?
+\end{itemize}
 
-In which cases does the LDMP give the right solution? What are the properties that make a MDP easily solveble?
-Can easily solvable MDPs be easily identified? Is there some notion of close to easily solvable?
+Finally, our results on \textbf{symmetric abstractions} \ref{symmetric-abstractions} leave a few questions unanswered;
 
-\paragraph{Symmetric abstractions}
+\begin{itemize}
+	\tightlist
+	\item More carefully analyse the efficiency of rejection sampling for symmetry biased distributions.
+	\item Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
+	\item Can we use our measure of symmetry \ref{measure-symmetry} as a regulariser, and use it within the deep learning framework?
+	\item Run more rigorous experiments...
+	\item Invariants ...
+	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amoritize this cost by building up from symmetries in shorter
+	 sequences?
+	\item Learn representations that are ordered. So we can reduce the combinatorial space of possible symmetries.
 
-Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
+\end{itemize}
 
 % The comparison of topologies constructed using varios k length options.
 % With increasing k, the topology of the abstraction is always coarser??
@@ -45,7 +62,6 @@ Rather than rejection sampling, use Metropolis-hastings. To allow to scale to hi
 Future work.
 - Generalise to more symmetries.
 - How do the number of actions scale with d and / or the (type of) symmetry group?
-- learn representations that are ordered. So we can reduce the combinatorial space of possible symmetries.
 
 % Alternatively, we could???
 % \begin{itemize}
@@ -54,13 +70,10 @@ Future work.
 % 	\item ???
 % \end{itemize}
 
-Future work.
-Use this measure with SGD as a regualriser.
-
-
 % % % % % % % % % % % % % % %
 % Q: Number of integer factors as a function of n???
 % Q: Efficiency of rejection sampling.
 % Q: Relation to Lyapanov dynamics. Sampling distributions with gradient descent!??!
 % Q: Proximity to symmetric states. How does this change as d increases?
 % Q: Is there an advantage to building your temporal abstraction from k=n first, then to k=n+1.
+% Q: Metro hastings. == RL?!? Pick transitions to help estimate a distribution?

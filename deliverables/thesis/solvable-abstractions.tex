@@ -116,10 +116,10 @@ Our goal is to find the control, $u: S \to S$, that gives the highest exponentia
 \begin{align}
 \log z_{u^{* }}(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \log z_{u}(s') \tag{1}\\
 u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z_{u^{* }}(s')^{\gamma}} \tag{2}\\
-z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma} \tag{3}
+z_{u^{* }} &= e^{q(s)}\cdot p z_{u^{* }}^{\gamma} \tag{3}
 \end{align}
 
-By definition, a linearised Bellman equation can be constructed (1). After some algebra,
+By definition, a linearised Bellman equation is constructed as (1). After some algebra,
 it can be shown that the optimal policy has the form in (2).
 Most importantly! We can solve for the value of the optimal control by solving the linear equation in (3).
 (see \ref{lmdp-derivation} for further explanation and a derivation of a LMDP)
@@ -141,7 +141,7 @@ the control and the unconstrained dynamics (this relationship is shown in \ref{u
 But, they do implicitly direct behaviour through their presence in the exponentiated value function $z_{u^{* }}$.
 
 While it may seem intuitive to think of the unconstrained dynamics as the expected result of using random policy
-$p(s' | s) = \int_a P(s' | s, a)U(a|s)$ (a random walk using the transition function).
+$p(s' | s) = \int_a \tau(s' | s, a)U(a|s)$ (a random walk using the transition function).
 This turns out to be wrong. The unconstrained dynamics are responsible for rewarding actions.
 
 \subsubsection{The optimal policy}
@@ -170,11 +170,11 @@ which picks actions with probability proportional to their exponentiated $Q$ val
 \end{displayquote}
 
 \begin{align*}
-z_{u^{* }} &= e^{q(s)}\cdot P z_{u^{* }}^{\gamma}
+z_{u^{* }} &= e^{q(s)}\cdot p z_{u^{* }}^{\gamma}
 \end{align*}
 
 In the undiscounted case (aka first exit case), where $\gamma=1$, this turns into an eigen value
-problem $z = QPz = Az$. As these are linear problems, they are efficiently solvable.
+problem $z = QPz = Az$, where $Q = e^{q(s)}$. As these are linear problems, they are efficiently solvable.
 Similarly, in the discounted case, the exponentiated value, $z$, is guaranteed to converge quickly \cite{Todorov2009}.
 
 \subsection{Solving a MDP}\label{construct-lmdp-from-mdp}
@@ -196,8 +196,8 @@ and give the the same \ref{unconstrained-dynamics-reward} was the original MDP.
 
 \begin{align*}
 \forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \\
-P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{transition dynamics} \label{state-reward-rep} \\
-r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \label{unconstrained-dynamics-reward} \tag{rewards}
+\tau(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{transition dynamics} \label{state-reward-rep} \\
+r(s, a) &= q(s) - \text{KL}(\tau(\cdot | s, a) \parallel u_a(\cdot| s) ) \label{unconstrained-dynamics-reward} \tag{rewards}
 \end{align*}
 
 % "We do not yet have theoretical error bounds but have found the approximation to be very accurate in practice" \cite{Todorov}
@@ -215,10 +215,10 @@ Alternatively, we might settle for preserving the optimal policy.
 \begin{align*}
 \forall s, s' \in S, \forall a \in A, \forall \pi \in \Pi \\
 z_{u_{\pi}}(s) = e^{V_{\pi}(s)} \label{value-preserved}\tag{value} \\
-P(s'|s, a) \cdot \pi^{* }(a|s) = u^{* }(s'|s) \label{opt-policy-preserved}\tag{optimal policy}
+\tau(s'|s, a) \cdot \pi^{* }(a|s) = u^{* }(s'|s) \label{opt-policy-preserved}\tag{optimal policy}
 \end{align*}
 
-Where $z_{u_{\pi}}$ is the value (as evaluated by the LMDP) of the control $u_{\pi}(s'|s) = P(s'|s, a) \cdot \pi(a|s)$, and $V_{\pi}$ is the expected return of policy $\pi$ as evaluated by the original MDP.
+Where $z_{u_{\pi}}$ is the value (as evaluated by the LMDP) of the control $u_{\pi}(s'|s) = \tau(s'|s, a) \cdot \pi(a|s)$, and $V_{\pi}$ is the expected return of policy $\pi$ as evaluated by the original MDP.
 
 It seems that Todorov hopes that the constraints \ref{state-reward-rep}, \ref{unconstrained-dynamics-reward},
 will be sufficient to give \ref{value-preserved}, \ref{opt-policy-preserved}. But he does not prove it.
@@ -251,8 +251,8 @@ we do not know how to implement those controls with the actions we have availabl
 We can formulate this problem as;
 
 \begin{align}
-P_{\pi}(\cdot | s) = \sum_a P(\cdot | s, a) \pi(a | s) \\
-\pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel P_{\pi}(\cdot | s)\Big)
+\tau_{\pi}(\cdot | s) = \sum_a \tau(\cdot | s, a) \pi(a | s) \\
+\pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel \tau_{\pi}(\cdot | s)\Big)
 \end{align}
 
 We would hope that the knowledge of $u^{* }$ would make it easy to find the optimal actions.
@@ -295,7 +295,7 @@ We answer this question using experiments, described in figures \ref{fig:ltd} an
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth,height=0.75\textheight]{../../pictures/figures/lmdp_mdp_optimal_dynamics.png}
-\caption{A comparison between the optimal control $u^{* }(s'|s)$ (shown in the left column) and the dynamics of the optimal policy (MDP) $\sum_a P(s'|s, a)\pi^{* }(a|s)$ (shown in the right column). Because the optimal control, and dynamics of the optimal policy can be written as $2\times 2$ matrices, we can plot them. Yellow indicates high probability, purple indicates low probability. But the main thing to observe is that the optimal control is often not the same as the dynamics of the optimal policy.}
+\caption{A comparison between the optimal control $u^{* }(s'|s)$ (shown in the left column) and the dynamics of the optimal policy (MDP) $\sum_a \tau(s'|s, a)\pi^{* }(a|s)$ (shown in the right column). Because the optimal control, and dynamics of the optimal policy can be written as $2\times 2$ matrices, we can plot them. Yellow indicates high probability, purple indicates low probability. But the main thing to observe is that the optimal control is often not the same as the dynamics of the optimal policy.}
 \label{fig:opt-control}
 \end{figure}
 

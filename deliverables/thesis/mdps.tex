@@ -41,10 +41,10 @@ delayed rewards. For example we could make a RL problem that is;
 \end{itemize}
 
 \begin{displayquote}
-  \textsl{But, which setting should we study?\footnotemark[26]}
+  \textsl{But, which setting should we study?\footnotemark}
 \end{displayquote}
 
-\footnotetext[26]{I will often start a chapter / section / paragraph with a question like this. These
+\footnotetext{I will often start a chapter / section / paragraph with a question like this. These
 questions are not meant as research questions. Rather, they are designed to orient the reader.}
 
 \begin{displayquote}
@@ -56,10 +56,10 @@ Markov decision problems (MDPs) appear to be a good candidate. Let's go through 
 simple setting to analyse RL.
 
 Formally, a MDP, which is a type of sequential decision problem, is defined
-as a tuple, $\{\mathcal S, \mathcal A, P,r, \gamma, d_0\}$.
+as a tuple, $\{\mathcal S, \mathcal A, \tau,r, \gamma, d_0\}$.
 Where $S$ is the set of possible states (\textit{for example arrangements of chess pieces}),
 $A$ is the set of actions (\textit{the different possible moves, left,
-right, diagonal, L-shaped step, ...}),  $P: S \times A \to \Delta(S)$\footnotemark[16]
+right, diagonal, L-shaped step, ...}),  $\tau: S \times A \to \Delta(S)$\footnotemark
 is the transition function which describes how the environment acts in response
 to the current state and to actions (\textit{You play pawn to pawn to D4, in response your
 opponent moves, knight to D4, taking your pawn.}). Next is the reward function, $r: S\times A \to \mathbb R$,
@@ -67,7 +67,7 @@ opponent moves, knight to D4, taking your pawn.}). Next is the reward function, 
 Lastly, the policy, $\pi: S \to \Delta(A)$, is what the learner gets to choose, aka the learners strategy.
 It decides which action to take in different states.
 
-\footnotetext[16]{The notation $\Delta(S)$ represents a distribution over S.}
+\footnotetext{The notation $\Delta(S)$ represents a distribution over S.}
 
 \vspace{5mm}
 
@@ -81,10 +81,10 @@ V^{\pi} &= \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)] \tag{state va
 \end{align*}
 
 
-Where, $d_0$ is the initial state distribution, $\zeta$ collects the $(s_t, a_t, r_t)$ triples of a game (aka trajectory or rollout) \footnotemark[17],
+Where, $d_0$ is the initial state distribution, $\zeta$ collects the $(s_t, a_t, r_t)$ triples of a game (aka trajectory or rollout) \footnotemark,
 $R(\zeta) =\sum_{t=0}^H \gamma^t \zeta^r_t$ is cumulative discounted reward (aka the 'return' of a single game), and $D$ is the probability of a trajectory under the chosen policy and MDP.
 
-\footnotetext[17]{We allow $\zeta$ to be indexed by time and $\{s, a, r\}$. For example; $\zeta_t^s=s_t$.}
+\footnotetext{We allow $\zeta$ to be indexed by time and $\{s, a, r\}$. For example; $\zeta_t^s=s_t$.}
 
 \begin{align}
 \zeta &= \{(s_t, a_t, r_t) : t \in [0, H]\} \tag{trajectory} \\
@@ -113,9 +113,9 @@ rewards are good, we really care about long term cumulative rewards (\textit{e.g
 When we say a decision problem is Markovian, we mean that the transition
 function generates a Markov chain \cite{Markov2006}. The next transition step depends only
 on the current state and action. It is invariant to any and all histories that do not
-change the current state. \footnotemark[18]
+change the current state. \footnotemark
 
-\footnotetext[18]{Or another way of saying the same thing, there is no hidden state
+\footnotetext{Or another way of saying the same thing, there is no hidden state
 that effects future transitions.}
 
 This is not to say that past actions do not effect the future. Rather,
@@ -153,7 +153,7 @@ all the deterministic policies, $\mathcal O(|A|^{|S|})$ . However, we can use th
 guide our search. The expected return can be rewritten in a recursive manner, to give the Bellman equations.
 
 \begin{align*}
-Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)} [V^{\pi}(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
+Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim \tau(\cdot|s, a)} [V^{\pi}(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
 V^{\pi}(s) &= \mathop{\mathbb E}_{a \sim \pi(\cdot|s)} [Q^{\pi}(s, a)]
 \end{align*}
 
@@ -161,7 +161,7 @@ Where $Q$ is the state-action values.
 The Bellman equation is sometimes written as an operator, $T$.
 
 \begin{align*}
-T(Q^{\pi}) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim P(\cdot|s, a)}\mathop{\mathbb E}_{a'\sim \pi(\cdot | s')} [Q(s', a')]
+T(Q^{\pi}) = r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim \tau(\cdot|s, a)}\mathop{\mathbb E}_{a'\sim \pi(\cdot | s')} [Q(s', a')]
 \end{align*}
 
 \subsection{Complexity}
@@ -197,16 +197,16 @@ Imagine a MDP that can be described with tables (aka arrays). A table of
 three dimensions can describe the transition probabilities, $P[s_{t+1}, s_t, a_t]$,
 and a table of two dimensions can describe the rewards, $r[s_t, a_t]$: the
 states and actions act as indexes to locations in the tables.
-Let's formally define our tabular MDP. \footnotemark[23]
+Let's formally define our tabular MDP. \footnotemark
 
-\footnotetext[23]{It should be noted that this tabular MDP setting ignores an important
+\footnotetext{It should be noted that this tabular MDP setting ignores an important
 aspect of RL: exploration, estimation error.}
 
 \begin{align}
 \mathcal M &= \{S, A, P, r, \gamma\}\; \tag{the MDP}\\
 S &= [0:n-1] \tag{the state space}\\
 A &= [0:m-1] \tag{the action space}\\
-P &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i P[i, j, k] = 1 \tag{the transition fn.}\\
+\tau &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i \tau[i, j, k] = 1 \tag{the transition fn.}\\
 r &\in \mathbb R^{n\times m} \tag{the reward fn.}
 \end{align}
 
@@ -216,13 +216,13 @@ does not allow us to solve for the optimal policy analytically. The value functi
 To find the optimal policy, we many need to make many evaluations.
 
 \begin{align}
-V &= r_{\pi} + \gamma P_{\pi} V \tag{tabular Bellman eqn}\\
-V &= (I-\gamma P_{\pi})^{-1}r_{\pi}  \label{eq:value-functional}\tag{Value functional}
+V &= r_{\pi} + \gamma \tau_{\pi} V \tag{tabular Bellman eqn}\\
+V &= (I-\gamma \tau_{\pi})^{-1}r_{\pi}  \label{eq:value-functional}\tag{Value functional}
 \end{align}
 
 The values are written as a vector, $V \in \mathbb R^n$.
 The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.
-And the transitions under a given policy is written $P_{\pi}[s', s] = \sum_a P[s', s, a]\pi[s, a]$.
+And the transitions under a given policy is written $\tau_{\pi}[s', s] = \sum_a \tau[s', s, a]\pi[s, a]$.
 
 An alternative derivation of the value functional, which is more verbose and more enlightening, can be found in \ref{vf-neumann}.
 
@@ -230,12 +230,12 @@ An alternative derivation of the value functional, which is more verbose and mor
 \textsl{But why is the tabular MDP considered 'simple' enough?}
 \end{displayquote}
 
-Consider a MDP with deterministic actions, where $P(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
+Consider a MDP with deterministic actions, where $\tau(s_{t+1}|s_t, a_t) \in \{ 0, 1\}$.
 This RL problem can be efficiently solved by non-statistical
 methods: dynamic programming and related planning techniques \cite{Bertsekas1995}.
 This setting is too simple.
 
-Rather, a MDP with stochastic actions, $P(s_{t+1}|s_t, a_t) \in [0, 1]$,
+Rather, a MDP with stochastic actions, $\tau(s_{t+1}|s_t, a_t) \in [0, 1]$,
 seems to retain much of the complexity we care about: this setting does not allow
 efficient solutions via dynamic programming. Further, it can be approached with algorithms
 that are used for state-of-the-art deep RL such as;

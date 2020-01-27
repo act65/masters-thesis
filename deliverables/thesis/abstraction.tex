@@ -41,7 +41,7 @@ structure in $X$. This can be written as $f: X\to Y$ such that;
 f(x \circ_G y) = f(x) \circ_A f(y)
 \end{align*}
 
-Where the $\circ$ is the preserved structure.\footnotemark[19]
+Where the $\circ$ is the preserved structure.\footnotemark
 
 For example, we might want to preserve the ordering of objects $x \le y \le z$
 (or the ordering of the steps in our recipe; boil, puree, then simmer). We can achieve this
@@ -50,7 +50,7 @@ Thus, any homomorphism that preserves $\le$ gives us an 'abstracted' description
 
 % {\color{red} can homomorphisms also add information?!?!}
 
-\footnotetext[19]{Something that might not
+\footnotetext{Something that might not
 be clear is that you need to be able to define $\circ$ on both $X$ and $Y$.
 These definitions might be different from each other. For example one space might be continuous and the other discrete.}
 
@@ -109,18 +109,18 @@ different classes of learners by giving them access to different types of abstra
       Abstraction & \textbf{X} & \textbf{Y} & \textbf{Value fn} & \textbf{Policy} \\ \hline \hline
       State & $\phi: S \to X$ & $A$ & $Q(\phi(s), a)$ & $\pi(a| \phi(s))$ \\ \hline
       Action & $S$ & $\psi: A \to Y$ & $Q(s, \psi(a))$ & $\pi(\psi^{-1}(y) | s)$\\ \hline
-      State and action \footnotemark[5] & $\phi: S \to X$ & $\psi: A \to Y$ & $Q(\phi(s), \psi(a))$ & $\pi(\psi^{-1}(y) | \phi(s))$ \\ \hline
+      State and action \footnotemark & $\phi: S \to X$ & $\psi: A \to Y$ & $Q(\phi(s), \psi(a))$ & $\pi(\psi^{-1}(y) | \phi(s))$ \\ \hline
       State-action & \multicolumn{2}{c|}{$\varphi: S\times A \to X\times Y$} & $Q(\varphi(s, a))$ & $\mathop{\text{argmax}}_a Q(\varphi(s, a))$ \\ \hline
-      Temporal (goal like)\footnotemark[10] & $S$ & $f: S \to Y$ & $Q(s, f(s))$ &  $\pi(f(s)|s)$ \\ \hline
+      Temporal (goal like)\footnotemark & $S$ & $f: S \to Y$ & $Q(s, f(s))$ &  $\pi(f(s)|s)$ \\ \hline
       Temporal (option like) & $S$ & $g: A^{\star} \to Y$ & $Q(s, g(\omega))$ & $\pi(g^{-1}(y) | s)$ \\ \hline
     \end{tabular}
   \end{center}
 \end{changemargin}
 
-\footnotetext[5]{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
+\footnotetext{If the $Q$ fn is a linear function of the $\varphi(s, a)$ representation,
 then this is known as the successor representation \cite{Dayan1993,Barreto2017}}
 
-\footnotetext[10]{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states.}
+\footnotetext{Goal like abstraction is actually a lot more general than is. But, it is easiest to understand when goals are picked to be states.}
 
 
 \subsubsection{Examples}
@@ -174,15 +174,15 @@ This class of abstraction should be more powerful than state and action abstract
 Consider two different, but 'similar' positions, shown in blue and green.}
 \end{figure}
 
-Given this setting, we can construct a representation of the state \footnotemark[11] where,
+Given this setting, we can construct a representation of the state \footnotemark where,
 we have $Q^{\pi}(s, a) = Q^{-\pi}(-_xs, -a), \forall \pi$.
 Where the negative operator $-_x$ only effects the horizontal ($x$) axis $s = (x, y), -_xs = (-x, y)$.
-And $-\pi := \pi(-a|-_xs)$. \footnotemark[21]
+And $-\pi := \pi(-a|-_xs)$. \footnotemark
 
-\footnotetext[21]{The trade off is that with state-actions, now we need to keep track of $(|S| \times|A|)\cdot (|S| \times|A| - 1)$
+\footnotetext{The trade off is that with state-actions, now we need to keep track of $(|S| \times|A|)\cdot (|S| \times|A| - 1)$
 similarities, rather than $|S|\cdot(|S|-1) + |A|\cdot(|A|-1)$ similarities.}
 
-\footnotetext[11]{To construct this representation, we set the state to be centered around the mirror plane.
+\footnotetext{To construct this representation, we set the state to be centered around the mirror plane.
 So the blue player is at location $(-3, 9)$ and the green player is at location
 $(3, 9)$. We equip the players with the actions $(+1, 0), (-1, 0), (0, -1), (, +1)$ (aka; up, down, left, right).}
 
@@ -223,17 +223,17 @@ Then we could try to optimise it. But for now, let's define these constraints on
 
 Coarse (as opposed to fine) is a notion from topology.
 A (more) coarse abstraction describes an abstraction that has a looser
-notion of similarity (more things are considered similar). \footnotemark[24]
+notion of similarity (more things are considered similar). \footnotemark
 
-\footnotetext[24]{Coarseness captures concepts such as a 'high level' abstraction or a 'general' abstraction.}
+\footnotetext{Coarseness captures concepts such as a 'high level' abstraction or a 'general' abstraction.}
 
 \textit{We say [state abstraction] $\phi_2$ is coarser than [state abstraction] $\phi_1$, denoted $\phi_1 \ge \phi_2$,
 iff for any states $s_1, s_2 \in S, \phi_1(s_1) = \phi_1(s_2)$ implies $\phi_2(s_1) = \phi_2(s_2)$ \cite{Littman2006}}
 
 Any time $s_1$ and $s_2$ are considered similar in an abstraction, then a coarser
-abstraction will also consider them to be similar, and there might also be other similar states. \footnotemark[25]
+abstraction will also consider them to be similar, and there might also be other similar states\footnotemark.
 
-\footnotetext[25]{So the most coarse abstraction would be where everything is mapped to the same abstract state.
+\footnotetext{So the most coarse abstraction would be where everything is mapped to the same abstract state.
 $\forall s_i, s_j\in S: \phi(s_i)=\phi(s_j)$.}
 
 \begin{displayquote}
@@ -278,9 +278,9 @@ policy found using the abstraction.
 
 This notion can be generalised to other types of abstraction, for example
 Nachum et al. 2018 \cite{Nachum2018} extend this concept of near optimal
-representation of the optimal policy to goal-like temporal abstraction. \footnotemark[13]
+representation of the optimal policy to goal-like temporal abstraction\footnotemark.
 
-\footnotetext[13]{To do this, Nachum et al. 2018 \cite{Nachum2018} quantify
+\footnotetext{To do this, Nachum et al. 2018 \cite{Nachum2018} quantify
 how many of the possible low level behaviours can be produced by different choices of goal.
 This is roughly a measure of the invertability of the 'low level' policy from
 state-goals to temporally extended actions.
@@ -304,19 +304,19 @@ Consider an abstraction that has preserved the value of the optimal action.
 When constructing the abstraction, we may have grouped together states that don't have similar transitions, or similar value under all policies, ... etc.
 For example we might have: $s_i \sim s_j$ despite $Q(s_i, a_k) - Q(s_j, a_k) > \epsilon, a_k \neq a^{* }$.
 But this doesn't matter as $Q(s, a^{* })$ must still be larger than $Q(s, a_k)$.
-Thus, when applying a greedy update to the Bellman equation, we will be pull towards the 'true' value of the optimal policy\footnotemark[26].
+Thus, when applying a greedy update to the Bellman equation, we will be pull towards the 'true' value of the optimal policy\footnotemark.
 
-\footnotetext[26]{However, this argument does not take into account how the topology of the $Q$ values may have changed.}
+\footnotetext{However, this argument does not take into account how the topology of the $Q$ values may have changed.}
 
 \paragraph{Efficient exploration:} \textsl{What is needed for efficient exploration? And, when is 'it' preserved?}
 
-For $Q$-learning, Jin et al. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$)\footnotemark[13] can be
+For $Q$-learning, Jin et al. \cite{Bubeck2018} show that efficient exploration ($\mathcal O(\sqrt{H^3SAT})$)\footnotemark can be
 achieved with a UCB-Bernstein type exploration bonus, compared to the inefficient exploration ($\mathcal O(\sqrt{H^4SAT})$),
 achieved by the UCB-Hoeffding type exploration bonus. The details of these algorithms is not too important in this discussion.
 The important part is that: the UCB-Bernstein type exploration bonus needed to incorporate an
 estimate the variance of the values, while the Hoeffding exploration bonus relies only on visitation counts.
 
-\footnotetext[13]{$\mathcal O(\sqrt{H^3SAT})$ tells us that the expected regret scales, in the worst case, as a function of $\sqrt{H^3SAT}$.
+\footnotetext{$\mathcal O(\sqrt{H^3SAT})$ tells us that the expected regret scales, in the worst case, as a function of $\sqrt{H^3SAT}$.
 Where $H$ is the planning horizon, S is the size of the state space, $A$ is the size of the action space and $T=KH$, where $K$ is the total number of episodes played.}
 
 This tells us that, if we want to preserve our ability to efficiently explore (in the sense above) we need to preserve the  ability to accurately estimate the variance of the value function.
@@ -419,8 +419,8 @@ Which ones allow us to efficiently find the optimal policy?
 
 \subsubsection{Classes of similarity for RL}\label{similar-classes}
 
-Li et al. \cite{Littman2006} give five classes of state abstraction in which they group states based on various similarities \footnotemark[20];
-\footnotetext[20]{Similarity and preservation are dual notions. Similarity tells us which objects we can group together,
+Li et al. \cite{Littman2006} give five classes of state abstraction in which they group states based on various similarities \footnotemark;
+\footnotetext{Similarity and preservation are dual notions. Similarity tells us which objects we can group together,
 'preservation' tells us which objects we group together to preserve (for lack of a better word...) a notion of similarity.
 For example, the \textit{"preservation of the one step model"} means: two states can be considered similar if they have the same one step model.}
 
@@ -434,16 +434,16 @@ $\phi_{\pi^{* }}$ preserves the optimal action.}
 \vspace{5mm}
 
 We can construct a family of similarity functions for building abstractions for RL. To do so, we can measure the
-similarity between two 'RL objects'\footnotemark[28] as: for  different objects, $x$ and $x'$,
+similarity between two 'RL objects'\footnotemark as: for  different objects, $x$ and $x'$,
 how similar are their likely futures starting from those objects. Where we evaluate the similarity under (potentially) many different policies.
 Let's make this formal.
 
-\footnotetext[28]{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
+\footnotetext{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
 
-Let $c(s, a, r)$ be a cumulant, and let $C$ be the discounted sum of that cumulant under a given trajectory\footnotemark[29].
+Let $c(s, a, r)$ be a cumulant, and let $C$ be the discounted sum of that cumulant under a given trajectory\footnotemark.
 Then $\mathcal C$ is the expected value of $C$ under a given policy.
 
-\footnotetext[29]{This is is closely related to the notion of a general value function \cite{White2015}}
+\footnotetext{This is is closely related to the notion of a general value function \cite{White2015}}
 
 \begin{align*}
 C(\zeta) &= \sum_{t=0}^{\infty} \gamma^{t}  c(\zeta_{t+1}) \\
@@ -460,10 +460,10 @@ Consider: an abstraction that preserves the n-step model,
 and another that preserves the value of the optimal state-actions.
 We show that these abstractions are captured by our family \ref{eq:family}.
 
-\underline{Preserving the n-step model:} We start with $x=(s, a), x'=(s', a')$. Set the cumulant be the next states and the rewards, $c(\zeta_{t}) = [s_{t+1}, r_{t}]$. Then the expected discounted cumulant, $\mathcal C=[N, V]$, represents the discounted state visitation count, $N$, and the state value $V$. if $x$ and $x'$ have the same state visitation and value for all policies must have the same transitions\footnotemark[27].
+\underline{Preserving the n-step model:} We start with $x=(s, a), x'=(s', a')$. Set the cumulant be the next states and the rewards, $c(\zeta_{t}) = [s_{t+1}, r_{t}]$. Then the expected discounted cumulant, $\mathcal C=[N, V]$, represents the discounted state visitation count, $N$, and the state value $V$. if $x$ and $x'$ have the same state visitation and value for all policies must have the same transitions\footnotemark.
 
 \vspace{5mm}
-\footnotetext[27]{This statement assumes we have encoded the states as onehots. Also, it does not seem so obvious that it doesn't need proof.}
+\footnotetext{This statement assumes we have encoded the states as onehots. Also, it does not seem so obvious that it doesn't need proof.}
 \underline{Preserving the optimal state-action value:} Again, we start with $x=(s, a), x'=(s', a')$. Next, we pick $c(\zeta_{t}) = r_{t}$ which means $\mathcal C(x, \pi) = Q^{\pi}(s, a)$. Finally, we only integrate over the optimal policy. Thus, $x$ and $x'$ are similar if $Q^{\pi}(s, a) \approx Q^{\pi}(s', a')$.
 
 

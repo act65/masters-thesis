@@ -29,17 +29,17 @@ By definition, an LMDP is the optimisation problem in (1). We can move the $\tex
 \subsection{MDP Linearisation}\label{mdp-Linearisation}
 
 The ability to solve LMDPs is great, but it's only useful if we can map MDPs into LMDPs, solve them, and map the solution back.
-Our goal here is to find a LMDP that has 'similar' structure to the original MDP we were given.\footnotemark[1]
+Our goal here is to find a LMDP that has 'similar' structure to the original MDP we were given.\footnotemark
 
-\footnotetext[1]{This derivation is not the same as in Todorov. He sets $b_a \neq r, b_a = r - \sum P \log P$.}
+\footnotetext{This derivation is not the same as in Todorov. He sets $b_a \neq r, b_a = r - \sum P \log P$.}
 
 \begin{align*}
 \forall s, s' \in S, \forall a \in A, \exists u_a& \;\;\text{such that;} \tag{1}\\
-P(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{2}\\
-r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{3}\\
+\tau(s' | s, a) &= u_a(s'|s)p(s'|s) \tag{2}\\
+r(s, a) &= q(s) - \text{KL}(\tau(\cdot | s, a) \parallel u_a(\cdot| s) ) \tag{3}\\
 \\
-r(s, a) &= q(s) - \text{KL}(P(\cdot | s, a)\parallel\frac{P(\cdot | s, a)}{p(\cdot|s)}) \tag{4}\\
-r(s, a) &= q(s) - \sum_{s'}P(s' | s, a) \log(p(s'|s)) \tag{5}\\
+r(s, a) &= q(s) - \text{KL}(\tau(\cdot | s, a)\parallel\frac{\tau(\cdot | s, a)}{p(\cdot|s)}) \tag{4}\\
+r(s, a) &= q(s) - \sum_{s'}\tau(s' | s, a) \log(p(s'|s)) \tag{5}\\
 \\
 m_{s'}[s]&:= \log p(s' | s) \tag{6}\\
 D_{as'}[s] &:= p(s'|s, a) \tag{7}\\
@@ -72,7 +72,7 @@ Given this, it seems natural to extent the defition to MDPs.
 A MDP homomorphism is a transformation of a MDP, $\mathcal H: \mathcal M\to \mathcal M$, that preserves the transition and reward function \cite{Ravindran2002}. We can describe this MDP homomorphism as $\mathcal H = (f, g)$ such that;
 
 \begin{align}
-P(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} P(s''| a, s) \\
+\tau(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} \tau(s''| a, s) \\
 r(f(s), g_s(a)) = r(s, a)
 \end{align}
 
@@ -94,7 +94,7 @@ to approximately symmetric model-based abstraction \cite{Ravindran2004}. However
 
 Section \ref{symmetric-abstractions} is our not-so-humble attempt to achieve a symmetric inducive bias (2). And, as far as we know, little progress has been made on (3).
 
-Finally, there has been at least one attempt \cite{Ravindran2000} to build a framework capable of exploiting temporal symmetries (4). And while their poposal makes sense, we offer an alternative below.
+Finally, there has been at least one attempt \cite{Ravindran2003} to build a framework capable of exploiting temporal symmetries (4). And while their poposal makes sense, we offer an alternative below.
 
 \subsection{Temporal symmetries}
 
@@ -104,13 +104,13 @@ Consider a transformation on a MDP that takes sequences of actions, an option, $
 \Omega_k&: M \to M \\
 \Omega_k&:\{S, A, r, P, \gamma\} \to \{S, A^k, \hat T_k(r), \hat T_k(P), \gamma\} \\
 \hat T_k(r) &= \sum_{i=t}^{t+k} \gamma^{i-t} r(s_i, a_i) \\
-\hat T_k(P) &= \prod_{i=t}^{t+k} P(s_{i+1} | s_i, a_i) \\
+\hat T_k(P) &= \prod_{i=t}^{t+k} \tau(s_{i+1} | s_i, a_i) \\
 \end{align*}
 
 % (is this actually a homomorphism!? what do I need to prove?)
-It seems easy to see that the transformation of the actions is bijective\footnotemark[43] (each option is identified with one action), and therefore we have an isomorphism (which is a type of homomorphism).
+It seems easy to see that the transformation of the actions is bijective\footnotemark (each option is identified with one action), and therefore we have an isomorphism (which is a type of homomorphism).
 
-\footnotetext[43]{Although, care does need to be taken with the transitions and rewards. We must ensure that the transitions / rewards for an options are the same as the transition / reward for the relabelled option (now a single action).}
+\footnotetext{Although, care does need to be taken with the transitions and rewards. We must ensure that the transitions / rewards for an options are the same as the transition / reward for the relabelled option (now a single action).}
 
 % Need to show two temporally transformed MDPs can be composed? This allows us to construct options of various length!? $\Omega_i(M) \wedge \Omega_j(M) \to \tilde M$.
 
@@ -127,9 +127,10 @@ We can now define a temporal homomorphism as the composition of our temporal tra
 Rather than finding model-based symmetries in the state-actions. This construction will find symmetries
 in state-options (of a specific length).
 
-\subsection{Invariants}
+\subsection{Invariants}\label{game-invariants}
 
 An important poperty of symmetries is that they can be identified by their generators and relations.
+Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
 
 {\color{red}A generator is ... A relation is ... .}
 
@@ -137,79 +138,61 @@ There are many types of finite group, (cyclic, alternating, symmetric, ...?)
 And then there are continuious symmetries, (Lie groups)
 Which types of symmetry are important for RL problems?
 
-Let's work through an example, the cart-pole control problem. Your goal is to balance a pole on a cart.
-You are allowed to move the cart left or right.
-
-% How hard is it to find these symmetries?
-% Are some harder than others?
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
-	\caption{Two mirror symmetric states of a cart pole. But in what sense are they symmetric?}
-\end{figure}
-
-% Need to show this is actually a symmetry, isomorphic to $S_2$?!?
-In the case above, the mirrored cart pole is an instance of $S_2$.
-The action $f, g$ we apply to the MDP is isomorphism to the simple finite group, $S_2$
-
-Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
-What are the interesting invariants of MDPs? And how do they ???
-But, what does this symmetry imply about other quantities of interest for RL?
-
-Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
+% Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
 
 In general we want to know;
 
 \begin{itemize}
 	\tightlist
-	\item We have $n$ different 'symmetries'. But are they really different?
+	\item We may have invariants of the rewards, transition function, values. But ... are they really different?
 	\item Which symmetries share some invariants?
 	\item Which invariants uniquely characterise this symmetry?
+  \item How hard is it to find these invariants?
+  \item Given a set of invariants that allow many possible symmetries, which symmetries should we prefer?
 \end{itemize}
 
-With this knowledge, we could identify symmetries via their invariants!?!
-We can observe invariant properties. (not clear to me how you observe a symmetry!?)
+\subsubsection{Cart pole}
 
-% We briefly explore this in \ref{game-invariants}.
+Let's work through an example, the cart-pole control problem. The goal is to balance a pole on a cart.
+The cart can be moved left or right.
 
-\subsubsection{Cart pole} \label{game-invariants}
+The states of the cart pole problem are described by $s_i = [p_c^i, v_c^i, p_p^i, v_p^i]$\footnotemark. Where, $p_c$ is the position of the cart, $v_c$ is the velocity of the cart, $p_p$ is the position of the pole, $v_p$ is the angular velocity of the pole. And the actions are $-1$ for left and $1$ for right.
+
+\footnotetext{Where the cart's position is centered around some fixed starting point. And the rotations are measured relative up being upright.}
 
 \paragraph{Mirror symmetry}
-
-\begin{displayquote}
-\textit{What are the invariants of the mirror cart pole example?}
-\end{displayquote}
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-mirror.png}
-	\caption{Two mirror symmetric states of a cart pole.}
+	\caption{Two mirror symmetric state-actions of a cart pole.}
 \end{figure}
 
-Define the action of $f \in S_2$ on the;
+We can define the action of $g \in S_2$ on the;
 
 \begin{itemize}
 	\tightlist
-	\item state space $f \circ s = -s$
-	\item action space $f \circ a = -a$
- 	\item policy to be $f \circ \pi(a | s) = \pi(f \circ a | f \circ s)$.
-	\item transition function to be $(f \circ P)(\cdot | s, a) = P(\cdot| f \circ s, f \circ a)$. ???
+	\item state space as $g \circ s = -s$
+	\item action space as $g \circ a = -a$
 \end{itemize}
 
-Therefore, we can write $(f \circ Q^{\pi})(s, a) = Q^{f \circ \pi}(f \circ s, f \circ a)$.
-We can write the properties above as;
+Therefore, we can write the;
+\begin{itemize}
+	\tightlist
+ 	\item policy as $g \circ \pi(a | s) = \pi(g \circ a | g \circ s)$.
+	\item transition function as $(g \circ \tau)(\cdot | s, a) = \tau(\cdot| g \circ s, g \circ a)$.
+  \item state-action values as $(g \circ Q^{\pi})(s, a) = Q^{g \circ \pi}(g \circ s, g \circ a)$.
+\end{itemize}
+
+So, what are the invariants?
 
 \begin{align*}
-Q^\pi(s, a) &= (f \circ Q^{\pi})(s, a) \tag{expected return}\\
-T(Q^\pi)(s,a) - Q^\pi(s,a) &=T(f \circ Q^\pi)(s, a) - (f \circ Q^\pi)(s,a) \tag{Bellman residual}\\
-\mathop{\mathbb E}_{s' \sim P(\cdot| s, a)} (s' - s) &= f \circ \mathop{\mathbb E}_{s' \sim (f \circ P)(\cdot| s, a)} (s' - f \circ s) \tag{change in state}\\
+Q^\pi(s, a) &= (g \circ Q^{\pi})(s, a) \tag{expected return}\\
+T(Q^\pi)(s,a) - Q^\pi(s,a) &=T(g \circ Q^\pi)(s, a) - (g \circ Q^\pi)(s,a) \tag{Bellman residual}\\
+\mathop{\mathbb E}_{s' \sim \tau(\cdot| s, a)} (s' - s) &= g \circ \mathop{\mathbb E}_{s' \sim (g \circ \tau)(\cdot| s, a)} (s' - g \circ s) \tag{change in state}\\
 \end{align*}
-\footnotemark[14]
-
 
 The rewards (/ value) reachable from $s_1$ are also reachable from $s_2$ (which also implies the converse).
-\footnotetext[14]{Note, this assumes we have a 'nice' state representation where differences make sense}
 
 So the expected return, Bellman residual and state transition are invariant to the action of $S_2$.
 {\color{red}TODO verify these invariants!?!?}
@@ -228,7 +211,7 @@ Is this combination of invariants unique to the mirror symmetry? (how to prove t
 \caption{Two similar cart poles, which are only a translation different from each other.}
 \end{figure}
 
-This is actually a cyclic continuious symmetry, $C_R$.
+This is actually a Lie group, ...? cyclic continuious symmetry, $C_R$.
 
 % How to prove that this is a cts symmetry!?
 
@@ -236,51 +219,57 @@ Define the action of $g \in R$ on the;
 
 \begin{itemize}
 	\tightlist
-	\item state space $g \circ s = g+s$
+	\item state space $g \circ s = [g+p_c, v_c, p_p, v_p]$
 	\item action space $g \circ a = a$
- 	\item policy to be $g \circ \pi(a | s) = \pi(a | g \circ s)$.
-	\item transition function to be $(g \circ P)(s' | s, a) = P(g \circ  s'| g \circ  s,  a)$.
-	\item value function to be $(g \circ  Q^{\pi})(s, a) = Q^\pi(g \circ  s,  a)$
+\end{itemize}
+
+Therefore, we can write the;
+\begin{itemize}
+  \tightlist
+ 	\item policy as $g \circ \pi(a | s) = \pi(a | g \circ s)$.
+	\item transition function as $(g \circ \tau)(s' | s, a) = \tau(g \circ  s'| g \circ  s,  a)$.
+	\item value function as $(g \circ  Q^{\pi})(s, a) = Q^\pi(g \circ  s,  a)$
 \end{itemize}
 
 \begin{align*}
 Q^\pi(s, a) &= (g \circ Q^{\pi})(s, a) \tag{expected return}\\
 T(Q^\pi)(s,a) - Q^\pi(s,a) &=T(g \circ Q^\pi)(s, a) - (g \circ Q^\pi)(s,a) \tag{Bellman residual}\\
-\mathop{\mathbb E}_{s' \sim P(\cdot| s, a)} (s' - s) &= f \circ \mathop{\mathbb E}_{s' \sim (f \circ P)(\cdot| s, a)} (s' - f \circ s) \tag{change in state}\\
+\mathop{\mathbb E}_{s' \sim \tau(\cdot| s, a)} (s' - s) &= g \circ \mathop{\mathbb E}_{s' \sim (g \circ P)(\cdot| s, a)} (s' - g \circ s) \tag{change in state}\\
 \end{align*}
+
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
 
 {\color{red}Huh, the key is the action. These have the same invariants!??! No. One is $S_2$, the other is a cts cyclic symmetry...}
 
+We consider some others as well. But dont construct their invariants.
 
-\paragraph{Future symmetry}
+\paragraph{Transition symmetry}
+
+Despite starting in different states, and applying different actions, we might end up in the same next state.
+
+If we allow actions to be continuous, where ee get to choose the impules $a \in [-c, c]$.
+Then we we get a new set of invariants of the transition function $\tau(s'|s, a) = \tau(s'|g\circ (s, a))$.
+But what do these invariants of the transition function imply about invariants in the state (and action) values?
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/cart-pole-state.png}
-\caption{???}
+\caption{Invariants of the transition function.}
 \end{figure}
 
-Different states, different actions, result in the same next state.
-(ahh. $Q$ values are not equivalent if we are have a reward function that punishes larger actions!)
-
-
-\begin{itemize}
-\tightlist
-  \item $h \circ (s, a) = ???$
-  \item the transition function to be $h\circ P(\cdot|s, a) = P(\cdot|h \circ (s, a))$
-  \item the reward function to be $(h \circ r)(s, a) = r(h \circ (s, a))$
-  \item the value function to be $(h\circ Q)(s, a) = (h \circ r)(s, a) + \gamma \mathop{\mathbb E}_{s' \sim (h\circ P)(\cdot|s, a)} V(s')$
-\end{itemize}
-
-Therefore
-\begin{align*}
-T(Q)^\pi(s, a) &= T(g \circ Q^{\pi})(s, a) \tag{future expected return}\\
-\end{align*}
 
 \paragraph{Temporal symmetry}
 
-{\color{red} this one seems hard. not sure i am going to be able to explicitly construct this one?!}
+Two ways to achieving the same thing. From the same or different starting points.
 
+\begin{align*}
+\Upsilon(s_t | s, a_1, \dots, a_t) &= \sum_{s_1, s_2, \dots s_{t-1}}\prod_{i=0}^t \tau(s_t| s_{t-1}, a_{t-1}) \\
+\Upsilon(s' | s, a_1, \dots a_t) &= \Upsilon(s' | s, g\circ (a_1, \dots a_t)) \\
+\end{align*}
+
+In some cases, we might be able to reorder actions, without changing the ...
 
 \begin{figure}[!h]
 \centering
@@ -288,18 +277,10 @@ T(Q)^\pi(s, a) &= T(g \circ Q^{\pi})(s, a) \tag{future expected return}\\
 \caption{???}
 \end{figure}
 
-\begin{align*}
-p(\cdot|s_1, \omega_1) = p(\cdot|s_1, \omega_2) \\
-Q_{\pi}(s_1, \omega_1) = Q_{\pi}(s_1,\omega_2) \\
-\end{align*}
-
-
 \subsubsection{Pong}
 
-% {\color{red}Need to be more careful with the state / action spaces here. Need to define properly!?}
-State = $[p_1, v_1, p_2, v_2, p^x_b, p^y_b, v^x_b, v^y_b]$
-Where all of these are centered around the middle.
-Action = $\{+x, -x, 0\}$
+The states of Pong are described by $s = [p_1, v_1, p_2, v_2, p^x_b, p^y_b, v^x_b, v^y_b]$ (all of these are centered around the middle of the table). Where, $p_1$ is the position of player 1's paddle, $v_1$ is the velocity of player 1's paddle, $p^x_b$ is the $x$ position of the ball, $v^y_b$ is the $y$ component of the ball's velocity.
+And the actions are $-1$ for left and $1$ for right.
 
 \paragraph{Mirror symmetry (vertical)}
 
@@ -317,7 +298,7 @@ Define the action of $f \in S_2$ on the;
 	\item state space $f \circ [p_1, v_1, p_2, v_2, p^x_b, p^y_b, v^x_b, v^y_b] := [-p_1, -v_1, -p_2, -v_2, -p^x_b, p^y_b, -v^x_b, v^y_b]$
 	\item action space $f \circ a := -a$
  	\item policy to be $f \circ \pi(a | s) = \pi(f \circ a | f \circ s)$.
-	\item transition function to be $(f \circ P)(s' | s, a) = P(f \circ s'| f \circ s, f \circ a)$.
+	\item transition function to be $(f \circ P)(s' | s, a) = \tau(f \circ s'| f \circ s, f \circ a)$.
 	\item value function is $(f \circ Q^{\pi})(s, a) = Q^{f \circ \pi}(f \circ s, f \circ a)$
 \end{itemize}
 
@@ -334,62 +315,33 @@ Q^\pi(s, a) &= (g \circ Q^{\pi})(s, a) \tag{expected return}
 \caption{???}
 \end{figure}
 
-{\color{red}need to fix image. swap colors.}
+Because Pong is a zero sum, two player game, there is a symmetry of perspective.
+Whether you are playing as player 1 or player two, you are still playing the same game of Pong,
+but with inverted payoffs.
 
-Define the action of $f \in S_2$ on the {\color{red}(how do we know this is $S_2$)};
+Let $G = (\{e, g\}, \circ)$. And define the action of $g$ on the;
 
 \begin{itemize}
 	\tightlist
-	\item state space $f \circ [p_1, v_1, p_2, v_2, p^x_b, p^y_b, v^x_b, v^y_b] := [-p_1, -v_1, -p_2, -v_2, -p^x_b, p^y_b, -v^x_b, v^y_b]$
-	\item action space $f \circ a := -a$
- 	\item policy to be $f \circ \pi(a | s) = \pi(f \circ a | f \circ s)$.
-	\item transition function to be $(f \circ P)(s' | s, a) = P(f \circ s'| f \circ s, f \circ a)$.
-	\item value function is $(f \circ Q^{\pi})(s, a) = Q^{f \circ \pi}(f \circ s, f \circ a)$
+	\item state space $g \circ [p_1, v_1, p_2, v_2, p^x_b, p^y_b, v^x_b, v^y_b] := [p_2, v_2, p_1, v_1, -p^x_b, p^y_b, -v^x_b, v^y_b]$
+	\item action space $g \circ a := a$
+  \item rewards $g \circ r(s, a) := -r(s, a)$
 \end{itemize}
 
-(\emph{this really requires you to disentangle the model from your
-opponent!?})
+Therefore, we can write the;
+\begin{itemize}
+  \tightlist
+ 	\item policy to be $g \circ \pi(a | s) = \pi(g \circ a | g \circ s)$.
+	\item transition function to be $(g \circ \tau)(s' | s, a) = \tau(g \circ s'| g \circ s, g \circ a)$.
+	\item value function is $(g \circ Q^{\pi})(s, a) = g \circ r(s, a)+ \gamma (g \circ \tau)(s'|s, a) (g \circ Q)^{\pi}(s, a)$
+\end{itemize}
+
+Therefore $G = S_2$.
 
 \begin{align*}
-\tau(s'|s, a_{p=0}) &= f_{p=0}(s''|s, a) \cdot f_{p=1}(s'|s'', \hat a) \cdot \pi_{p=1}(\hat a|s'') \\
-Q_{p=0}(s, a) &= -Q_{p=1}(s, a)
+Q_{p=0}(s, a) &= (g \circ Q^{\pi})(s, a) \\
+Q_{\text{P1}}(s, a) &= -Q_{\text{P2}}(s, a)
 \end{align*}
-
-
-\paragraph{Translational symmetry}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/pong-trans.png}
-\caption{???}
-\end{figure}
-
-(\emph{although there are boundary cases which cannot be ignored. how
-can they be dealt with!?})
-
-\begin{align*}
-\forall a: Q_{\pi_1}(s_1, a) = Q_{\pi_2}(s_2, a) \\
-\forall a, t: \pi_1(a|s^t_{s^0=s_1}) = \pi_2(a|s^t_{s^0=s_2})
-\end{align*}
-
-If we take the same actions, in translated states, we get the same
-outcome (up to the boundary conditions).
-
-\paragraph{Temporal symmetries}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=0.25\textheight]{../../pictures/drawings/pong-reach.png}
-\caption{???}
-\end{figure}
-
-\begin{align*}
-\exists \pi_1, \pi_2 \;\;\text{s.t.} \;\; Q^{\pi_1}(s_1, a_1) = Q^{\pi_2}(s_2, a_2)
-\end{align*}
-
-The same future state can be reached, and thus the same rewards can be
-achieved.
-
 
 \section{Symmetry and machine learning}
 
@@ -485,7 +437,7 @@ What other ways are there? Want to construct the space of possible ways to incor
 \subsubsection{Exploiting symmetry for efficient exploration}
 
 Holtzen et al. \cite{Holtzen2019} show that by grouping together variables according to
-the knowledge of a symmetry, they show that \textit{orbit-jump MCMC mixes rapidly in the number of orbits}.
+the knowledge of a symmetry, their \textit{orbit-jump MCMC mixes rapidly in the number of orbits}.
 In other words, symmetries allow the efficient estimation of distributions.
 % Want to demonstrate this.
 % {\color{red}TODO max ent + abstraction experiments}
@@ -516,54 +468,12 @@ Existing methods of discovery!?!?
  	Brightness, Sharpness, ShearX, ShearY, TranslateX, TranslateY.}
  Uses validation error as a reward for learning.
 
+\subsection{Actions}\label{construct-actions}
 
-\subsection{Symmetry Examples}
+Let $G$ be a group. Where we represent the action of $g\in G$ on the real vectors, $x\in R^n$
+as permutation matrices, $\phi(g, x) = P_g \circ x$, where the composition operator $\circ$ becomes matrix multiplication, $\cdot$. Therefore $e = I_n$ and $g$ can be one of many possible actions. For example, consider the representations of the n-gram swaps \footnotemark of $g$ when applied $R^4$.
 
-$S_4$
-
- \begin{align*}
-  \begin{bmatrix}
-    0 & 1 & 2 & 3 \\
-    3 & 0 & 1 & 2 \\
-    2 & 3 & 0 & 1 \\
-    1 & 2 & 3 & 0 \\
-  \end{bmatrix}
-  \begin{bmatrix}
-    a & b & c & d \\
-    d & a & b & c \\
-    c & d & a & b \\
-    b & c & d & a \\
-  \end{bmatrix}
- \end{align*}
-
-$S_2 \times S_2$
-
- \begin{align*}
-  \begin{bmatrix}
-    (0, 0) & (0, 1) & (1, 0) & (1, 1) \\
-    (0, 1) & (0, 0) & (1, 1) & (1, 0) \\
-    (1, 0) & (1, 1) & (0, 0) & (0, 1) \\
-    (1, 1) & (1, 0) & (0, 1) & (0, 0) \\
-  \end{bmatrix}
- \begin{bmatrix}
-   a & b & c & d \\
-   b & a & d & c \\
-   c & d & a & b \\
-   b & c & b & a \\
- \end{bmatrix}
- \end{align*}
-
- % http://mathworld.wolfram.com/FiniteGroup.html
-
-How many observations are sufficient to discriminate between $S_4$ and $S_2\times S_2$?
-What about symmetries of different order?
-
-\subsubsection{Actions}
-
-Let $S_2$ be the group $\big(\{e, g\}, \circ \big)$. Where we represent the action of $e, g$ on the real vectors, $x\in R^n$
-as permutation matrices, and the composition operator $\circ$ becomes matrix multiplication, $\cdot$. Therefore $e = I_n$ and $g$ can be one of many possible actions. For example, consider the nine \footnotemark[34] representations of $g$ when applied $R^4$.
-
-\footnotetext[34]{There are no others. Proof by construction. Enumerate all permutations and check which ones are idempotent.}
+\footnotetext{There are no others. Proof by construction. Enumerate all permutations and check which ones are idempotent.}
 
 \begin{align*}
  \begin{bmatrix}
@@ -622,12 +532,8 @@ as permutation matrices, and the composition operator $\circ$ becomes matrix mul
  \end{bmatrix}   \\
 \end{align*}
 
-Each of these actions has the $S_2$ group structure.
-But which of these actions are preferable?
-
-Observe that the first two row contain permutations that swaps (two) elements of the vector ($a\leftrightarrow b$).
-While the last row of permutations contain permutations that swaps pairs ($(a, b) \leftrightarrow (c, b)$).
-
+The first two rows contain permutations that swaps (two) elements of the vector ($a\leftrightarrow b$), these are the possible actions of $S_2$.
+The last row contains permutations that swaps pairs ($(a, b) \leftrightarrow (c, b)$), this entire row is the only representation of $S_2 \times S_2$.
 
 \subsubsection{Race grid world}\label{race-grid-world}
 
@@ -644,7 +550,7 @@ The type of abstraction used is state abstraction. So we should see BATS scale b
 
 
 
-\subsection{n-dimensional Cart pole}\label{action-space-experiments}
+\section{n-dimensional Cart pole}\label{action-space-experiments}
 
 \begin{displayquote}
   \textit{How can we test a learners ability to detect symmetries and exploit them?}
@@ -660,7 +566,7 @@ to $\{0,1\}^{n}$.
 % This setting allows us to easily control the amount of symmetry.
 % Existing envs dont test this because!?!?
 
-\subsubsection{How is this problem symmetric?}
+\subsection{How is this problem symmetric?}
 
 The $n$-dimensional cart pole problem can be reduced to $n$, one dimensional cart pole problems.
 Where each of these one dimensional cart pole problems cart pole problems is easy to solve.
@@ -689,7 +595,7 @@ We describe a state as $s_j = [x_0, \dots, x_i, \dots, x_{n-1}]$, where $x_i = (
 % Well, the original cart pole problem has a few symmetries in it (as explored in \ref{}).
 % However, by
 
-\subsubsection{An advantage}
+\subsection{An advantage}
 
 \begin{displayquote}
 \textit{What advantage is provided by exploiting symmetries?}
@@ -707,7 +613,7 @@ taken with some chance of exploring instead.
 % How does PPO / PG do exploration?!?!?
 Maybe you correctly balanced the pole in all dimensions except one. To bad, you dont get any reward.
 
-\subsubsection{Experiments}
+\subsection{Experiments}
 
 We use OpenAI's Gym \cite{Brockman2016} and Baselines \cite{baselines} to test this environment.
 

@@ -22,6 +22,7 @@ A single action means all policies are the same.).}
 The space of possible policies is a 2D surface in a 4D space. For each state, we
 can pick \texttt{action1} or \texttt{action2}, with some probability, $p$. For more intuition
 about this policy space see \ref{high-D-policies}.
+And for a method of visualising higher dimensional policies, see \ref{graph-vis}.
 
 \begin{align}
 \pi &=
@@ -72,16 +73,16 @@ Thus, the optimal value function must have the largest value in all states, mean
 This can be seen in the last equation below;
 
 \begin{align*}
-V(s_1) &= \mathop{\mathbb E}_{a \sim\pi(\cdot|s_1)} r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \sum_a P(\cdot|s, a)\pi(\cdot|s)} V(s')\\
-&= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_{s'}\sum_a P(s'|s_1, a)\pi(a|s) V(s') \\
-&= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_a P(s_1|s_1, a)\pi(a|s) V(s_1) + \gamma\sum_a P(s_2|s_1, a)\pi(a|s) V(s_2)
+V(s_1) &= \mathop{\mathbb E}_{a \sim\pi(\cdot|s_1)} r(s, a) + \gamma \mathop{\mathbb E}_{s'\sim \sum_a \tau(\cdot|s, a)\pi(\cdot|s)} V(s')\\
+&= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_{s'}\sum_a \tau(s'|s_1, a)\pi(a|s) V(s') \\
+&= \sum_a \pi(a|s_1)r(s, a) + \gamma \sum_a \tau(s_1|s_1, a)\pi(a|s) V(s_1) + \gamma\sum_a \tau(s_2|s_1, a)\pi(a|s) V(s_2)
 \end{align*}
 
-If $\sum_a P(s_2|s_1, a)\pi(a|s) = 0$ (i.e. $s_1$ and $s_2$ are not connected)
+If $\sum_a \tau(s_2|s_1, a)\pi(a|s) = 0$ (i.e. $s_1$ and $s_2$ are not connected)
 then $V(s_1)$ stays the same, yielding a constant vertical line on the polytope.
-If $\sum_a P(s_2|s_1, a)\pi(a|s) > 0$ (i.e. there is some change of transitioning from $s_1$ to $s_2$)
+If $\sum_a \tau(s_2|s_1, a)\pi(a|s) > 0$ (i.e. there is some change of transitioning from $s_1$ to $s_2$)
 then $V(s_1)$ increases with $V(s_2)$, yielding a 'positive orthant'.
-$\sum_a P(s_2|s_1, a)\pi(a|s) < 0$ is not possible.
+$\sum_a \tau(s_2|s_1, a)\pi(a|s) < 0$ is not possible.
 
 \paragraph{Continuity} The policy space is connected by definition, and the value function is a continuous function.
 Therefore the value space, the polytope, is connected.
@@ -160,12 +161,12 @@ policy and then acting greedily. In our tabular setting, policy iteration can be
 \caption{Policy iteration}
 \begin{algorithmic}[1]
 
-\Procedure{PI}{$P, r, \gamma$}
+\Procedure{PI}{$\tau, r, \gamma$}
     \State $t=0$
     \State $\pi_t \sim \mathcal N$  \Comment{Initialise randomly}
     \While{not converged}
-      \State $V_t = (I-\gamma P_{\pi_t})^{-1} r_{\pi_t}$ \Comment{Evaluate policy}
-      \State $Q_t =  r + \gamma P\cdot_{s'} V_t$ \Comment{Bellman operator}
+      \State $V_t = (I-\gamma \tau_{\pi_t})^{-1} r_{\pi_t}$ \Comment{Evaluate policy}
+      \State $Q_t =  r + \gamma \tau\cdot_{s'} V_t$ \Comment{Bellman operator}
       \State $\pi_t = \text{greedy}(Q_t) $ \Comment{Greedy update}
       \State $t = t + 1$
     \EndWhile
@@ -212,7 +213,7 @@ we pick $\theta$ as our parameters and construct the policy using $\pi = \sigma(
 \caption{Policy gradients}
 \begin{algorithmic}[1]
 
-\Procedure{PG}{$P, r, \gamma, \eta$}
+\Procedure{PG}{$\tau, r, \gamma, \eta$}
   \State $t=0$
   \State $\theta_t \sim \mathcal N$ \Comment{Initialise randomly}
   \While{not converged}
@@ -256,7 +257,7 @@ state-action values will find actions with higher value.
 \caption{Value iteration}
 \begin{algorithmic}[1]
 
-\Procedure{VI}{$P, r, \gamma, \eta$}
+\Procedure{VI}{$\tau, r, \gamma, \eta$}
   \State t = 0
   \State $V_t = \mathcal N$ \Comment{Initialise randomly}
   \While{not converged}
@@ -264,7 +265,7 @@ state-action values will find actions with higher value.
     \State $V_{t+1} = V_t + \eta \hat V - V_t$ \Comment{Average temporal difference}
     \State $t += 1$
   \EndWhile
-  \State $\pi = \mathop{\text{argmax}}_{\pi} r_{\pi} + \gamma P_{\pi}V_t$
+  \State $\pi = \mathop{\text{argmax}}_{\pi} r_{\pi} + \gamma \tau_{\pi}V_t$
   \State \algorithmicreturn{ $\pi$}
 \EndProcedure
 
