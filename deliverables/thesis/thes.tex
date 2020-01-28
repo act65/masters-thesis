@@ -51,9 +51,20 @@
 \subject{Computer Science}
 \abstract{
 Successful reinforcement learning requires large amounts of data, compute, and some luck.
-We explore the ability of abstraction(s) to reduce this dependency.
-Specifically, we consider a type of linear abstraction, and show that it doesn't work in general.
-Then, we construct a measure of symmetry and use it to build abstractions, in the hope of improving sample efficiency.
+We explore the ability of abstraction(s) to reduce these dependencies.
+
+Abstractions for reinforcement learning share the goals of this abstract:
+to capture essential details, while leaving out the unimportant.
+By throwing away inessential details,
+there will be less to compute, less to explore, and less variance in observations.
+But, does this always aid reinforcement learning?
+
+More specifically, we start by looking for abstractions that are easily solvable.
+This leads us to a type of linear abstraction. We show that, while it does allow efficient solutions, it can give erroenous results in the general case.
+
+We then attempt to improve the sample efficiency of a reinforcment learner.
+We do so by constructing a measure of symmetry and using it as an inductive bias.
+Given uncertainty, this learner prefers symmetric hypotheses.
 }
 % Books don't normally have abstracts, and this is a bit of a hack
 
@@ -114,6 +125,31 @@ Then, we construct a measure of symmetry and use it to build abstractions, in th
 \bibliography{mendeley}
 
 \appendix
+\newpage
+
+As these appendicies make up a significant amount of this thesis, it may be worth
+having a guide.
+% although, they are referenced through the thesis.
+% Much of the content here could have been in the main text,
+% however, it was decided that the thesis would be easier to read if every second
+% page did not contain some side note or out-of-scope thought.
+
+\begin{itemize}
+\tightlist
+\item In \ref{vf-neumann} we give an alternative derivation of the value functional, a tabular form of the state valued Bellman equation.
+\item In \ref{high-D-policies} we give some intution about the abstract structure of policies.
+\item In \ref{polytope-extras} we explore the density of policies and effect of discounting on the value polytope.
+\item In \ref{model-iteration} we demonstrate a new (so far as we know) type of model based reinforcement learner.
+\item In \ref{graph-vis} we present a method of visualising the search for the optimal policy in high dimensions.
+\item In \ref{ss-extras} we ask questions about over-parameterisation and re-parameterisation in the context of policy gradients.
+\item In \ref{lmdp-derivation} we offer a modified derivation of a linear Markov devision problem.
+\item In \ref{mdp-homomorphism} we explore related work combining symmetries and Markov decision problem, and add a new definition of a temporal homomorphism.
+\item In \ref{game-invariants} we construct a set of symmetric reinforcement learning examples, in the hope of understanding how to identify relevant symmetries from invariants.
+\item In \ref{symmetric-exploitation} we review related work on symmetries in machine learning and draw connections between some of these methods.
+\item In \ref{construct-actions} we provide an example of how there can be many (group) actions for even a simple group.
+\item In \ref{race-grid-world} we describe a toy problem used in testing our symmetry biased reinforcment learner.
+\item In \ref{action-space-experiments} we describe experiments done to test a learners ability to exploit symmetries.
+\end{itemize}
 
 \include{mdp-extras}
 \include{abstraction-extras}

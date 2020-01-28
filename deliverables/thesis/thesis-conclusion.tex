@@ -1,15 +1,23 @@
-\chapter{Discussion}\label{C:con}
+\chapter{Final remarks}\label{C:con}
 
-\section{Conclusions}
+\section{Summary}
 
 While there do exist some tools for analysing abstractions for RL, we need better ones.
-For instance, there is no well defined way to evaluate abstractions.
+There are many unanswered questions (below), but, most importantly,
+there is no well defined way to evaluate abstractions in general. {\color{red} doesnt quite work}
 
-The LMDPs attempted to preserve the space of transition dynamics and the rewards. But, they failed to preserve the value of the optimal actions, and thus cannot guarantee performance in general.
+Linear Markov Decision Problems attempt to preserve the space of transition dynamics and the rewards.
+But, they failed to preserve the value of the optimal actions, and thus cannot
+guarantee performance in general. Ultimately, this was because the Bellman equation is non-linear.
 
-Measures of symmetry do not scale well.
+We develop a measure of symmetry, and use it to give reinforcement learners a preference towards symmetry, a prior.
+Our results did not show any advantage by using this prior, but due to computational and temporal\footnotemark constraints,
+we were unable to make any conclusions.
 % Symmetry attempts to preserve, ...?
 
+\footnotetext{Temporal constraints meaning: A masters is a finite amunt of time.}
+
+\newpage
 \section{Future work}
 
 There is a large amount of future work to be done if we want to:
@@ -18,7 +26,7 @@ There is a large amount of future work to be done if we want to:
 \textit{understand how abstractions can increase the efficiency of reinforcement learning.}
 \end{displayquote}
 
-Our exploration of \textbf{Abstractions} in general, \ref{abstraction-rl}, raised a few fundamental questions;
+Our exploration of \textbf{Abstractions} in \ref{abstraction-rl}, raises a few fundamental questions;
 
 \begin{itemize}
 	\tightlist
@@ -29,7 +37,7 @@ Our exploration of \textbf{Abstractions} in general, \ref{abstraction-rl}, raise
 	\item Is there a difference between trajectory based similarity measures (that set the similarity $\chi(x, x')$ to be built from distances between the cumulants $D(c(x, \pi), c(x', \pi))$, rather than expected discounted cumulants $D(\mathcal C(x, \pi), \mathcal C(x, \pi))$)?
 	\item What is the trade off (between computation and approximation error) of approximating $\int_{\pi \in \Pi}f(\pi)$ with $B \subset \Pi, \; \int_{\pi \in B}f(\pi)$?
 	% How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
-	\item What is necessary (rather than sufficient, which is what is proved in existing work) for the preservation of Bellman equation's ability to guide search? Can we weaken the requirements to only preserving the ordering of the value of optimal actions (rather than their values as in existing work)?
+	\item What is necessary (rather than sufficient - which is proved in existing work) for the preservation of Bellman equation's ability to guide search? Can we weaken the requirements to: preserving the ordering of the value of optimal actions (rather than their absolute values as in existing work)?
 \end{itemize}
 
 Similarly, our results on \textbf{LMDPs} \ref{lmdp-validation} leave a few questions unanswered;
@@ -45,14 +53,13 @@ Finally, our results on \textbf{symmetric abstractions} \ref{symmetric-abstracti
 
 \begin{itemize}
 	\tightlist
-	\item What is the efficiency of rejection sampling for symmetry biased distributions, and how does it scale with dimension?
+	\item What is the (computational) efficiency of rejection sampling for symmetry biased distributions, and how does it scale with dimension? And how much data (sample efficiency) does that computation buy?
 	% \item Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
-	\item Can we use our measure of symmetry \ref{measure-symmetry} as a regulariser, by simply applying gradient descent?
+	\item What happens if we use our measure of symmetry \ref{measure-symmetry} as a regulariser (as it is differentiable)?
 	\item Invariants ...
-	\item How can representations of states (or state-actions or ...) be ordered? And how does this ordering reduce the combinatorial space of possible symmetries?
-	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amortize this cost by building up from symmetries in shorter
-	sequences?
-	\item Run more rigorous experiments...
+	\item How can representations of states (or state-actions or ...) be ordered or structured? And how does this structure reduce the combinatorial space of possible symmetries?
+	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amortize this cost by building symmetries from smaller symmetries in shorter sequences?
+	% \item Run more rigorous experiments...
 \end{itemize}
 
 % % % % % % % % % % % % % % %
