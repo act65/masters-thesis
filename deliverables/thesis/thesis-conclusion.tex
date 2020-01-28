@@ -24,7 +24,7 @@ Our exploration of \textbf{Abstractions} in general, \ref{abstraction-rl}, raise
 	\tightlist
 	\item What is the advantage, if any, of \textit{state and action abstraction} versus \textit{state-action abstraction} \ref{exploit-abstraction-rl}?
 	\item Of the two approaches to temporal abstraction, \textit{goal-like} and \textit{option-like} temporal abstraction, is one strictly better that the other? If not, then in which cases does \textit{goal-like} temporal abstraction perform better?
-	\item Are the facets of evalution presented in \ref{eval-abstractions} necessary and / or sufficient for 'efficient' performance of an abstraction in practice?
+	\item Are the facets of evaluation presented in \ref{eval-abstractions} necessary and / or sufficient for 'efficient' performance of an abstraction in practice?
 	\item Do many, or even all, abstractions of interest to RL live in the family defined in \ref{similar-classes}?
 	\item Is there a difference between trajectory based similarity measures (that set the similarity $\chi(x, x')$ to be built from distances between the cumulants $D(c(x, \pi), c(x', \pi))$, rather than expected discounted cumulants $D(\mathcal C(x, \pi), \mathcal C(x, \pi))$)?
 	\item What is the trade off (between computation and approximation error) of approximating $\int_{\pi \in \Pi}f(\pi)$ with $B \subset \Pi, \; \int_{\pi \in B}f(\pi)$?
@@ -37,7 +37,7 @@ Similarly, our results on \textbf{LMDPs} \ref{lmdp-validation} leave a few quest
 \begin{itemize}
 	\tightlist
 	\item In which cases does the LDMP give the right solution?
-	\item What are the properties that make a MDP easily solveble (via LDMPs)?
+	\item What are the properties that make a MDP easily solvable (via LDMPs)?
 	\item Can easily solvable MDPs (via LDMPs) be easily identified?
 \end{itemize}
 
@@ -45,30 +45,15 @@ Finally, our results on \textbf{symmetric abstractions} \ref{symmetric-abstracti
 
 \begin{itemize}
 	\tightlist
-	\item More carefully analyse the efficiency of rejection sampling for symmetry biased distributions.
-	\item Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
-	\item Can we use our measure of symmetry \ref{measure-symmetry} as a regulariser, and use it within the deep learning framework?
-	\item Run more rigorous experiments...
+	\item What is the efficiency of rejection sampling for symmetry biased distributions, and how does it scale with dimension?
+	% \item Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
+	\item Can we use our measure of symmetry \ref{measure-symmetry} as a regulariser, by simply applying gradient descent?
 	\item Invariants ...
-	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amoritize this cost by building up from symmetries in shorter
-	 sequences?
-	\item Learn representations that are ordered. So we can reduce the combinatorial space of possible symmetries.
-
+	\item How can representations of states (or state-actions or ...) be ordered? And how does this ordering reduce the combinatorial space of possible symmetries?
+	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amortize this cost by building up from symmetries in shorter
+	sequences?
+	\item Run more rigorous experiments...
 \end{itemize}
-
-% The comparison of topologies constructed using varios k length options.
-% With increasing k, the topology of the abstraction is always coarser??
-
-Future work.
-- Generalise to more symmetries.
-- How do the number of actions scale with d and / or the (type of) symmetry group?
-
-% Alternatively, we could???
-% \begin{itemize}
-% 	\item Iterate through groups.
-% 	\item Iterate through possible group elements, then regularise to be closed.
-% 	\item ???
-% \end{itemize}
 
 % % % % % % % % % % % % % % %
 % Q: Number of integer factors as a function of n???
@@ -77,3 +62,4 @@ Future work.
 % Q: Proximity to symmetric states. How does this change as d increases?
 % Q: Is there an advantage to building your temporal abstraction from k=n first, then to k=n+1.
 % Q: Metro hastings. == RL?!? Pick transitions to help estimate a distribution?
+% Q: With increasing k, does the topology of temporal abstractions always get coarser?

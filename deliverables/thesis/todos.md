@@ -1,15 +1,15 @@
 TODOs
 
-* [ ] write future work section
 * [ ] fix invariant RL examples
-* [ ] new group theory example
 * [ ] final spell check
 * [ ] tidy or remove lit review section on ML + symmetry
-* [ ] finish topology section
 * [ ] write conclusion
+* [ ] discuss biased TS results
 
 Done
 
+* [x] finish topology section
+* [x] write future work section
 * [x] Make sure all appendicies are referenced
 * [x] fix all citations
 * [x] Sort out footnote ordering

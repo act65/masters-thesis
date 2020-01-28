@@ -50,7 +50,7 @@ a lot more simple. Pick the most rewarding activity, and work hard.
 \subsubsection{What do we mean by a linear MDP?}
 
 Do we mean that the value function is a linear function of (say) a policy?
-Of the reward function? Of the transition function? Previous researhc has tried to incorporate
+Of the reward function? Of the transition function? Previous research has tried to incorporate
 linearity into MDPs in a few different ways.
 
 \begin{itemize}
@@ -109,7 +109,7 @@ under the given transition function. So we incentivise controls that are close t
 
 % formal definition
 Putting these changes together, a linear Markov decision process can be formulated as;
-LMDP = $\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space of possible controls (i.e. any transitions),
+LMDP $=\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space of possible controls (i.e. any transitions),
 $p: S \to S$ is the unconditioned dynamics, and $q \in \mathbb R^{|S|}$ is state rewards.
 Our goal is to find the control, $u: S \to S$, that gives the highest exponentiated cumulative reward $z \in \mathbb R_+^{|S|}$.
 
@@ -135,7 +135,7 @@ Most importantly! We can solve for the value of the optimal control by solving t
 \end{displayquote}
 
 Rather than state-action rewards $r: S \times A \to \mathbb R$, we have state rewards $q: S \to \mathbb R$.
-How can state rewards direct behaviour? They can't, and they can. State rewards are not capable of drectly giving rewards for actions taken.
+How can state rewards direct behaviour? They can't, and they can. State rewards are not capable of directly giving rewards for actions taken.
 Rather, the action dependent part of the reward is captured by the KL divergence between
 the control and the unconstrained dynamics (this relationship is shown in \ref{unconstrained-dynamics-reward}).
 But, they do implicitly direct behaviour through their presence in the exponentiated value function $z_{u^{* }}$.

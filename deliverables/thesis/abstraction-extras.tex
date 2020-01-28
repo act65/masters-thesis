@@ -67,7 +67,7 @@ Use the value of $c_{s'}$ to calculate the state rewards and unconditioned dynam
 \subsection{MDP homomorphisms}\label{mdp-homomorphism}
 
 As pointed out in \ref{C:abstraction}, the notion of an abstraction is captured by a homomorphism.
-Given this, it seems natural to extent the defition to MDPs.
+Given this, it seems natural to extent the definition to MDPs.
 
 A MDP homomorphism is a transformation of a MDP, $\mathcal H: \mathcal M\to \mathcal M$, that preserves the transition and reward function \cite{Ravindran2002}. We can describe this MDP homomorphism as $\mathcal H = (f, g)$ such that;
 
@@ -77,7 +77,7 @@ r(f(s), g_s(a)) = r(s, a)
 \end{align}
 
 This MDP homomorphism framework yields state-action abstraction, that uses a model based notion of similarity.
-However, as pointed out in eariler sections, there are many other possible
+However, as pointed out in earlier sections, there are many other possible
 notions of abstraction and similarity that can make sense for RL. Specifically, the MDP homomorphism framework
 could be generalised in the following ways;
 
@@ -92,9 +92,9 @@ could be generalised in the following ways;
 Indeed, some work has extended the notion of symmetric model-based abstraction (1)
 to approximately symmetric model-based abstraction \cite{Ravindran2004}. However, this has yet to be generalised to other types of symmetry with (say) the state-action values.
 
-Section \ref{symmetric-abstractions} is our not-so-humble attempt to achieve a symmetric inducive bias (2). And, as far as we know, little progress has been made on (3).
+Section \ref{symmetric-abstractions} is our not-so-humble attempt to achieve a symmetric inductive bias (2). And, as far as we know, little progress has been made on (3).
 
-Finally, there has been at least one attempt \cite{Ravindran2003} to build a framework capable of exploiting temporal symmetries (4). And while their poposal makes sense, we offer an alternative below.
+Finally, there has been at least one attempt \cite{Ravindran2003} to build a framework capable of exploiting temporal symmetries (4). And while their proposal makes sense, we offer an alternative below.
 
 \subsection{Temporal symmetries}
 
@@ -129,13 +129,13 @@ in state-options (of a specific length).
 
 \subsection{Invariants}\label{game-invariants}
 
-An important poperty of symmetries is that they can be identified by their generators and relations.
+An important property of symmetries is that they can be identified by their generators and relations.
 Symmetries can be uniquely characterised by their invariants \cite{PeterOlver1999}.
 
 {\color{red}A generator is ... A relation is ... .}
 
 There are many types of finite group, (cyclic, alternating, symmetric, ...?)
-And then there are continuious symmetries, (Lie groups)
+And then there are continuous symmetries, (Lie groups)
 Which types of symmetry are important for RL problems?
 
 % Invariance, $f(g(x)) = f(x)$, equivariance, $f(g(x)) = g(f(x))$.
@@ -211,7 +211,7 @@ Is this combination of invariants unique to the mirror symmetry? (how to prove t
 \caption{Two similar cart poles, which are only a translation different from each other.}
 \end{figure}
 
-This is actually a Lie group, ...? cyclic continuious symmetry, $C_R$.
+This is actually a Lie group, ...? cyclic continuous symmetry, $C_R$.
 
 % How to prove that this is a cts symmetry!?
 
@@ -243,13 +243,13 @@ T(Q^\pi)(s,a) - Q^\pi(s,a) &=T(g \circ Q^\pi)(s, a) - (g \circ Q^\pi)(s,a) \tag{
 
 {\color{red}Huh, the key is the action. These have the same invariants!??! No. One is $S_2$, the other is a cts cyclic symmetry...}
 
-We consider some others as well. But dont construct their invariants.
+We consider some others as well. But don't construct their invariants.
 
 \paragraph{Transition symmetry}
 
 Despite starting in different states, and applying different actions, we might end up in the same next state.
 
-If we allow actions to be continuous, where ee get to choose the impules $a \in [-c, c]$.
+If we allow actions to be continuous, where we get to choose the impulse $a \in [-c, c]$.
 Then we we get a new set of invariants of the transition function $\tau(s'|s, a) = \tau(s'|g\circ (s, a))$.
 But what do these invariants of the transition function imply about invariants in the state (and action) values?
 
@@ -317,7 +317,7 @@ Q^\pi(s, a) &= (g \circ Q^{\pi})(s, a) \tag{expected return}
 
 Because Pong is a zero sum, two player game, there is a symmetry of perspective.
 Whether you are playing as player 1 or player two, you are still playing the same game of Pong,
-but with inverted payoffs.
+but with inverted pay-offs.
 
 Let $G = (\{e, g\}, \circ)$. And define the action of $g$ on the;
 
@@ -569,7 +569,7 @@ to $\{0,1\}^{n}$.
 \subsection{How is this problem symmetric?}
 
 The $n$-dimensional cart pole problem can be reduced to $n$, one dimensional cart pole problems.
-Where each of these one dimensional cart pole problems cart pole problems is easy to solve.
+Where each of these one dimensional cart pole problems is easy to solve.
 
 In a more formal sense. This problem is symmetric because the optimal policy and its ($Q$) values are invariant to the actions of the permutation group of order n, $S_n$.
 
@@ -601,7 +601,7 @@ We describe a state as $s_j = [x_0, \dots, x_i, \dots, x_{n-1}]$, where $x_i = (
 \textit{What advantage is provided by exploiting symmetries?}
 \end{displayquote}
 
-If a learner has inferred that the $n$-dimensional cart pole problem can be decomposed into $n$ identical subproblems,
+If a learner has inferred that the $n$-dimensional cart pole problem can be decomposed into $n$ identical sub problems,
 then that means it is gathering $n$ times the data for the one-dimensional cart pole problem.
 So, we should see a factor of $n$ speed up in learning.
 This is the same argument made here [quotient groups appendix...].
@@ -611,7 +611,7 @@ The more dimensions there are, the more ways there are to fail.
 Consider how exploration is done. In a single dimension, actions are taken with probability  is
 taken with some chance of exploring instead.
 % How does PPO / PG do exploration?!?!?
-Maybe you correctly balanced the pole in all dimensions except one. To bad, you dont get any reward.
+Maybe you correctly balanced the pole in all dimensions except one. To bad, you don't get any reward.
 
 \subsection{Experiments}
 
@@ -633,7 +633,7 @@ As mentioned in the previous section, we expected learning to become much
 harder for a learner that doesn't exploit symmetries. These results suggest either of two possibilities:
 that PPO2 can discover and exploit symmetries, our setting does not test what we think it does. {\color{red}so... how did we answer this???}
 
-While investigating this further, we realised that the given action space, \textit{MultiBinary}, provies a large amount of information. We ran another test with a \textit{Discrete} action space. Where the learner gets to choose $a\in \mathbb Z_n$.
+While investigating this further, we realised that the given action space, \textit{MultiBinary}, provides a large amount of information. We ran another test with a \textit{Discrete} action space. Where the learner gets to choose $a\in \mathbb Z_n$.
 This action then gets (binary) decoded to the \textit{MultiBinary} format.
 
 A learner that exploits the permutation symmetries in the $n$-dimensional cart pole problem should learn $n$ times quicker.

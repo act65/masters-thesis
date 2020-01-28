@@ -40,13 +40,15 @@ For example, we can imagine the \textit{action}\footnotemark of this rotation gr
 
 \footnotetext{An action is defined as $\phi: G\times X \to X$ such that $\phi(e, x) = x$ and $\phi(g\circ h, x) = \phi(g, \phi(h, x))$.}
 
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/images/jacks.png}
-	\caption{Here we have applied the group of four rotations to a Jack of spades.
-	However, we see that there exists symmetry within the these rotations,
-	there are only two distinct rotations, vertical and horizontal. This is because }
-\end{figure}
+
+{\color{red}what would be a good example? Do I need one?}
+% \begin{figure}[h!]
+% 	\centering
+% 	\includegraphics[width=0.75\textwidth,height=0.5\textheight]{../../pictures/images/jacks.png}
+% 	\caption{Here we have applied the group of four rotations to a Jack of spades.
+% 	However, we see that there exists symmetry within the these rotations,
+% 	there are only two distinct rotations, vertical and horizontal. This is because }
+% \end{figure}
 
 \begin{displayquote}
 \textsl{How can symmetries be used to build abstractions?}
@@ -72,7 +74,7 @@ you the ability to generalise\footnotemark. To generalise you need (accurate) pr
 
 Existing approaches to estimating similarity can generalise if the (measure of) similarity encodes priors.
 For example:
-If our measure of similarity is parameterised as a CNN, then the CNN implicitly encodes a preference for continuious and local functions\cite{Yann1995}.
+If our measure of similarity is parameterised as a CNN, then the CNN implicitly encodes a preference for continuous and local functions\cite{Yann1995}.
 If our measure of similarity is trained using SGD, SGD implicitly encodes a preference for low rank solutions \cite{Gunasekar2017}.
 
 In this section we explore how to construct a prior that says:
@@ -106,7 +108,7 @@ the 'details' of these similarities.
 \end{displayquote}
 
 We need to construct a measure of symmetry, $S: X \to \mathbb [0, 1]$, that returns higher values for 'more' symmetric objects.
-We canthen use this measure to bias a learner towards more symmetric guesses (see \ref{thompson-sampling}).
+We can then use this measure to bias a learner towards more symmetric guesses (see \ref{thompson-sampling}).
 
 Given an object, $x \in X$, we want to know, how symmetric is that object?
 % This would allow us to consider alterative possibilities, such as $y \in X$, and say that we prefer $x$ to $y$ because $x$ is more symmetric.
@@ -147,7 +149,7 @@ $x = [1,1,2,2]$. So rather than asking: \textit{is $x$ invariant to $G$?}, we ca
 % The fundamental complexity of the nearest symmetry, and the distance between that symmetry an
 
 \begin{align*}
-C(x) &= \mathop{\text{min}}_G \sum_{g_i\in G}\parallel x-\phi(g_i, x)\parallel_2 - \beta \parallel n-|G^{* }| \parallel_1\\
+C(x) &= \mathop{\text{min}}_G \sum_{g_i\in G}\parallel x-\phi(g_i, x)\parallel_2 - \beta \parallel n-|G^{* }| \parallel_1 \label{eq:sym-measure}\\
 S(x) &= e^{-C(x)}
 \end{align*}
 
@@ -156,7 +158,7 @@ S(x) &= e^{-C(x)}
 
 {\color{red}need some words here?}
 
-\subsubsection{Implementation issues}
+\subsubsection{Implementation issues}\ref{implementation-issues}
 
 In its current state, this measure of approximate symmetry has two main implementation issues;
 the search over groups, the representation of the action(s).
@@ -179,7 +181,7 @@ a group acts on $X$. As the dimensionality of $X$ grows, the number of possible 
 % Say $X$ is a subset of $\mathbb R^n$. Then there are $n!$ possible group elements, each corresponding to a permutation.
 
 Consider the representation of group actions as permutation matrices, $\phi(g_i, x) = P_i \cdot x$ where $P_i \in {0, 1}^{d\times d}$ and $P \cdot \mathbf 1 = \mathbf 1$.
-Then there are $d!$ possible perumtations.
+Then there are $d!$ possible permutations.
  And checking that a collection of actions is closed requires $\mathcal O(d! \times d!)$ compositions.\footnotemark
 
  As an example, we construct the possible actions of $S_2$ and $S_2 \times S_2$ in \ref{construct-actions}.
@@ -226,43 +228,50 @@ different groups (rows) and $X$s of different dimension (columns).
 Does it give us the properties we wanted?}
 \end{displayquote}
 
-Properties this measure of symmetry should satisfy are, \ref{}, \ref{}, \ref{}.
+What properties did we want?
 
-\begin{itemize}
-	\tightlist
-	% \item A symmetry is less complex if it has more 'structure'. Where it can be build via the direct product of subgroups $\mathcal S(C_4) > \mathcal S(C_2 \oplus C_2)$
-	% \item Groups that are commutative are less complex $\mathcal S(D_4) > \mathcal S(C_8)$ (because $D_4$ is not abelian)
-	\item Symmetries with larger
-	\item $\mathcal S([a,a,b,c]) = \mathcal S(10 \times [a,a,b,c])$
-	\item An exact group structure should have higher symmetry than an approximate group structure $\mathcal S(([a,a,b,c]) < \mathcal S([a,a+\epsilon,b,c])$
-\end{itemize}
+\begin{enumerate}
+\tightlist
+	\item Approximate symmetries should be measured as 'less symmetric' than exact symmetries.
+	\item Larger symmetries should be prefered.
+\end{enumerate}
 
-We can see that the measure is not invariant to changes in norm.
-We can easily fix this by normalising the distance measure.
-
+And these two properties have been met. When using \ref{eq:sym-measure} as our symmetry measure, we get;
+$S([1,1.001,2,2]) = 0.956 < 1 = S([1,1,2,2])$ and $S([1,1,2,2]) = 1  >  0.026 = S([1,1,2,3])$.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/complexity_surface_nd-3d.png}
-\caption{A visualisation of our measure of symmetry applied to four dimensional vectors.
-We have randomly picked a linear projection from the four dimension, to two dimensions.
-Each pixel represents a vector in the 4D space. Lighter color is more symmetric.}
+\begin{subfigure}{.5\textwidth}
+  \centering
+	\includegraphics[width=0.8\textwidth,height=0.25\textheight]{../../pictures/figures/complexity_surface_2d-normed.png}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+	\includegraphics[width=0.8\textwidth,height=0.25\textheight]{../../pictures/figures/complexity_surface_2d-not-normed.png}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A final decision is about whether we want to normalise the distances,
+$\parallel x - P\cdot x \parallel$ (shown on the left), or leave the unnormalised (shown on the right).}
+\label{fig:normalise-symmetry}
 \end{figure}
 
-% \begin{figure}[h!]
-% \centering
-% \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/complexity_surface_nd-4d-S-0.png}
-% \caption{A visualisation of our measure of symmetry applied to four dimensional vectors.
-% We have randomly picked a linear projection from the four dimension, to two dimensions.
-% Each pixel represents a vector in the 4D space. Lighter color is more symmetric.}
-% \end{figure}
+A final decision, is whether to normalise the distance measure (see \ref{fig:normalise-symmetry}).
+As, we believe the measure of symmetry should be invariant to changes in norm.
+For example, if we scale an object by a constant, it should have the same measure of symmetry, $S(10 \cdot x) = S(x)$.
 
-% \begin{figure}[h!]
-% \centering
-% \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/complexity_surface_nd-4d-S-2.png}
-% \caption{}
-% \end{figure}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/complexity_surface_nd-8d.png}
+\caption{A visualisation of our measure of symmetry applied to eight dimensional vectors.
+We have randomly picked linear projections from the eight dimensions, to two dimensions.
+Each pixel represents a vector in the 8D space. Lighter color is more symmetric.}
+\label{fig:symmetry-topology}
+\end{figure}
 
+\newpage
+\mbox{}
+\newpage
 \subsubsection{Symmetric Rejection Sampling}\label{rejection-sampling}
 
 \begin{displayquote}
@@ -274,7 +283,7 @@ samples, or in other words, we can use rejection sampling to incorporate our sym
 
 \paragraph{Rejection sampling} allows you to generate samples from a target distribution, $p(\cdot)$ (which we cannot efficiently sample from) and a 'related' distribution that we can easily sample from, $q(\cdot)$.
 The notion of relatedness of $p(\cdot)$ and $q(\cdot)$ is captured by $k = \mathop{\text{max}}_x \frac{p(x)}{q(x)}$.
-This value, $k$ tells us, the average number of rejections before acepting a sample.
+This value, $k$ tells us, the average number of rejections before accepting a sample.
 Thus, to closely related distributions will have $k\sim 1$. \cite{W.R.1992, Owen2013}
 
 \begin{algorithm}
@@ -305,9 +314,9 @@ q(\theta | D_t) = \frac{p(D_t | \theta)P_{\text{sym}}(\theta)}{p(D_t)}
 
 Thus we have a distribution over parameters, $q(\theta | D_t)$, which we can optimise using maximum a posteriori.
 
-Fortunately, we don't need to construct $P_{\text{sym}}(\theta)$, we only need an unnormalised function that it is proprtional to \cite{Owen2013}. Meaning, we can use our measure of symmetry $P_{\text{sym}}(\theta)\to S(x)$.
+Fortunately, we don't need to construct $P_{\text{sym}}(\theta)$, we only need an unnormalised function that it is proportional to \cite{Owen2013}. Meaning, we can use our measure of symmetry $P_{\text{sym}}(\theta)\to S(x)$.
 
-Consider an example: we might have some estimate of a parameter's value, $\mu, \sigma$, which follows a gaussian distribution $p(\cdot)$. But, we believe the parameters should be symmetric. Therefore, we can construct a new distribution, $q(x | D_t) = p(\mu, \sigma| x)S(x)$. We can use rejection sampling to generate samples from $q(x | D_t)$. See thee results below.
+Consider an example: we might have some estimate of a parameter's value, $\mu, \sigma$, which follows a Gaussian distribution $p(\cdot)$. But, we believe the parameters should be symmetric. Therefore, we can construct a new distribution, $q(x | D_t) = p(\mu, \sigma| x)S(x)$. We can use rejection sampling to generate samples from $q(x | D_t)$. See thee results below.
 
 
 \begin{figure}[h!]
@@ -365,7 +374,7 @@ must balance between exploiting what is known to maximize immediate performance 
 new information that may improve future performance.}\cite{Russo2017}
 \end{displayquote}
 
-Less cryptically, Thomspon sampling estimates the model, $P\, r$. We then act optimally with respect to the estimated model. However, the estimate uncertainty, so ...? We can write this as follows.
+Less cryptically, Thompson sampling estimates the model, $P\, r$. We then act optimally with respect to the estimated model. However, the estimate uncertainty, so ...? We can write this as follows.
 
 \begin{algorithm}
 	\caption{Thompson Sampling}
@@ -391,7 +400,7 @@ Less cryptically, Thomspon sampling estimates the model, $P\, r$. We then act op
 Where $H_t$ is the history of observations, $\{(s_i, a_i, r_i, s_i') : \forall i \in [0, t]\}$.
 And we construct the estimate of the model as independent distributions of the transition and reward functions $P(\tau, r | H_t) = P(\tau | H_t) \cdot P(r | H_t)$. Where $\tau(\tau | H_t)$
 is modelled as the normalised state transition counts {\color{red}should formally define?}.
-And $P(r | H_t)$ is modelled as a isotropic gaussian.
+And $P(r | H_t)$ is modelled as a isotropic Gaussian.
 These can be estimated by storing state-action-state transition counts
 and the incremental mean and variance of the rewards. {\color{red}should give more details?}
 
@@ -476,37 +485,49 @@ To simplify, we estimate $P_{\text{sym}}(\tau, R)$ as $P_{\text{sym}}(R)$. That 
 	\textsl{Sounds good in theory. Does it work in practice?}
 \end{displayquote}
 
-We want to demonstrate that Biased Thompson Sampling \ref{ts} has greater sample efficiency (when applied to problems with a symmetry present), than Thompson Sampling \ref{bts}.
+We want to demonstrate that Biased Thompson Sampling \ref{bts} has greater sample efficiency (when applied to problems with a symmetry present) than Thompson Sampling \ref{ts}.
 
-We test using ... ?!? Grid. Words ... \ref{race-grid-world}
-Relatedly, we also explore another, more complicated, setting to test a learners ability to exploit symmetries in \ref{action-space-experiments}.
+% There are a few factors that could effect the (potential) advangate of Biased Thompson Sampling.
+We ran experiments with symmetric n-armed bandit problems, and symmetric grid worlds \ref{race-grid-world}\footnotemark.
 
-\paragraph{Results}
+\footnotetext{Relatedly, we also explore another, more complicated, setting to test a learners ability to exploit symmetries in \ref{action-space-experiments}.}
 
-\begin{itemize}
-	\item Larger state spaces, the advantage should become clearer (as there is more benefit to symmetry, more shared states).
-	\item MAB vs MDPs.
-	\item Explicit symmetry prior versus 'high level' prior.
-\end{itemize}
+Explicit symmetry prior versus 'high level' prior.
 
+Despite, intuition, we have been unable to show that Biased Thompson Sampling probides any advantage. We leave this for future work.
+
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/mab-9-ts.png}
+%   \caption{A 8 armed bandit problem, with means and variances chosen randomly.
+% 	We can see that Biased Thompson sampling does not perform better in any significant sense.}
+% \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/mab-9-ts.png}
-  \caption{A 8 armed bandit problem, with means and variances chosen randomly.
-	We can see that Biased Thompson sampling does not perform better in any significant sense.}
+  \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/mdp-9-implicit.png}
+  \caption{A 9 state symmetric grid world problem.
+	We can see that Biased Thompson sampling does not perform better than Thompson sampling in any significant sense.}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/mdp-25-explicit.png}
-  \caption{A 25 state XXX problem. With explicit knowledge of the underlying symmetry.
+  \caption{A 25 state symmetric grid world problem. With explicit knowledge of the underlying symmetry.
 	We can see that Biased Thompson sampling does not perform better in any significant sense.}
+	\label{fig:explicit-sym}
 \end{figure}
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+% \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-Of course, the symmetry didn't need to be inferred. So it's cheating.
-We could have simply built the symmetry into the solver. But we want to
-construct a 'high' level prior that is not specific to a single problem (like $S_2$ is), but
-to many. Something that prefers symmetries of any kind.
+% Of course, the symmetry didn't need to be inferred. So it's cheating.
+% We could have simply built the symmetry into the solver. But we want to
+% construct a 'high' level prior that is not specific to a single problem (like $S_2$ is), but
+% to many. Something that prefers symmetries of any kind.
+
+These experiment are not conclusive. As; we tested with a Biased Thompson Sampler given explicit knowledge of the symmetry within a MDP,
+and this did not show any advantage (see \ref{fig:explicit-sym}). These results tell us that our method of biasing a distribution over models (via rejection sampling)
+does not seem to help RL. It says nothing of the utility of the measure of similarity developed.
+
+Also, we expect the advantage should become clearer as we scale to larger state spaces (as there is more benefit to symmetry, there are more similar states).
+However, we were unable to scale to larger problems due to the computational complexity of building the family of symmetries (see \ref{implementation-issues}).
