@@ -304,30 +304,28 @@ their explanation of the acceleration is not entirely convincing (as it requires
 
 More applied to RL, we want to know: how does overparameterisation effect the search for optimal policies?
 
-In figures \ref{fig:param-compare-sgd} and \ref{fig:param-compare-sgd} we can see that
-parameterisation can yield vastly different training trajectories to gradient descent,
-{\color{red}and it's relation to momentum?!}\footnotemark.
+In figures \ref{param-compare-sgd} and \ref{param-compare-sgd} we can see that
+parameterisation can yield vastly different training trajectories\footnotemark to gradient descent,
 
-\footnotetext{It is important to remember that these trajectories also reflect exploration.
-It seems interesting to ask, if there are any advantages to certain types of trajectory?}
+\footnotetext{Is there are any advantages to certain types of trajectory?}
 
-{\color{red}TODO regenerate these figures. better quality.}
+{\color{red}TODO regnerate ims and fix captions}
 
 \begin{figure}
-\label{fig:param-compare-sgd}
 \centering
 \includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
-\caption{The optimisation dynamics of value iteration versus parameterised value iteration.}
+\caption{The optimisation dynamics of value iteration versus parameterised value iteration.
+Green is SGD's trajectory, and orange is }
+\label{param-compare-sgd}
 \end{figure}
 
 \begin{figure}
-\label{fig:mom-compare-sgd}
 \centering
-\includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom.png}
-\caption{The optimisation dynamics of value iteration versus value iteration with momentum.}
+\includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_01.png}
+\caption{The optimisation dynamics of value iteration versus value iteration with momentum.
+Green is SGD's trajectory, and orange is momentum's trajectory.}
+\label{mom-compare-sgd}
 \end{figure}
-
-{\color{red}Also. Have some more of the ims below coming}
 
 In \ref{fig:iteration-complexity} we can observe that there can be sharp boundaries
 between neighboring policies. A kind of phase transition, between the optimal policy being easy to find, and not.
