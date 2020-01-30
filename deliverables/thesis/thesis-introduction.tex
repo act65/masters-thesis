@@ -44,7 +44,7 @@ Thus, the main goal of this thesis is to:
 \section{Overview}
 
 Given the goal above, we pick Markov Decision Problems as our setting for studying abstractions\footnotemark and give a slightly non-standard, but general introduction to them, see section \ref{mdps}.
-Then we explore abstractions and existing theory for understanding abstraction and attempt to organise it in to a clearer framework, see section \ref{abstraction-rl}.
+Then we explore abstractions and existing theory for understanding abstraction and attempt to organise it in to a framework, see section \ref{abstraction-rl}.
 Next, we analyse an existing method of abstraction for efficient control and find that it does not work in general, see section \ref{solveable-abstractions}.
 Finally, we build an abstraction using symmetries, see section \ref{symmetric-abstractions}.
 
@@ -57,12 +57,12 @@ In this thesis, we;
 \begin{itemize}
   \tightlist
   % \item CSurveyonstruct a family of similarity measures for building abstractions for RL.
-  \item Clarify that a well cited method of linear abstraction doesn't work in general. \ref{lmdp-validation}
-  \item Evaluate a method of combining symmetric abstractions and Thompson sampling \ref{thompson-sampling}
+  \item Clarify that a well cited method of linear abstraction doesn't work in general. See section \ref{lmdp-validation}
+  \item Evaluate a method of combining symmetric abstractions and Thompson sampling. See section \ref{thompson-sampling}
   % \item Explore methods of discovering symmetries and a complexity measure \ref{????} {\color{red}WIP}
   % \item Generalise the notion of Markov decision problem homomorphism to temporal abstractions \ref{temporal-abstraction} {\color{red}WIP}
-  \item Explore the iteration complexity, effect of discounting, and the density of the Value functional polytope. \ref{polytope-extras}
-  \item Provide a way to visualise the dynamics of learning an Markov decision problem in higher dimensions \ref{graph-vis}.
-  \item Formulate a type of model based learner \ref{model-iteration}, which has some serious, but potentially solvable, issues with scaling to larger problems.
-  \item Explore a new task for understanding a learners ability to generalise \ref{action-space-experiments}
+  \item Explore the iteration complexity, effect of discounting, and the density of the Value functional polytope. See section \ref{polytope-extras}
+  \item Provide a way to visualise the dynamics of learning an Markov decision problem in higher dimensions. See section \ref{graph-vis}
+  \item Formulate a type of model based learner, which has some serious, but potentially solvable, issues with scaling to larger problems. See section \ref{model-iteration}
+  \item Explore a new task for understanding a learner's ability to generalise. See section \ref{action-space-experiments}
 \end{itemize}

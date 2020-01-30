@@ -6,7 +6,7 @@ Symmetry is a concept from pure mathematics, which has found major success in ph
 Symmetry has also had success in machine learning. For example, the notion has led to;
 data augmentation strategies \cite{Simard2003},
 understanding of convolutional neural networks \cite{Cohen2017}, and a definition of disentanglement \cite{Higgins2018}.
-We are interested in using symmetry to build abstractions for RL. But first, what do me mean by symmetry?
+We are interested in using symmetry to build abstractions for RL. But first, what do we mean by symmetry?
 
 % also, to disentanglement
 % % Connection to causal hierarchy. Cite Pearl. Association, intervention, counterfactuals.
@@ -31,7 +31,7 @@ To qualify as a group, the set and operation, $(G, \circ)$, must satisfy four re
 \begin{itemize}
 	\tightlist
 	\item \textbf{Closure:} For all $a, b \in G$, the result of the operation $a \circ b$ is also in $G$. (\textit{every composition of two rotations, must also be a rotation})
-	\item \textbf{Associativity:} For all $a,b,c \in G$, $(a\circ b) \circ c = a\circ (b\circ c)$. (\textit{???})
+	\item \textbf{Associativity:} For all $a,b,c \in G$, $(a\circ b) \circ c = a\circ (b\circ c)$.
 	\item \textbf{Identity element:} There exists and element $e\in G$ such that, for every element $a\in G$, the equation $e\circ a = a\circ e = a$ holds. (\textit{there must exist a rotation that doesn't rotate})
 	\item \textbf{Inverse element:} For each $a \in G$, there exists an element $b \in G$, commonly denoted $a^{−1}$, such that $a \circ b = b \circ a = e$. (\textit{we must be able to undo any rotation})
 \end{itemize}
@@ -139,8 +139,6 @@ S(x) &= e^{-C(x)}
 % What about characterising the complexity by the number of generators /relations.
 % Or something information theoretic?
 
-{\color{red}need some words here? not sure what to say...}
-
 \subsubsection{Implementation issues}\label{implementation-issues}
 
 In its current state, this measure of approximate symmetry has two main implementation issues;
@@ -216,10 +214,10 @@ What properties did we want?
 \begin{enumerate}
 \tightlist
 	\item Approximate symmetries should be measured as 'less symmetric' than exact symmetries.
-	\item Larger symmetries should be prefered.
+	\item Larger symmetries should be preferred.
 \end{enumerate}
 
-And these two properties have been met. When using \ref{eq:sym-measure} as our symmetry measure, we get;
+These two properties have been met. When using \ref{eq:sym-measure} as our symmetry measure, we get;
 $S([1,1.001,2,2]) = 0.956 < 1 = S([1,1,2,2])$ and $S([1,1,2,2]) = 1  >  0.026 = S([1,1,2,3])$.
 
 \begin{figure}[h!]
@@ -299,7 +297,7 @@ Thus we have a distribution over parameters, $q(\theta | D_t)$, which we can opt
 
 Fortunately, we don't need to construct $P_{\text{sym}}(\theta)$, we only need an unnormalised function that it is proportional to \cite{Owen2013}. Meaning, we can use our measure of symmetry $P_{\text{sym}}(\theta)\to S(x)$.
 
-Consider an example: we might have some estimate of a parameter's value, $\mu, \sigma$, which follows a Gaussian distribution $p(\cdot)$. But, we believe the parameters should be symmetric. Therefore, we can construct a new distribution, $q(x | D_t) = p(\mu, \sigma| x)S(x)$. We can use rejection sampling to generate samples from $q(x | D_t)$. See thee results below.
+Consider an example: we might have some estimate of a parameter's value, $\mu, \sigma$, which follows a Gaussian distribution $p(\cdot)$. But, we believe the parameters should be symmetric. Therefore, we can construct a new distribution, $q(x | D_t) = p(\mu, \sigma| x)S(x)$. We can use rejection sampling to generate samples from $q(x | D_t)$. See the results below.
 
 
 \begin{figure}[h!]
@@ -313,7 +311,7 @@ Consider an example: we might have some estimate of a parameter's value, $\mu, \
   \centering
   \includegraphics[width=0.5\textwidth,height=0.25\textheight]{../../pictures/figures/s2-prior-rejection-8d.png}
   \caption{Here we have samples from the 'sample distribution', $q(x)$, and the 'target distribution', $p(x)$.
-	We can see that the rejection sampling with the symmetry augmented target distrubtion was successful in producing, on average, more symmetric samples. }
+	We can see that the rejection sampling with the symmetry augmented target distribution was successful in producing, on average, more symmetric samples. }
 \end{figure}
 
 These results really just confirm that we have implemented
@@ -381,11 +379,11 @@ Less cryptically, Thompson sampling estimates the model, $P\, r$. We then act op
 \end{algorithm}
 
 Where $H_t$ is the history of observations, $\{(s_i, a_i, r_i, s_i') : \forall i \in [0, t]\}$.
-And we construct the estimate of the model as independent distributions of the transition and reward functions $P(\tau, r | H_t) = P(\tau | H_t) \cdot P(r | H_t)$. Where $P(\tau | H_t)$
+Further, we construct the estimate of the model as independent distributions of the transition and reward functions $P(\tau, r | H_t) = P(\tau | H_t) \cdot P(r | H_t)$. Where $P(\tau | H_t)$
 is modelled as the normalised state transition counts.
 And $P(r | H_t)$ is modelled as a isotropic Gaussian.
 These can be estimated by storing state-action-state transition counts
-and the incremental mean and variance of the rewards. {\color{red}should give more details???}
+and the incremental mean and variance of the rewards.
 
 Note that we act greedily with respect to the $Q$ function. Normally, this would
 lead to sub optimal behaviour, because no exploration is being done. But, Thompson sampling
@@ -448,7 +446,7 @@ exploration occurs by acting greedily with respect to a sampled model.
 The difference between \textit{Thompson Sampling} and \textit{Biased Thompson Sampling}
 is how we construct the distribution over models, $P(\tau, r |D)$.
 
-We believe that the states will have group structure, a symmetry. ({\color{red}why?})
+We believe that the states will have group structure, a symmetry.
 We use the symmetric rejection sampling method, outlined above (\ref{rejection-sampling}) to bias the
 distribution over models towards more symmetric models.
 
@@ -471,7 +469,7 @@ To simplify, we estimate $P_{\text{sym}}(\tau, R)$ as $P_{\text{sym}}(R)$. That 
 We want to demonstrate that Biased Thompson Sampling \ref{bts} has greater sample efficiency (when applied to problems with a symmetry present) than Thompson Sampling \ref{ts}.
 
 % There are a few factors that could effect the (potential) advangate of Biased Thompson Sampling.
-We ran experiments with symmetric n-armed bandit problems, and symmetric grid worlds \ref{race-grid-world}\footnotemark.
+We ran experiments with symmetric n-armed bandit problems, and symmetric grid worlds \ref{race-grid-world}\footnotemark, the results are shown in figures \ref{fig:map-bts} and \label{fig:explicit-sym}.
 
 \footnotetext{Relatedly, we also explore another, more complicated, setting to test a learners ability to exploit symmetries in \ref{action-space-experiments}.}
 
@@ -488,17 +486,18 @@ We ran experiments with symmetric n-armed bandit problems, and symmetric grid wo
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/mdp-9-implicit.png}
+  \includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/figures/mdp-9-implicit.png}
   \caption{A 9 state symmetric grid world problem.
 	We can see that Biased Thompson sampling, using our symmetry measure, does not perform better than Thompson sampling in any significant sense.}
+	\label{fig:map-bts}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/mdp-25-explicit.png}
+  \includegraphics[width=0.6\textwidth,height=0.3\textheight]{../../pictures/figures/mdp-25-explicit.png}
   \caption{A 25 state symmetric grid world problem.
-	This Biased Thompson Sampler was given explicit knowledge of the underlying symmetry.}
-	Despite this, we can see that Biased Thompson sampling does not perform better in any significant sense.
+	This Biased Thompson Sampler was given explicit knowledge of the underlying symmetry.
+	Despite this, we can see that Biased Thompson sampling does not perform better in any significant sense.}
 	\label{fig:explicit-sym}
 \end{figure}
 
@@ -509,10 +508,10 @@ We ran experiments with symmetric n-armed bandit problems, and symmetric grid wo
 % construct a 'high' level prior that is not specific to a single problem (like $S_2$ is), but
 % to many. Something that prefers symmetries of any kind.
 
-These experiment are not conclusive: We also tested a Biased Thompson Sampler given explicit knowledge of the symmetry within a MDP,
-and it did not show any advantage (see \ref{fig:explicit-sym}). This results tell us that our method of biasing a distribution over models (via rejection sampling)
-does not seem to help RL. It says nothing of the utility of the measure of similarity developed.
+These figures show that Biased Thompson Sampling provides no advantage in sample efficiency (while using a lot more compute).
+However, we cannot conclude that Biased Thompson Sampling provides no advantage. This is because we also tested a Biased Thompson Sampler given explicit knowledge of the symmetry within a MDP,
+and it, also, did not show any advantage (see \ref{fig:explicit-sym}). This result tell us that our method of biasing a distribution over models (via rejection sampling)
+does not seem to help RL. It says nothing about the utility of similarity measure.
 
 Also, we expect the advantage should become clearer as we scale to larger state spaces (as there is more benefit to symmetry, there are more similar states).
 However, we were unable to scale to larger problems due to the computational complexity of building the family of symmetries (see \ref{implementation-issues}).
-Future work should seek to solve these computational issues, and to {\color{red}???}.

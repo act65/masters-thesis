@@ -1,10 +1,10 @@
 % \chapter{Search spaces}
 
-\newpage
 
 Before going further with our quest for efficient RL. Let's try to understand
 some properties of our setting, tabular MDPs.
 
+\newpage
 
 \section{The value function polytope}
 
@@ -105,7 +105,7 @@ They consider value iteration, policy iteration, policy gradients, entropy regul
 natural policy gradients and the cross entropy method.
 
 Their results are intriguing. They show that different RL algorithms traverse the polytope in vastly different ways.
-Some are not even constrained to the polytope. This left me wondering;
+Some are not even constrained to the polytope. This raises the question;
 
 \begin{displayquote}
   \textsl{How does a search algorithm interact with its search space to yield efficient search?}
@@ -184,7 +184,7 @@ This iteration converges because the state-action values capture counterfactuals
 \textit{What would the return be if I took an action, $a$, not necessarily chosen by
 the current policy, then I followed the current policy.}
 If there exists an action that achieves higher return than the current policy's choice of action,
-then (because of the greedy step) PI update to pick that action.
+then (because of the greedy step) the PI updates to pick that action.
 
 \begin{figure}[h!]
 \centering

@@ -91,17 +91,6 @@ This suggests that MDPs with low expected suboptimality, $\epsilon^{* }(M)$, are
 This is because we can simply sample a random policy which is likely to be close to the optimal policy
 (or we could sample many policies and pick the best, which would, with high probability, be close(r) to the optimal policy).
 
-\vspace{5mm}
-
-\textbf{Open problem}\footnotemark: If an MDP has sub-optimality,  $\epsilon^{* }(M)$,
-then it is possible to find a $\epsilon$ optimal policy with $\{\}$ samples.
-
-\footnotetext{Open problem* of dubious interest.}
-
-Where $\epsilon = \mathop{\text{max}}_s V^{\pi^{* }}(s) - V(s)$.
-
-\vspace{5mm}
-
 However, this strategy will not scale to higher dimensions.
 As we increase the state size or action size, the chance that there is high
 density near the optimal policy (or a randomly sampled MDP) decreases with rate proprtional to $|A|^{|S|}$.
@@ -110,7 +99,7 @@ density near the optimal policy (or a randomly sampled MDP) decreases with rate 
 % Or find derivative wrt \(P, r\). What properties of \(P, r\) yield
 % easily solvable MDPs?
 
-\subsection{Discounting}
+\subsection{Discounting} \label{discount-polytope}
 
 Another question you may have is: \textit{how does the shape of the polytope depend on the discount rate?}
 Given an MDP, we can vary the discount rate from \(0\) to \(1\) and visualise
@@ -159,9 +148,10 @@ We could search through models ($\tau, r$) using supervision from next step pred
 This is a common approach to model-based RL \cite{Wang2019a}.
 Rather, we consider using the value estimation error to guide the search for model parameters.
 
-\begin{align}
+\begin{align*}
 \tilde P^{* }, \tilde r^{* } = \mathop{\text{argmin}}_{\tilde \tau, \tilde r} \int_{\Pi} \parallel V_{\tau, r}(\pi)-V_{\tilde \tau, \tilde r}(\pi) \parallel_\infty
-\end{align}
+\label{eq:model-iteration}
+\end{align*}
 
 \begin{figure}
 \centering
@@ -279,12 +269,8 @@ A key feature of deep learning is over parameterisation (among the other feature
 hierarchies, non-linearity, smoothness, locality). There has been recent work
 attempting to understand the effect of overparameterisation \cite{Arora2018}.
 
-Here we explore the effects of;
-\begin{itemize}
-\tightlist
-  \item overparameterising the policy and then using policy gradient methods to find the optimally policy.
-  \item reparameterising the loss function, thus yielding some ither space to search through.
-\end{itemize}
+Here we explore the effects of; overparameterising the seach space and then using policy gradient methods,
+and reparameterising the loss function, thus yielding some other space to search through.
 
 % \begin{figure}[!h]
 % \centering
@@ -309,35 +295,34 @@ parameterisation can yield vastly different training trajectories\footnotemark t
 
 \footnotetext{Is there are any advantages to certain types of trajectory?}
 
-{\color{red}TODO regnerate ims and fix captions}
-
-\begin{figure}
+\begin{figure}[h!]
 \centering
-\includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi-vs-pvi.png}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/vi-pvi-0.png}
 \caption{The optimisation dynamics of value iteration versus parameterised value iteration.
-Green is SGD's trajectory, and orange is }
+Green is VI's trajectory, and orange is parameterised VI's trajectory.}
 \label{param-compare-sgd}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
-\includegraphics[width=1.0\textwidth,height=0.5\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_01.png}
+\includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/vi_sgd-vs-vi_mom_01.png}
 \caption{The optimisation dynamics of value iteration versus value iteration with momentum.
 Green is SGD's trajectory, and orange is momentum's trajectory.}
 \label{mom-compare-sgd}
 \end{figure}
 
+\newpage
 In \ref{fig:iteration-complexity} we can observe that there can be sharp boundaries
 between neighboring policies. A kind of phase transition, between the optimal policy being easy to find, and not.
 (despite the fact that the we started from neighboring points).
 
-\begin{figure}
-\label{fig:iteration-complexity}
+\begin{figure}[h!]
 \centering
-\includegraphics[width=1.0\textwidth,height=1.0\textheight]{../../pictures/figures/iteration-lr-0.png}
+\includegraphics[width=1.0\textwidth,height=0.7\textheight]{../../pictures/figures/iteration-lr-0.png}
 \caption{Here we have visualised the value polytope a 2-state, 2-action MDP.
 These value polytopes are colored by the iteration complexity (many iterations - yellow, few iterations - purple) of parameterised policy gradients.
 Each polytope was generated using a different learning rates.}
+\label{fig:iteration-complexity}
 \end{figure}
 
 
@@ -355,12 +340,9 @@ Each polytope was generated using a different learning rates.}
 % insert pic / prove
 
 \newpage
-\subsection{Reparameterisation}
+\subsection{Reparameterisation}\label{reparameterisation}
 
 % Its effect on topology and acceleration.
-
-{\color{red}Not sure if I should include this section. Very early stage...}
-
 \begin{displayquote}
   \textsl{If we are allowed to arbitrarily pick our optimisation space, which should we pick?}
 \end{displayquote}
@@ -387,14 +369,14 @@ then we lose the guarantees convergence of convex search. However, what is gaine
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-ce-04.png}
-\caption{The iteration complexity of different initialisations and different learning rates.}
+\caption{The convergence rate of different initialisations and different learning rates.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-mse-04.png}
-\caption{The iteration complexity of different initialisations and different learning rates.}
+\caption{The convergence rate of different initialisations and different learning rates.}
 \end{figure}
 
 When $z$ is the parameters of a deep neural network, the search space has certain properties: for example it's euclidean.
-An alternative could be to search through a hyperbolic space, yielding 'hyperbolic neural networks' (explored by \ref{Ganea2018}).
+An alternative could be to search through a hyperbolic space, yielding 'hyperbolic neural networks' (explored by \cite{Ganea2018}).

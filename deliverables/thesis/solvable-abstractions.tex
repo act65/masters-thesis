@@ -122,10 +122,10 @@ z_{u^{* }} &= e^{q(s)}\cdot p z_{u^{* }}^{\gamma} \tag{3}
 By definition, a linearised Bellman equation is constructed as (1). After some algebra,
 it can be shown that the optimal policy has the form in (2).
 Most importantly! We can solve for the value of the optimal control by solving the linear equation in (3).
-(see \ref{lmdp-derivation} for further explanation and a derivation of a LMDP)
+(see \ref{lmdp-derivation} for further explanation and a derivation of a LMDP).
 
 \begin{displayquote}
-\textsl{Let's try and understand this LMDP has been constructed.}
+\textsl{Let's try and understand this LMDP that has been constructed.}
 \end{displayquote}
 
 \subsubsection{The unconstrained dynamics and state rewards}
@@ -208,7 +208,7 @@ to solve for the unconditioned dynamics $p$ and a state reward $q$.
 This transformation, from $P, r \to p, q$ requires $|S| \times |A|$ computations, as for each state in the
 MDP we need to satisfy constraints for each action. For a derivation and explanation see appendix \ref{mdp-Linearisation}.
 
-However, an important condition missing!
+However, an important condition is missing!
 We should preserve the value of optimal actions (as discussed in \ref{efficient-control}).
 Alternatively, we might settle for preserving the optimal policy.
 
@@ -222,7 +222,7 @@ Where $z_{u_{\pi}}$ is the value (as evaluated by the LMDP) of the control $u_{\
 
 It seems that Todorov hopes that the constraints \ref{state-reward-rep}, \ref{unconstrained-dynamics-reward},
 will be sufficient to give \ref{value-preserved}, \ref{opt-policy-preserved}. But he does not prove it.
-This is problem that we will return to in \ref{paths}.
+This is a problem that we will return to in \ref{paths}.
 
 \subsection{Lifting the optimal LMDP policy}\label{lift-mdp}
 
@@ -244,7 +244,7 @@ This decomposition is reminiscent of goal conditioned approaches to hierarchical
 Where a higher level agent gives goals (go to this or that state) to a lower level
 agent, who must figure out how to achieve that goal \cite{Vezhnevets2017}.
 
-This decomposition within the LMDP can be seen the optimal control decoding
+This decomposition within the LMDP can be seen as the optimal control decoding
 step (currently being considered). We know which
 states we want to be in, the $z^{* } / u^{* }$, from solving the LMDP, but,
 we do not know how to implement those controls with the actions we have available in the original MDP.
@@ -264,7 +264,7 @@ In the worst case it has complexity $\mathcal O(|S|^2|A|)$ (which is the same as
 We have now built a way to solve a MDP with a LMDP.
 We have a method to transform a MDP to a LMDP \ref{construct-lmdp-from-mdp}.
 We can solve the LMDP \ref{solve-lmdp}.
-And finally, we can lift the solution to the original MDP \ref{lift-mdp}.
+Finally, we can lift the solution to the original MDP \ref{lift-mdp}.
 Let's try it out.
 
 \subsubsection{Optimality of solutions via LMDPs}\label{paths}

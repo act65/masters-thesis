@@ -2,20 +2,21 @@
 
 \section{Summary}
 
-While there do exist some tools for analysing abstractions for RL, we need better ones.
-There are many unanswered questions (below), but, most importantly,
-there is no well defined way to evaluate abstractions in general. {\color{red} doesnt quite work}
+To build abstractions for reinforcement learning, we need notions of how to objects can be similar.
+But, where does these notions of similarity come from? And how do we pick one over the other?
+While there are many unanswered questions (below), most importantly,
+there is no well defined way to evaluate an abstractions (in the general case), and thus there is no way to compare them.
 
 Linear Markov Decision Problems attempt to preserve the space of transition dynamics and the rewards.
 But, they failed to preserve the value of the optimal actions, and thus cannot
 guarantee performance in general. Ultimately, this was because the Bellman equation is non-linear.
 
 We develop a measure of symmetry, and use it to give reinforcement learners a preference towards symmetry, a prior.
-Our results did not show any advantage by using this prior, but due to computational and temporal\footnotemark constraints,
-we were unable to make any conclusions.
+Our experiment did not show any advantage by using this prior, but due to computational and temporal\footnotemark constraints,
+we were unable to conclude that there is no advantage.
 % Symmetry attempts to preserve, ...?
 
-\footnotetext{Temporal constraints meaning: A masters is a finite amunt of time.}
+\footnotetext{Temporal constraints meaning: A masters is a finite amount of time.}
 
 \newpage
 \section{Future work}
@@ -26,21 +27,21 @@ There is a large amount of future work to be done if we want to:
 \textit{understand how abstractions can increase the efficiency of reinforcement learning.}
 \end{displayquote}
 
-Our exploration of \textbf{Abstractions} in \ref{abstraction-rl}, raises a few fundamental questions;
+Our exploration of \textbf{Abstractions}, in \ref{abstraction-rl}, raises a few fundamental questions;
 
 \begin{itemize}
 	\tightlist
 	\item What is the advantage, if any, of \textit{state and action abstraction} versus \textit{state-action abstraction} \ref{exploit-abstraction-rl}?
 	\item Of the two approaches to temporal abstraction, \textit{goal-like} and \textit{option-like} temporal abstraction, is one strictly better that the other? If not, then in which cases does \textit{goal-like} temporal abstraction perform better?
-	\item Are the facets of evaluation presented in \ref{eval-abstractions} necessary and / or sufficient for 'efficient' performance of an abstraction in practice?
+	\item Are the facets of evaluation, presented in \ref{eval-abstractions}, necessary and / or sufficient for 'efficient' performance of an abstraction in practice?
 	\item Do many, or even all, abstractions of interest to RL live in the family defined in \ref{similar-classes}?
 	\item Is there a difference between trajectory based similarity measures (that set the similarity $\chi(x, x')$ to be built from distances between the cumulants $D(c(x, \pi), c(x', \pi))$, rather than expected discounted cumulants $D(\mathcal C(x, \pi), \mathcal C(x, \pi))$)?
-	\item What is the trade off (between computation and approximation error) of approximating $\int_{\pi \in \Pi}f(\pi)$ with $B \subset \Pi, \; \int_{\pi \in B}f(\pi)$?
 	% How large does $X$ need to be to get a reliable estimate? Can we pick $X$ in intelligent, or random ways.
 	\item What is necessary (rather than sufficient - which is proved in existing work) for the preservation of Bellman equation's ability to guide search? Can we weaken the requirements to: preserving the ordering of the value of optimal actions (rather than their absolute values as in existing work)?
 \end{itemize}
 
-Similarly, our results on \textbf{LMDPs} \ref{lmdp-validation} leave a few questions unanswered;
+\newpage
+Similarly, our results on \textbf{LMDPs} (\ref{lmdp-validation}) leave a open few questions about whether LMDPs whether can be saved from irrelvance;
 
 \begin{itemize}
 	\tightlist
@@ -49,18 +50,35 @@ Similarly, our results on \textbf{LMDPs} \ref{lmdp-validation} leave a few quest
 	\item Can easily solvable MDPs (via LDMPs) be easily identified?
 \end{itemize}
 
-Finally, our results on \textbf{symmetric abstractions} \ref{symmetric-abstractions} leave a few questions unanswered;
+Next, our results on \textbf{symmetric abstractions} (\ref{symmetric-abstractions}) leave a few questions unanswered;
 
 \begin{itemize}
 	\tightlist
 	\item What is the (computational) efficiency of rejection sampling for symmetry biased distributions, and how does it scale with dimension? And how much data (sample efficiency) does that computation buy?
 	% \item Rather than rejection sampling, use Metropolis-hastings. To allow to scale to higher dimensions.
 	\item What happens if we use our measure of symmetry \ref{measure-symmetry} as a regulariser (as it is differentiable)?
-	\item Invariants ...
+	\item How can we use invariants \ref{game-invariants} of the transition and / or reward and / or the value functions to identify symmetries?
 	\item How can representations of states (or state-actions or ...) be ordered or structured? And how does this structure reduce the combinatorial space of possible symmetries?
-	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amortize this cost by building symmetries from smaller symmetries in shorter sequences?
 	% \item Run more rigorous experiments...
 \end{itemize}
+
+
+Finally, the \textbf{appendices} (\ref{appendicies}) ask more questions than they answer;
+
+\begin{itemize}
+	\tightlist
+	% \item If a MDP has expected sub-optimality,  $\epsilon^{* }(M)$, then it is likely to find a $\epsilon$ optimal policy with $n$ samples.
+	\item What is the significance of the projection of the value polytope onto a single dimension when we increase the discount rate? \ref{fig:polytope-discounts}
+	\item When attempting to evaluate the integral  over all policies, how can we exploit structure in the given MDP to reduce the computational complexity. \ref{eq:model-iteration}
+	Is there a way to intelligently (or randomly) pick which mixtures of deterministic policies to evaluate (like compressed sensing \cite{Candes2005}).
+	\item Convexity in optimisation problems allows efficient solutions to be found, are there other properties that are mutual exclusive to convexity that also allow efficient solutions. \ref{reparameterisation}
+	\item What is the cost of discovering temporal symmetries? How does this cost scale with the length of time? Can we amortize this cost by building symmetries from smaller symmetries in shorter sequences? \ref{temporal-homomorphism}
+	\item How can we use invariant of the value function to identify symmetries? \ref{game-invariants}
+	\item Are there more methods of exploiting symmetries? Or would any new method reduce to one listed in \ref{symmetric-exploitation}. And which method of exploiting symmetries is best?
+	\item Explain difference between the \textit{Discrete} and \textit{MultiBinary} action spaces in \ref{ndcart-experiments} (as the hardness of learning a binary decoder is not sufficient to explain it).
+\end{itemize}
+
+% more questions than answers
 
 % % % % % % % % % % % % % % %
 % Q: Number of integer factors as a function of n???

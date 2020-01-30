@@ -266,7 +266,7 @@ because all roads are pretty-much-the-same -- lead to suboptimal results? Probab
 More precisely, we want know to whether the optimal policy can be approximately represented within an abstracted MDP.
 
 % formal
-This notion of near-optimality (aka sub-optimality) can be formalised as the representation error of the optimal
+This notion of near-optimality, $\epsilon$, (aka sub-optimality) can be formalised as the representation error of the optimal
 policy. \cite{Abel2017} Given an abstraction, we want to know how well the abstraction can represent the optimal policy.
 
 \begin{align}
@@ -297,7 +297,7 @@ We might require large amounts of data or computation.
 
 We want to preserve our ability to use the Bellman equation to efficiently guide the search for optimal controls.
 But, what is necessary or sufficient to preserve the Bellman equation's ability to guide search?
-It appears that: Preserving the value of the optimal action is sufficient to preserve the Bellman equation's ability to guide search. \cite{Jong2005,Littman2006,Abel2017}
+It appears that: Preserving the value of the optimal action is sufficient to preserve the Bellman equation's ability to guide search\cite{Jong2005,Littman2006,Abel2017}.
 
 % If we have preserved the value of the optimal action (for each action), then, for all actions $\forall a: Q(s, a) \le Q(s, a^{* })$.
 Consider an abstraction that has preserved the value of the optimal action.
@@ -438,7 +438,7 @@ similarity between two 'RL objects'\footnotemark as: for  different objects, $x$
 how similar are their likely futures starting from those objects. Where we evaluate the similarity under (potentially) many different policies.
 Let's make this formal.
 
-\footnotetext{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ...}
+\footnotetext{Where RL objects could be one of; states, actions, state-actions, action-rewards, or state-action-rewards, ... etc.}
 
 Let $c(s, a, r)$ be a cumulant, and let $C$ be the discounted sum of that cumulant under a given trajectory\footnotemark.
 Then $\mathcal C$ is the expected value of $C$ under a given policy.

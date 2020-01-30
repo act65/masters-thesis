@@ -1,13 +1,16 @@
 TODOs
 
-* [ ] fix invariant RL examples
-* [ ] final spell check
-* [ ] tidy or remove lit review section on ML + symmetry
-* [ ] write conclusion
-* [ ] discuss biased TS results
+* [ ] final proof read
 
 Done
 
+* [x] final spell check
+* [x] fix invariant RL examples
+* [x] tidy or remove lit review section on ML + symmetry
+* [x] fix acknowledgements
+* [x] fix iteration section / images
+* [x] discuss biased TS results
+* [x] write conclusion and future work
 * [x] finish topology section
 * [x] write future work section
 * [x] Make sure all appendicies are referenced

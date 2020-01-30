@@ -11,7 +11,7 @@ that digit is a 5". Teacher: "No."}). This means the learner needs to explore th
 
 On top of terse teachers, many actions may be taken before any evaluation is received, thus requiring credit to be assigned to past actions,
 (\textit{Student: "Is it a 4? How about a 0? A 6? Maybe a 7?". ... Teacher: "No".})
-often leaving the learner wondering: "what did I do to deserve this?" (see
+often leaving the learner wondering: \textit{"what did I do to deserve this?"} (see
 \href{https://www.youtube.com/watch?v=Qv4H81gEGDQ}{pigeon superstition} for an amusing
 example of credit assignment gone wrong \cite{Box1997}).
 
@@ -81,7 +81,7 @@ V^{\pi} &= \mathop{\mathbb E}_{\zeta \sim D(\pi, \tau)} [R(\zeta)] \tag{state va
 \end{align*}
 
 
-Where, $d_0$ is the initial state distribution, $\zeta$ collects the $(s_t, a_t, r_t)$ triples of a game (aka trajectory or rollout) \footnotemark,
+Where, $d_0$ is the initial state distribution, $\gamma$ is the discount rate, $\zeta$ collects the $(s_t, a_t, r_t)$ triples of a game (aka trajectory or rollout) \footnotemark,
 $R(\zeta) =\sum_{t=0}^H \gamma^t \zeta^r_t$ is cumulative discounted reward (aka the 'return' of a single game), and $D$ is the probability of a trajectory under the chosen policy and MDP.
 
 \footnotetext{We allow $\zeta$ to be indexed by time and $\{s, a, r\}$. For example; $\zeta_t^s=s_t$.}
@@ -134,7 +134,7 @@ private knowledge about the current state. I know everything there is to know.
 
 A MDP is considered solved when we have found the 'optimal' policy. As above,
 the 'optimal' policy is the policy that gives the highest expected return (value).
-This means that;
+This notion of optimality is defined;
 
 \begin{align*}
 \pi^{*} : \;\; V^{\pi^* }(s) \ge V^{\pi}(s) \quad \forall \pi\in \Pi \;\;\forall s\in S\\
@@ -150,7 +150,7 @@ This means that;
 
 If we randomly pick policies and evaluate them, we would need to test (in the worst case),
 all the deterministic policies, $\mathcal O(|A|^{|S|})$ . However, we can use the \ref{eq:bellman-eqn} to
-guide our search. The expected return can be rewritten in a recursive manner, to give the Bellman equations.
+guide our search. The expected return can be rewritten in a recursive manner, to give the Bellman equation.
 
 \begin{align*}
 Q^{\pi}(s, a) &= r(s, a) + \gamma \mathop{\mathbb E}_{s' \sim \tau(\cdot|s, a)} [V^{\pi}(s')] \label{eq:bellman-eqn}\tag{Bellman equation}\\
