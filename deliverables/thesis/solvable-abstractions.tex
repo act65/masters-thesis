@@ -113,11 +113,11 @@ LMDP $=\{S, U, p, q, \gamma\}$. Where $S$ is the state space, $U$ is the space o
 $p: S \to S$ is the unconditioned dynamics, and $q \in \mathbb R^{|S|}$ is state rewards.
 Our goal is to find the control, $u: S \to S$, that gives the highest exponentiated cumulative reward $z \in \mathbb R_+^{|S|}$.
 
-\begin{align}
+\begin{align*}
 \log z_{u^{* }}(s) &= \mathop{\text{max}}_{u} q(s) - \text{KL}(u(\cdot| s) \parallel p(\cdot | s)) + \gamma \mathop{\mathbb E}_{s' \sim u(\cdot | s)} \log z_{u}(s') \tag{1}\\
 u^{* }(\cdot | s) &= \frac{p(\cdot | s)\cdot z_{u^{* }}(\cdot)^{\gamma}}{\sum_{s'} p(s' | s) z_{u^{* }}(s')^{\gamma}} \tag{2}\\
 z_{u^{* }} &= e^{q(s)}\cdot p z_{u^{* }}^{\gamma} \tag{3}
-\end{align}
+\end{align*}
 
 By definition, a linearised Bellman equation is constructed as (1). After some algebra,
 it can be shown that the optimal policy has the form in (2).
@@ -250,10 +250,10 @@ states we want to be in, the $z^{* } / u^{* }$, from solving the LMDP, but,
 we do not know how to implement those controls with the actions we have available in the original MDP.
 We can formulate this problem as;
 
-\begin{align}
+\begin{align*}
 \tau_{\pi}(\cdot | s) = \sum_a \tau(\cdot | s, a) \pi(a | s) \\
 \pi = \mathop{\text{argmin}}_{\pi} \text{KL}\Big(u(\cdot | s))\parallel \tau_{\pi}(\cdot | s)\Big)
-\end{align}
+\end{align*}
 
 We would hope that the knowledge of $u^{* }$ would make it easy to find the optimal actions.
 But, this optimisation problem has very little structure for us to exploit.

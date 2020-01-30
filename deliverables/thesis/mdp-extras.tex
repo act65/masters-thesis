@@ -2,11 +2,11 @@
 
 \section{Tabular MDPs}\label{vf-neumann}
 
-It is possible to derive the value functional in another, possibly more enlightening way. But it takes a little more work. It requires a result from real analysis, the Neumann series. Which is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
+It is possible to derive the value functional in another, possibly more enlightening way. But it takes a little more work. It requires a result from real analysis, the Neumann series. This is simply the generalisation of a geometric series to contractive linear operators, such as a matrix.
 
 \begin{align*}
 r &\in (-1, 1) \\
-(1-r)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n r^i \tag{Geometric series}\\
+(1-r)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n r^i \label{eq:geom}\tag{Geometric series}\\
 T &\in \mathbb X^k: \det(T) \in (-1, 1) \\
 (I-T)^{-1} &= \lim_{n\to \infty} \sum_{i=0}^n T^i \label{eq:neumann}\tag{Neumann series}
 \end{align*}
@@ -57,15 +57,15 @@ For each state, we must specify a distribution over actions.}
 \subsection{Distribution of policies}
 
 A potentially interesting question to ask about the value polytope is how the
-values (of the policies) are distributed. we can calculate this
+values (of the policies) are distributed. We can calculate this
 density analytically by using the probability chain rule:
 \(p(f(x)) = \mid \det\frac{\partial f(x)}{\partial x}\mid^{-1}p(x)\).
 Where we set \(f\) to be our value functional and \(p(x)\) to be a
 uniform distribution over policies. Thus we have;
 
-\begin{align}
+\begin{align*}
 p(V(\pi)) = |\det \frac{\partial V(\pi)}{\partial \pi}|^{-1} \cdot p(\pi) \tag{density}
-\end{align}
+\end{align*}
 
 \begin{figure}
 \centering
@@ -109,7 +109,8 @@ the shape of the value polytope.
 \centering
 \includegraphics[width=1\textwidth,height=1\textheight]{../../pictures/figures/discounts.png}
 \caption{Here we have visualised the value polytope for 2-state 2-action MDPs. The
-rows show how their value polytopes change with changes in discount rate, ranging linearly from 0 (left), to 1 (right).
+rows show how a MDP's value polytope change with changes in discount rate, ranging linearly from 0 (left), to 1 (right).
+Each column is for a different MDP.
 The color map is represents the density of policies, as in \ref{fig:density}.}
 \label{fig:polytope-discounts}
 \end{figure}
@@ -119,7 +120,7 @@ all the policies are projected into a 1D space. (is this 1D for 2D problems. is 
 
 \subsection{Derivation of derivative}
 
-We want to derive the derivative of the value functional. Here we go.
+We want to derive the derivative of the value functional.
 
 \begin{align*}
 V(\pi) &= (I − \gamma \tau_{\pi})^{−1}r_{\pi} \tag{value functional}\\
@@ -158,7 +159,8 @@ Rather, we consider using the value estimation error to guide the search for mod
 \includegraphics[width=1.0\textwidth,height=0.8\textheight]{../../pictures/figures/model_iteration.png}
 \caption{Model iteration applied to a 2-state, 2-action MDP.
 Blue shows the value of policies when evaluated under the true model, $\tau, r$,
-and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde \tau, \tilde r$.}
+and Red shows the estimated value of policies when evaluated under the learned model at convergence, $\tilde \tau, \tilde r$.
+The purple trajectory shows the value of the policy as it is learned.}
 \end{figure}
 
 There is a main advantage and some disadvantages to this framework.
@@ -177,13 +179,13 @@ Consider a problem where the reward is only determined by the first feature of t
 We can add arbitrarily many extra features. A model-based learner that learns through next step prediction will attempt to
 accurately predict all of these features. This unnecessarily spends resources.
 
-More formally; let the state space but a subset of the reals $S \subset \mathbb R^d$.
+More formally; let the state space be a subset of the reals $S \subset \mathbb R^d$.
 And construct a reward function that is only dependent on the first feature of the state space, $r(s, a) = f(s^0, a)$.
 While the transition function is constructed so that, there exists a $k$ dimensional subspace (that includes the first feature)
 that is independent of the other $d-k$ features, $\tau(s'|s, a) = [g_1(s^{0:k}, a), g_2(s^{k:d}, a)]$.
 
 An example with this structure, could be the addition of $d-k$ 'noise' features,
-that play no part in the transition dynamics, but only describe inessential features
+which play no part in the transition dynamics, but only describe inessential features
 (such as features that describe the positions of leaves on a windy day).
 
 % \subsection{Jokes}
@@ -293,7 +295,7 @@ More applied to RL, we want to know: how does overparameterisation effect the se
 In figures \ref{param-compare-sgd} and \ref{param-compare-sgd} we can see that
 parameterisation can yield vastly different training trajectories\footnotemark to gradient descent,
 
-\footnotetext{Is there are any advantages to certain types of trajectory?}
+\footnotetext{Is there any advantages to certain types of trajectory?}
 
 \begin{figure}[h!]
 \centering
@@ -369,13 +371,13 @@ then we lose the guarantees convergence of convex search. However, what is gaine
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-ce-04.png}
-\caption{The convergence rate of different initialisations and different learning rates.}
+\caption{The convergence rate of different functions. Note that because some of these are non-linear, their convergence rate will be highly dependent on the initialisation and different learning rate.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.7\textwidth,height=0.35\textheight]{../../pictures/figures/reparam-mse-04.png}
-\caption{The convergence rate of different initialisations and different learning rates.}
+\caption{The convergence rate of different functions. Note that because some of these are non-linear, their convergence rate will be highly dependent on the initialisation and different learning rate.}
 \end{figure}
 
 When $z$ is the parameters of a deep neural network, the search space has certain properties: for example it's euclidean.

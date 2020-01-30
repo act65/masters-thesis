@@ -123,7 +123,7 @@ S(x) &= e^{-\parallel n-|G^{* }| \parallel_1} \tag{transform so $S(x)\in [0, 1]$
 While this measure of symmetry captures some of what we want, it does not work on inputs of interest.
 It only considers exact symmetries.
 
-\subsubsection{Approximate symmetries}
+\subsubsection{Approximate symmetries}\label{sym-measure-approx}
 
 Our intuition tells us that $x = [1,1.001,2,2]$ is close to being as symmetric as
 $x = [1,1,2,2]$. So rather than asking: \textit{is $x$ invariant to $G$?}, we can ask
@@ -132,7 +132,7 @@ $x = [1,1,2,2]$. So rather than asking: \textit{is $x$ invariant to $G$?}, we ca
 % The fundamental complexity of the nearest symmetry, and the distance between that symmetry an
 
 \begin{align*}
-C(x) &= \mathop{\text{min}}_G \sum_{g_i\in G}\parallel x-\phi(g_i, x)\parallel_2 - \beta \parallel n-|G^{* }| \parallel_1 \label{eq:sym-measure}\\
+C(x) &= \mathop{\text{min}}_G \sum_{g_i\in G}\parallel x-\phi(g_i, x)\parallel_2 - \beta \parallel n-|G^{* }| \parallel_1 \\
 S(x) &= e^{-C(x)}
 \end{align*}
 
@@ -217,7 +217,7 @@ What properties did we want?
 	\item Larger symmetries should be preferred.
 \end{enumerate}
 
-These two properties have been met. When using \ref{eq:sym-measure} as our symmetry measure, we get;
+These two properties have been met. When using \ref{sym-measure-approx} as our symmetry measure, we get;
 $S([1,1.001,2,2]) = 0.956 < 1 = S([1,1,2,2])$ and $S([1,1,2,2]) = 1  >  0.026 = S([1,1,2,3])$.
 
 \begin{figure}[h!]
@@ -314,7 +314,7 @@ Consider an example: we might have some estimate of a parameter's value, $\mu, \
 	We can see that the rejection sampling with the symmetry augmented target distribution was successful in producing, on average, more symmetric samples. }
 \end{figure}
 
-These results really just confirm that we have implemented
+These results only confirm that we have implemented
 rejection sampling correctly, and it works as described.
 
 % \begin{figure}[h!]
@@ -462,16 +462,17 @@ To simplify, we estimate $P_{\text{sym}}(\tau, R)$ as $P_{\text{sym}}(R)$. That 
 
 \subsubsection{Experiments}
 
-\begin{displayquote}
-	\textsl{Sounds good in theory. Does it work in practice?}
-\end{displayquote}
+% \begin{displayquote}
+% 	\textsl{Sounds good in theory. Does it work in practice?}
+% \end{displayquote}
 
 We want to demonstrate that Biased Thompson Sampling \ref{bts} has greater sample efficiency (when applied to problems with a symmetry present) than Thompson Sampling \ref{ts}.
+And therefore that this learner can exploit symmetries present in a RL problem\footnotemark.
 
+\footnotetext{Note, we explore another, more complicated, setting to test a learners ability to exploit symmetries in \ref{action-space-experiments}.}
 % There are a few factors that could effect the (potential) advangate of Biased Thompson Sampling.
-We ran experiments with symmetric n-armed bandit problems, and symmetric grid worlds \ref{race-grid-world}\footnotemark, the results are shown in figures \ref{fig:map-bts} and \label{fig:explicit-sym}.
+We ran experiments with symmetric n-armed bandit problems, and symmetric grid worlds \ref{race-grid-world}, the results are shown in figures \ref{fig:map-bts} and \ref{fig:explicit-sym}.
 
-\footnotetext{Relatedly, we also explore another, more complicated, setting to test a learners ability to exploit symmetries in \ref{action-space-experiments}.}
 
 % Explicit symmetry prior versus 'high level' prior.
 

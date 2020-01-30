@@ -1,7 +1,7 @@
 \chapter{Markov Decision Problems}\label{mdps}
 
 Reinforcement learning (RL) refers to the set of solutions to a type of problem.
-This general, reinforcement learning, problem, has two main properties;
+This general, reinforcement learning set, has two main properties;
 \textit{"trial-and-error search and delayed rewards"} \cite{Sutton2018}.
 
 Unlike supervised learning, which gives the learner feedback (\textit{Student: "I think that digit
@@ -86,10 +86,10 @@ $R(\zeta) =\sum_{t=0}^H \gamma^t \zeta^r_t$ is cumulative discounted reward (aka
 
 \footnotetext{We allow $\zeta$ to be indexed by time and $\{s, a, r\}$. For example; $\zeta_t^s=s_t$.}
 
-\begin{align}
+\begin{align*}
 \zeta &= \{(s_t, a_t, r_t) : t \in [0, H]\} \tag{trajectory} \\
 D(\zeta, \pi, \tau, d_0) &= d_0(\zeta^s_0) \prod_{t=1}^{\infty} \pi(\zeta^a_t|\zeta^s_t) \tau(\zeta^s_{t+1}|\zeta^s_t, \zeta^a_t) \tag{p($\zeta$)}
-\end{align}
+\end{align*}
 
 % If we wanted we could pick our actions before we make observations,
 % reducing the search space to only \(|A| \times T\). But this is a bad idea\ldots{} example.
@@ -202,23 +202,23 @@ Let's formally define our tabular MDP. \footnotemark
 \footnotetext{It should be noted that this tabular MDP setting ignores an important
 aspect of RL: exploration, estimation error.}
 
-\begin{align}
+\begin{align*}
 \mathcal M &= \{S, A, P, r, \gamma\}\; \tag{the MDP}\\
 S &= [0:n-1] \tag{the state space}\\
 A &= [0:m-1] \tag{the action space}\\
 \tau &\in [0,1]^{n\times n \times m}, \;\;\forall j, k : \sum_i \tau[i, j, k] = 1 \tag{the transition fn.}\\
 r &\in \mathbb R^{n\times m} \tag{the reward fn.}
-\end{align}
+\end{align*}
 
 A result of this formulation is that we concisely write and solve the \eqref{eq:bellman-eqn}.
 However, it should be noted that the ability to solve the Bellman equation analytically (via the value functional)
 does not allow us to solve for the optimal policy analytically. The value functional allows us to evaluate a single policy.
 To find the optimal policy, we many need to make many evaluations.
 
-\begin{align}
+\begin{align*}
 V &= r_{\pi} + \gamma \tau_{\pi} V \tag{tabular Bellman eqn}\\
 V &= (I-\gamma \tau_{\pi})^{-1}r_{\pi}  \label{eq:value-functional}\tag{Value functional}
-\end{align}
+\end{align*}
 
 The values are written as a vector, $V \in \mathbb R^n$.
 The reward under a given policy is written $r_{\pi}[s, a] = \pi[s, a] r[s, a]$.

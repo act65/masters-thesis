@@ -71,10 +71,10 @@ Given this, it seems natural to extent the definition to MDPs.
 
 A MDP homomorphism is a transformation of a MDP, $\mathcal H: \mathcal M\to \mathcal M$, that preserves the transition and reward function \cite{Ravindran2002}. We can describe this MDP homomorphism as $\mathcal H = (f, g)$ such that;
 
-\begin{align}
+\begin{align*}
 \tau(f(s')|f(s), g_s(a)) = \sum_{s''\in [s']_f} \tau(s''| a, s) \\
 r(f(s), g_s(a)) = r(s, a)
-\end{align}
+\end{align*}
 
 This MDP homomorphism framework yields state-action abstraction, that uses a model based notion of similarity.
 However, as pointed out in earlier sections, there are many other possible
